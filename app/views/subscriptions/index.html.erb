@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="outline">
+    <div>
+      <div class="d-flex">
+        <%= link_to "Tuesday Subscriptions", tuesday_subscriptions_path, class: "outline" %>
+        <%= link_to "Wednesday Subscriptions", wednesday_subscriptions_path, class: "outline" %>
+      </div>
+      <br>
+      <h1>All Subscriptions</h1>
+      <ul>
+        <% @subscriptions.each do |subscription| %>
+          <%= link_to subscription_path(subscription) do %>
+            <li><%= subscription.user.first_name %></li>
+            <%#= link_to "log collection", new_subscription_collection_path(subscription) %>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

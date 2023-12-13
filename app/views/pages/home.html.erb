@@ -1,0 +1,19 @@
+<div class="outline">
+  <h1>Welcome <%= current_user.first_name %></h1>
+  <p>It's <%= Date.today.strftime('%A, %b %d') %></p>
+
+
+  <% if @collections.empty? %>
+  <p>There are no collections waiting for you.</p>
+
+  <% else %>
+    <p>There are <%= @collections.count %> parcels waiting for you</p>
+    <p>And <%= @skip_collections.count %> houses have asked to be skipped</p>
+    <p>They are:</p>
+    <% @skip_collections.each do |collection| %>
+      <p><%= collection.subscription.user.first_name %> at <%= collection.subscription.street_address %> at </p>
+    <% end %>
+  <% end %>
+
+
+</div>
