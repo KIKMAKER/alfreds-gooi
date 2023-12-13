@@ -1,6 +1,7 @@
 class Collection < ApplicationRecord
   belongs_to :subscription
   belongs_to :drivers_day
+  
 
   # Scopes
   scope :recent, -> { order(date: :desc) }

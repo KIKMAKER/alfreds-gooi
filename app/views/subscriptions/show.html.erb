@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="outline">
+    <div>
+      <h1><%= @subscription.user.first_name %>'s Subscription</h1>
+      <div class="outline">
+        <div>
+          <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
+          <p>Start date: <%= @subscription.start_date.strftime('%d %b, %Y') %></p>
+
+          <p>Total pick ups: <%= @subscription.total_pick_ups %></p>
+          <p>Remaining collections: <%= @subscription.pick_ups %></p>
+
+          <p>Collection day: <%= @subscription.collection_day %></p>
+          <p>Address: <%= @subscription.street_address %></p>
+          <p>Status: <%= @subscription.status %></p>
+          <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
+        </div>
+      </div>
+      <br>
+      <h1><%= @subscription.user.first_name %>'s Collections</h1>
+      <% @collections.each do |collection| %>
+        <div class="outline">
+          <h2>id:<%= collection.id %></h2>
+          <div class="m-3">
+            <p>Time: <%= collection.created_at.strftime("%I:%M:%S %p") %></p>
+            <p>Buckets: <%= collection.bucket_quantity %> x <%= collection.bucket_type %></p>
+            <p>Note: <%= collection.note %></p>
+          </div>
+        </div>
+      <% end %>
+      <div class="outline">
+        <%= link_to "All Subscriptions", subscriptions_path %>
+      </div>
+    </div>
+  </div>
+</div>

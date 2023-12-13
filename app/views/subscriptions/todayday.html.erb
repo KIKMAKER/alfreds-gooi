@@ -1,0 +1,34 @@
+<div class="container">
+  <h1>Collections for <%= @subscriptions.first.collection_day %></h1>
+  <div class="outline">
+    <%# raise %>
+    <div class="grid-container">
+      <div class="grid-item"><strong>Customer name </strong></div>
+      <div class="grid-item"><strong>Customer address </strong></div>
+      <div class="grid-item"><strong>Number of bags/buckets </strong></div>
+      <div class="grid-item"><strong>Collected at (time) </strong></div>
+      <div class="grid-item"><strong>Record Collection </strong></div>
+      <% @subscriptions.each do |subscription| %>
+        <div class="grid-item"><%= subscription.user.first_name %> </div>
+        <div class="grid-item"><%= subscription.street_address %> </div>
+        <% if subscription.collections.size > 0 %>
+          <div class="grid-item"><%= subscription.collections.last.bucket_quantity %> </div>
+          <div class="grid-item"><%= subscription.collections.last.updated_at %> </div>
+        <% else %>
+          <div class="grid-item">N/A </div>
+          <div class="grid-item">N/A  </div>
+        <% end %>
+        <div class="grid-item">
+          <% if subscription.collections.empty? %>
+            <%= link_to "collect from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
+          <% else %>
+            <%= link_to "collect from #{subscription.user.first_name}", edit_collection_path(subscription.collections.first) %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="outline d-flex">
+    <%= link_to "All Subscriptions", subscriptions_path, class: "outline" %>
+  </div>
+</div>

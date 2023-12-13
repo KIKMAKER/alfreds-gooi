@@ -1,0 +1,16 @@
+<div class = background>
+<div class="collection-container">
+  <div class="collection-body">
+  <%= link_to 'Back', :back, class: 'back_button' %>
+    <p class ='collection-header'><strong>New Collection for <%= @subscription.user.first_name %></strong></p>
+    <%= simple_form_for [@subscription, @collection] do |f| %>
+      <%#= f.input :date, as: :date %>
+      <%#= f.input :time, as: :time %>
+      <%= f.input :note, as: :text %>
+      <%= f.input :bucket_quantity, as: :integer %>
+      <%= f.input :bucket_type, as: :select, collection: ["standard", "XL"] %>
+      <%= f.button :submit, class: 'collect-button' %>
+    <% end %>
+  </div>
+</div>
+</div>

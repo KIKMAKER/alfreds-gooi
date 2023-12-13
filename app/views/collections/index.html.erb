@@ -1,0 +1,10 @@
+<div class="container">
+  <div class="outline">
+    <div>
+      <h1>All collections on the roster</h1>
+      <% @collections.each do |collection| %>
+        <p>name:<%= collection.subscription.user.first_name %></p>
+      <% end %>
+    </div>
+  </div>
+</div>
