@@ -1,0 +1,16 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 80px 150px 85px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
+  gap: 10px; /* Add some spacing between grid items */
+}
+
+.grid-item {
+  background-color: #ffe207;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.collect-grid-button {
+  font-weight: bold;
+}
