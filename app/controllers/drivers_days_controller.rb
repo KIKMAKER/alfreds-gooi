@@ -1,0 +1,2 @@
+class DriversDaysController < ApplicationController
+end

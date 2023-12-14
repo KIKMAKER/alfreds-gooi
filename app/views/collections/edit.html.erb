@@ -3,16 +3,19 @@
 
   <div class="collection-container">
     <div class="collection-body">
-      <%= link_to 'Back', :back, class: 'back_button' %>
-      <p class = "collection-header"><strong><%= @subscription.user.first_name %></strong></p>
+      <div class="collection-body-heading">
+        <%= link_to 'Back', :back, class: 'back_button' %>
+        <h1><strong><%= @subscription.user.first_name %></strong></h1>
+      </div>
       <p class = "collection-address"><%= @subscription.street_address %></p>
+      <p class = "collection-address">Kiki: <%= @collection.kiki_note %></p>
+      <% if @collection.needs_bags > 0 %>
+        <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
+      <% end %>
       <br>
       <%= simple_form_for [@collection] do |f| %>
-
-        <%#= f.input :bucket_quantity, as: :integer, label: "Bags/Buckets" %>
-        <%= f.input :bucket_quantity, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets" %>
-        <%= f.input :note, as: :text, class: 'test_input' %>
-
+        <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
+        <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <%= f.submit 'Done!', class: 'collect-button' %>
       <% end %>
     </div>
