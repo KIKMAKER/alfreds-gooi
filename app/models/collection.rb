@@ -1,7 +1,7 @@
 class Collection < ApplicationRecord
   belongs_to :subscription
   belongs_to :drivers_day
-  
+
 
   # Scopes
   scope :recent, -> { order(date: :desc) }
@@ -15,7 +15,8 @@ class Collection < ApplicationRecord
     skip
   end
 
-  def needs_bags?
-    needs_bags
+  # Method to check if the collection is for today's date
+  def today?
+    self.date == Date.current
   end
 end

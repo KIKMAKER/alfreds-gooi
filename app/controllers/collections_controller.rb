@@ -14,15 +14,17 @@ class CollectionsController < ApplicationController
       # assign the driver the the newly created drivers day
       drivers_day.user = driver
       drivers_day.save
+      puts drivers_day.user.first_name
       # find the subscription for the row
       subscription = Subscription.find_by(customer_id: row['customer_id'])
       subscription.update!(collection_day: row['collection_day'].to_i, collection_order: row['collection_order'], holiday_start: row['holiday_start'], holiday_end: row['holiday_end'])
-      subscription.save
+      subscription.save!
+      puts subscription.user.first_name
       # values come in as strings so I convert them to boolean by comparing them to the string 'TRUE' (double = is a comparison, single = is an assignment)
       skip = row['skip'] == 'TRUE'
-      needs_bags = row['needs_bags'] == 'TRUE'
+      puts skip
       # create the collection
-      collection = Collection.new(kiki_note: row['note'], skip: skip, needs_bags: needs_bags)
+      collection = Collection.new(kiki_note: row['note'], skip: skip, needs_bags: row['needs_bags'], date: row['date'])
       # assign the subscription and drivers day to the collection
       collection.subscription = subscription
       collection.drivers_day = drivers_day
