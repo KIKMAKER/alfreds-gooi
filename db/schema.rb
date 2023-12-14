@@ -25,7 +25,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_181416) do
     t.integer "needs_bags"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "drivers_day_id", null: false
+    t.bigint "drivers_day_id"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
