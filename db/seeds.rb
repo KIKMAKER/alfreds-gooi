@@ -6,10 +6,15 @@ require 'csv'
 
 puts "Clearing DB"
 puts "1"
-Subscription.destroy_all
+Collection.destroy_all
 puts "2"
+Subscription.destroy_all
+puts "4"
+DriversDay.destroy_all
+puts "3"
 User.destroy_all
-puts "DB Clear apart from collections"
+puts "DB Clear with collections"
+
 
 puts "Uploading users and subscriptions from CSV"
 

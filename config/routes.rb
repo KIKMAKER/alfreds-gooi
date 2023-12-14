@@ -12,8 +12,7 @@ Rails.application.routes.draw do
   resources :subscriptions do
     resources :collections, only: %i[new create]
     collection do
-      get :tuesday
-      get :wednesday
+      get :today
     end
   end
 
