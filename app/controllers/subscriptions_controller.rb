@@ -13,7 +13,8 @@ class SubscriptionsController < ApplicationController
   end
 
   def today
-    today = Date.today.strftime("%A")
-    @subscriptions = Subscription.where(collection_day: today)
+    # today = Date.today.strftime("%A")
+    today = "Wednesday"
+    @subscriptions = Subscription.where(collection_day: today).order(:collection_order)
   end
 end

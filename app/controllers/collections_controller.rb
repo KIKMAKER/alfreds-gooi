@@ -3,16 +3,24 @@ class CollectionsController < ApplicationController
 
   def import_csv
     driver = User.find_by(role: 'driver')
+
     uploaded_file = params[:csv_upload][:file]
     CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
+      drivers_day = DriversDay.find_or_create_by(date: row['date'])
+      drivers_day.user = driver
+      drivers_day.save
+      puts drivers_day
       subscription = Subscription.find_by(customer_id: row['customer_id'])
-      subscription.update!(collection_order: row['collection_order'])
+      subscription.update!(collection_day: row['collection_day'].to_i, collection_order: row['collection_order'], holiday_start: row['holiday_start'], holiday_end: row['holiday_end'])
       subscription.save
+      puts subscription.user.first_name
       skip = row['skip'] == 'TRUE'
       needs_bags = row['needs_bags'] == 'TRUE'
       collection = Collection.new(kiki_note: row['note'], skip: skip, needs_bags: needs_bags)
       collection.subscription = subscription
+      collection.drivers_day = drivers_day
       collection.save!
+      puts collection.subscription.user.first_name
       if !collection.save && skip
         puts "skip #{subscription.user.first_name}" #{subscription.user.last_name} #{subscription.user.email} #{subscription.customer_id} #{row['note']}""
       end

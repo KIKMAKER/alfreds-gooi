@@ -1,0 +1,37 @@
+<div class="container">
+  <p class = "collection-header"><strong>Collections for <%= @subscriptions.first.collection_day %></strong></p>
+  <div >
+    <div class="grid-container">
+      <div class="grid-item"><strong>Name</strong></div>
+      <div class="grid-item"><strong>Address</strong></div>
+      <div class="grid-item"><strong>Collect</strong></div>
+      <% @subscriptions.each do |subscription| %>
+        <div class="grid-item">
+          <% unless subscription.collections.empty? %>
+            <% if subscription.collections.last.skip %>
+              <p>SKIP!</p>
+            <% end %>
+          <% end %>
+          <%=link_to "#{subscription.user.first_name}", subscription_path(subscription) %>
+        </div>
+        <div class="grid-item"><%= subscription.street_address.truncate(25) %> </div>
+        <div class="grid-item">
+          <% if subscription.collections.empty? %>
+            <%= link_to "collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
+          <% else %>
+            <% if subscription.collections.last.skip %>
+              <s>
+                <%= link_to "Collect!", edit_collection_path(subscription.collections.last), class: 'collect-grid-button' %>
+              </s>
+            <% else %>
+              <%= link_to "Collect!", edit_collection_path(subscription.collections.last), class: 'collect-grid-button' %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="outline d-flex">
+    <%= link_to "All Subscriptions", subscriptions_path, class: "outline" %>
+  </div>
+</div>

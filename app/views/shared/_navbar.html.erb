@@ -5,6 +5,8 @@
   <% if user_signed_in? %>
     <div>
       <%#= link_to "Home", root_path, class: 'logout-link' %>
+      <%= link_to "load CSV", get_csv_path, class: 'logout-link' %>
+      <br>
       <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}, class: 'logout-link' %>
     </div>
   <% else %>
