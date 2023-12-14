@@ -40,10 +40,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 3px 3px 5px 6px #138a64;
+  // box-shadow: 3px 3px 5px 6px #138a64;
+  border: 1px solid #138a64;
   padding: 16px;
   border-radius: 16px;
-  background-color: lightgrey;
+  background-color: rgb(213, 213, 213);
+  width: 82%;
+  max-height: 82vh;
+
+  .p {
+    margin-bottom: -8px;
+  }
+}
+
+.collection-body-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
 .collection_note {
@@ -76,6 +89,9 @@
   text-align: center;
   font-size: 16px;
   margin-bottom: 8px;
+  .p {
+    margin-bottom: -12px;
+  }
 }
 
 .collect-button {
@@ -212,4 +228,29 @@
 .subscription_start_date {
   display: flex;
   justify-content: space-between;
+}
+
+.radio_buttons {
+  display: grid; // Use a grid layout for better control
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); // Create as many columns as possible with a minimum size of 60px
+  gap: 4px; // Space between grid items
+  width: 90%; // Ensure the wrapper takes the full width
+  margin-left: 1vh;
+}
+
+.radio-buttons { // No underscore, to match the HTML
+  input[type='radio'] {
+
+    margin-left: 24px;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+
+  label {
+    display: block;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
 }

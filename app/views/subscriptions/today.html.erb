@@ -24,6 +24,9 @@
                 <%= link_to "Collect!", edit_collection_path(subscription.collections.last), class: 'collect-grid-button' %>
               </s>
             <% else %>
+            <% if subscription.collections.last.bags %>
+              <p>Got <%= subscription.collections.last.bags %>bags</p>
+            <% end %>
               <%= link_to "Collect!", edit_collection_path(subscription.collections.last), class: 'collect-grid-button' %>
             <% end %>
           <% end %>
