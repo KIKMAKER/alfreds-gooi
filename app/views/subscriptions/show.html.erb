@@ -7,12 +7,8 @@
           <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
           <p>Start date: <%= @subscription.start_date.strftime('%d %b, %Y') %></p>
 
-          <p>Total pick ups: <%= @subscription.total_pick_ups %></p>
-          <p>Remaining collections: <%= @subscription.pick_ups %></p>
-
           <p>Collection day: <%= @subscription.collection_day %></p>
           <p>Address: <%= @subscription.street_address %></p>
-          <p>Status: <%= @subscription.status %></p>
           <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
         </div>
       </div>
