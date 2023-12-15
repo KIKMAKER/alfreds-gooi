@@ -3,14 +3,11 @@
     <p class = "collection-header"><strong>Collections for <%= @today %></strong></p>
     <div>
       <div class="grid-container">
-        <!--<div class="grid-header">-->
           <div class="grid-item"><strong>Name</strong></div>
           <div class="grid-item"><strong>Address</strong></div>
           <div class="grid-item"><strong>Collect</strong></div>
-        <!--</div>-->
         <% @subscriptions.each do |subscription| %>
           <% today_collection = subscription.collections.find { |c| c.date && c.date.strftime('%A') == @today } %>
-          <!--<div class="grid-row">-->
             <div class="grid-item">
               <%= link_to subscription.user.first_name, subscription_path(subscription) %>
               <% if today_collection&.skip %>
@@ -32,8 +29,10 @@
                 <% end %>
               <% end %>
             </div>
-          <!--</div>-->
         <% end %>
+      </div>
+      <div>
+        <%= link_to "Go to Soil For Life", drivers_day_drop_off_path(@drivers_day), class: "collect-button" %>
       </div>
     <% else %>
       <p>No collections for <%= @today %>.</p>
