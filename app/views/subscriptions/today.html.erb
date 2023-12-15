@@ -25,7 +25,7 @@
                 <% if today_collection.skip %>
                   <s><%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %></s>
                 <% elsif today_collection.bags.present? %>
-                  <p>Got <%= today_collection.bags %> bags</p>
+                  <p>Got <%= today_collection.bags %> </p>
                   <%= link_to "Collect more?", edit_collection_path(today_collection), class: 'collect-grid-button' %>
                 <% else %>
                   <%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %>

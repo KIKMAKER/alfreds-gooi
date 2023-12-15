@@ -59,13 +59,18 @@ class CollectionsController < ApplicationController
   end
 
   def create
+    date = Date.current + 1
     @subscription = Subscription.find(params[:subscription_id])
     @collection = Collection.new(collection_params)
     @collection.subscription = @subscription
-    @collection.save
+    @collection.date = date
+    driver = User.find_by(role: 'driver')
+    drivers_day = driver.drivers_day.last
+    @collection.drivers_day = drivers_day
     if @collection.save
       redirect_to today_subscriptions_path
     else
+      puts errors.full_messages
       render :new, status: :unprocessable_entity
     end
   end
@@ -92,6 +97,6 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done)
   end
 end
