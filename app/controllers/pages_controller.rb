@@ -8,6 +8,6 @@ class PagesController < ApplicationController
     today = "Wednesday"
     @subscriptions = Subscription.where(collection_day: today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
-    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last.needs_bags }
+    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags }
   end
 end
