@@ -4,14 +4,19 @@
   <% if @subscriptions.empty? %>
     <h2>There are no subscriptions waiting for you.</h2>
   <% else %>
-    <p>There are <%= @subscriptions.count %> parcels waiting for you</p>
-    <p><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></p>
-    <% @skip_subscriptions.each do |subscription| %>
-      <p><%= subscription.user.first_name %> at <%= subscription.street_address %> </p>
-    <% end %>
-    <p><strong>And <%= pluralize(@bags_needed.count, 'house') %> need bags</strong></p>
-    <% @bags_needed.each do |sub| %>
-      <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
+    <% if @skip_subscriptions.nil? %>
+      <p>hang tight, not all collections have been loaded.</p>
+      <p>Maybe give kiki a call?</p>
+    <% else %>
+      <p>There are <%= @subscriptions.count %> parcels waiting for you</p>
+      <p><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></p>
+      <% @skip_subscriptions.each do |subscription| %>
+        <p><%= subscription.user.first_name %> at <%= subscription.street_address %> </p>
+      <% end %>
+      <p><strong>And <%= pluralize(@bags_needed.count, 'house') %> need bags</strong></p>
+      <% @bags_needed.each do |sub| %>
+        <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
+      <% end %>
     <% end %>
   <% end %>
 </div>
