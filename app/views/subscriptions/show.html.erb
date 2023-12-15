@@ -19,8 +19,9 @@
           <h2>id:<%= collection.id %></h2>
           <div class="m-3">
             <p>Time: <%= collection.created_at.strftime("%I:%M:%S %p") %></p>
-            <p>Buckets: <%= collection.bucket_quantity %> x <%= collection.bucket_type %></p>
-            <p>Note: <%= collection.note %></p>
+            <p>Bags: <%= collection.bags %>
+            <p>Note from Kiki: <%= collection.kiki_note %></p>
+            <p>Message from Alfred: <%= collection.alfred_message %></p>
           </div>
         </div>
       <% end %>
