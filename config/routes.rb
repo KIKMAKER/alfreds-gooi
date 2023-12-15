@@ -20,13 +20,21 @@ Rails.application.routes.draw do
   end
 
   # since I'm not doing usual CRUD for drivers day, I have 'custom' routes to create a screen for alfred to start and end his day
-
-  get 'drivers_days/:id/start', to: 'drivers_days#start', as: :drivers_day_start
-  patch 'drivers_days/start', to: 'drivers_days#start'
-  get 'drivers_days/:id/drop_off', to: 'drivers_days#drop_off', as: :drivers_day_drop_off
-  patch 'drivers_days/drop_off', to: 'drivers_days#drop_off'
-  get 'drivers_days/:id/end', to: 'drivers_days#end'
-  patch 'drivers_days/end', to: 'drivers_days#end'
-
+  # get 'drivers_days/:id/start', to: 'drivers_days#start', as: :drivers_day_start
+  # patch 'drivers_days/start', to: 'drivers_days#start'
+  # get 'drivers_days/:id/drop_off', to: 'drivers_days#drop_off', as: :drivers_day_drop_off
+  # patch 'drivers_days/drop_off', to: 'drivers_days#drop_off'
+  # get 'drivers_days/:id/end', to: 'drivers_days#end', as: :drivers_day_end
+  # patch 'drivers_days/:id/end', to: 'drivers_days#end'
+  resources :drivers_days do
+    member do
+      get :start
+      patch :start
+      get :drop_off
+      patch :drop_off
+      get :end
+      patch :end
+    end
+  end
   resources :collections, only: %i[edit update]
 end

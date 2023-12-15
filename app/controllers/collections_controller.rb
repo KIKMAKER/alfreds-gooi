@@ -10,37 +10,19 @@ class CollectionsController < ApplicationController
     uploaded_file = params[:csv_upload][:file]
     # loop through the file and create collections for each row
     CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
-      drivers_day = DriversDay.find_or_create_by(date: row['date'])
-      # assign the driver the the newly created drivers day
-      drivers_day.user = driver
-      drivers_day.save
-      puts drivers_day.user.first_name
-      # find the subscription for the row
-      subscription = Subscription.find_by(customer_id: row['customer_id'])
-      subscription.update!(collection_day: row['collection_day'].to_i, collection_order: row['collection_order'], holiday_start: row['holiday_start'], holiday_end: row['holiday_end'])
-      subscription.save!
-      puts subscription.user.first_name
-      # values come in as strings so I convert them to boolean by comparing them to the string 'TRUE' (double = is a comparison, single = is an assignment)
-      skip = row['skip'] == 'TRUE'
-      puts skip
-      # create the collection
-      collection = Collection.new(kiki_note: row['note'], skip: skip, needs_bags: row['needs_bags'], date: row['date'])
-      # assign the subscription and drivers day to the collection
-      collection.subscription = subscription
-      collection.drivers_day = drivers_day
-      collection.save!
-      puts collection.subscription.user.first_name
-      # error handling for if the collection doesn't save but has SKIP as true (need to see in the server logs when I upload and then change directly)
-      if !collection.save && skip
-        puts "skip #{subscription.user.first_name}" #{subscription.user.last_name} #{subscription.user.email} #{subscription.customer_id} #{row['note']}""
-      end
+      # Process the driver's day
+      drivers_day = process_drivers_day(row, driver)
+      # Process the subscription
+      subscription = process_subscription(row)
+      # Process the collection
+      process_collection(row, subscription, drivers_day) if subscription
     end
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
   rescue CSV::MalformedCSVError => e
     redirect_to get_csv_path, alert: "Failed to import CSV: #{e.message}"
   end
-
   # the form to get the csv (no data needs to be sent from the controller)
+  # the method just tells rails which view to render
   def get_csv; end
 
   # Regular CRUD stuff
@@ -74,18 +56,14 @@ class CollectionsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
   def edit
     @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
   end
-
   def update
     @collection = Collection.find(params[:id])
-    @collection.time = @collection.updated_at
     @collection.update(collection_params)
     @subscription = @collection.subscription
-
     if @collection.save
       redirect_to today_subscriptions_path
     else
@@ -95,8 +73,99 @@ class CollectionsController < ApplicationController
 
   private
 
+  def process_drivers_day(row, driver)
+    date = row['date'].present? ? DateTime.parse(row['date']) : nil
+    drivers_day = DriversDay.find_or_create_by(date: date)
+    drivers_day.user = driver
+    drivers_day.save
+    puts "Driver's Day processed for: #{driver.first_name}"
+    drivers_day
+  end
+
+  def process_subscription(row)
+    subscription = Subscription.find_by(customer_id: row['customer_id'])
+    if subscription
+      update_subscription(subscription, row)
+    else
+      puts "Subscription not found for customer_id: #{row['customer_id']}"
+      nil
+    end
+  end
+
+  def update_subscription(subscription, row)
+    holiday_start = row['holiday_start'].present? ? DateTime.parse(row['holiday_start']) : nil
+    holiday_end = row['holiday_end'].present? ? DateTime.parse(row['holiday_end']) : nil
+    collection_day = row['collection_day']
+    collection_order = row['collection_order'].to_i
+
+    if subscription.update(collection_day: collection_day, collection_order: collection_order, holiday_start: holiday_start, holiday_end: holiday_end)
+      puts "Subscription updated for #{subscription.user.first_name}"
+    else
+      puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
+    end
+  end
+
+  def process_collection(row, subscription, drivers_day)
+    date = row['date'].present? ? DateTime.parse(row['date']) : nil
+    collection = Collection.new(kiki_note: row['note'], skip: row['skip'] == 'TRUE', needs_bags: row['needs_bags'].to_i, date: date)
+    collection.subscription = subscription
+    collection.drivers_day = drivers_day
+
+    if collection.save
+      puts "Collection created for #{subscription.user.first_name}"
+    else
+      puts "Failed to create collection for #{subscription.user.first_name}: #{collection.errors.full_messages.join(", ")}"
+    end
+  end
+
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
     params.require(:collection).permit(:alfred_message, :bags, :is_done)
   end
 end
+
+
+###
+# drivers_day = DriversDay.find_or_create_by(date: row['date'])
+#       # assign the driver the the newly created drivers day
+#       drivers_day.user = driver
+#       drivers_day.save
+#       puts drivers_day.user.first_name
+#       # find the subscription for the row
+#       puts row['customer_id']
+#       puts row['customer_id'].class
+
+#       subscription = Subscription.find_by(customer_id: row['customer_id'])
+#       if subscription
+#         holiday_start = row['holiday_start'].present? ? DateTime.parse(row['holiday_start']) : nil
+#         holiday_end = row['holiday_end'].present? ? DateTime.parse(row['holiday_end']) : nil
+#         collection_day = row['collection_day'].to_i
+#         collection_order = row['collection_order']
+
+#         if subscription.update(collection_day: collection_day, collection_order: collection_order, holiday_start: holiday_start, holiday_end: holiday_end)
+#           puts "Subscription updated successfully"
+#         else
+#           puts "Failed to update subscription: #{subscription.errors.full_messages.join(", ")}"
+#         end
+#       else
+#         puts "Subscription not found for customer_id: #{row['customer_id']}"
+#       end
+#       # values come in as strings so I convert them to boolean by comparing them to the string 'TRUE' (double = is a comparison, single = is an assignment)
+#       skip = row['skip'] == 'TRUE'
+#       puts skip
+#       # create the collection
+#       collection = Collection.new(kiki_note: row['note'], skip: skip, needs_bags: row['needs_bags'].to_i, date: row['date'])
+#       # assign the subscription and drivers day to the collection
+#       collection.subscription = subscription
+#       collection.drivers_day = drivers_day
+#       collection.save!
+#       puts collection.subscription.user.first_name
+#       # error handling for if the collection doesn't save but has SKIP as true (need to see in the server logs when I upload and then change directly)
+#       if !collection.save && skip
+#         puts "skip #{subscription.user.first_name}" #{subscription.user.last_name} #{subscription.user.email} #{subscription.customer_id} #{row['note']}""
+#       end
+#     end
+#     redirect_to subscriptions_path, notice: 'CSV imported successfully'
+#   rescue CSV::MalformedCSVError => e
+#     redirect_to get_csv_path, alert: "Failed to import CSV: #{e.message}"
+#   end

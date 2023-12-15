@@ -18,7 +18,8 @@
       <% end %>
     <% end %>
     <div>
-      <%= simple_form_for @drivers_day, url: drivers_days_start_path do |f| %>
+      <h3>Let's get to it!</h3>
+      <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
         <%= f.input :start_kms, label: "Start Kilometers", required: true, input_html: { min: 0 } %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :start_time, value: Time.current %>
