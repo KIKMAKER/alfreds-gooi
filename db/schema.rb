@@ -34,8 +34,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_14_113825) do
   create_table "drivers_days", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "start_kms"
-    t.datetime "end_kms"
+    t.integer "start_kms"
+    t.integer "end_kms"
     t.string "note"
     t.bigint "user_id", null: false
     t.integer "total_buckets"
