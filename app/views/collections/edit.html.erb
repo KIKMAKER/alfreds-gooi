@@ -1,6 +1,4 @@
-
 <div class = 'background'>
-
   <div class="collection-container">
     <div class="collection-body">
       <div class="collection-body-heading">
@@ -8,8 +6,10 @@
         <h1><strong><%= @subscription.user.first_name %></strong></h1>
       </div>
       <p class = "collection-address"><%= @subscription.street_address %></p>
-      <p class = "collection-address">Kiki: <%= @collection.kiki_note %></p>
-      <% if @collection.needs_bags > 0 %>
+      <% if @collection.kiki_note %>
+        <p class = "collection-address">Kiki: <%= @collection.kiki_note %></p>
+      <% end %>
+      <% if @collection.needs_bags&. > 0 %>
         <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
       <% end %>
       <br>
