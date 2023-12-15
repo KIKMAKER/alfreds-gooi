@@ -4,32 +4,38 @@ class DriversDaysController < ApplicationController
   def start
     # in production today will be the current day,
     today = (Date.today + 4)
+    @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # today = "Wednesday"
     @drivers_day = DriversDay.find_or_create_by(date: today)
-    @subscriptions = Subscription.where(collection_day: today.day).order(:collection_order)
+    @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
-    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags }
+    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
     end
   end
 
   def drop_off
+    @collections = @drivers_day.collections
+    @total_bags_collected = @collections.sum(:needs_bags)
     if request.patch?
-      update_drivers_day(drivers_day_params, next_path: end_drivers_days_path)
+      update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
     end
   end
 
   def end
-    if request
+    # raise
+    if request.patch?
       update_drivers_day(drivers_day_params, next_path: root_path)
     end
   end
 
+
   private
 
   def set_drivers_day
+    # raise
     @drivers_day = DriversDay.find(params[:id])
   end
 
@@ -42,6 +48,6 @@ class DriversDaysController < ApplicationController
   end
 
   def drivers_day_params
-    params.require(:drivers_day).permit(:start_time, :end_time, :start_kms, :end_kms, :note, :total_buckets, :date)
+    params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date)
   end
 end

@@ -3,42 +3,39 @@
     <p class = "collection-header"><strong>Collections for <%= @today %></strong></p>
     <div>
       <div class="grid-container">
-          <div class="grid-item"><strong>Name</strong></div>
-          <div class="grid-item"><strong>Address</strong></div>
-          <div class="grid-item"><strong>Collect</strong></div>
+        <div class="grid-item"><strong>Name</strong></div>
+        <div class="grid-item"><strong>Address</strong></div>
+        <div class="grid-item"><strong>Collect</strong></div>
         <% @subscriptions.each do |subscription| %>
           <% today_collection = subscription.collections.find { |c| c.date && c.date.strftime('%A') == @today } %>
-            <div class="grid-item">
-              <%= link_to subscription.user.first_name, subscription_path(subscription) %>
-              <% if today_collection&.skip %>
-                <p>SKIP!</p>
-              <% end %>
-            </div>
-            <div class="grid-item"><%= subscription.street_address.truncate(25) %> </div>
-            <div class="grid-item">
-              <% if today_collection.nil? %>
-                <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class: 'collect-grid-button' %>
+          <div class="grid-item">
+            <%= link_to subscription.user.first_name, subscription_path(subscription) %>
+            <% if today_collection&.skip %>
+              <p>SKIP!</p>
+            <% end %>
+          </div>
+          <div class="grid-item"><%= subscription.street_address.truncate(25) %> </div>
+          <div class="grid-item">
+            <% if today_collection.nil? %>
+              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class: 'collect-grid-button' %>
+            <% else %>
+              <% if today_collection.skip %>
+                <s><%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %></s>
+              <% elsif today_collection.bags.present? %>
+                <p>Got <%= today_collection.bags %> </p>
+                <%= link_to "Collect more?", edit_collection_path(today_collection), class: 'collect-grid-button' %>
               <% else %>
-                <% if today_collection.skip %>
-                  <s><%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %></s>
-                <% elsif today_collection.bags.present? %>
-                  <p>Got <%= today_collection.bags %> </p>
-                  <%= link_to "Collect more?", edit_collection_path(today_collection), class: 'collect-grid-button' %>
-                <% else %>
-                  <%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %>
-                <% end %>
+                <%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %>
               <% end %>
-            </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
-      <div>
-        <%= link_to "Go to Soil For Life", drivers_day_drop_off_path(@drivers_day), class: "collect-button" %>
+      <div class="outline">
+        <%= link_to "COLLECTIONS DONE", drop_off_drivers_day_path(@drivers_day), class: "collect-button" %>
       </div>
     <% else %>
       <p>No collections for <%= @today %>.</p>
     <% end %>
-    <div class="d-flex">
-      <%= link_to "All Subscriptions", subscriptions_path, class: "outline" %>
-    </div>
   </div>
 </div>
