@@ -11,14 +11,19 @@
 @import "components/index";
 @import "pages/index";
 
+.form-control {
+  background-color: #84cba3;
+}
 
 .gooi-container {
   margin: 10px auto;
+  max-width: 100vw;
 }
 
 .background {
   background-color: #84cba3;
-  height: 100vh;
+  max-width: 90vw;
+  min-height: 100vh;
   padding-top: 2vh;
 }
 
@@ -106,31 +111,6 @@
   .p {
     margin-bottom: -12px;
   }
-}
-
-.collect-button {
-  color: white;
-  background-color: #3c8a63;
-  border: 2px solid #3c8a63;
-  padding: 8px 12px;
-  border-radius: 50px;
-  font-weight: lighter;
-  font-size: 2.5vmin;
-  box-shadow: 1px 1px lightgray;
-  cursor: pointer;
-  margin-bottom: 8px;
-  font-family: "Montserrat", sans-serif;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-.back_button {
-  color: white;
-  background-color: #3c8a63;
-  border: 2px solid #3c8a63;
-  width: fit-content;
-  padding: 8px;
-  border-radius: 16px;
 }
 
 #collection_note {
@@ -246,15 +226,18 @@
 
 .radio_buttons {
   display: grid; // Use a grid layout for better control
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); // Create as many columns as possible with a minimum size of 60px
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(60px, 1fr)
+  ); // Create as many columns as possible with a minimum size of 60px
   gap: 4px; // Space between grid items
   width: 90%; // Ensure the wrapper takes the full width
   margin-left: 1vh;
 }
 
-.radio-buttons { // No underscore, to match the HTML
-  input[type='radio'] {
-
+.radio-buttons {
+  // No underscore, to match the HTML
+  input[type="radio"] {
     margin-left: 24px;
     width: 1rem;
     height: 1rem;

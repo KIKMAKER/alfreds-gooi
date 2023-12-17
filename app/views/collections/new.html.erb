@@ -1,14 +1,19 @@
-<div class = background>
 <div class="collection-container">
   <div class="collection-body">
-  <%= link_to 'Back', :back, class: 'back_button' %>
+    <%= link_to 'Back', :back, class: 'back_button' %>
     <p class ='collection-header'><strong>New Collection for <%= @subscription.user.first_name %></strong></p>
     <%= simple_form_for [@subscription, @collection] do |f| %>
-      <%= f.input :alfred_message, as: :text %>
+      <%= f.input :skip %>
+      <%= f.input :needs_bags %>
       <%= f.input :bags, as: :integer %>
-      <%= f.input :is_done %>
-      <%= f.submit 'Save', class: 'collect-button' %>
+      <%= f.input :date, as: :date %>
+      <% if current_user.admin? %>
+        <%= f.input :kiki_note %>
+      <% else %>
+        <%= f.input :alfred_message, as: :text %>
+      <% end %>
+      <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
+      <%= f.submit 'Save', class: 'gooi-button' %>
     <% end %>
   </div>
-</div>
 </div>

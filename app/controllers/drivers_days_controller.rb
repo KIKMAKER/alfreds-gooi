@@ -3,7 +3,7 @@ class DriversDaysController < ApplicationController
 
   def start
     # in production today will be the current day,
-    today = (Date.today + 4)
+    today = (Date.today + 3)
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # today = "Wednesday"
@@ -18,7 +18,7 @@ class DriversDaysController < ApplicationController
 
   def drop_off
     @collections = @drivers_day.collections
-    @total_bags_collected = @collections.sum(:needs_bags)
+    @total_bags_collected = @collections.sum("bags::integer")
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
     end

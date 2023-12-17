@@ -3,7 +3,7 @@ class PagesController < ApplicationController
 
   def home
     # in production today will be the current day,
-    today = (Date.today + 4)
+    today = (Date.today + 3)
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # today = "Wednesday"
