@@ -13,6 +13,7 @@ class DriversDaysController < ApplicationController
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
+      puts "Driver's Day started at: #{current_user.drivers_day.last.start_time}"
     end
   end
 
@@ -26,8 +27,10 @@ class DriversDaysController < ApplicationController
 
   def end
     # raise
+
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: root_path)
+      puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"
     end
   end
 

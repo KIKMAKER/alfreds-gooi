@@ -29,7 +29,12 @@ class CollectionsController < ApplicationController
   # Regular CRUD stuff
   def index
     today = (Date.today + 3)
-    @collections = Collection.where(date: today)
+    @today = today.strftime("%A")
+    # but in testing I want to be able to test the view for a given day
+    # today = "Wednesday"
+    @drivers_day = DriversDay.find_or_create_by(date: today)
+    @collections = @drivers_day.collections
+    # @collections = Collection.where(date: today)
   end
 
   def show
