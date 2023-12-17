@@ -3,8 +3,14 @@
     <div>
       <h1>All collections made <%= @today %></h1>
       <% @collections.each do |collection| %>
-        <p>name:<%= collection.subscription.user.first_name %></p>
-      <% end %>
+        <% if collection.skip %>
+          <s>
+            <p><%= collection.subscription.user.first_name %> skipped</s>
+          <% else %>
+            <p><%= collection.subscription.user.first_name %>: <%= collection.bags %> bags</p>
+          <% end %>
+        <% end %>
+      </div>
+      <%= link_to "home", root_path, class: "gooi-button" %>
     </div>
   </div>
-</div>
