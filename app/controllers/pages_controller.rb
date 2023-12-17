@@ -11,6 +11,7 @@ class PagesController < ApplicationController
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags }
-    @hours_worked = @drivers_day.hours_worked
+
+    @hours_worked = @drivers_day.hours_worked unless @drivers_day.end_time.nil?
   end
 end
