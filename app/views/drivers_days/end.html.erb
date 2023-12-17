@@ -1,16 +1,14 @@
-<div class="background">
-  <div class="outline">
-    <h1>Well done!</h1>
-      <p>Because of you, at least <%= @drivers_day.total_buckets * 25 %>L of organic waste went to the earth instead of a landfill.</p>
-      <p>You are almost done!</p>
-      <p>Remember to clean the buckets, put away the keys and fill in these last details</p>
-      <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
-        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
-        <%= f.input :note, label: "Any note for Kiki?" %>
-        <!-- Hidden field for start_time -->
-        <%= f.hidden_field :end_time, value: Time.current %>
-        <%= f.submit "Thank you!", class: "collect-button" %>
-        <%#= f.button "Submit" %>
-      <% end %>
-  </div>
+<div class="outline">
+  <h1>Well done!</h1>
+  <p>Because of you, at least <%= @drivers_day.total_buckets * 25 %>L of organic waste went to the earth instead of a landfill.</p>
+  <p>You are almost done!</p>
+  <p>Remember to clean the buckets, put away the keys and fill in these last details</p>
+  <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
+    <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
+    <%= f.input :note, label: "Any note for Kiki?" %>
+    <!-- Hidden field for start_time -->
+    <%= f.hidden_field :end_time, value: Time.current %>
+    <%= f.submit "Thank you!", class: "gooi-button" %>
+    <%#= f.button "Submit" %>
+  <% end %>
 </div>

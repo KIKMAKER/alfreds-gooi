@@ -1,28 +1,30 @@
-<div class="background">
-  <div class="outline">
-    <% if @drivers_day&.sfl_time %>
-      <h1>Thank you for your work today</h1>
-      <p>Travel safe, see you next time</p>
-    <% elsif @drivers_day.nil? %>
-      <h1>There is no driver yet</h1>
-      <p>Please ask admin to update collections</p>
+  
+<div class="outline">
+  <% if @drivers_day&.sfl_time %>
+    <h1>Thank you for your work today</h1>
+    <p>Travel safe, see you next time</p>
+    <div>
+      <%= link_to "View all todays collections", collections_path %>
+    </div>
+  <% elsif @drivers_day.nil? %>
+    <h1>There is no driver yet</h1>
+    <p>Please ask admin to update collections</p>
+  <% else %>
+    <h1>Good morning <%= current_user.first_name %></h1>
+    <p>It's <%= @today %></p>
+    <br>
+    <% if @subscriptions.empty? %>
+      <h2>There are no subscriptions waiting for you.</h2>
     <% else %>
-      <h1>Good morning <%= current_user.first_name %></h1>
-      <p>It's <%= @today %></p>
-      <br>
-      <% if @subscriptions.empty? %>
-        <h2>There are no subscriptions waiting for you.</h2>
-      <% else %>
-        <p>There are <%= @subscriptions.count %> parcels waiting to be collected</p>
-      <% end %>
-      <% if current_user.driver? && !@drivers_day.id.nil? %>
-        <p>Ready to get started?</p>
-        <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'collect-button' %>
-      <% elsif current_user.admin? %>
-        <%= link_to "load the collections, babe", get_csv_path, class: "collection-button" %>
-      <% else %>
-        <p>Contact Kiki to load the collections</p>
-      <% end %>
+      <p>There are <%= @subscriptions.count %> parcels waiting to be collected</p>
     <% end %>
-  </div>
+    <% if current_user.driver? && !@drivers_day.id.nil? %>
+      <p>Ready to get started?</p>
+      <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
+    <% elsif current_user.admin? %>
+      <%= link_to "load the collections, babe", get_csv_path, class: "collection-button" %>
+    <% else %>
+      <p>Contact Kiki to load the collections</p>
+    <% end %>
+  <% end %>
 </div>

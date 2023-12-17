@@ -1,6 +1,8 @@
-<div class="container">
+<div class="gooi-container">
   <% if @subscriptions.any? %>
-    <p class = "collection-header"><strong>Collections for <%= @today %></strong></p>
+    <div class="collection-header">
+      <p>Collections for <%= @today %></p>
+    </div>
     <div>
       <div class="grid-container">
         <div class="grid-item"><strong>Name</strong></div>
@@ -21,7 +23,7 @@
             <% else %>
               <% if today_collection.skip %>
                 <s><%= link_to "Collect!", edit_collection_path(today_collection), class: 'collect-grid-button' %></s>
-              <% elsif today_collection.bags.present? %>
+              <% elsif today_collection&.bags.to_i > 0 %>
                 <p>Got <%= today_collection.bags %> </p>
                 <%= link_to "Collect more?", edit_collection_path(today_collection), class: 'collect-grid-button' %>
               <% else %>
@@ -32,7 +34,7 @@
         <% end %>
       </div>
       <div class="outline">
-        <%= link_to "COLLECTIONS DONE", drop_off_drivers_day_path(@drivers_day), class: "collect-button" %>
+        <%= link_to "COLLECTIONS DONE", drop_off_drivers_day_path(@drivers_day), class: "gooi-button" %>
       </div>
     <% else %>
       <p>No collections for <%= @today %>.</p>

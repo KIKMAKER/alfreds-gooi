@@ -1,25 +1,23 @@
-<div class = 'background'>
-  <div class="collection-container">
-    <div class="collection-body">
-      <div class="collection-body-heading">
-        <%= link_to 'Back', :back, class: 'back_button' %>
-        <h1><strong><%= @subscription.user.first_name %></strong></h1>
-      </div>
-      <p class = "collection-address"><%= @subscription.street_address %></p>
-      <% if @collection.kiki_note %>
-        <p class = "collection-address">Kiki: <%= @collection.kiki_note %></p>
-      <% end %>
-      <% if @collection.needs_bags&. > 0 %>
-        <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
-      <% end %>
-      <br>
-      <%= simple_form_for [@collection] do |f| %>
-        <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
-        <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
-        <!-- Hidden field for start_time -->
-        <%= f.hidden_field :start_time, value: Time.current %>
-        <%= f.submit 'Done!', class: 'collect-button' %>
-      <% end %>
+<div class="collection-container">
+  <div class="collection-body">
+    <div class="collection-body-heading">
+      <%= link_to 'Back', :back, class: 'back_button' %>
+      <h1><strong><%= @subscription.user.first_name %></strong></h1>
     </div>
+    <p class = "collection-address"><%= @subscription.street_address %></p>
+    <% if @collection.kiki_note %>
+      <p class = "collection-address">Kiki: <%= @collection.kiki_note %></p>
+    <% end %>
+    <% if @collection.needs_bags&. > 0 %>
+      <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
+    <% end %>
+    <br>
+    <%= simple_form_for [@collection] do |f| %>
+      <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
+      <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
+      <!-- Hidden field for start_time -->
+      <%= f.hidden_field :start_time, value: Time.current %>
+      <%= f.submit 'Done!', class: 'gooi-button' %>
+    <% end %>
   </div>
 </div>

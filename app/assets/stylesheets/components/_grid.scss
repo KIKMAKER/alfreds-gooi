@@ -1,12 +1,13 @@
 .grid-container {
   display: grid;
   grid-template-columns: 80px 150px 85px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
-  gap: 8px; /* Add some spacing between grid items */
+  gap: 4px; /* Add some spacing between grid items */
   justify-content: center;
+  max-width: 99%;
 }
 
 .grid-item {
-  background-color: rgba(132, 203, 163, 1);
+  background-color: rgb(248, 255, 232);
   padding: 10px;
   text-align: center;
   border-radius: 10px;

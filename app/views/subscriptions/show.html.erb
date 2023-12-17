@@ -1,4 +1,4 @@
-<div class="container">
+<div class="gooi-container">
   <div class="outline">
     <div>
       <h1><%= @subscription.user.first_name %>'s Subscription</h1>
@@ -6,7 +6,6 @@
         <div>
           <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
           <p>Start date: <%= @subscription.start_date.strftime('%d %b, %Y') %></p>
-
           <p>Collection day: <%= @subscription.collection_day %></p>
           <p>Address: <%= @subscription.street_address %></p>
           <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
@@ -20,14 +19,14 @@
           <div class="m-3">
             <p>Time: <%= collection.created_at.strftime("%I:%M:%S %p") %></p>
             <p>Bags: <%= collection.bags %>
-            <p>Note from Kiki: <%= collection.kiki_note %></p>
-            <p>Message from Alfred: <%= collection.alfred_message %></p>
+              <p>Note from Kiki: <%= collection.kiki_note %></p>
+              <p>Message from Alfred: <%= collection.alfred_message %></p>
+            </div>
           </div>
+        <% end %>
+        <div class="outline">
+          <%= link_to "All Subscriptions", subscriptions_path %>
         </div>
-      <% end %>
-      <div class="outline">
-        <%= link_to "All Subscriptions", subscriptions_path %>
       </div>
     </div>
   </div>
-</div>

@@ -1,7 +1,7 @@
-<div class="container">
+<div class="gooi-container">
   <div class="outline">
     <div>
-      <h1>All collections on the roster</h1>
+      <h1>All collections made <%= @today %></h1>
       <% @collections.each do |collection| %>
         <p>name:<%= collection.subscription.user.first_name %></p>
       <% end %>
