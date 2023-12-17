@@ -1,10 +1,16 @@
-  
+
 <div class="outline">
   <% if @drivers_day&.sfl_time %>
     <h1>Thank you for your work today</h1>
+    <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
+    <br>
+    <br>
+    <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
+    <p>And worked for <%= @hours_worked %></p>
     <p>Travel safe, see you next time</p>
+
     <div>
-      <%= link_to "View all todays collections", collections_path %>
+      <%= link_to "View all todays collections", collections_path(@drivers_day) %>
     </div>
   <% elsif @drivers_day.nil? %>
     <h1>There is no driver yet</h1>

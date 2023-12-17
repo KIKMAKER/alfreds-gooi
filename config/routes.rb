@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   # get 'drivers_days/:id/end', to: 'drivers_days#end', as: :drivers_day_end
   # patch 'drivers_days/:id/end', to: 'drivers_days#end'
   resources :drivers_days do
+    resources :collections, only: %i[index]
     member do
       get :start
       patch :start
@@ -37,5 +38,5 @@ Rails.application.routes.draw do
     end
     resources :collections, only: %i[index]
   end
-  resources :collections, only: %i[index edit update]
+  resources :collections, only: %i[ edit update]
 end
