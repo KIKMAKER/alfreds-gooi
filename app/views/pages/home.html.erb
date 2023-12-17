@@ -10,7 +10,7 @@
     <p>Travel safe, see you next time</p>
 
     <div>
-      <%= link_to "View all todays collections", collections_path(@drivers_day) %>
+      <%= link_to "View all todays collections", drivers_day_collections_path(@drivers_day) %>
     </div>
   <% elsif @drivers_day.nil? %>
     <h1>There is no driver yet</h1>
