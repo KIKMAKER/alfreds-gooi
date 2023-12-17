@@ -1,6 +1,6 @@
-
 <div class="outline">
-  <% if @drivers_day&.sfl_time %>
+  <%# if @drivers_day&.sfl_time %>
+  <%if @drivers_day&.respond_to?(:sfl_time) && @drivers_day.sfl_time %>
     <h1>Thank you for your work today</h1>
     <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
     <br>
@@ -8,7 +8,6 @@
     <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
     <p>And worked for <%= @hours_worked %></p>
     <p>Travel safe, see you next time</p>
-
     <div>
       <%= link_to "View all todays collections", drivers_day_collections_path(@drivers_day) %>
     </div>
