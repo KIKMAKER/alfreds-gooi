@@ -3,7 +3,7 @@ class PagesController < ApplicationController
 
   def home
     # in production today will be the current day,
-    today = (Date.today + 3)
+    today = (Date.today + 2)
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # today = "Wednesday"
@@ -13,5 +13,6 @@ class PagesController < ApplicationController
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags }
 
     @hours_worked = @drivers_day.hours_worked unless @drivers_day.end_time.nil?
+    @new_customers = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
   end
 end
