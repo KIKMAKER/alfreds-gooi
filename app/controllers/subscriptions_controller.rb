@@ -18,7 +18,7 @@ class SubscriptionsController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    today = Date.today + 1
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT

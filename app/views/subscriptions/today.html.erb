@@ -18,19 +18,21 @@
             <% end %>
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
-          <div class="grid-item"><%= subscription.street_address.truncate(25) %> </div>
+          <div class="grid-item">
+            <%= subscription.street_address.truncate(25) %>
+          </div>
           <% if today_collection.nil? %>
             <div class="grid-item">
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class: 'collect-grid-button' %>
             <% else %>
               <% if today_collection.skip %>
-                  <%= link_to "No Collection!", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "No Collection!", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% elsif today_collection&.bags.to_i > 0 %>
-                  <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% elsif today_collection&.new_customer %>
-                  <%= link_to "DROP OFF", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "DROP OFF", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% else %>
-                  <%= link_to "Collect!", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "Collect!", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% end %>
             <% end %>
           <% end %>

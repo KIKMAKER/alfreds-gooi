@@ -1,8 +1,15 @@
 <div class="collection-container">
   <div class="collection-body">
     <div class="collection-body-heading">
-      <%= link_to 'Back', :back, class: 'back_button' %>
-      <h1><strong><%= @subscription.user.first_name %></strong></h1>
+      <div>
+        <%= link_to 'Back', :back, class: 'back_button' %>
+      </div>
+      <div>
+        <h1><strong><%= @subscription.user.first_name %></strong></h1>
+        <%= link_to "https://wa.me/#{@subscription.user.phone_number}" do %>
+          <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
+        <% end %>
+      </div>
     </div>
     <%= simple_form_for [@subscription, @collection] do |f| %>
       <%= f.input :skip %>
@@ -15,9 +22,8 @@
           <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
           <%= f.input :new_customer, as: :boolean, label: "New Customer", checked_value: 'positive', unchecked_value: 'negative' %>
         </div>
-      <% else %>
+      <% elsif current_user.driver? %>
         <%= f.input :alfred_message, as: :text, label: "Message from Alfred" %>
-        <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
         <div class="d-flex">
           <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
           <%= f.input :new_customer, as: :boolean, label: "DROPPED OFF", checked_value: 'negative', unchecked_value: 'positive' %>
