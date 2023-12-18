@@ -26,6 +26,7 @@
     <br>
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
+
         <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
         <%= f.input :new_customer, as: :boolean, label: "Dropped off", checked_value: 'positive', unchecked_value: 'negative' %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
@@ -36,6 +37,7 @@
     <% else %>
     <% end %>
     <%= simple_form_for [@collection] do |f| %>
+      <%= f.input :skip %>
       <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
       <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
       <!-- Hidden field for start_time -->
