@@ -1,6 +1,5 @@
 require 'csv'
 class CollectionsController < ApplicationController
-
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
   # Creat - done by the import method and not really needing to Read or Destroy collections
   def import_csv
@@ -28,7 +27,7 @@ class CollectionsController < ApplicationController
 
   # Regular CRUD stuff
   def index
-    today = (Date.today + 3)
+    today = (Date.today + 2)
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
     # today = "Wednesday"
@@ -104,8 +103,12 @@ class CollectionsController < ApplicationController
     holiday_end = row['holiday_end'].present? ? DateTime.parse(row['holiday_end']) : nil
     collection_day = row['collection_day'].to_i
     collection_order = row['collection_order'].to_i
+    user = subscription.user
+    user.update(phone_number: row['phone_number'])
 
-    if subscription.update(collection_day: collection_day, collection_order: collection_order, holiday_start: holiday_start, holiday_end: holiday_end)
+    if subscription.update(collection_day: collection_day,
+      collection_order: collection_order,holiday_start: holiday_start, holiday_end: holiday_end)
+
       puts "Subscription updated for #{subscription.user.first_name}"
     else
       puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
@@ -116,10 +119,11 @@ class CollectionsController < ApplicationController
   def process_collection(row, subscription, drivers_day)
     date = row['date'].present? ? DateTime.parse(row['date']) : nil
     puts date
-    collection = Collection.new(kiki_note: row['note'], skip: row['skip'] == 'TRUE', needs_bags: row['needs_bags'].to_i, date: date)
+    collection = Collection.new(
+      kiki_note: row['note'], skip: row['skip'] == 'TRUE', new_customer: row['new_customer'] == 'TRUE',
+      needs_bags: row['needs_bags'].to_i, date: date)
     collection.subscription = subscription
     collection.drivers_day = drivers_day
-
     if collection.save
       puts "Collection created for #{subscription.user.first_name}"
     else

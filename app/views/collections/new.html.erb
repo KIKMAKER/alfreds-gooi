@@ -1,19 +1,29 @@
 <div class="collection-container">
   <div class="collection-body">
-    <%= link_to 'Back', :back, class: 'back_button' %>
-    <p class ='collection-header'><strong>New Collection for <%= @subscription.user.first_name %></strong></p>
+    <div class="collection-body-heading">
+      <%= link_to 'Back', :back, class: 'back_button' %>
+      <h1><strong><%= @subscription.user.first_name %></strong></h1>
+    </div>
     <%= simple_form_for [@subscription, @collection] do |f| %>
       <%= f.input :skip %>
-      <%= f.input :needs_bags %>
-      <%= f.input :bags, as: :integer %>
-      <%= f.input :date, as: :date %>
+      <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
+      <%= f.input :bags, as: :integer, label: "Number of bags collected", placeholder: "0" %>
       <% if current_user.admin? %>
         <%= f.input :kiki_note %>
+        <%= f.input :date, as: :date %>
+        <div class="d-flex">
+          <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
+          <%= f.input :new_customer, as: :boolean, label: "New Customer", checked_value: 'positive', unchecked_value: 'negative' %>
+        </div>
       <% else %>
-        <%= f.input :alfred_message, as: :text %>
+        <%= f.input :alfred_message, as: :text, label: "Message from Alfred" %>
+        <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
+        <div class="d-flex">
+          <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
+          <%= f.input :new_customer, as: :boolean, label: "DROPPED OFF", checked_value: 'negative', unchecked_value: 'positive' %>
+        </div>
+        <%= f.hidden_field :date, value: Date.current %>
       <% end %>
-      <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
       <%= f.submit 'Save', class: 'gooi-button' %>
     <% end %>
   </div>
-</div>

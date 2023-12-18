@@ -18,7 +18,7 @@ puts "DB Clear with collections"
 
 puts "Uploading users and subscriptions from CSV"
 
-@import_csv = Rails.root.join('db', './users_and_subscribers_dec_final.csv')
+@import_csv = Rails.root.join('db', './users_and_subscribers20231217.csv')
 
 def import_users_from_csv
   CSV.foreach(@import_csv, headers: :first_row) do |row|

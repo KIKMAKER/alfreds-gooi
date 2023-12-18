@@ -6,23 +6,25 @@
       <p>hang tight, not all collections have been loaded.</p>
       <p>Maybe give kiki a call?</p>
     <% else %>
-      <p><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></p>
-      <% @skip_subscriptions.each do |subscription| %>
-        <p><%= subscription.user.first_name %> at <%= subscription.street_address %> </p>
+    <h2>Before you get started...</h2>
+      <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
+      <% @skip_subscriptions.each do |sub| %>
+        <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
       <% end %>
-      <p><strong>And <%= pluralize(@bags_needed.count, 'house') %> need bags</strong></p>
+      <h6><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> bags</strong></h6>
       <% @bags_needed.each do |sub| %>
         <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
       <% end %>
     <% end %>
   <% end %>
+    <br>
   <div>
     <h3>Let's get to it!</h3>
     <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
       <%= f.input :start_kms, label: "Start Kilometers", required: true, input_html: { min: 0 } %>
       <!-- Hidden field for start_time -->
       <%= f.hidden_field :start_time, value: Time.current %>
-      <%= f.submit "Time to vamos!" %>
+      <%= f.submit "Time to vamos!", class: "gooi-button" %>
     <% end %>
   </div>
 </div>
