@@ -16,12 +16,14 @@ class SubscriptionsController < ApplicationController
   # a special view that will load all of the collections for a given day
   def today
     # in production today will be the current day,
-    # @today = Date.today.strftime("%A")
-    # but in testing I want to be able to test the view for a given day
-    today = (Date.today + 2)
+    # today = "Wednesday"
+    # PRODUCTION
+    today = Date.today
     @today = today.strftime("%A")
     # but in testing I want to be able to test the view for a given day
-    # today = "Wednesday"
+    # DEVELOPMENT
+    # today = (Date.today + 2)
+    # @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     # @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
