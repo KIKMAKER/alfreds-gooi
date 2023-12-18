@@ -46,11 +46,11 @@ puts "#{User.count} users added"
 puts "#{Subscription.count} subscriptions added"
 
 puts "Creating You"
-kiki = User.create!(first_name: "Kiki", last_name: "Kenn", email: "gooi@gooi.com", password: "password", role: "admin")
+kiki = User.create!(first_name: "Kiki", last_name: "Kenn", email: "gooi@gooi.com", password: "password", role: "admin", phone_number: "+27836353126")
 
 puts "Creating Alfred"
 alfred = User.create!(
-  first_name: "Alfred", last_name: "Mbonjwa", email: "driver@gooi.com", password: "password", role: "driver"
+  first_name: "Alfred", last_name: "Mbonjwa", email: "driver@gooi.com", password: "password", role: "driver", phone_number: "+27785325513"
 )
 
 puts "Seed file complete with"
