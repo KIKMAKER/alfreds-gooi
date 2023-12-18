@@ -11,6 +11,7 @@ class DriversDaysController < ApplicationController
     # DEVELOPMENT
     today = (Date.today + 1)
     @today = today.strftime("%A")
+    # ##
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }

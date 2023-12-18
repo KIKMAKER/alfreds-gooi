@@ -30,11 +30,11 @@ class CollectionsController < ApplicationController
     # in testing I want to be able to test the view for a given day
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
-    @today = today.strftime("%A")
-    # DEVELOPMENT
-    # today = (Date.today + 2)
+    # today = Date.today
     # @today = today.strftime("%A")
+    # DEVELOPMENT
+    today = (Date.today + 2)
+    @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @collections = @drivers_day.collections
     # @collections = Collection.where(date: today)
