@@ -33,7 +33,7 @@ class CollectionsController < ApplicationController
     # today = Date.today
     # @today = today.strftime("%A")
     # DEVELOPMENT
-    today = (Date.today + 2)
+    today = (Date.today + 1)
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @collections = @drivers_day.collections
@@ -107,8 +107,6 @@ class CollectionsController < ApplicationController
     holiday_end = row['holiday_end'].present? ? DateTime.parse(row['holiday_end']) : nil
     collection_day = row['collection_day'].to_i
     collection_order = row['collection_order'].to_i
-    user = subscription.user
-    user.update(phone_number: row['phone_number'])
 
     if subscription.update(collection_day: collection_day,
       collection_order: collection_order,holiday_start: holiday_start, holiday_end: holiday_end)
