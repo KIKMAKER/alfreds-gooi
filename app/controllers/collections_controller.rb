@@ -117,6 +117,7 @@ class CollectionsController < ApplicationController
     else
       puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
     end
+    puts subscription.collection_day
     subscription
   end
 
