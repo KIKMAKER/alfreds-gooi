@@ -17,35 +17,37 @@
           <div class="grid-item">
             <%= subscription.street_address.truncate(25) %>
           </div>
-          <div class="grid-item">
+          <div class="grid-item gooi-collect-button">
             <% if today_collection.nil? %>
-              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class: 'collect-grid-button' %>
+              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
             <% else %>
               <% if today_collection.skip %>
-                <%= link_to "No Collection!", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "No Collection!", edit_collection_path(today_collection) %>
               <% elsif today_collection&.bags.to_i > 0 %>
-                <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection&.new_customer %>
-                <%= link_to "DROP OFF", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "DROP OFF", edit_collection_path(today_collection) %>
               <% else %>
-                <%= link_to "Collect!", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "Collect!", edit_collection_path(today_collection) %>
               <% end %>
             <% end %>
           </div>
         <% end %>
       </div>
     </div>
-    <% if @drivers_day&.persisted? %>
-      <%= link_to "ALL DONE", drop_off_drivers_day_path(@drivers_day), class: "gooi-button" %>
-    <% else %>
-      <p><em>No collections without a driver</em></p>
-    <% end %>
-  <% else %>
     <div class="outline">
-      <h1>No collections for <%= @today %>.</h1>
-      <p>yet...</p>
-      <br>
-      <%= link_to "go home", root_path, class: 'gooi-button' %>
+      <% if @drivers_day&.persisted? %>
+        <%= link_to "ALL DONE", drop_off_drivers_day_path(@drivers_day), class: "gooi-button" %>
+      <% else %>
+        <p><em>No collections without a driver</em></p>
+      <% end %>
+    <% else %>
+      <div class="outline">
+        <h1>No collections for <%= @today %>.</h1>
+        <p>yet...</p>
+        <br>
+        <%= link_to "go home", root_path, class: 'gooi-button' %>
+      </div>
     </div>
   <% end %>
 </div>
