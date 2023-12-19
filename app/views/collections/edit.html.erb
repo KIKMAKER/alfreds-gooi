@@ -23,7 +23,6 @@
     <% if @collection.needs_bags&. > 0 %>
       <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
     <% end %>
-    <br>
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
 
@@ -34,11 +33,14 @@
         <%= f.hidden_field :start_time, value: Time.current %>
         <%= f.submit 'Done!', class: 'gooi-button' %>
       <% end %>
-    <% else %>
     <% end %>
     <%= simple_form_for [@collection] do |f| %>
       <%= f.input :skip %>
-      <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags/Buckets", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
+      <% if @subscription.standard? %>
+        <%= f.input :bags, as: :integer, label: "Number of bags collected", placeholder: "0" %>
+      <% elsif @subscription.XL? %>
+        <%= f.input :buckets, as: :integer, label: "Number of buckets collected", placeholder: "0" %>
+      <% end %>
       <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
       <!-- Hidden field for start_time -->
       <%= f.hidden_field :start_time, value: Time.current %>

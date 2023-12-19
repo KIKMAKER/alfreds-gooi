@@ -136,6 +136,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip)
+    params.require(:collection).permit(:alfred_message, :bags, :buckets, :is_done, :skip)
   end
 end
+\
