@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: [:drop_off, :end]
+  before_action :set_drivers_day, only: %i[drop_off end]
 
   def start
     # in production today will be the current day,
@@ -23,16 +23,16 @@ class DriversDaysController < ApplicationController
   end
 
   def drop_off
+    raise
     @collections = @drivers_day.collections
     @total_bags_collected = @collections.sum("bags::integer")
+    @total_buckets_collected = @collections.sum("buckets::integer")
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
     end
   end
 
   def end
-    # raise
-
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: root_path)
       puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"

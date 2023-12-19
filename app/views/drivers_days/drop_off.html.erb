@@ -1,11 +1,11 @@
 <div class="outline">
   <h1>Time to drop off at soil for life!</h1>
-  <p>You collected <%= @total_bags_collected %> bags/buckets today</p>
+  <p>You collected <%= @total_bags_collected %> bags today</p>
+  <p>and <%= @total_buckets_collected %> buckets today</p>
   <%= simple_form_for @drivers_day, url: drop_off_drivers_day_path(@drivers_day) do |f| %>
     <%= f.input :total_buckets, as: :integer, label: "How many big buckets?", required: true, input_html: { min: 0 } %>
     <!-- Hidden field for start_time -->
     <%= f.hidden_field :sfl_time, value: Time.current %>
     <%= f.submit "Home time", class: "gooi-button" %>
-    <%#= f.button "Submit" %>
   <% end %>
 </div>

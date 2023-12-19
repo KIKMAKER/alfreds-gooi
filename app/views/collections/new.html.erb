@@ -14,7 +14,11 @@
     <%= simple_form_for [@subscription, @collection] do |f| %>
       <%= f.input :skip %>
       <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
-      <%= f.input :bags, as: :integer, label: "Number of bags collected", placeholder: "0" %>
+      <% if @subscription.standard? %>
+        <%= f.input :bags, as: :integer, label: "Number of bags collected", placeholder: "0" %>
+      <% elsif @subscription.XL? %>
+        <%= f.input :buckets, as: :integer, label: "Number of buckets collected", placeholder: "0" %>
+      <% end %>
       <% if current_user.admin? %>
         <%= f.input :kiki_note %>
         <%= f.input :date, as: :date %>
