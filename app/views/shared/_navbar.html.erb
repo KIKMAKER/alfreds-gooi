@@ -1,18 +1,22 @@
 <div class=navbar>
   <%= link_to root_path do %>
-    <%= image_tag('alt_logo.jpg', alt: 'Your Logo', class: 'alt_logo') %>
+    <%= image_tag('alt_logo.jpg', alt: 'Your Logo', class: 'alt-logo') %>
   <% end %>
   <% if user_signed_in? %>
     <div class="flex-nav">
-      <%#= link_to "Home", root_path, class: 'logout-link' %>
-      <%= link_to "Today", today_subscriptions_path, class: 'logout-link' %>
-      <%= link_to "load CSV", get_csv_path, class: 'logout-link' %>
+      <em><%= link_to "List", today_subscriptions_path, class: 'logout-link' %></em>
+      <% if current_user.admin? %>
+        <div>
+          <em><%= link_to "upload", get_csv_collections_path, class: 'logout-link' %></em>
+          <em><%= link_to "export", export_collections_path, class: 'logout-link' %></em>
+        </div>
+      <% end %>
       <br>
-      <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}, class: 'logout-link' %>
+      <em><%= link_to "logout", destroy_user_session_path, data: {turbo_method: :delete}, class: 'logout-link' %></em>
     </div>
   <% else %>
     <div>
-      <%= link_to "Login", new_user_session_path, class: 'logout-link' %>
+      <em><%= link_to "Login", new_user_session_path, class: 'logout-link' %></em>
     </div>
   <% end %>
 </div>

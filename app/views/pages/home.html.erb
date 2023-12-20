@@ -38,7 +38,7 @@
       <br>
       <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
     <% elsif current_user.admin? %>
-      <%= link_to "load the collections, babe", get_csv_path, class: "collection-button" %>
+      <%= link_to "load the collections, babe", get_csv_collections_path, class: "collection-button" %>
     <% else %>
       <p>Contact Kiki to load the collections</p>
     <% end %>
