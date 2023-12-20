@@ -18,4 +18,9 @@ class Subscription < ApplicationRecord
       XL: 'Extra Large'
     }
   end
+
+  def is_paused?
+    is_paused
+  end
+
 end

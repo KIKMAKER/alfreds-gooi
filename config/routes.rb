@@ -34,6 +34,5 @@ Rails.application.routes.draw do
       get :end
       patch :end
     end
-    resources :collections, only: %i[index]
   end
 end
