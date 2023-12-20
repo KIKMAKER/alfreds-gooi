@@ -25,6 +25,10 @@ class CollectionsController < ApplicationController
   # the method just tells rails which view to render
   def get_csv; end
 
+  def export
+    send_data Collection.to_csv, filename: "collections-#{Date.today}.csv"
+  end
+
   # Regular CRUD stuff
   def index
     # in testing I want to be able to test the view for a given day
@@ -51,19 +55,15 @@ class CollectionsController < ApplicationController
   end
 
   def create
-    date = Date.current + 1
     @subscription = Subscription.find(params[:subscription_id])
     @collection = Collection.new(collection_params)
     @collection.subscription = @subscription
-    @collection.date = date
-    driver = User.find_by(role: 'driver')
-    drivers_day = driver.drivers_day.last
-    @collection.drivers_day = drivers_day
+    @collection.drivers_day = DriversDay.find_or_create_by(date: @collection.date)
     if @collection.save
       redirect_to today_subscriptions_path
     else
-      puts errors.full_messages
-      render :new, status: :unprocessable_entity
+      # puts errors.full_messages
+      render :new, status: :unprocessable_entity, notice: :unprocessable_entity
     end
   end
   def edit
@@ -136,7 +136,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :buckets, :is_done, :skip)
+    params.require(:collection).permit(:alfred_message, :kiki_note, :date, :bags, :buckets, :is_done, :skip, :needs_bags, :new_customer)
   end
 end
 \
