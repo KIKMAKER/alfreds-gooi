@@ -10,13 +10,14 @@ class CollectionsController < ApplicationController
     # loop through the file and create collections for each row
     CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
       # Process the driver's day
-      drivers_day = process_drivers_day(row, driver)
+      @drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
       puts subscription
       # Process the collection
-      process_collection(row, subscription, drivers_day) if subscription
+      process_collection(row, subscription, @drivers_day) if subscription
     end
+    @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
   rescue CSV::MalformedCSVError => e
     redirect_to get_csv_path, alert: "Failed to import CSV: #{e.message}"
@@ -70,10 +71,12 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
   end
+
   def update
     @collection = Collection.find(params[:id])
     @collection.update(collection_params)
     @subscription = @collection.subscription
+
     if @collection.save
       redirect_to today_subscriptions_path
     else
