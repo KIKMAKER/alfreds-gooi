@@ -114,6 +114,7 @@ GEM
     erubi (1.12.0)
     execjs (2.9.1)
     ffi (1.16.3)
+    ffi (1.16.3-x64-mingw-ucrt)
     font-awesome-sass (6.5.1)
       sassc (~> 2.0)
     globalid (1.2.1)
@@ -155,12 +156,15 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.7.0)
+    nokogiri (1.15.5-x64-mingw-ucrt)
+      racc (~> 1.4)
     nokogiri (1.15.5-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.15.5-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.5.4)
+    pg (1.5.4-x64-mingw-ucrt)
     popper_js (2.11.8)
     psych (5.1.1.1)
       stringio
@@ -242,6 +246,8 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2023.3)
+      tzinfo (>= 1.0.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -258,6 +264,7 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
+  x64-mingw-ucrt
   x86_64-darwin-21
   x86_64-linux
 

@@ -1,9 +1,10 @@
 .grid-container {
   display: grid;
-  grid-template-columns: 80px 150px 85px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
+  grid-template-columns: 90px 150px 93px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
   gap: 0px; /* Add some spacing between grid items */
   justify-content: center;
   max-width: 100%;
+  margin-bottom: 1em;
 }
 
 .grid-item {
@@ -11,6 +12,9 @@
   padding: 6px;
   text-align: center;
   border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   // min-width: 88px;
 }
 
@@ -20,7 +24,7 @@
   color: white;
   padding: 6px;
   box-shadow: inset 0 0 30px #138a64d2;
-
+  border-radius: 8px;
   border: 1px solid black;
 
 }
