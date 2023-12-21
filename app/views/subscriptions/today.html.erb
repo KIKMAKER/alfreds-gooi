@@ -10,9 +10,11 @@
           <% today_collection = subscription.collections.find { |c| c.date && c.date.strftime('%A') == @today } %>
           <div class="grid-item">
             <% if today_collection&.skip %>
-              <p>SKIP!</p>
-            <% end %>
+              <p>SKIP <%= link_to subscription.user.first_name, subscription_path(subscription) %>!</p>
+            <%else%>
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
+            <% end %>
+            
           </div>
           <div class="grid-item">
             <%= subscription.street_address.truncate(25) %>
@@ -22,7 +24,7 @@
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class: 'collect-grid-button' %>
             <% else %>
               <% if today_collection.skip %>
-                <%= link_to "No Collection!", edit_collection_path(today_collection), class: "collect-grid-button" %>
+                <%= link_to "Collect Anyway?", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% elsif today_collection&.bags.to_i > 0 %>
                 <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection), class: "collect-grid-button" %>
               <% elsif today_collection&.new_customer %>
@@ -34,8 +36,7 @@
           </div>
         <% end %>
       </div>
-    </div>
-    <% if @drivers_day&.persisted? %>
+      <% if @drivers_day&.persisted? %>
       <%= link_to "ALL DONE", drop_off_drivers_day_path(@drivers_day), class: "gooi-button" %>
     <% else %>
       <p><em>No collections without a driver</em></p>
@@ -48,4 +49,6 @@
       <%= link_to "go home", root_path, class: 'gooi-button' %>
     </div>
   <% end %>
+    </div>
+    
 </div>

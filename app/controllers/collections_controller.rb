@@ -33,7 +33,7 @@ class CollectionsController < ApplicationController
     # today = Date.today
     # @today = today.strftime("%A")
     # DEVELOPMENT
-    today = (Date.today + 1)
+    today = (Date.today - 1)
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @collections = @drivers_day.collections
