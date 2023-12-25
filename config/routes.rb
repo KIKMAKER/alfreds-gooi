@@ -19,13 +19,9 @@ Rails.application.routes.draw do
     end
   end
 
-  # since I'm not doing usual CRUD for drivers day, I have 'custom' routes to create a screen for alfred to start and end his day
-  # get 'drivers_days/:id/start', to: 'drivers_days#start', as: :drivers_day_start
-  # patch 'drivers_days/start', to: 'drivers_days#start'
-  # get 'drivers_days/:id/drop_off', to: 'drivers_days#drop_off', as: :drivers_day_drop_off
-  # patch 'drivers_days/drop_off', to: 'drivers_days#drop_off'
-  # get 'drivers_days/:id/end', to: 'drivers_days#end', as: :drivers_day_end
-  # patch 'drivers_days/:id/end', to: 'drivers_days#end'
+  # I want get and patch requests on these custom drivers_day routes
+  # member routes are created with /drivers_day/:id/custom_route
+  # these routes (the get and the patch) allow for form input to the instance of drivers day at each url
   resources :drivers_days do
     resources :collections, only: %i[index]
     member do
@@ -36,7 +32,6 @@ Rails.application.routes.draw do
       get :end
       patch :end
     end
-    resources :collections, only: %i[index]
   end
   resources :collections, only: %i[ edit update]
 end

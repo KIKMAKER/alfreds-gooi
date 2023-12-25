@@ -6,6 +6,14 @@
   max-width: 100%;
 }
 
+.grid-container-driver {
+  display: grid;
+  grid-template-columns: 104px 128px; 
+  gap: 0px; /* Add some spacing between grid items */
+  justify-content: center;
+  max-width: 100%;
+}
+
 .grid-item {
   background-color: rgb(255, 255, 255);
   padding: 6px;

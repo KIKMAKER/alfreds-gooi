@@ -31,12 +31,15 @@ class DriversDaysController < ApplicationController
   end
 
   def end
-    # raise
-
     if request.patch?
       update_drivers_day(drivers_day_params, next_path: root_path)
       puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"
     end
+  end
+
+  def index
+    # fetch all instances of drivers day with necessary data with .includes
+    @drivers_days = DriversDay.all
   end
 
 

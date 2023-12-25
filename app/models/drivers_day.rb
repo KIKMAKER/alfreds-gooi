@@ -8,5 +8,4 @@ class DriversDay < ApplicationRecord
     difference_in_hours = difference_in_seconds / 3600.0 # There are 3600 seconds in an hour
     format("%.2f hours", difference_in_hours)
   end
-
 end
