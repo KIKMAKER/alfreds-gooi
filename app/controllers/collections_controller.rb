@@ -51,11 +51,9 @@ class CollectionsController < ApplicationController
   end
 
   def create
-    date = Date.current + 1
     @subscription = Subscription.find(params[:subscription_id])
     @collection = Collection.new(collection_params)
     @collection.subscription = @subscription
-    @collection.date = date
     driver = User.find_by(role: 'driver')
     drivers_day = driver.drivers_day.last
     @collection.drivers_day = drivers_day
