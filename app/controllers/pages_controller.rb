@@ -3,10 +3,10 @@ class PagesController < ApplicationController
 
   def home
     # in production today will be the current day,
-    today = (Date.today)
-    @today = today.strftime("%A")
+    today = Date.today
     # but in testing I want to be able to test the view for a given day
-    # today = "Wednesday"
+    # today = Date.today + 1
+    @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }

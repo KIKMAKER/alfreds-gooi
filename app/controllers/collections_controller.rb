@@ -13,7 +13,7 @@ class CollectionsController < ApplicationController
       drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
-      puts subscription
+      puts subscription.collection_day
       # Process the collection
       process_collection(row, subscription, drivers_day) if subscription
     end
@@ -31,10 +31,9 @@ class CollectionsController < ApplicationController
     # today = "Wednesday"
     # PRODUCTION
     today = Date.today
-    @today = today.strftime("%A")
     # DEVELOPMENT
     # today = (Date.today + 1)
-    # @today = today.strftime("%A")
+    @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @collections = @drivers_day.collections
     # @collections = Collection.where(date: today)
@@ -106,9 +105,8 @@ class CollectionsController < ApplicationController
     collection_day = row['collection_day'].to_i
     collection_order = row['collection_order'].to_i
 
-    if subscription.update(collection_day: collection_day,
-      collection_order: collection_order,holiday_start: holiday_start, holiday_end: holiday_end)
-
+    if subscription.update!(collection_day: collection_day,
+                            collection_order: collection_order)
       puts "Subscription updated for #{subscription.user.first_name}"
     else
       puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"

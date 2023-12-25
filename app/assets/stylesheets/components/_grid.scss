@@ -1,6 +1,7 @@
 .grid-container {
   display: grid;
-  grid-template-columns: 80px 150px 85px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
+  // grid-template-columns: 80px 150px 85px; /*  repeat(4, 1fr); */ /* Create 4 columns with equal width */
+  grid-template-columns: repeat(3, 1fr); /* Create 4 columns with equal width */
   gap: 0px; /* Add some spacing between grid items */
   justify-content: center;
   max-width: 100%;
@@ -8,7 +9,7 @@
 
 .grid-container-driver {
   display: grid;
-  grid-template-columns: 104px 128px; 
+  grid-template-columns: 104px 128px;
   gap: 0px; /* Add some spacing between grid items */
   justify-content: center;
   max-width: 100%;
