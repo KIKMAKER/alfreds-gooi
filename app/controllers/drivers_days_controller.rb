@@ -17,8 +17,13 @@ class DriversDaysController < ApplicationController
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     if request.patch?
-      update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
-      puts "Driver's Day started at: #{current_user.drivers_day.last.start_time}"
+      if update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
+        puts "Driver's Day started at: #{current_user.drivers_day.last.start_time}"
+        flash[:notice] = "Day started successfully"
+      else
+        flash.now[:alert] = "Failed to start the Day"
+        render :start
+      end
     end
   end
 
@@ -26,14 +31,25 @@ class DriversDaysController < ApplicationController
     @collections = @drivers_day.collections
     @total_bags_collected = @collections.sum("bags::integer")
     if request.patch?
-      update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
+      if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
+        puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
+        flash[:notice] = "Drop off updated successfully with #{@drivers_day.total_buckets} buckets."
+      else
+        flash.now[:alert] = "Failed to update Driver's Day"
+        render :drop_off
+      end
     end
   end
 
   def end
     if request.patch?
-      update_drivers_day(drivers_day_params, next_path: root_path)
-      puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"
+      if update_drivers_day(drivers_day_params, next_path: root_path)
+        puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"
+        flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
+      else
+        flash.now[:alert] = "Failed to end the Day"
+        render :end
+      end
     end
   end
 
