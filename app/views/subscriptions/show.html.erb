@@ -8,6 +8,7 @@
           <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
           <p>Collection day: <%= @subscription.collection_day %></p>
           <p>Address: <%= @subscription.street_address %></p>
+          <p>Collection Order: <%= @subscription.collection_order %></p>
           <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
         </div>
       </div>
