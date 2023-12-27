@@ -6,14 +6,11 @@
       </div>
       <br>
       <h1>All Subscriptions</h1>
-      <ul>
+
         <% @subscriptions.each do |subscription| %>
-          <%= link_to subscription_path(subscription) do %>
-            <li><%= subscription.user.first_name %></li>
+           <p> <%= link_to subscription.user.first_name, subscription_path(subscription) %> - <%= subscription.customer_id %></p>
             <%#= link_to "log collection", new_subscription_collection_path(subscription) %>
-          <% end %>
         <% end %>
-      </ul>
     </div>
   </div>
 </div>
