@@ -38,5 +38,5 @@ Rails.application.routes.draw do
       patch :end
     end
   end
-  resources :collections, only: %i[ edit update destroy ]
+  resources :collections, only: %i[edit update destroy]
 end

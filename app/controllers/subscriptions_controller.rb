@@ -13,6 +13,20 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.new
   end
 
+  def edit
+    @subscription = Subscription.find(params[:id])
+  end
+
+  def update
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(subscription_params)
+      redirect_to subscription_path(@subscription)
+    else
+      render :edit, status: :unprocessable_entity
+    end
+
+  end
+
   # a special view that will load all of the collections for a given day
   def today
     # in production today will be the current day,
@@ -30,5 +44,11 @@ class SubscriptionsController < ApplicationController
                                 .where(collection_day: @today)
                                 .order(:collection_order)
     # @drivers_day = @subscriptions.last.collections.last.drivers_day
+  end
+
+  private
+  def subscription_params
+    params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
+                  :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order)
   end
 end
