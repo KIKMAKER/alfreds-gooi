@@ -67,7 +67,7 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
   end
-  
+
   def update
     @collection = Collection.find(params[:id])
     @collection.update(collection_params)
@@ -77,6 +77,12 @@ class CollectionsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @collection = Collection.find(params[:id])
+    @collection.destroy
+    redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
   end
 
   private

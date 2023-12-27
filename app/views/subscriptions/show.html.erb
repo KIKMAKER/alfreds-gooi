@@ -22,6 +22,7 @@
               <p>Note from Kiki: <%= collection.kiki_note %></p>
               <p>Message from Alfred: <%= collection.alfred_message %></p>
               <p><%= link_to "edit", edit_collection_path(collection) %></p>
+              <p><%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             </div>
           </div>
         <% end %>
