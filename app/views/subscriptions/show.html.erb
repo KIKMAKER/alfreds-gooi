@@ -5,7 +5,7 @@
       <div class="outline">
         <div>
           <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
-          <p>Start date: <%= @subscription.start_date.strftime('%d %b, %Y') %></p>
+          <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
           <p>Collection day: <%= @subscription.collection_day %></p>
           <p>Address: <%= @subscription.street_address %></p>
           <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
