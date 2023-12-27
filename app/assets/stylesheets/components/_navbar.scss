@@ -1,9 +1,7 @@
 .navbar {
-  justify-content: space-between;
+  justify-content: flex-start;
   background: #138a64;
   border-radius: 0px 0px 8px 8px;
-  display: flex;
-  border: 1px green solid;
   display: flex;
   align-items: center;
   padding-top: 6px;
@@ -12,24 +10,27 @@
   margin-top: -13px;
 }
 
-.alt_logo {
-  width: 80px;
+.alt-logo {
+  width: 72px;
   border-radius: 60px;
 }
 
 .logout-link {
   color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  border-bottom: 1px solid white;
+  font-size: 16px;
 }
 
 .flex-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
-  background-color: #3c8a63;
+  padding: 0 0.5rem;
+  background-color: #138a64;
   height: 10vh;
   color: white;
   font-family: "Montserrat", sans-serif;
-  font-size: 16px;
   width: 60vw;
 }

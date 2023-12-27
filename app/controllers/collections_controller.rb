@@ -10,13 +10,14 @@ class CollectionsController < ApplicationController
     # loop through the file and create collections for each row
     CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
       # Process the driver's day
-      drivers_day = process_drivers_day(row, driver)
+      @drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
       puts subscription.collection_day
       # Process the collection
-      process_collection(row, subscription, drivers_day) if subscription
+      process_collection(row, subscription, @drivers_day) if subscription
     end
+    @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
   rescue CSV::MalformedCSVError => e
     redirect_to get_csv_path, alert: "Failed to import CSV: #{e.message}"
@@ -24,6 +25,10 @@ class CollectionsController < ApplicationController
   # the form to get the csv (no data needs to be sent from the controller)
   # the method just tells rails which view to render
   def get_csv; end
+
+  def export
+    send_data Collection.to_csv, filename: "collections-#{Date.today}.csv"
+  end
 
   # Regular CRUD stuff
   def index
@@ -53,13 +58,11 @@ class CollectionsController < ApplicationController
     @subscription = Subscription.find(params[:subscription_id])
     @collection = Collection.new(collection_params)
     @collection.subscription = @subscription
-    driver = User.find_by(role: 'driver')
-    drivers_day = driver.drivers_day.last
-    @collection.drivers_day = drivers_day
+    @collection.drivers_day = DriversDay.find_or_create_by(date: @collection.date)
     if @collection.save
       redirect_to today_subscriptions_path
     else
-      puts errors.full_messages
+      # puts errors.full_messages
       render :new, status: :unprocessable_entity
     end
   end
@@ -72,6 +75,7 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
     @collection.update(collection_params)
     @subscription = @collection.subscription
+
     if @collection.save
       redirect_to today_subscriptions_path
     else
@@ -139,6 +143,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer)
+    # buckets
   end
 end
