@@ -28,7 +28,6 @@ class DriversDaysController < ApplicationController
   end
 
   def drop_off
-    raise
     @collections = @drivers_day.collections
     @total_bags_collected = @collections.sum("bags::integer")
     @total_buckets_collected = @collections.sum("buckets::integer")

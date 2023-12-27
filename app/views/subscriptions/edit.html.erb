@@ -1,0 +1,15 @@
+<div class="collection-container">
+  <div class="collection-body">
+    <%= simple_form_for(@subscription) do |f| %>
+      <%= f.input :street_address %>
+      <%= f.input :suburb %>
+      <%= f.input :duration, label: "Duration (Months)", collection: [1, 3, 6], include_blank: false %>
+      <%= f.input :collection_day, collection: Subscription.collection_days.keys.map { |day| [day.titleize, day] }, include_blank: false %>
+      <%= f.input :plan, collection: Subscription.plans.keys.map { |plan| [plan.titleize, plan] }, include_blank: false %>
+      <%= f.input :collection_order %>
+      <%= f.input :customer_id %>
+      <%= f.input :is_paused, as: :boolean %>
+      <%= f.button :submit, "Update Subscription" %>
+    <% end %>
+  </div>
+</div>
