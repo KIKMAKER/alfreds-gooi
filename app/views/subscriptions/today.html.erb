@@ -1,6 +1,6 @@
 <div class="gooi-container">
   <% if @subscriptions.any? %>
-    <div class="outline">
+    <div class="today-outline">
       <h1><%= @today %></h1>
       <div class="grid-container">
         <div class="grid-item"><strong>Name</strong></div>
@@ -23,8 +23,8 @@
             <% else %>
               <% if today_collection.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection) %>
-              <% elsif today_collection&.bags.to_i > 0 %>
-                <%= link_to "Got #{today_collection.bags}\n Collect more?", edit_collection_path(today_collection) %>
+              <% elsif today_collection&.updated_at < Time.now %>
+                <%= link_to "Got #{today_collection.subscription.XL? ? today_collection.buckets : today_collection.bags } #{today_collection.subscription.XL? ? 'buckets' : 'bags'}\n Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection&.new_customer %>
                 <%= link_to "DROP OFF", edit_collection_path(today_collection) %>
               <% else %>

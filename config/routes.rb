@@ -7,8 +7,13 @@ Rails.application.routes.draw do
   root "pages#home"
 
   # Defines getting the csv - the form then sends the data to the import_csv route
-  get 'get_csv', to: 'collections#get_csv'
-  post 'import_csv', to: 'collections#import_csv'
+  resources :collections, only: %i[ edit update] do
+    collection do
+      get :export, to: 'collections#export'
+      get :get_csv, to: 'collections#get_csv'
+      post :import_csv, to: 'collections#import_csv'
+    end
+  end
 
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
