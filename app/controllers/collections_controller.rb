@@ -67,6 +67,7 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
   end
+  
   def update
     @collection = Collection.find(params[:id])
     @collection.update(collection_params)
