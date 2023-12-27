@@ -22,7 +22,7 @@
       <h2>There are no subscriptions waiting for you.</h2>
       <p>But I love that you checked...</p>
     <% else %>
-      <p>There are <%= @subscriptions.count - (@new_customers.nil? ? 0 : @new_customers.count) %> parcels waiting to be collected</p>
+      <p>There are <%= @subscriptions.count - (@new_customers.nil? ? 0 : @new_customers.count) %> customers ready to gooi</p>
       <% if @new_customers&.any? %>
         <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
         <h5>They are:</h5>
