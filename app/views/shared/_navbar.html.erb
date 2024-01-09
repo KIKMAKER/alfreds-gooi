@@ -41,11 +41,23 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <%= link_to "Load CSV", load_csv_collections_path, class: "dropdown-item" %>
-                  <%= link_to "Export CSV", export_csv_collections_path, class: "dropdown-item" %> <!-- Ensure you have a route named export_csv_path -->
-                  <%= link_to "Drivers Days", drivers_days_path, class: "dropdown-item" %> <!-- Ensure you have a route named drivers_days_path -->
+                  <%= link_to "Export CSV", export_csv_collections_path, class: "dropdown-item" %>
+                  <%= link_to "Drivers Days", drivers_days_path, class: "dropdown-item" %>
                 </div>
               </li>
-            <% end %>
+              <% elsif current_user.customer? %>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Subscription
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <%= link_to "New", new_subscription_path, class: "dropdown-item" %>
+                    <% current_user.subscriptions.each do |subscription| %>
+                      <%= link_to "Edit #{subscription.street_address}", edit_subscription_path(subscription), class: "dropdown-item" %>
+                    <% end %>
+                  </div>
+                </li>
+              <% end %>
             <li class="nav-item">
               <%= link_to "LOGOUT",destroy_user_session_path, data: {turbo_method: :delete}, class: "nav-link" %>
             </li>
