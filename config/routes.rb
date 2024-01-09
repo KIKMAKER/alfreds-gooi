@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: %i[ edit update] do
     collection do
-      get :export, to: 'collections#export'
-      get :get_csv, to: 'collections#get_csv'
+      get :export_csv, to: 'collections#export_csv'
+      get :load_csv, to: 'collections#load_csv'
       post :import_csv, to: 'collections#import_csv'
     end
   end
