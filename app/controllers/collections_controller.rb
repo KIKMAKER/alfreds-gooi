@@ -24,9 +24,9 @@ class CollectionsController < ApplicationController
   end
   # the form to get the csv (no data needs to be sent from the controller)
   # the method just tells rails which view to render
-  def get_csv; end
+  def load_csv; end
 
-  def export
+  def export_csv
     send_data Collection.to_csv, filename: "collections-#{Date.today}.csv"
   end
 
