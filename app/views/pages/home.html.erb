@@ -39,7 +39,7 @@
       <br>
       <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
     <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
-      <%= link_to "load the collections, babe", get_csv_collections_path, class: "collection-button" %>
+      <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
     <% else %>
       <p>View all <%= link_to "past days", drivers_days_path %></p>
     <% end %>
