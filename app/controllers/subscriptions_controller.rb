@@ -13,6 +13,16 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.new
   end
 
+  def create
+    @subscription = Subscription.new(subscription_params)
+    @subscription.user = current_user
+    if @subscription.save
+      redirect_to subscription_path(@subscription)
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def edit
     @subscription = Subscription.find(params[:id])
   end
@@ -32,7 +42,7 @@ class SubscriptionsController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    today = Date.today + 1
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
     # today = Date.today + 1
