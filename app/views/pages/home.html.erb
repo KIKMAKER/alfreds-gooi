@@ -5,7 +5,14 @@
     <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
     <br>
     <br>
-    <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
+
+    <% if @drivers_day.end_kms.nil? %>
+      <p>The end kms didn't save or weren't entered</p>
+      <%= link_to "fill them in again", end_drivers_day_path(@drivers_day) %>
+    <% else %>
+      <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
+    <% end %>
+
     <p>And worked for <%= @hours_worked %></p>
     <p>Travel safe, see you next time</p>
     <div>
