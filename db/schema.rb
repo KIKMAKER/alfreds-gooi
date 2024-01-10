@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_19_115543) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_10_021348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_115543) do
     t.datetime "updated_at", null: false
     t.datetime "date"
     t.datetime "sfl_time"
+    t.string "message_from_alfred"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 

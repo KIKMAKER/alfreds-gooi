@@ -76,6 +76,6 @@ class DriversDaysController < ApplicationController
   end
 
   def drivers_day_params
-    params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date)
+    params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date, :message_from_alfred)
   end
 end
