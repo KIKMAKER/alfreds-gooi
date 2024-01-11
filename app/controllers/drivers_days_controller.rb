@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off end]
+  before_action :set_drivers_day, only: %i[drop_off end edit update]
 
   def start
     # in production today will be the current day,
@@ -59,6 +59,17 @@ class DriversDaysController < ApplicationController
     @drivers_days = DriversDay.all
   end
 
+  def edit; end
+
+  def update
+    if @drivers_day.update(drivers_day_params)
+      redirect_to drivers_days_path, notice: 'Driver\'s day was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+
+  end
+
 
   private
 
@@ -76,6 +87,6 @@ class DriversDaysController < ApplicationController
   end
 
   def drivers_day_params
-    params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date, :message_from_alfred)
+    params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date, :message_from_alfred, :note)
   end
 end
