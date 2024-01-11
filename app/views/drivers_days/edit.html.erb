@@ -1,0 +1,23 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Edit Driver's Day</h1>
+
+    <%= simple_form_for @drivers_day do |f| %>
+      <%= f.error_notification %>
+      <%= f.input :date, as: :datetime, required: true %>
+      <%= f.input :start_time, as: :datetime %>
+      <%= f.input :end_time, as: :datetime %>
+      <%= f.input :start_kms, input_html: { min: 0 } %>
+      <%= f.input :end_kms, input_html: { min: 0 } %>
+      <%= f.input :total_buckets, input_html: { min: 0 } %>
+      <%= f.input :note %>
+      <%= f.input :message_from_alfred %>
+      <%= f.input :sfl_time, as: :datetime %>
+
+      <%= f.button :submit %>
+    <% end %>
+
+    <%= link_to 'Back', drivers_days_path %>
+
+  </div>
+</div>

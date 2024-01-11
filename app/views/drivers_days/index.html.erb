@@ -16,7 +16,7 @@
       </div>
       <% @drivers_days.each do |drivers_day| %>
         <div class="grid-row">
-          <div class="grid-item"><%= drivers_day.date.strftime('%A, %b %d') %></div>
+          <div class="grid-item"><%= link_to drivers_day.date.strftime('%A, %b %d'), edit_drivers_day_path(drivers_day) %></div>
           <div class="grid-item"><%= drivers_day.start_time %></div>
           <div class="grid-item"><%= drivers_day.start_kms %></div>
           <div class="grid-item"><%= drivers_day.end_time %></div>
