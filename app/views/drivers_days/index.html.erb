@@ -23,8 +23,10 @@
           <div class="grid-item"><%= drivers_day.end_kms %></div>
           <div class="grid-item"><%= drivers_day.total_buckets %></div>
           <div class="grid-item"><%= drivers_day.sfl_time %></div>
+          <!--<div class="grid-item"><%#= drivers_day.note&.truncate(100) %></div>-->
           <div class="grid-item">GENERIC NOTE</div>
-          <div class="grid-item"><%= drivers_day.message_from_alfred.truncate(100) %></div>
+          <!--<div class="grid-item"><%#= drivers_day.message_from_alfred.truncate(100) %></div>-->
+          <div class="grid-item">GENERIC NOTE</div>
           <div class="grid-item"><%= link_to "Collections", drivers_day_collections_path(drivers_day) %></div>
         </div>
       <% end %>
