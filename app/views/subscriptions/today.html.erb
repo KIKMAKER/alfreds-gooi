@@ -7,7 +7,7 @@
         <div class="grid-item"><strong>Address</strong></div>
         <div class="grid-item"><strong>Collect</strong></div>
         <% @subscriptions.each do |subscription| %>
-          <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today} %>
+          <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today - 3} %>
           <div class="grid-item">
             <% if today_collection&.skip %>
               <p>SKIP!</p>
@@ -25,6 +25,8 @@
               <%= link_to "No Collection!", edit_collection_path(today_collection) %>
             <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
               <%= link_to "Got #{today_collection.bags} bags. Collect more?", edit_collection_path(today_collection) %>
+            <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
+              <%= link_to "Got #{today_collection.buckets} buckets. Collect more?", edit_collection_path(today_collection) %>
             <% elsif today_collection.new_customer %>
               <%= link_to "DROP OFF", edit_collection_path(today_collection) %>
             <% else %>

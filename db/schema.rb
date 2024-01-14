@@ -28,7 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_14_014725) do
     t.bigint "drivers_day_id"
     t.datetime "date"
     t.boolean "new_customer", default: false
-    t.integer "buckets"
+    t.string "buckets"
     t.integer "dropped_off_buckets"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
