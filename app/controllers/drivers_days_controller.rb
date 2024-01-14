@@ -5,10 +5,10 @@ class DriversDaysController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    # today = Date.today
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
-    # today = (Date.today + 1)
+    today = (Date.today - 3)
     @today = today.strftime("%A")
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today)
