@@ -29,8 +29,8 @@ class DriversDaysController < ApplicationController
 
   def drop_off
     @collections = @drivers_day.collections
-    # @total_bags_collected = @collections.sum("bags::integer")
-    # @total_buckets_collected = @collections.sum("buckets::integer")
+    @total_bags_collected = @collections.sum(:bags)
+    @total_buckets_collected = @collections.sum(:buckets)
     if request.patch?
       if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
         puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
