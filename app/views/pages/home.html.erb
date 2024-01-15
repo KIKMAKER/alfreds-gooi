@@ -8,7 +8,11 @@
 
     <% if @drivers_day.end_kms.nil? %>
       <p>The end kms didn't save or weren't entered</p>
-      <%= link_to "fill them in again", end_drivers_day_path(@drivers_day) %>
+    <%# elsif @drivers_day.end %>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
+        <%= f.submit "Save kms", class: "gooi-button" %>
+      <% end %>
     <% else %>
       <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
     <% end %>
@@ -45,7 +49,7 @@
       <h5>Ready to get started?</h5>
       <br>
       <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
-    <% elsif current_user.admin? && !Collection.exists?(date: Date.today - 3) %>
+    <% elsif current_user.admin? && !Collection.exists?(date: Date.today + 1) %>
       <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
     <% else %>
       <p>View all <%= link_to "past days", drivers_days_path %></p>
