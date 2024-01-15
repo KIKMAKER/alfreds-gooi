@@ -5,7 +5,7 @@ class PagesController < ApplicationController
     # in production today will be the current day,
     # today = Date.today
     # but in testing I want to be able to test the view for a given day
-    today = Date.today  - 3
+    today = Date.today  + 1
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)

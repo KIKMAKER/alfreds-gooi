@@ -37,7 +37,7 @@ class CollectionsController < ApplicationController
     # PRODUCTION
     # today = Date.today
     # DEVELOPMENT
-    today = (Date.today - 3)
+    today = (Date.today + 1)
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @collections = @drivers_day.collections
@@ -73,10 +73,7 @@ class CollectionsController < ApplicationController
 
   def update
     @collection = Collection.find(params[:id])
-    @collection.update(collection_params)
-    @subscription = @collection.subscription
-
-    if @collection.save
+    if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else
       render :edit, status: :unprocessable_entity
@@ -143,7 +140,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time)
     # buckets
   end
 end

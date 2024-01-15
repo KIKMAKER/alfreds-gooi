@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_14_014725) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_14_105617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,7 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_14_014725) do
     t.bigint "drivers_day_id"
     t.datetime "date"
     t.boolean "new_customer", default: false
-    t.string "buckets"
+    t.float "buckets"
     t.integer "dropped_off_buckets"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"

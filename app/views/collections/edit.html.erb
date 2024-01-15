@@ -28,13 +28,14 @@
         <% if @collection.subscription.XL? %>
           <%= f.input :buckets, placeholder: "0" %>
         <% else %>
-          <%= f.input :bags, as: :radio_buttons, collection: [0, 1, 2, 3, 4, 5, 6], label: "Bags", item_wrapper_class: 'radio-buttons',  input_html: { class: 'radio-buttons' } %>
+          <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% end %>
-        <%= f.input :new_customer, as: :boolean, label: "Dropped off", checked_value: 'negative', unchecked_value: 'positive' %>
+        <%#= f.input :new_customer, as: :boolean, label: "Dropped off", checked_value: 'negative', unchecked_value: 'positive' %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
-        <%= f.submit 'Done!', class: 'gooi-button' %>
+         <%= f.hidden_field :new_customer, value: false %>
+        <%= f.submit 'Dropped Off!', class: 'gooi-button' %>
       <% end %>
     <% elsif @collection.subscription.user.drop_off? %>
       <%= simple_form_for [@collection] do |f| %>
