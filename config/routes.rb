@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     # - here I am creating /subscriptions/today
     collection do
       get :today
+      get :tomorrow
+      get :yesterday
     end
   end
 
