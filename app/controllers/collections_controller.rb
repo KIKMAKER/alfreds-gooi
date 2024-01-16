@@ -66,6 +66,7 @@ class CollectionsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
   def edit
     @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
@@ -93,7 +94,7 @@ class CollectionsController < ApplicationController
     drivers_day = DriversDay.find_or_create_by(date: date)
     drivers_day.user = driver
     drivers_day.save
-    puts "Driver's Day processed for: #{driver.first_name}"
+    puts "Driver's Day processed for: #{driver.first_name} with id: #{drivers_day.id}"
     drivers_day
   end
 
@@ -119,7 +120,7 @@ class CollectionsController < ApplicationController
     else
       puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
     end
-    puts subscription.collection_day
+    # puts subscription.collection_day
     subscription
   end
 
@@ -136,11 +137,12 @@ class CollectionsController < ApplicationController
     else
       puts "Failed to create collection for #{subscription.user.first_name}: #{collection.errors.full_messages.join(", ")}"
     end
+    collection
   end
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags)
     # buckets
   end
 end
