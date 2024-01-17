@@ -1,5 +1,6 @@
 <div class="collection-container">
   <div class="collection-body">
+    <h1>Edit Subscription for <%= @subscription.user.first_name %></h1>
     <%= simple_form_for(@subscription) do |f| %>
       <%= f.input :street_address %>
       <%= f.input :suburb %>
