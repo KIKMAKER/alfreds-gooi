@@ -16,22 +16,41 @@
         </div>
       </div>
       <br>
+      <div class="gooi-container">
+  <div class="outline">
       <h1><%= @subscription.user.first_name %>'s Collections</h1>
+    <div class="grid-container-sub-show">
+      <div class="grid-header">
+        <div class="grid-item"><strong>ID</strong></div>
+        <div class="grid-item"><strong>DATE</strong></div>
+
+        <% if @subscription.XL? %>
+          <div class="grid-item"><strong>BUCKETS</strong></div>
+        <% else %>
+          <div class="grid-item"><strong>BAGS</strong></div>
+        <% end %>
+          <div class="grid-item"><strong>KIKI:</strong></div>
+          <div class="grid-item"><strong>ALFRED:</strong></div>
+
+      </div>
       <% @collections.each do |collection| %>
-        <div class="outline">
-          <h2>id:<%= collection.id %></h2>
-          <div class="m-3">
-            <p>Time: <%= collection.date&.strftime("%e %b %Y %H:%M:%S%p") %></p>
+        <div class="grid-row">
+          <div class="grid-item"><%= link_to collection.id, edit_collection_path(collection) %> <%= link_to "delete", delete_collection_path(collection) %></div>
+          <div class="grid-item"><%= collection.date&.strftime("%e %b %Y %H:%M:%S%p") %></div>
             <% if @subscription.XL? %>
-              <p>Buckets: <%= collection.buckets %>
+              <div class="grid-item">Buckets: <%= collection.buckets %></div>
             <% else %>
-              <p>Bags: <%= collection.bags %>
+              <div class="grid-item">Bags: <%= collection.bags %></div>
             <% end %>
-              <p>Note from Kiki: <%= collection.kiki_note %></p>
-              <p>Message from Alfred: <%= collection.alfred_message %></p>
-              <p><%= link_to "edit", edit_collection_path(collection) %></p>
-              <p><%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
-            </div>
+              <div class="grid-item"><%= collection.kiki_note %></div>
+              <div class="grid-item"><%= collection.alfred_message %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+        <div class="outline">
           </div>
         <% end %>
         <div class="outline">

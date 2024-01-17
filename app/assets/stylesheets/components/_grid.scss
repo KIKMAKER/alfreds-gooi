@@ -14,6 +14,13 @@
   justify-content: center;
   max-width: 100%;
 }
+.grid-container-sub-show {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0px; /* Add some spacing between grid items */
+  justify-content: center;
+  max-width: 100%;
+}
 
 .grid-header {
   background-color: #f2f2f2; /* Or any color you prefer for the header */

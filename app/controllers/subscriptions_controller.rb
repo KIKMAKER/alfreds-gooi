@@ -1,7 +1,11 @@
 class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
-    @subscriptions = Subscription.all
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.all
+    else
+      @subscriptions = Subscription.where(user_id: current_user.id)
+    end
   end
 
   def show
