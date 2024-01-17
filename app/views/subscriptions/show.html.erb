@@ -21,7 +21,7 @@
         <div class="outline">
           <h2>id:<%= collection.id %></h2>
           <div class="m-3">
-            <p>Time: <%= collection.date.strftime("%e %b %Y %H:%M:%S%p") %></p>
+            <p>Time: <%= collection.date&.strftime("%e %b %Y %H:%M:%S%p") %></p>
             <% if @subscription.XL? %>
               <p>Buckets: <%= collection.buckets %>
             <% else %>
