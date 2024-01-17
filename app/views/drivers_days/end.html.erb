@@ -1,7 +1,9 @@
 <div class="outline">
   <h1>Well done!</h1>
-  <p>Because of you, at least <%= @drivers_day.total_buckets * 25 %>L of organic waste went to the earth instead of a landfill.</p>
-  <p>You are almost done!</p>
+    <p>You collected <%= @total_bags_collected %> bags and <%= @total_buckets_collected %> buckets today</p>
+  <h5>Thats a total of <%= (@drivers_day.total_buckets + @drivers_day.collections.sum(:dropped_off_buckets)) %> buckets</h5>
+  <p>Because of you, at least <%= (@drivers_day.total_buckets + @drivers_day.collections.sum(:dropped_off_buckets)) * 25 %>L of organic waste went to the earth instead of a landfill.</p>
+  <h3>You are almost done</h3>
   <p>Remember to clean the buckets, put away the keys and fill in these last details</p>
   <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
     <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>

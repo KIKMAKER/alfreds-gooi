@@ -5,29 +5,29 @@
       <div class="grid-header">
         <div class="grid-item"><strong>DATE</strong></div>
         <div class="grid-item"><strong>START TIME</strong></div>
-        <div class="grid-item"><strong>START KMS</strong></div>
         <div class="grid-item"><strong>END TIME</strong></div>
+        <div class="grid-item"><strong>START KMS</strong></div>
         <div class="grid-item"><strong>END KMS</strong></div>
         <div class="grid-item"><strong>TOTAL BUCKETS</strong></div>
         <div class="grid-item"><strong>SFL TIME</strong></div>
         <div class="grid-item"><strong>NOTE</strong></div>
         <div class="grid-item"><strong>MESSAGE FROM ALFRED</strong></div>
-        <div class="grid-item"><strong>COLLECTIONS</strong></div>
       </div>
       <% @drivers_days.each do |drivers_day| %>
         <div class="grid-row">
-          <div class="grid-item"><%= link_to drivers_day.date.strftime('%A, %b %d'), edit_drivers_day_path(drivers_day) %></div>
-          <div class="grid-item"><%= drivers_day.start_time %></div>
+          <div class="grid-item grid-item-flexed">
+            <%= link_to drivers_day.date.strftime('%b %d'), drivers_day_collections_path(drivers_day) %>
+            <%= link_to "edit", edit_drivers_day_path(drivers_day) %>
+            <%= link_to "delete", drivers_day_path(drivers_day), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+            </div>
+          <div class="grid-item"><%= drivers_day.start_time.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= drivers_day.end_time.strftime('%I:%M') %></div>
           <div class="grid-item"><%= drivers_day.start_kms %></div>
-          <div class="grid-item"><%= drivers_day.end_time %></div>
           <div class="grid-item"><%= drivers_day.end_kms %></div>
           <div class="grid-item"><%= drivers_day.total_buckets %></div>
-          <div class="grid-item"><%= drivers_day.sfl_time %></div>
-          <!--<div class="grid-item"><%#= drivers_day.note&.truncate(100) %></div>-->
-          <div class="grid-item">GENERIC NOTE</div>
-          <!--<div class="grid-item"><%#= drivers_day.message_from_alfred.truncate(100) %></div>-->
-          <div class="grid-item">GENERIC NOTE</div>
-          <div class="grid-item"><%= link_to "Collections", drivers_day_collections_path(drivers_day) %></div>
+          <div class="grid-item"><%= drivers_day.sfl_time.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= drivers_day.note&.truncate(100) %></div>
+          <div class="grid-item"><%= drivers_day.message_from_alfred.truncate(100) %></div>
         </div>
       <% end %>
     </div>

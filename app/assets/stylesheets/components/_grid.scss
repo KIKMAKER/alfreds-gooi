@@ -9,7 +9,7 @@
 
 .grid-container-driver {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(9, 0fr);
   gap: 0px; /* Add some spacing between grid items */
   justify-content: center;
   max-width: 100%;
