@@ -16,7 +16,7 @@
 }
 .grid-container-sub-show {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 0.8fr);
   gap: 0px; /* Add some spacing between grid items */
   justify-content: center;
   max-width: 100%;
@@ -39,6 +39,11 @@
   text-align: center;
   border: 1px solid black;
   // min-width: 88px;
+}
+
+.grid-item-flexed {
+  display: flex;
+  flex-direction: column;
 }
 
 .collect-grid-button {
