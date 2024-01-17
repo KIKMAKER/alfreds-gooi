@@ -1,6 +1,6 @@
 class DriversDay < ApplicationRecord
   belongs_to :user
-  has_many :collections
+  has_many :collections, dependent: :destroy
 
   # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

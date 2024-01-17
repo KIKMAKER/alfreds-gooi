@@ -24,13 +24,13 @@
         <%= f.input :date, as: :date %>
         <div class="d-flex">
           <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
-          <%= f.input :new_customer, as: :boolean, label: "New Customer", checked_value: 'positive', unchecked_value: 'negative' %>
+          <%= f.input :new_customer, as: :boolean, label: "New Customer" %>
         </div>
       <% elsif current_user.driver? %>
         <%= f.input :alfred_message, as: :text, label: "Message from Alfred" %>
         <div class="d-flex">
           <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
-          <%= f.input :new_customer, as: :boolean, label: "DROPPED OFF", checked_value: 'negative', unchecked_value: 'positive' %>
+          <%#= f.input :new_customer, as: :boolean, label: "DROPPED OFF", checked_value: 'negative', unchecked_value: 'positive' %>
         </div>
         <%= f.hidden_field :date, value: Date.current %>
       <% end %>

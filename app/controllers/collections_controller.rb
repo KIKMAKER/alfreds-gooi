@@ -20,7 +20,7 @@ class CollectionsController < ApplicationController
     @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
   rescue CSV::MalformedCSVError => e
-    redirect_to get_csv_path, alert: "Failed to import CSV: #{e.message}"
+    redirect_to load_csv_collections_path, alert: "Failed to import CSV: #{e.message}"
   end
   # the form to get the csv (no data needs to be sent from the controller)
   # the method just tells rails which view to render
@@ -142,7 +142,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets)
     # buckets
   end
 end

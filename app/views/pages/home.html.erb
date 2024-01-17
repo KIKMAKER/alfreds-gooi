@@ -1,14 +1,12 @@
 <div class="outline">
-  <%# if @drivers_day&.sfl_time %>
-  <%if @drivers_day&.respond_to?(:sfl_time) && @drivers_day.sfl_time && @drivers_day&.persisted? %>
+  <!--Successful end of Alfred's Day-->
+  <%if current_user.driver? && @drivers_day&.respond_to?(:end_time) && @drivers_day.end_time && @drivers_day&.persisted? %>
     <h1>Thank you for your work today</h1>
     <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
     <br>
     <br>
-
     <% if @drivers_day.end_kms.nil? %>
       <p>The end kms didn't save or weren't entered</p>
-    <%# elsif @drivers_day.end %>
       <%= simple_form_for @drivers_day do |f| %>
         <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
         <%= f.submit "Save kms", class: "gooi-button" %>
@@ -17,22 +15,36 @@
       <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
     <% end %>
 
-    <p>And worked for <%= @hours_worked %></p>
+    <% unless @drivers_day.start_time && @drivers_day.end_time%>
+      <p>Seems the start/end time of your day wasn't saved</p>
+      <p>Please enter them here:</p>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :start_time, label: "Start time", required: true %>
+        <%= f.input :end_time, label: "End time", required: true %>
+        <%= f.submit "Save times", class: "gooi-button" %>
+      <% end %>
+    <% else %>
+      <p>And worked for <%= @hours_worked %></p>
+    <% end %>
     <p>Travel safe, see you next time</p>
     <div>
       <%= link_to "View all todays collections", drivers_day_collections_path(@drivers_day) %>
     </div>
-  <% elsif @drivers_day.nil? %>
-    <h1>There is no driver yet</h1>
-    <p>Please ask admin to update collections</p>
-  <% else %>
+
+  <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
+    <h1>Seems something went wrong when the collections were loaded</h1>
+    <p>Please ask Kiki to update collections</p>
+
+
+  <% elsif current_user.driver? %><!--Alfred is starting the day-->
     <h1>Good morning <%= current_user.first_name %></h1>
     <h4>It's <%= @today %> today</h4>
     <br>
-    <% if @subscriptions.empty? %>
+    <% if @subscriptions.empty? %><!--It's not a gooi day-->
+
       <h2>There are no subscriptions waiting for you.</h2>
       <p>But I love that you checked...</p>
-    <% else %>
+    <% else %><!--It's a gooi day-->
       <p>There are <%= @subscriptions.count - @skip_subscriptions.count - (@new_customers.nil? ? 0 : @new_customers.count) %> parcels waiting to be collected</p>
       <% if @new_customers&.any? %>
         <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
@@ -40,19 +52,20 @@
         <% @new_customers.each do |sub| %>
           <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
         <% end %>
-        <!--<p>Take <%#= pluralize(@new_customers.count, 'bucket') %> for them!</p>-->
-        <p>Don't forget their bucket.</p>
+        <p>Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p>
+        <!--<p>Don't forget their bucket.</p>-->
         <p>Note for the day: <%= @drivers_day.note %></p>
       <% end %>
     <% end %>
-    <% if current_user.driver? && !@drivers_day.id.nil? %>
-      <h5>Ready to get started?</h5>
-      <br>
-      <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
-    <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
-      <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
-    <% else %>
-      <p>View all <%= link_to "past days", drivers_days_path %></p>
-    <% end %>
+  <% elsif current_user.driver? && !@drivers_day.id.nil? %><!--Alfred can start the day-->
+    <h5>Ready to get started?</h5>
+    <br>
+    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
+  <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
+    <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
+  <% else %>
+    <h1>Good morning <%= current_user.first_name %></h1>
+    <h4>It's <%= @today %> today</h4>
+    <p>View all <%= link_to "past days", drivers_days_path %></p>
   <% end %>
 </div>

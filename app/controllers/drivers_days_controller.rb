@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off end edit update]
+  before_action :set_drivers_day, only: %i[drop_off end edit update destroy]
 
   def start
     # in production today will be the current day,
@@ -27,25 +27,28 @@ class DriversDaysController < ApplicationController
     end
   end
 
-  def drop_off
-    @collections = @drivers_day.collections
-    # @total_bags_collected = @collections.sum(:bags)
-    # @total_buckets_collected = @collections.sum(:buckets)
-    if request.patch?
-      if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
-        puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
-        flash[:notice] = "Drop off updated successfully with #{@drivers_day.total_buckets} buckets."
-      else
-        flash.now[:alert] = "Failed to update Driver's Day"
-        render :drop_off
-      end
-    end
-  end
+  # def drop_off
+  #   @collections = @drivers_day.collections
+  #   @total_bags_collected = @collections.sum(:bags)
+  #   @total_buckets_collected = @collections.sum(:buckets)
+  #   if request.patch?
+  #     if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
+  #       puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
+  #       flash[:notice] = "Drop off updated successfully with #{@drivers_day.total_buckets} buckets."
+  #     else
+  #       flash.now[:alert] = "Failed to update Driver's Day"
+  #       render :drop_off
+  #     end
+  #   end
+  # end
 
   def end
+    @collections = @drivers_day.collections
+    @total_bags_collected = @collections.sum(:bags)
+    @total_buckets_collected = @collections.sum(:buckets)
     if request.patch?
       if update_drivers_day(drivers_day_params, next_path: root_path)
-        puts "Driver's Day ended at: #{current_user.drivers_day.last.end_time}"
+        puts "Driver's Day ended at: #{@drivers_day.end_time}"
         flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
       else
         flash.now[:alert] = "Failed to end the Day"
@@ -68,6 +71,11 @@ class DriversDaysController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
 
+  end
+
+  def destroy
+    @drivers_day.delete
+    render :index, note: "Drivers Day deleted"
   end
 
 
