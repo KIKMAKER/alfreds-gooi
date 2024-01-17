@@ -9,7 +9,10 @@
           <p>Collection day: <%= @subscription.collection_day %></p>
           <p>Address: <%= @subscription.street_address %></p>
           <p>Collection Order: <%= @subscription.collection_order %></p>
-          <%= link_to "COLLECT!", new_subscription_collection_path(@subscription) %>
+
+          <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
+          <br>
+          <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
         </div>
       </div>
       <br>
@@ -18,8 +21,12 @@
         <div class="outline">
           <h2>id:<%= collection.id %></h2>
           <div class="m-3">
-            <p>Time: <%= collection.created_at.strftime("%e %b %Y %H:%M:%S%p") %></p>
-            <p>Bags: <%= collection.bags %>
+            <p>Time: <%= collection.date.strftime("%e %b %Y %H:%M:%S%p") %></p>
+            <% if @subscription.XL? %>
+              <p>Buckets: <%= collection.buckets %>
+            <% else %>
+              <p>Bags: <%= collection.bags %>
+            <% end %>
               <p>Note from Kiki: <%= collection.kiki_note %></p>
               <p>Message from Alfred: <%= collection.alfred_message %></p>
               <p><%= link_to "edit", edit_collection_path(collection) %></p>
