@@ -17,18 +17,24 @@
           <div class="grid-item">
             <%= subscription.street_address&.truncate(25) %>
           </div>
-          <div class="grid-item gooi-collect-button">
+         <div class="grid-item gooi-collect-button">
             <% if tomorrow_collection.nil? %>
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
             <% else %>
               <% if tomorrow_collection.skip %>
                 <%= link_to "No Collection!", edit_collection_path(tomorrow_collection) %>
               <% elsif tomorrow_collection.bags.present? && tomorrow_collection.updated_at < Time.now %>
-                <%= link_to "Got #{tomorrow_collection.bags} bags. Collect more?", edit_collection_path(tomorrow_collection) %>
+                <%= link_to "Got #{pluralize(tomorrow_collection.bags, 'bags')}. Collect more?", edit_collection_path(tomorrow_collection) %>
+
+
               <% elsif tomorrow_collection.buckets.present? && tomorrow_collection.updated_at < Time.now %>
-                <%= link_to "Got #{tomorrow_collection.buckets} buckets. Collect more?", edit_collection_path(tomorrow_collection) %>
+                <%= link_to "Got #{pluralize(tomorrow_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(tomorrow_collection) %>
               <% elsif tomorrow_collection.new_customer %>
-                <%= link_to "DROP OFF", edit_collection_path(tomorrow_collection) %>
+                <%= link_to "Meet #{tomorrow_collection.subscription.user.first_name}", edit_collection_path(tomorrow_collection) %>
+              <% elsif tomorrow_collection.dropped_off_buckets.present? && tomorrow_collection.updated_at < Time.now %>
+                <%= link_to "Dropped off #{pluralize(tomorrow_collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(tomorrow_collection) %>
+              <% elsif tomorrow_collection.subscription.user.drop_off? %>
+                <%= link_to "Drop off", edit_collection_path(tomorrow_collection) %>
               <% else %>
                 <%= link_to "Collect!", edit_collection_path(tomorrow_collection) %>
               <% end %>
