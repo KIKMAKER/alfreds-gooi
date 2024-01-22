@@ -1,14 +1,7 @@
-class User < ApplicationRecord
-  before_validation :make_international
+class Contact < ApplicationRecord
+  belongs_to :subscription
 
-  enum role: %i[customer driver admin drop_off]
-  has_many :subscriptions
-  has_many :collections, through: :subscriptions
-  has_many :drivers_day
-
-  # Callbacks
-
-  # Custom validation
+    # Custom validation
   validate :valid_international_phone_number
 
   def make_international
@@ -16,7 +9,7 @@ class User < ApplicationRecord
     # return if valid_international_phone_number()
 
     self.phone_number = starts_0? ? "+27#{phone_number[1..]}" : phone_number
-    puts "After: #{self.phone_number}"
+    puts "After: #{phone_number}"
   end
 
   def starts_0?
@@ -24,7 +17,7 @@ class User < ApplicationRecord
   end
 
   private
-  
+
   def valid_international_phone_number
     return if /\A\+27\d{9}\z/.match?(phone_number)
     if /\A\+\d{9,13}\z/.match?(phone_number)
@@ -34,15 +27,4 @@ class User < ApplicationRecord
       false
     end
   end
-
-  # Custom validation method
-
-
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-
-
 end
