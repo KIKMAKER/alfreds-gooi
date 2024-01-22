@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_14_105617) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_20_190457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_14_105617) do
     t.integer "dropped_off_buckets"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.bigint "subscription_id", null: false
+    t.string "name"
+    t.string "phone_number"
+    t.string "email"
+    t.boolean "is_available", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_contacts_on_subscription_id"
   end
 
   create_table "drivers_days", force: :cascade do |t|
@@ -90,6 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_14_105617) do
 
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
+  add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
   add_foreign_key "subscriptions", "users"
 end
