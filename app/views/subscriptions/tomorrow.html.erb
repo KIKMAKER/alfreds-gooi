@@ -39,7 +39,7 @@
     </div>
     <div class="outline">
       <% if @drivers_day&.persisted? %>
-        <%= link_to "ALL DONE", drop_off_drivers_day_path(@drivers_day), class: "gooi-button" %>
+        <%= link_to "ALL DONE", end_drivers_day_path(@drivers_day), class: "gooi-button" %>
       <% else %>
         <p><em>No collections without a driver</em></p>
       <% end %>
