@@ -17,7 +17,7 @@
           <div class="grid-item">
             <%= subscription.street_address&.truncate(25) %>
           </div>
-         <div class="grid-item gooi-collect-button">
+          <div class="grid-item gooi-collect-button">
             <% if tomorrow_collection.nil? %>
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
             <% else %>
@@ -25,8 +25,6 @@
                 <%= link_to "No Collection!", edit_collection_path(tomorrow_collection) %>
               <% elsif tomorrow_collection.bags.present? && tomorrow_collection.updated_at < Time.now %>
                 <%= link_to "Got #{pluralize(tomorrow_collection.bags, 'bags')}. Collect more?", edit_collection_path(tomorrow_collection) %>
-
-
               <% elsif tomorrow_collection.buckets.present? && tomorrow_collection.updated_at < Time.now %>
                 <%= link_to "Got #{pluralize(tomorrow_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(tomorrow_collection) %>
               <% elsif tomorrow_collection.new_customer %>
