@@ -20,14 +20,14 @@
             <%= link_to "edit", edit_drivers_day_path(drivers_day) %>
             <%= link_to "delete", drivers_day_path(drivers_day), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
             </div>
-          <div class="grid-item"><%= drivers_day.start_time.strftime('%I:%M') %></div>
-          <div class="grid-item"><%= drivers_day.end_time.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= drivers_day.start_time&.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= drivers_day.end_time&.strftime('%I:%M') %></div>
           <div class="grid-item"><%= drivers_day.start_kms %></div>
           <div class="grid-item"><%= drivers_day.end_kms %></div>
           <div class="grid-item"><%= drivers_day.total_buckets %></div>
-          <div class="grid-item"><%= drivers_day.sfl_time.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= drivers_day.sfl_time&.strftime('%I:%M') %></div>
           <div class="grid-item"><%= drivers_day.note&.truncate(100) %></div>
-          <div class="grid-item"><%= drivers_day.message_from_alfred.truncate(100) %></div>
+          <div class="grid-item"><%= drivers_day.message_from_alfred&.truncate(100) %></div>
         </div>
       <% end %>
     </div>
