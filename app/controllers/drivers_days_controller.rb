@@ -15,6 +15,7 @@ class DriversDaysController < ApplicationController
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
+    @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     if request.patch?
       if update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
