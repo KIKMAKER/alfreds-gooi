@@ -17,28 +17,28 @@
   <%# end %>
   <!--</div>
 -->
- <div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
-  <div class="container-fluid">
-    <%= link_to root_path, class: "navbar-brand" do %>
-      <%= image_tag('alt_logo.jpg', alt: 'Your Logo', class: 'alt-logo') %>
-    <% end %>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <% if user_signed_in? %>
-          <% drivers_day = DriversDay.find_by(date: Date.today) %>
-          <% if current_user.driver? %>
+  <div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
+    <div class="container-fluid">
+      <%= link_to root_path, class: "navbar-brand" do %>
+        <%= image_tag('alt_logo.jpg', alt: 'Your Logo', class: 'alt-logo') %>
+      <% end %>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto">
+          <% if user_signed_in? %>
+            <% drivers_day = DriversDay.find_by(date: Date.today) %>
+            <% if current_user.driver? %>
               <li class="nav-item active">
                 <%= link_to "Start the Day", drivers_day.present? ? start_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
               </li>
               <li class="nav-item active">
                 <%= link_to "Today's List", today_subscriptions_path, class: "nav-link" %>
               </li>
-             <!-- <li class="nav-item active">-->
-                <%#= link_to "Drop Off Page", drivers_day.present? ? drop_off_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
-<!--              </li>-->
+              <!-- <li class="nav-item active">-->
+              <%#= link_to "Drop Off Page", drivers_day.present? ? drop_off_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+              <!--              </li>-->
               <li class="nav-item active">
                 <%= link_to "End the Day", drivers_day.present? ? end_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
               </li>
@@ -62,15 +62,15 @@
                   <%= link_to "Subscriptions", subscriptions_path, class: "dropdown-item" %>
                 </div>
               </li>
-              <% if drivers_day %>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Drivers Days
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <%= link_to "Drivers Days", drivers_days_path, class: "dropdown-item" %>
-                    <%= link_to "Today's List", today_subscriptions_path, class: "dropdown-item" %>
-                    <%#= link_to "Drop Off Page", drop_off_drivers_day_path(drivers_day), class: "dropdown-item" %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Drivers Days
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <%= link_to "Drivers Days", drivers_days_path, class: "dropdown-item" %>
+                  <%= link_to "Today's List", today_subscriptions_path, class: "dropdown-item" %>
+                  <%#= link_to "Drop Off Page", drop_off_drivers_day_path(drivers_day), class: "dropdown-item" %>
+                  <% if drivers_day %>
                     <%= link_to "End the Day", end_drivers_day_path(drivers_day), class: "dropdown-item" %>
                   </div>
                 </li>
