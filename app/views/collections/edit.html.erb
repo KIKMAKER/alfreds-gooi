@@ -16,9 +16,12 @@
         <p>Address:</p>
       </strong>
       <p><%= @subscription.street_address %></p>
+      <% if @subscription.access_code %>
+        <p>Access code: <%= @subscription.access_code %></p>
+      <% end %>
     </div>
     <% if @collection.kiki_note %>
-      <p class = "collection-address">Kiki's note: <%= @collection.kiki_note %></p>
+      <strong><p class = "collection-address">Kiki's note: <%= @collection.kiki_note %></p></strong>
     <% end %>
     <% if @collection.needs_bags&. > 0 %>
       <p class = "collection-address"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
