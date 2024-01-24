@@ -11,7 +11,7 @@
       <% @skip_subscriptions.each do |sub| %>
         <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
       <% end %>
-      <h6><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> bags</strong></h6>
+      <h6><strong>And <%= @bags_needed.count pluralize(@bags_needed.count, 'house needs') %> bags</strong></h6>
       <% @bags_needed.each do |sub| %>
         <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
       <% end %>
