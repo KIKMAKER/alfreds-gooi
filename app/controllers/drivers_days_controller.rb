@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off end edit update destroy]
+  before_action :set_drivers_day, only: %i[drop_off edit update destroy]
 
   def start
     # in production today will be the current day,
@@ -44,17 +44,16 @@ class DriversDaysController < ApplicationController
   # end
 
   def end
-    @collections = @drivers_day.collections
-    @total_bags_collected = @collections.sum(:bags)
-    @total_buckets_collected = @collections.sum(:buckets)
-    if request.patch?
-      if update_drivers_day(drivers_day_params, next_path: root_path)
-        puts "Driver's Day ended at: #{@drivers_day.end_time}"
-        flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
-      else
-        flash.now[:alert] = "Failed to end the Day"
-        render :end
-      end
+    @drivers_day = DriversDay.includes(:collections).find(params[:id])
+    @total_bags_collected = @collections&.sum(:bags) || 0
+    @total_buckets_collected = @collections&.sum(:buckets) || 0
+    return unless request.patch?
+    if update_drivers_day(drivers_day_params, next_path: root_path)
+      puts "Driver's Day ended at: #{@drivers_day.end_time}"
+      flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
+    else
+      flash.now[:alert] = "Failed to end the Day"
+      render :end
     end
   end
 
