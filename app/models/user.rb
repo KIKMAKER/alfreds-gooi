@@ -24,9 +24,10 @@ class User < ApplicationRecord
   end
 
   private
-  
+
   def valid_international_phone_number
     return if /\A\+27\d{9}\z/.match?(phone_number)
+
     if /\A\+\d{9,13}\z/.match?(phone_number)
       true
     else
@@ -40,9 +41,9 @@ class User < ApplicationRecord
 
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  # :confirmable, :lockable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :timeoutable
 
 
 end
