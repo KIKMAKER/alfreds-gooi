@@ -3,12 +3,8 @@
     <div>
       <h1>Driver</h1>
       <% if @drivers_day %>
-        <s>
           <p>Total kms: <%= (@drivers_day.end_kms || 0) - (@drivers_day.start_kms || 0) %></p>
-        </s>
-        <s>
           <p>Alfred's message: <%= @drivers_day.message_from_alfred || "No message" %></p>
-        </s>
       <% end %>
     </div>
     <div>
