@@ -2,7 +2,7 @@
   <div class="outline">
     <div>
       <h1>Driver</h1>
-      <% if @drivers_day.persisted %>
+      <% if @drivers_day.&persisted %>
       <s><p>Total kms: <%= @drivers_day.end_km - @drivers_day.start_kms || 0 %></p></s>
       <s><p>Alfred's message: <%= @drivers_day.message_from_alfred %></p></s>
       <% end %>
