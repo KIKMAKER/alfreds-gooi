@@ -48,6 +48,7 @@ class DriversDaysController < ApplicationController
     @total_bags_collected = @collections&.sum(:bags) || 0
     @total_buckets_collected = @collections&.sum(:buckets) || 0
     return unless request.patch?
+
     if update_drivers_day(drivers_day_params, next_path: root_path)
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
