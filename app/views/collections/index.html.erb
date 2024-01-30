@@ -2,16 +2,22 @@
   <div class="outline">
     <div>
       <h1>Driver</h1>
-      <% if @drivers_day.&persisted %>
-      <s><p>Total kms: <%= @drivers_day.end_km - @drivers_day.start_kms || 0 %></p></s>
-      <s><p>Alfred's message: <%= @drivers_day.message_from_alfred %></p></s>
+      <% if @drivers_day %>
+        <s>
+          <p>Total kms: <%= (@drivers_day.end_kms || 0) - (@drivers_day.start_kms || 0) %></p>
+        </s>
+        <s>
+          <p>Alfred's message: <%= @drivers_day.message_from_alfred || "No message" %></p>
+        </s>
       <% end %>
     </div>
     <div>
       <h1>All collections made <%= @today %></h1>
       <% @collections.each do |collection| %>
         <% if collection.skip %>
-          <s><p><%= collection.subscription.user.first_name %> skipped</p></s>
+          <s>
+            <p><%= collection.subscription.user.first_name %> skipped</p>
+          </s>
         <% else %>
           <p><%= collection.subscription.user.first_name %>: <%= collection.bags || 0 %> bags</p>
         <% end %>
