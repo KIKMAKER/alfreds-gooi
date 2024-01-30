@@ -1,16 +1,22 @@
 <div class="gooi-container">
   <div class="outline">
     <div>
+      <h1>Driver</h1>
+      <% if @drivers_day.persisted %>
+      <s><p>Total kms: <%= @drivers_day.end_km - @drivers_day.start_kms || 0 %></p></s>
+      <s><p>Alfred's message: <%= @drivers_day.message_from_alfred %></p></s>
+      <% end %>
+    </div>
+    <div>
       <h1>All collections made <%= @today %></h1>
       <% @collections.each do |collection| %>
         <% if collection.skip %>
-          <s>
-            <p><%= collection.subscription.user.first_name %> skipped</s>
-          <% else %>
-            <p><%= collection.subscription.user.first_name %>: <%= collection.bags || 0 %> bags</p>
-          <% end %>
+          <s><p><%= collection.subscription.user.first_name %> skipped</p></s>
+        <% else %>
+          <p><%= collection.subscription.user.first_name %>: <%= collection.bags || 0 %> bags</p>
         <% end %>
-      </div>
-      <%= link_to "home", root_path, class: "gooi-button" %>
+      <% end %>
     </div>
+    <%= link_to "home", root_path, class: "gooi-button" %>
   </div>
+</div>
