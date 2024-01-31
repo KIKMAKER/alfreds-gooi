@@ -16,7 +16,7 @@
           </s>
         <% else %>
           <p><%= collection.subscription.user.first_name %>: <%= collection.bags || 0 %> bags</p>
-          <p><%= collection.message_from_alfred if collection&.message_from_alfred %></p>
+          <p><%= collection.alfred_message if collection&.alfred_message %></p>
         <% end %>
       <% end %>
     </div>
