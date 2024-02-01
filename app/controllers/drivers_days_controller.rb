@@ -45,6 +45,7 @@ class DriversDaysController < ApplicationController
 
   def end
     @drivers_day = DriversDay.includes(:collections).find(params[:id])
+    @collections = @drivers_day.collections
     @total_bags_collected = @collections&.sum(:bags) || 0
     @total_buckets_collected = @collections&.sum(:buckets) || 0
     return unless request.patch?
