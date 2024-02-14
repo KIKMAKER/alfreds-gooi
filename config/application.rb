@@ -22,6 +22,8 @@ module AlfredsGooi
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
+    # config.time_zone = 'South Africa Standard Time'
+    # config.active_record.default_timezone = :local
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

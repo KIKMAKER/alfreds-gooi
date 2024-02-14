@@ -1,7 +1,7 @@
 require 'csv'
 class CollectionsController < ApplicationController
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
-  # Creat - done by the import method and not really needing to Read or Destroy collections
+  # Create - done by the import method and not really needing to Read or Destroy collections
   def import_csv
     # find the driver (there is only one)
     driver = User.find_by(role: 'driver')
@@ -18,7 +18,7 @@ class CollectionsController < ApplicationController
       process_collection(row, subscription, @drivers_day) if subscription
     end
     @drivers_day.update!(note: params[:csv_upload][:drivers_note])
-    redirect_to subscriptions_path, notice: 'CSV imported successfully'
+    redirect_to subscriptions_path, notice: 'xCSV imported successfully'
   rescue CSV::MalformedCSVError => e
     redirect_to load_csv_collections_path, alert: "Failed to import CSV: #{e.message}"
   end
@@ -35,11 +35,11 @@ class CollectionsController < ApplicationController
     # in testing I want to be able to test the view for a given day
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    # today = Date.today
     # DEVELOPMENT
     # today = (Date.today + 1)
-    @today = today.strftime("%A")
-    @drivers_day = DriversDay.find_or_create_by(date: today)
+    # @today = today.strftime("%A")
+    @drivers_day = DriversDay.find(params[:drivers_day_id])
     @collections = @drivers_day.collections
     # @collections = Collection.where(date: today)
   end
