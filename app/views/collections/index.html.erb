@@ -15,7 +15,7 @@
             <p><%= collection.subscription.user.first_name %> skipped</p>
           </s>
         <% else %>
-          <p><%= collection.subscription.user.first_name %>: <%= collection.subscription.xl? ? collection.buckets || 0 : collection.bags || 0 %> <%= collection.subscription.xl? ? 'buckets' : 'bags' %></p>
+          <p><%= collection.subscription.user.first_name %>: <%= collection.subscription.XL? ? collection.buckets || 0 : collection.bags || 0 %> <%= collection.subscription.XL? ? 'buckets' : 'bags' %></p>
           <p><%= collection.alfred_message if collection&.alfred_message %></p>
         <% end %>
       <% end %>
