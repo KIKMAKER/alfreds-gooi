@@ -52,12 +52,8 @@ class SubscriptionsController < ApplicationController
     # today = Date.today  + 1
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
-    # @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
-    @subscriptions = Subscription.includes(:collections)
-                                .where(collection_day: @today)
-                                .order(:collection_order)
-    # @drivers_day = @subscriptions.last.collections.last.drivers_day
+    @subscriptions = Subscription.active_subs_for(@today)
   end
 
   def tomorrow
@@ -70,12 +66,8 @@ class SubscriptionsController < ApplicationController
     # today = Date.today  + 2
     @tomorrow = tomorrow.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: tomorrow)
-    # @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
-    @subscriptions = Subscription.includes(:collections)
-                                .where(collection_day: @tomorrow)
-                                .order(:collection_order)
-    # @drivers_day = @subscriptions.last.collections.last.drivers_day
+    @subscriptions = Subscription.active_subs_for(@tomorrow)
   end
 
   private
