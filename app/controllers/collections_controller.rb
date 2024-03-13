@@ -1,5 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
+  before_action :set_collection, only: [:show, :edit, :update, :destroy]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
   # Create - done by the import method and not really needing to Read or Destroy collections
   def import_csv
@@ -45,7 +46,6 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    @collection = Collection.find(params[:id])
   end
 
   def new
@@ -68,12 +68,10 @@ class CollectionsController < ApplicationController
   end
 
   def edit
-    @collection = Collection.find(params[:id])
     @subscription = @collection.subscription
   end
 
   def update
-    @collection = Collection.find(params[:id])
     if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else
@@ -82,7 +80,6 @@ class CollectionsController < ApplicationController
   end
 
   def destroy
-    @collection = Collection.find(params[:id])
     @collection.destroy
     redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
   end
@@ -108,6 +105,10 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def set_collection
+    @collection = Collection.find(params[:id])
+  end
+
   def update_subscription(subscription, row)
     holiday_start = row['holiday_start'].present? ? DateTime.parse(row['holiday_start']) : nil
     holiday_end = row['holiday_end'].present? ? DateTime.parse(row['holiday_end']) : nil
@@ -129,7 +130,7 @@ class CollectionsController < ApplicationController
     puts date
     collection = Collection.new(
       kiki_note: row['note'], skip: row['skip'] == 'TRUE', new_customer: row['new_customer'] == 'TRUE',
-      needs_bags: row['needs_bags'].to_i, date: date)
+      needs_bags: row['needs_bags'].to_i, soil_bag: row['soil_bag'].to_i, date: date)
     collection.subscription = subscription
     collection.drivers_day = drivers_day
     if collection.save

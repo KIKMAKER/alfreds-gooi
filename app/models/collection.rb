@@ -2,7 +2,6 @@ class Collection < ApplicationRecord
   belongs_to :subscription
   belongs_to :drivers_day
 
-
   # Scopes
   scope :recent, -> { order(date: :desc) }
 
@@ -13,6 +12,10 @@ class Collection < ApplicationRecord
 
   def skip?
     skip
+  end
+
+  def kiki_note_nil_zero?
+    kiki_note.nil? || kiki_note == ""
   end
 
   # Method to check if the collection is for today's date

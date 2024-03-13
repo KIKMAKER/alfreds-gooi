@@ -19,7 +19,7 @@ class DriversDaysController < ApplicationController
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     if request.patch?
       if update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
-        puts "Driver's Day started at: #{current_user.drivers_day.last.start_time}"
+        puts "Driver's Day started at: #{current_user.drivers_days.last.start_time}"
         flash[:notice] = "Day started successfully"
       else
         flash.now[:alert] = "Failed to start the Day"

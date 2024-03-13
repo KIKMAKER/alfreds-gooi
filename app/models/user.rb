@@ -4,7 +4,7 @@ class User < ApplicationRecord
   enum role: %i[customer driver admin drop_off]
   has_many :subscriptions
   has_many :collections, through: :subscriptions
-  has_many :drivers_day
+  has_many :drivers_days
 
   # Callbacks
 
