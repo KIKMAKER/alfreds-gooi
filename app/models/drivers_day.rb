@@ -16,12 +16,15 @@ class DriversDay < ApplicationRecord
     format("%.2f hours", difference_in_hours)
   end
 
+  def note_nil_zero?
+    note.nil? || note == ""
+  end
+
   # def todays_driver
   #   DriversDay.where(date: Date.today)
   # end
 
   private
-
 
   def set_default_buckets
     self.total_buckets ||= 0
