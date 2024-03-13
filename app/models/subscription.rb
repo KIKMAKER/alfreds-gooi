@@ -13,6 +13,20 @@ class Subscription < ApplicationRecord
   enum plan: %i[once_off standard XL]
   enum collection_day: Date::DAYNAMES
 
+  # customised methods
+
+  def self.active_subs_for(day)
+    all.where(collection_day: day).includes(:collections).order(:collection_order)
+  end
+
+  def self.count_skip_subs_for(day)
+    total_count = all.where(collection_day: day).count
+    skip_count = joins(:collections).where(collections: { skip: true }).distinct.count
+    new_customer_count = joins(:collections).where(collections: { new_customer: true }).distinct.count
+
+    total_count - skip_count - new_customer_count
+  end
+
   def self.humanized_plans
     {
       once_off: 'Once Off',
