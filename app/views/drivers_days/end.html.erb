@@ -9,7 +9,7 @@
     <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
     <%= f.input :message_from_alfred, label: "Any note for Kiki?" %>
     <!-- Hidden field for start_time -->
-    <%= f.hidden_field :end_time, value: Time.current %>
+    <%#= f.hidden_field :end_time, value: Time.current %>
     <%= f.submit "Thank you!", class: "gooi-button" %>
     <%#= f.button "Submit" %>
   <% end %>

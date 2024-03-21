@@ -20,11 +20,7 @@ class Subscription < ApplicationRecord
   end
 
   def self.count_skip_subs_for(day)
-    total_count = all.where(collection_day: day).count
-    skip_count = joins(:collections).where(collections: { skip: true }).distinct.count
-    new_customer_count = joins(:collections).where(collections: { new_customer: true }).distinct.count
-
-    total_count - skip_count - new_customer_count
+    active_subs_for(day).where(collections: { skip: true }).distinct.count
   end
 
   def self.humanized_plans

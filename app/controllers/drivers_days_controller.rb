@@ -12,6 +12,8 @@ class DriversDaysController < ApplicationController
     @today = today.strftime("%A")
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today)
+    @drivers_day.start_time = Time.now
+    @drivers_day.save!
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
@@ -45,6 +47,8 @@ class DriversDaysController < ApplicationController
 
   def end
     @drivers_day = DriversDay.includes(:collections).find(params[:id])
+    @drivers_day.end_time = Time.now
+    @drivers_day.save!
     @collections = @drivers_day.collections
     @total_bags_collected = @collections&.sum(:bags) || 0
     @total_buckets_collected = @collections&.sum(:buckets) || 0
