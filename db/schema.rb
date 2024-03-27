@@ -30,7 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_122527) do
     t.boolean "new_customer", default: false
     t.float "buckets"
     t.integer "dropped_off_buckets"
-    t.integer "soil_bag"
+    t.integer "soil_bag", default: 0
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
