@@ -14,16 +14,16 @@
     </div>
     <!--div containing collection details-->
     <div class="collection-notes">
-      <% if @collection.needs_bags&. > 0 %>
+      <%# if @collection.needs_bags&. > 0 %>
+      <strong>
+        <p class = "collection-notes"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
+      </strong>
+      <%# end %>
+      <% if @collection.soil_bag&. > 0 %>
         <strong>
-          <p class = "collection-notes"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
+          <p class = "collection-notes"> Drop off <%= @collection.soil_bag %> bags of soil</p>
         </strong>
       <% end %>
-      <%# if @collection.soil_bag&. > 0 %>
-<!--        <strong>
-          <p class = "collection-notes"> Drop off <%#= @collection.soil_bags %> bags of soil</p>
-        </strong>
-      <%# end %>-->
       <strong>
         <p>Address:</p>
       </strong>
