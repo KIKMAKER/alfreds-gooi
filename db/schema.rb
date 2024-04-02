@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_13_122527) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "collections", force: :cascade do |t|
     t.datetime "time"
     t.string "kiki_note"
-    t.string "alfred_message"
+    t.string "alfred_message", default: "N/A"
     t.integer "bags"
     t.bigint "subscription_id", null: false
     t.boolean "is_done", default: false, null: false
