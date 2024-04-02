@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes
+
   # I want get and patch requests on these custom drivers_day routes
   # member routes are created with /drivers_day/:id/custom_route
   # these routes (the get and the patch) allow for form input to the instance of drivers day at each url

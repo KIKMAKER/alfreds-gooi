@@ -4,7 +4,7 @@
       <h1><%= @today %></h1>
       <div class="grid-container">
         <div class="grid-item"><strong>Name</strong></div>
-        <div class="grid-item"><strong>Address</strong></div>
+        <div class="grid-item"><strong>Note</strong></div>
         <div class="grid-item"><strong>Collect</strong></div>
         <% @subscriptions.each do |subscription| %>
           <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today } %>
@@ -15,7 +15,11 @@
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
           <div class="grid-item">
-            <%= subscription.street_address&.truncate(25) %>
+            <% if today_collection.alfred_message %>
+              <%= today_collection.alfred_message&.truncate(25) %>
+            <% else %>
+              <p>No message from Alfred yet</p>
+            <% end %>
           </div>
           <div class="grid-item gooi-collect-button">
             <% if today_collection.nil? %>
@@ -41,19 +45,12 @@
         <% end %>
       </div>
     </div>
+  <% else %>
     <div class="outline">
-      <% if current_user.admin? %>
-        <%= link_to "NOTES", today_notes_path, class: "gooi-button" %>
-      <% else %>
-        <p><em>No collections without a driver</em></p>
-      <% end %>
-    <% else %>
-      <div class="outline">
-        <h1>No collections for <%= @today %>.</h1>
-        <p>yet...</p>
-        <br>
-        <%= link_to "go to home page", root_path, class: 'gooi-button' %>
-      </div>
+      <h1>No collections for <%= @today %>.</h1>
+      <p>yet...</p>
+      <br>
+      <%= link_to "go to home page", root_path, class: 'gooi-button' %>
     </div>
   <% end %>
 </div>
