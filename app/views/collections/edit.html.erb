@@ -33,8 +33,9 @@
       <% end %>
       <% unless @collection.kiki_note_nil_zero? %>
         <strong>
-          <p class = "collection-notes">Kiki's note: <%= @collection.kiki_note %></p>
+          <p class = "collection-notes">Kiki's note:</p>
         </strong>
+        <p><%= @collection.kiki_note %></p>
       <% end %>
       <% if @collection.subscription.user.drop_off? %>
         <strong>
@@ -78,7 +79,9 @@
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
-        <%= f.submit 'Done!', class: 'gooi-button' %>
+        <div class="centre">
+          <%= f.submit 'Done!', class: 'gooi-button' %>
+        </div>
       <% end %>
     <% end %>
   </div>
