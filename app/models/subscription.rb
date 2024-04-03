@@ -3,7 +3,8 @@ class Subscription < ApplicationRecord
   has_many :collections
   has_many :contacts, dependent: :destroy
 
-  accepts_nested_attributes_for :contacts
+  # accepts_nested_attributes_for :contacts
+  accepts_nested_attributes_for :user
 
   ## VALIDATIONS
   validates :street_address, :suburb, :plan, :duration, presence: true
