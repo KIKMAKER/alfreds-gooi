@@ -32,9 +32,12 @@ class SubscriptionsController < ApplicationController
   end
 
   def update
-    @subscription = Subscription.find(params[:id])
-    if @subscription.update(subscription_params)
-      redirect_to subscription_path(@subscription)
+
+    subscription = Subscription.find(params[:id])
+    user = subscription.user
+
+    if subscription.update(subscription_params) && user.update(subscription_params[:user_attributes])
+      redirect_to subscription_path(subscription)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -88,6 +91,7 @@ class SubscriptionsController < ApplicationController
   private
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order)
+                  :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
+                  user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 end

@@ -31,6 +31,40 @@
   }
 }
 
+.gooi-submit-button {
+
+  color: white;
+  background-color: #3c8a63;
+  border: 2px solid #3c8a63;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-weight: lighter;
+  font-size: 4vmin;
+  box-shadow: 1px 1px lightgray;
+  cursor: pointer;
+  margin-bottom: 2px;
+  font-family: "Montserrat", sans-serif;
+  text-decoration: none;
+
+}
+
+.btn {
+  a {
+  color: white;
+  background-color: #3c8a63;
+  border: 2px solid #3c8a63;
+  padding: 2px 2px;
+  border-radius: 5px;
+  font-weight: lighter;
+  font-size: 4vmin;
+  box-shadow: 1px 1px lightgray;
+  cursor: pointer;
+  margin-bottom: 2px;
+  font-family: "Montserrat", sans-serif;
+  text-decoration: none;
+  }
+}
+
 .back_button {
   color: white;
   background-color: #3c8a63;
