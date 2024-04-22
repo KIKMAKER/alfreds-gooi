@@ -1,2 +1,0 @@
-class Petrol < ApplicationRecord
-end
