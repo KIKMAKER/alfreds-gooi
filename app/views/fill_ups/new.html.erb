@@ -1,0 +1,26 @@
+<div class="collection-container">
+  <div class="collection-body">
+    <!--div containing back and whatsapp button-->
+    <div class="collection-body-heading">
+        <%= link_to 'Back', :back, class: 'back_button' %>
+    </div>
+    <!--div containing collection details-->
+    <div class="collection-notes">
+      <strong>
+        <p class = "collection-notes"> Fill Up the Bakkie </p>
+      </strong>
+
+    </div>
+    <!--div containing forms-->
+      <%= simple_form_for [@fill_up] do |f| %>
+        <%= f.input :volume, label: "Litres filled", placeholder: "0" %>
+        <%= f.input :cost, label: "Price per litre", placeholder: "0" %>
+        <%= f.input :odometer, label: "kms", placeholder: "0" %>
+        <%= f.input :notes, label: "Notes", placeholder: "Any notes?" %>
+        <!-- Hidden field for start_time -->
+        <div class="centre">
+          <%= f.submit 'Fill Up!', class: 'gooi-button' %>
+        </div>
+      <% end %>
+  </div>
+</div>

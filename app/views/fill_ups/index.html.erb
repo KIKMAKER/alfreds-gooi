@@ -1,0 +1,31 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Fill Ups</h1>
+    <div class="grid-container-driver">
+      <div class="grid-header">
+        <div class="grid-item"><strong>DATE</strong></div>
+        <div class="grid-item"><strong>TIME</strong></div>
+        <div class="grid-item"><strong>LITRES</strong></div>
+        <div class="grid-item"><strong>COST</strong></div>
+        <div class="grid-item"><strong>COST PER LITRE</strong></div>
+        <div class="grid-item"><strong>KMS</strong></div>
+        <div class="grid-item"><strong>DISTANCE</strong></div>
+        <div class="grid-item"><strong>EFFICIENCY</strong></div>
+        <div class="grid-item"><strong>NOTE</strong></div>
+      </div>
+      <% @fill_ups.each do |fill_up| %>
+        <div class="grid-row">
+          <div class="grid-item grid-item-flexed"><%= fill_up.date.strftime('%A') %></div>
+          <div class="grid-item"><%= fill_up.date&.strftime('%I:%M') %></div>
+          <div class="grid-item"><%= fill_up.volume %></div>
+          <div class="grid-item"><%= fill_up.cost %></div>
+          <div class="grid-item"><%= fill_up.cost_per_unit %></div>
+          <div class="grid-item"><%= fill_up.odometer %></div>
+          <div class="grid-item"><%= fill_up.distance_since_last_fill  %></div>
+          <div class="grid-item"><%= fill_up.fuel_efficiency %></div>
+          <div class="grid-item"><%= fill_up.notes %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

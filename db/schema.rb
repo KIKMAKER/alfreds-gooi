@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_22_194744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 
+  create_table "fill_ups", force: :cascade do |t|
+    t.datetime "date", default: "2024-04-22 20:08:26"
+    t.decimal "volume"
+    t.integer "odometer"
+    t.decimal "cost", precision: 10, scale: 2
+    t.decimal "cost_per_unit", precision: 10, scale: 2
+    t.text "notes"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_fill_ups_on_user_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.string "customer_id"
     t.string "access_code"
@@ -104,5 +117,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
+  add_foreign_key "fill_ups", "users"
   add_foreign_key "subscriptions", "users"
 end

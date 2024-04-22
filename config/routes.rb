@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'fill_ups/new'
+  get 'fill_ups/index'
 
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -43,4 +45,6 @@ Rails.application.routes.draw do
     end
   end
   resources :collections, only: %i[edit update destroy]
+
+  resources :fill_ups
 end
