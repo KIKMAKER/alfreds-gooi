@@ -1,3 +1,7 @@
+<%= p (0..50).to_a.forty_two %>
+<%= p (0..50).to_a.second %>
+<%= p (0..50).to_a.third %>
+
 <div class="outline">
   <!--Alfred can start the day-->
   <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
