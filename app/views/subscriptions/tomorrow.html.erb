@@ -15,7 +15,7 @@
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
           <div class="grid-item">
-            <%= subscription.street_address&.truncate(25) %>
+            <%= link_to subscription.street_address&.truncate(25), "https://maps.google.com/?q=#{subscription.street_address}", target: :_blank  %>
           </div>
           <div class="grid-item gooi-collect-button">
             <% if tomorrow_collection.nil? %>
