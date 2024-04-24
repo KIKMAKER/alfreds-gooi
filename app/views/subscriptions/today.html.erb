@@ -15,7 +15,7 @@
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
           <div class="grid-item">
-            <%= subscription.street_address&.truncate(25) %>
+            <%= link_to subscription.street_address&.truncate(25), "https://maps.google.com/?q=#{subscription.street_address}", target: :_blank  %>
           </div>
           <div class="grid-item gooi-collect-button">
             <% if today_collection.nil? %>
@@ -24,9 +24,9 @@
               <% if today_collection.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection) %>
               <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.bags, 'bag')}. Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.buckets, 'bucket')}. Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection.new_customer %>
                 <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection) %>
               <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
