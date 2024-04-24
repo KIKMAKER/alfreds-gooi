@@ -17,6 +17,8 @@
           <div class="grid-item">
             <% if today_collection.alfred_message %>
               <%= today_collection.alfred_message %>
+            <% elsif today_collection.skip %>
+              <p>Skipped</p>
             <% else %>
               <p>No message from Alfred yet</p>
             <% end %>
