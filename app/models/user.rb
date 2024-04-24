@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :subscriptions
   has_many :collections, through: :subscriptions
   has_many :drivers_days
+  has_many :fill_ups 
 
   # Callbacks
 

@@ -42,6 +42,9 @@
               <li class="nav-item active">
                 <%= link_to "End the Day", drivers_day.present? ? end_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
               </li>
+              <li class="nav-item active">
+                <%= link_to "Fill Up", fill_ups_new_path, class: "nav-link" %>
+              </li>
             <% elsif current_user.admin? %>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -1,5 +1,6 @@
 class FillUp < ApplicationRecord
   belongs_to :user
+  belongs_to :car
 
   # Custom methods
   # a method that calculates the distance travelled since last fillup

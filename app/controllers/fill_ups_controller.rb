@@ -8,6 +8,7 @@ class FillUpsController < ApplicationController
     @fill_up = FillUp.new(fill_up_params)
     @fill_up.user = current_user
     @fill_up.date = DateTime.now
+    @fill_up.car = Car.first
     if @fill_up.save
       # redirect_to root_path
       redirect_to fill_ups_path
