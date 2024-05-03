@@ -49,8 +49,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   create_table "drivers_days", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "end_time"
-    t.integer "start_kms"
-    t.integer "end_kms"
     t.string "note"
     t.bigint "user_id", null: false
     t.integer "total_buckets"
@@ -58,6 +56,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "updated_at", null: false
     t.datetime "date"
     t.datetime "sfl_time"
+    t.integer "start_kms"
+    t.integer "end_kms"
     t.string "message_from_alfred"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
