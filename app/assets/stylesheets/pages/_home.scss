@@ -71,9 +71,14 @@ section {
   object-fit: cover;
 }
 .gooi-video {
-  margin-top: 32px;
+  margin-top: 2px;
   width: 50%;
   position: relative;
   border-radius: 30px;
   z-index: 100;
+}
+//Mission Section
+.mission-section {
+  background-color: #FBB718;
+  margin-top: 100px;
 }
