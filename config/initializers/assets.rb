@@ -15,3 +15,4 @@ Rails.application.config.assets.precompile += %w(bootstrap.min.js popper.js)
 # Chris asdding this to get video to work
 Rails.application.config.assets.precompile += %w( Our_Mission_at_Soil_For_Life.mp4 )
 
+Rails.application.config.assets.precompile += %w( application.scss )
