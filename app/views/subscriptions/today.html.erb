@@ -24,9 +24,9 @@
               <% if today_collection.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection) %>
               <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.bags, 'bag')}. Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.buckets, 'bucket')}. Collect more?", edit_collection_path(today_collection) %>
               <% elsif today_collection.new_customer %>
                 <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection) %>
               <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
