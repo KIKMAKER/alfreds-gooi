@@ -1,1 +1,79 @@
 // Specific CSS for your home-page
+
+// Chris Styles
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+section {
+  text-align: center;
+}
+
+.gooi-header {
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  height: 70vh;
+  width: 100%;
+  background-repeat: no-repeat;
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3rem;
+    color: white;
+    text-align: center;
+    padding-top: 20vh;
+  }
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1.3rem;
+    color:white;
+    text-align: center;
+  }
+}
+.inner-header-container {
+  margin:0 10%;
+}
+
+// WAVES STYLE
+.waves {
+  position: relative;
+  width: 100%;
+  height: 15vh;
+  bottom: 120px;
+}
+
+.yellow-txt{
+  color: #FBB718;
+  font-weight: 700;
+}
+
+.btn-gooi {
+  margin: 16px 0px;
+  padding: 16px 56px;
+  background-color: #fff;
+  color: #023F3A;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.4rem;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #ffffff00;
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 16px 80px;
+  }
+}
+.header-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gooi-video {
+  margin-top: 32px;
+  width: 50%;
+  position: relative;
+  border-radius: 30px;
+  z-index: 100;
+}
