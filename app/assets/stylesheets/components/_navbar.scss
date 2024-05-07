@@ -39,6 +39,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .navbar-container {
+  z-index: 1000;
   position: sticky;
   top:0;
   width: 100%;
