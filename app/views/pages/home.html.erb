@@ -1,3 +1,6 @@
+
+  <!--header-->
+
 <section class="gooi-header">
   <div class="inner-header-container">
   <h1>Organic waste recycling made easy</h1>
@@ -7,35 +10,41 @@
     Ready to join the food waste revolution?</p>
     <button class="btn-gooi">Gooi</button>
   </div>
+  <!--video-->
   <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true) %>
 </section>
-    <div class="wave-container">
-      <svg
-        class="waves"
-        viewBox="0 24 150 28"
-        preserveAspectRatio="none"
-        shape-rendering="auto"
-      >
-      <defs>
-        <path
-        id="gentle-wave"
-        d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+
+  <!--code to create the wave in the header section-->
+
+  <div class="wave-container">
+    <svg
+      class="waves"
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+    <defs>
+      <path
+      id="gentle-wave"
+      d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+      />
+    </defs>
+      <g class="parallax">
+        <use
+          xlink:href="#gentle-wave"
+          x=""
+          y="0"
+          fill="rgba(255,255,255)"
         />
-      </defs>
-        <g class="parallax">
-          <use
-            xlink:href="#gentle-wave"
-            x=""
-            y="0"
-            fill="rgba(255,255,255)"
-          />
-        </g>
-      </svg>
-    </div>
+      </g>
+    </svg>
+  </div>
+
     <!--mission section-->
+
 <section class="mission-section">
   <div class="content-wrapper">
-      <!--left section-->
+      <!--left-->
     <div class="info-container">
       <h1>Mission we are working on<span class="yellow-txt">.</span></h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. Aliquip ex ea commodo consequat. <br><br> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <strong class="yellow-txt">Excepteur sint</strong> occaecat cupidatat non proident.</p>
@@ -58,7 +67,7 @@
         </div>
       </div>
     </div>
-    <!--right section-->
+    <!--right-->
     <div class="images-container">
       <div class="img-1">
         <%= image_tag('kobus.jpg', class: 'mission-image') %>
@@ -72,7 +81,9 @@
     </div>
   </div>
 </section>
+
   <!--compost section -->
+
 <section class="compost-section">
   <h1>Why we compost</h1>
   <div class="content-wrapper">
@@ -101,3 +112,18 @@
       </div>
   </div>
 </section>
+
+  <!--testimonial section-->
+
+  <section class="testimonial-section">
+  <!--  <h1>Testimonials</h1>-->
+    <div class="content-wrapper">
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+        <!--  <p>loerm ipsum</p>-->
+          <%#= image_tag %>
+<!--          <h4>name</h4>-->
+        </div>
+      </div>
+    </div>
+  </section>
