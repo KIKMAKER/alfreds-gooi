@@ -11,7 +11,12 @@
     <button class="btn-gooi">Gooi</button>
   </div>
   <!--video-->
-  <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true) %>
+  <div class="video-container">
+    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video") %>
+    <div class="play-btn-container">
+      >
+    </div>
+  </div>
 </section>
 
   <!--code to create the wave in the header section-->
