@@ -1,50 +1,31 @@
 <div class="gooi-container">
   <div class="outline">
     <div>
+      
       <h1><%= @subscription.user.first_name %>'s Subscription</h1>
-        <div>
-          <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
-          <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
-          <p>Collection day: <%= @subscription.collection_day %></p>
-          <p>Address: <%= @subscription.street_address %></p>
-          <p>Collection Order: <%= @subscription.collection_order %></p>
+      <div>
+        <h2>Summary</h2>
+        <p>Total collection: <%= @total_collections %></p>
+        <p>Skipped collection: <%= @skipped_collections %></p>
+        <p>Total Bags: <%= @total_bags %></p>
+        <p>Total Buckets: <%= @total_buckets %></p>
+        <p>Bags in the Last Month: <%= @bags_last_month %></p>
+        <p>Bags in the Last 3 Months: <%= @bags_last_three_months %></p>
+        <p>Bags in the Last 6 Months: <%= @bags_last_six_months %></p>
 
-          <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
-          <br>
-          <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
-        </div>
-      <br>
-      <h1 class="m-3"><%= @subscription.user.first_name %>'s Collections</h1>
-      <div class="grid-container-sub-show">
-        <div class="grid-header">
-
-          <div class="grid-item "><strong>ID</strong></div>
-          <div class="grid-item"><strong>DATE</strong></div>
-
-          <% if @subscription.XL? %>
-            <div class="grid-item"><strong>BUCKETS</strong></div>
-          <% else %>
-            <div class="grid-item"><strong>BAGS</strong></div>
-          <% end %>
-
-          <div class="grid-item"><strong>KIKI:</strong></div>
-          <div class="grid-item"><strong>ALFRED:</strong></div>
-
-        </div>
-        <% @collections.each do |collection| %>
-          <div class="grid-row">
-            <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
-            <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
-            <% if @subscription.XL? %>
-              <div class="grid-item"><%= collection.buckets %></div>
-            <% else %>
-              <div class="grid-item"><%= collection.bags %></div>
-            <% end %>
-            <div class="grid-item"><%= collection.kiki_note %></div>
-            <div class="grid-item"><%= collection.alfred_message %></div>
-          </div>
-        <% end %>
       </div>
+      <div>
+        <h2>Details</h2>
+        <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
+        <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
+        <p>Collection day: <%= @subscription.collection_day %></p>
+        <p>Address: <%= @subscription.street_address %></p>
+        <p>Collection Order: <%= @subscription.collection_order %></p>
+        <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
+        <br>
+        <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
+      </div>
+      <br>
     </div>
     <div class="outline">
       <%= link_to "All Subscriptions", subscriptions_path %>

@@ -11,6 +11,15 @@ class SubscriptionsController < ApplicationController
   def show
     @subscription = Subscription.find(params[:id])
     @collections = @subscription.collections
+
+    @total_collections = @subscription.total_collections
+    @skipped_collections = @subscription.skipped_collections
+    @successful_collections = @total_collections - @skipped_collections
+    @total_bags = @subscription.total_bags
+    @total_buckets = @subscription.total_buckets
+    @bags_last_month = @subscription.total_bags_last_n_months(1)
+    @bags_last_three_months = @subscription.total_bags_last_n_months(3)
+    @bags_last_six_months = @subscription.total_bags_last_n_months(6)
   end
 
   def new
