@@ -62,6 +62,9 @@
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
         <%= f.input :dropped_off_buckets, placeholder: "0" %>
+        <% if current_user.admin? %>
+          <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
+        <% end %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
@@ -75,6 +78,9 @@
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% elsif @subscription.XL? %>
           <%= f.input :buckets, label: "Number of buckets collected", placeholder: "0" %>
+        <% end %>
+        <% if current_user.admin? %>
+          <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
         <% end %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
