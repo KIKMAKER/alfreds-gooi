@@ -212,17 +212,85 @@ section {
     border-radius: 14px;
   }
 }
+// Testimonial styles
 
-// play button
-.play-btn-container {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #FBB718;
-  width: 70px;
-  height: 70px;
-  border-radius: 150px;
-  background-color: #ffffff;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+.testimonial-section {
+  padding: 44px 0px;
+  margin-top: 44px;
+  background-color: #023f3a32;
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    color: #023F3A;
+    font-size: 48px;
+  }
+
 }
+.testimonial-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  p {
+    font-family: 'Montserrat','sans-serif';
+    font-size: 18px;
+  }
+
+  h4 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+
+  }
+
+}
+.testimonial-image {
+  border: solid 4px #FBB718;
+  background-color: #525560;
+  width: 72px;
+  height: 72px;
+  border-radius: 200px;
+}
+.testimonials-container {
+  display: flex;
+  width:100%;
+}
+
+// Compostable Styles
+
+.compostable-section {
+  margin-top: 44px;
+  padding: 44px 0px;
+
+  h1 {
+    font-family: 'Libre Baskerville', 'serif';
+    color: #023F3A;
+    font-size: 48px;
+  }
+}
+.compostable-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.compostable-card {
+  display: flex;
+  
+}
+
+
+
+// play button Style
+
+
+// .play-btn-container {
+//   position: absolute;
+//   display: none;
+//   justify-content: center;
+//   align-items: center;
+//   color: #FBB718;
+//   width: 70px;
+//   height: 70px;
+//   border-radius: 150px;
+//   background-color: #ffffff;
+//   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+// }
