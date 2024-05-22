@@ -36,6 +36,10 @@ class Subscription < ApplicationRecord
     collections.where("created_at >= ?", n.months.ago).sum(:bags)
   end
 
+  def total_buckets_last_n_months(n)
+    collections.where("created_at >= ?", n.months.ago).sum(:buckets)
+  end
+
 
 
 
