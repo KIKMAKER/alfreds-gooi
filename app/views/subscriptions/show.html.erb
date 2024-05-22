@@ -17,12 +17,12 @@
         <p>Total Buckets: <%= @total_buckets %></p>
         <% if @subscription.XL? %>
           <p>Buckets in the Last Month: <%= @buckets_last_month %></p>
-          <p>Buckets in the Last 3 Months: <%= @buckets_last_three_months %></p>
-          <p>Buckets in the Last 6 Months: <%= @buckets_last_six_months %></p>
+          <p>Buckets in the Last 3 Months: <%= @buckets_last_three_months %> ~ ave: <%= @buckets_last_three_months/3 %></p>
+          <p>Buckets in the Last 6 Months: <%= @buckets_last_six_months %> ~ ave: <%= @buckets_last_six_months/6  %> </p>
         <% else %>
           <p>Bags in the Last Month: <%= @bags_last_month %></p>
-          <p>Bags in the Last 3 Months: <%= @bags_last_three_months %></p>
-          <p>Bags in the Last 6 Months: <%= @bags_last_six_months %></p>
+          <p>Bags in the Last 3 Months: <%= @bags_last_three_months %> ~ ave: <%= @bags_last_three_months/3 %></p>
+          <p>Bags in the Last 6 Months: <%= @bags_last_six_months %>~ ave: <%= @bags_last_six_months/6  %> </p>
         <% end %>
       </div>
       <br>
