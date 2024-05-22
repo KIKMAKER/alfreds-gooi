@@ -20,6 +20,9 @@ class SubscriptionsController < ApplicationController
     @bags_last_month = @subscription.total_bags_last_n_months(1)
     @bags_last_three_months = @subscription.total_bags_last_n_months(3)
     @bags_last_six_months = @subscription.total_bags_last_n_months(6)
+    @buckets_last_month = @subscription.total_buckets_last_n_months(1)
+    @buckets_last_three_months = @subscription.total_buckets_last_n_months(3)
+    @buckets_last_six_months = @subscription.total_buckets_last_n_months(6)
   end
 
   def new

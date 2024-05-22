@@ -40,9 +40,6 @@ class Subscription < ApplicationRecord
     collections.where("created_at >= ?", n.months.ago).sum(:buckets)
   end
 
-
-
-
   def self.active_subs_for(day)
     all.where(collection_day: day).includes(:collections).order(:collection_order)
   end
