@@ -2,24 +2,24 @@
   <div class="outline">
     <div>
       <h1><%= @subscription.user.first_name %>'s Subscription</h1>
-        <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
-        <br>
-        <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
-        <br>
-        <%= link_to "View all collections", subscription_collections_path(@subscription) %>
-        <br>
+      <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
+      <br>
+      <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
+      <br>
+      <%= link_to "View all collections", subscription_collections_path(@subscription) %>
+      <br>
       <div>
         <br>
         <h2>Summary</h2>
         <p>Total collection: <%= @total_collections %></p>
         <p>Skipped collection: <%= @skipped_collections %></p>
-        <p>Total Bags: <%= @total_bags %></p>
-        <p>Total Buckets: <%= @total_buckets %></p>
         <% if @subscription.XL? %>
+          <p>Total Buckets: <%= @total_buckets %></p>
           <p>Buckets in the Last Month: <%= @buckets_last_month %></p>
           <p>Buckets in the Last 3 Months: <%= @buckets_last_three_months %> ~ ave: <%= @buckets_last_three_months/3 %></p>
           <p>Buckets in the Last 6 Months: <%= @buckets_last_six_months %> ~ ave: <%= @buckets_last_six_months/6  %> </p>
         <% else %>
+          <p>Total Bags: <%= @total_bags %></p>
           <p>Bags in the Last Month: <%= @bags_last_month %></p>
           <p>Bags in the Last 3 Months: <%= @bags_last_three_months %> ~ ave: <%= @bags_last_three_months/3 %></p>
           <p>Bags in the Last 6 Months: <%= @bags_last_six_months %>~ ave: <%= @bags_last_six_months/6  %> </p>
