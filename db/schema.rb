@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_23_105211) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,8 +49,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   create_table "drivers_days", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "end_time"
-    t.integer "start_kms"
-    t.integer "end_kms"
     t.string "note"
     t.bigint "user_id", null: false
     t.integer "total_buckets"
@@ -58,6 +56,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "updated_at", null: false
     t.datetime "date"
     t.datetime "sfl_time"
+    t.integer "start_kms"
+    t.integer "end_kms"
     t.string "message_from_alfred"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
@@ -79,6 +79,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "updated_at", null: false
     t.integer "collection_order"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "testimonials", force: :cascade do |t|
+    t.string "content"
+    t.integer "raking"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -105,4 +114,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "testimonials", "users"
 end

@@ -57,4 +57,5 @@ puts "Seed file complete with"
 puts "#{Subscription.where(collection_day: 2).count} subscriptions for Tuesday"
 puts "#{Subscription.where(collection_day: 3).count} subscriptions for Wednesday"
 
+
 puts "Seed complete."
