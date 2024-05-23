@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_105211) do
 
   create_table "testimonials", force: :cascade do |t|
     t.string "content"
-    t.integer "raking"
+    t.integer "ranking"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -5,7 +5,7 @@ class Testimonial < ApplicationRecord
 
   def self.import_from_csv(file_path)
     CSV.foreach(file_path, headers: true) do |row|
-      Testimonial.create!(content: row['Testimonial'], ranking: row['Ranking'])
+      Testimonial.create!(content: row['Testimonial'], ranking: row['Ranking'].to_i)
     end
     puts "Testimonials imported successfully!"
   end
