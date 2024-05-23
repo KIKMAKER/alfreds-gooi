@@ -1,71 +1,179 @@
-<div class="outline">
-  <!--Alfred can start the day-->
-  <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
-    <h1>Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <br>
-    <!--It's not a gooi day-->
-    <% if @subscriptions.empty? %>
-      <h2>There are no subscriptions waiting for you.</h2>
-      <p>But I love that you checked...</p>
-      <!--It's a gooi day-->
-    <% else %>
-      <p>There are <%= @subscriptions.count - @count_skip_subscriptions - (@new_customers.any? ? @new_customers.count : 0 ) %> parcels waiting to be collected</p>
-      <% if @new_customers&.any? %>
-        <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
-        <h5>They are:</h5>
-        <% @new_customers.each do |sub| %>
-          <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
-        <% end %>
-        <p>Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p>
-        <!--<p>Don't forget their bucket.</p>-->
-      <% end %>
-    <% end %>
-    <% unless @drivers_day.note_nil_zero? %>
-      <p>Note for the day: <%= @drivers_day.note %></p>
-    <% end %>
-    <h5>Ready to get started?</h5>
-    <br>
-    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
-    <!--Alfred has finished the day-->
-  <%elsif current_user.driver? && @drivers_day&.respond_to?(:end_time) && @drivers_day.end_time && @drivers_day&.persisted? %>
-    <h1>Thank you for your work today</h1>
-    <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
-    <br>
-    <br>
-    <% if @drivers_day.end_kms.nil? %>
-      <p>The end kms didn't save or weren't entered</p>
-      <%= simple_form_for @drivers_day do |f| %>
-        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
-        <%= f.submit "Save kms", class: "gooi-button" %>
-      <% end %>
-    <% else %>
-      <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
-    <% end %>
-    <% unless @drivers_day.start_time && @drivers_day.end_time%>
-      <p>Seems the start/end time of your day wasn't saved</p>
-      <p>Please enter them here:</p>
-      <%= simple_form_for @drivers_day do |f| %>
-        <%= f.input :start_time, label: "Start time", required: true %>
-        <%= f.input :end_time, label: "End time", required: true %>
-        <%= f.submit "Save times", class: "gooi-button" %>
-      <% end %>
-    <% else %>
-      <p>And worked for <%= @hours_worked %></p>
-    <% end %>
-    <p>Travel safe, see you next time</p>
-    <div>
-      <%= link_to "View all todays collections", drivers_day_collections_path(@drivers_day) %>
+
+  <!--header-->
+
+<section class="gooi-header">
+  <div class="inner-header-container">
+  <h1>Organic waste recycling made easy</h1>
+  <p>Gooi makes composting your food waste as easy as throwing it in the bin.
+    Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
+    Gooi offers weekly collection of food scraps from your doorstep.
+    Ready to join the food waste revolution?</p>
+    <button class="btn-gooi">Gooi</button>
+  </div>
+  <!--video-->
+  <div class="video-container">
+    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video") %>
+<!--    <div class="play-btn-container">
+      >
+    </div>-->
+  </div>
+</section>
+
+  <!--code to create the wave in the header section-->
+
+  <div class="wave-container">
+    <svg
+      class="waves"
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+    <defs>
+      <path
+      id="gentle-wave"
+      d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+      />
+    </defs>
+      <g class="parallax">
+        <use
+          xlink:href="#gentle-wave"
+          x=""
+          y="0"
+          fill="rgba(255,255,255)"
+        />
+      </g>
+    </svg>
+  </div>
+
+    <!--mission section-->
+
+<section class="mission-section">
+  <div class="content-wrapper">
+      <!--left-->
+    <div class="info-container">
+      <h1>Mission we are working on<span class="yellow-txt">.</span></h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. Aliquip ex ea commodo consequat. <br><br> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <strong class="yellow-txt">Excepteur sint</strong> occaecat cupidatat non proident.</p>
+      <div class="icons-container">
+        <div class="icon-container">
+          <%= image_tag('plant.png' , class: 'icon' ) %>
+          <h3>Lorem ipsum</h3>
+        </div>
+        <div class="icon-container">
+          <%= image_tag('bag.png' , class: 'icon' ) %>
+          <h3>Lorem ipsum</h3>
+        </div>
+        <div class="icon-container">
+          <%= image_tag('mower.png' , class: 'icon' ) %>
+          <h3>Lorem ipsum</h3>
+        </div>
+        <div class="icon-container">
+          <%= image_tag('mower.png' , class: 'icon' ) %>
+          <h3>Lorem ipsum</h3>
+        </div>
+      </div>
     </div>
-  <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
-    <h1>Seems something went wrong when the collections were loaded</h1>
-    <p>Please ask Kiki to update collections</p>
-    <%# elsif current_user.driver? %><!--Alfred is starting the day-->
-  <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
-    <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
-  <% else %>
-    <h1>Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <p>View all <%= link_to "past days", drivers_days_path %></p>
-  <% end %>
-</div>
+    <!--right-->
+    <div class="images-container">
+      <div class="img-1">
+        <%= image_tag('kobus.jpg', class: 'mission-image') %>
+      </div>
+      <div class="img-2">
+        <%= image_tag('compost-01.jpg', class: 'mission-image') %>
+      </div>
+      <div class="img-3">
+        <%= image_tag('compost-02.jpg', class: 'mission-image') %>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!--compost section -->
+
+<section class="compost-section">
+  <h1>Why we compost</h1>
+  <div class="content-wrapper">
+      <div class="info-card-container">
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-1.png', class: 'compost-image') %>
+          </div>
+          <h3>Reduce landfill waste</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+        </div>
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-2.png', class: 'compost-image') %>
+          </div>
+          <h3>Reduce landfill waste</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+        </div>
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+          </div>
+          <h3>Reduce landfill waste</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+        </div>
+      </div>
+  </div>
+</section>
+
+  <!--testimonial section-->
+
+  <section class="testimonial-section">
+    <h1>Testimonials</h1>
+    <div class="content-wrapper">
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <div class="testimonial-image">
+            <%#= image_tag('gooi_logo_CR.png') %>
+          </div>
+          <h4>name</h4>
+        </div>
+                <div class="testimonial-card">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <div class="testimonial-image">
+            <%#= image_tag('gooi_logo_CR.png') %>
+          </div>
+          <h4>name</h4>
+        </div>
+                <div class="testimonial-card">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <div class="testimonial-image">
+            <%#= image_tag('gooi_logo_CR.png') %>
+          </div>
+          <h4>name</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- What is compostable -->
+<section class="compostable-section">
+  <h1>What is compostable</h1>
+  <div class="content-wrapper">
+    <div class="compostable-container">
+      <div class="compostable-card">
+        <%= image_tag('tomatoes.svg') %>
+        <p>Tomatoes</p>
+      </div>
+            <div class="compostable-card">
+        <%= image_tag('carrots.svg') %>
+        <p>Carrots</p>
+      </div>
+            <div class="compostable-card">
+        <%= image_tag('potatoes.svg') %>
+        <p>Potatoes</p>
+      </div>
+            <div class="compostable-card">
+        <%= image_tag('ladyfingers.svg') %>
+        <p>Ladyfingers</p>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
   # skip_before_action :authenticate_user!, only: [ :home ]
 
-  def home
+  def today
     # in production today will be the current day,
     today = Date.today
     # but in testing I want to be able to test the view for a given day
@@ -15,5 +15,9 @@ class PagesController < ApplicationController
 
     @hours_worked = @drivers_day.hours_worked unless @drivers_day.end_time.nil?
     @new_customers = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
+  end
+
+  def home
+    
   end
 end
