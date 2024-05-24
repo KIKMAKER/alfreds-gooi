@@ -324,18 +324,16 @@ section {
   }
   .gooi-header {
 
-    height: 80vh;
+    height: 100vh;
 
-    h1 {
-      padding: 5vh;
-    }
     p {
       font-size: 1rem;
       width:70%;
     }
   }
   .gooi-video {
-    width: 80%;
+    width: 90%;
+    border-radius: 9px;
   }
   .waves {
     bottom: 70px;
@@ -346,6 +344,15 @@ section {
   .gooi-header{
     h1 {
       font-size: 24px;
+      padding-top:24px;
     }
+    p {
+      width: 90%;
+    }
+  }
+
+  .btn-gooi {
+    padding: 8px 32px;
+    width: 100%;
   }
 }
