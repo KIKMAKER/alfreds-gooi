@@ -91,3 +91,17 @@
   font-weight: 500;
   text-decoration: none;
 }
+
+@media  screen and (max-width:623px) {
+
+  .inner-container{
+    justify-content: space-between;
+
+    button {
+      padding:8px 16px;
+    }
+  }
+  .links-container {
+    display: none;
+  }
+}
