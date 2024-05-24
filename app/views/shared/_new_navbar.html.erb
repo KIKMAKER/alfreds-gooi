@@ -1,12 +1,17 @@
 <div class="navbar-container">
   <div class="inner-container">
-    <%= image_tag('gooi_logo_CR.png') %>
+    <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
     <div class="links-container">
       <%= link_to 'The story',root_path, class:"link-title" %>
       <%= link_to 'How we compost',root_path, class: "link-title" %>
       <button>
         <%= link_to 'Sign up', root_path, class: "link-title-light" %>
       </button>
+    </div>
+    <div class="hamburger-menu">
+      <div id="menu-icon">
+        <%= image_tag('menu-svgrepo-com.png', class: 'menu-icon') %>
+      </div>
     </div>
   </div>
 </div>
