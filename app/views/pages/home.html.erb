@@ -1,74 +1,58 @@
+<!--header-->
 
-  <!--header-->
-
-<section class="gooi-header"> 
+<section class="gooi-header">
   <div class="inner-header-container">
-  <h1>Organic waste recycling made easy</h1>
-  <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-    Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
-    Gooi offers weekly collection of food scraps from your doorstep.
-    Ready to join the food waste revolution?</p>
-    <button class="btn-gooi">Gooi</button>
+    <h1>Organic Waste Recycling Made Easy</h1>
+    <p>With Gooi, composting your food waste is as simple as tossing it in the bin.</p>
+    <p>We're on a mission to redirect <strong class="yellow-txt">organic waste</strong> from landfills to nourish our earth.</p>
+    <p>Join us for a weekly collection of your food scraps right from your doorstep.</p>
+    <p>Ready to transform your waste into a resource?</p>
+
+
+    <button class="btn-gooi">Join the Revolution</button>
   </div>
   <!--video-->
   <div class="video-container">
-    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
-<!--    <div class="play-btn-container">
-      >
-    </div>-->
+    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4",
+    class: "gooi-video",
+    controls: true,
+    loop: true) %>
   </div>
 </section>
 
-  <!--code to create the wave in the header section-->
+<!--code to create the wave in the header section-->
 
-  <div class="wave-container">
-    <svg
-      class="waves"
-      viewBox="0 24 150 28"
-      preserveAspectRatio="none"
-      shape-rendering="auto"
-    >
+<div class="wave-container">
+  <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
     <defs>
-      <path
-      id="gentle-wave"
-      d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
-      />
+      <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"/>
     </defs>
-      <g class="parallax">
-        <use
-          xlink:href="#gentle-wave"
-          x=""
-          y="0"
-          fill="rgba(255,255,255)"
-        />
-      </g>
-    </svg>
-  </div>
+    <g class="parallax">
+      <use xlink:href="#gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+    </g>
+  </svg>
+</div>
 
-    <!--mission section-->
+<!--mission section-->
 
 <section class="mission-section">
   <div class="content-wrapper">
-      <!--left-->
+    <!--left-->
     <div class="info-container">
-      <h1>Mission we are working on<span class="yellow-txt">.</span></h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. Aliquip ex ea commodo consequat. <br><br> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <strong class="yellow-txt">Excepteur sint</strong> occaecat cupidatat non proident.</p>
+      <h1>Our Mission<span class="yellow-txt">.</span></h1>
+      <p>At Gooi, we're committed to making composting an easy and practical solution for everyone. We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in our provided bucket, you're contributing to a greener, more sustainable future. <br><br> Join us in turning waste into a valuable resource. Together, we can make a difference.</p>
       <div class="icons-container">
         <div class="icon-container">
           <%= image_tag('plant.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Reduce Waste</h3>
         </div>
         <div class="icon-container">
           <%= image_tag('bag.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Support Farmers</h3>
         </div>
         <div class="icon-container">
           <%= image_tag('mower.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
-        </div>
-        <div class="icon-container">
-          <%= image_tag('mower.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Enrich Soil</h3>
         </div>
       </div>
     </div>
@@ -87,93 +71,88 @@
   </div>
 </section>
 
-  <!--compost section -->
+<!--compost section -->
 
 <section class="compost-section">
-  <h1>Why we compost</h1>
+  <h1>Why We Compost</h1>
   <div class="content-wrapper">
-      <div class="info-card-container">
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-1.png', class: 'compost-image') %>
-          </div>
-          <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+    <div class="info-card-container">
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-1.png', class: 'compost-image') %>
         </div>
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-2.png', class: 'compost-image') %>
-          </div>
-          <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-        </div>
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-3.png', class: 'compost-image') %>
-          </div>
-          <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-        </div>
+        <h3>Reduce Landfill Waste</h3>
+        <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
       </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-2.png', class: 'compost-image') %>
+        </div>
+        <h3>Enhance Soil Health</h3>
+        <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+        </div>
+        <h3>Support Local Agriculture</h3>
+        <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-  <!--testimonial section-->
+<!--testimonial section-->
 
-  <section class="testimonial-section">
-    <h1>Testimonials</h1>
-    <div class="content-wrapper">
-      <div class="testimonials-container">
-        <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
-            <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <div class="content-wrapper">
+    <div class="testimonials-container">
+      <div class="testimonial-card">
+        <p>"Gooi has made composting so easy! I love knowing that my food scraps are helping local farmers and not just ending up in a landfill."</p>
+        <div class="testimonial-image">
+          <%#= image_tag('gooi_logo_CR.png') %>
         </div>
-                <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
-            <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+        <h4>Jane Doe</h4>
+      </div>
+      <div class="testimonial-card">
+        <p>"The weekly collections are so convenient. Gooi has turned my waste into something positive for the environment."</p>
+        <div class="testimonial-image">
+          <%#= image_tag('gooi_logo_CR.png') %>
         </div>
-                <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
-            <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+        <h4>John Smith</h4>
+      </div>
+      <div class="testimonial-card">
+        <p>"I appreciate Gooi's commitment to sustainability. Their service is a simple yet impactful way to make a difference."</p>
+        <div class="testimonial-image">
+          <%#= image_tag('gooi_logo_CR.png') %>
         </div>
+        <h4>Alex Johnson</h4>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 <!-- What is compostable -->
 <section class="compostable-section">
-  <h1>What is compostable</h1>
+  <h1>What is Compostable</h1>
   <div class="content-wrapper">
     <div class="compostable-container">
       <div class="compostable-card">
         <%= image_tag('tomatoes.svg') %>
         <p>Tomatoes</p>
       </div>
-            <div class="compostable-card">
+      <div class="compostable-card">
         <%= image_tag('carrots.svg') %>
         <p>Carrots</p>
       </div>
-            <div class="compostable-card">
+      <div class="compostable-card">
         <%= image_tag('potatoes.svg') %>
         <p>Potatoes</p>
       </div>
-            <div class="compostable-card">
+      <div class="compostable-card">
         <%= image_tag('ladyfingers.svg') %>
-        <p>Ladyfingers</p>
-      </div>
-    </div>
-  </div>
-
-</section>
+        <p>Ladyfinge
