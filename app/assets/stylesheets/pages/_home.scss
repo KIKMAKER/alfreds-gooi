@@ -356,3 +356,13 @@ section {
     width: 100%;
   }
 }
+
+@media screen and (max-width: 2160px) {
+  .waves {
+    bottom: 80px;
+  }
+  .gooi-header {
+    height: 80vh;
+  }
+
+}
