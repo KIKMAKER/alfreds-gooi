@@ -393,6 +393,94 @@ input[type="checkbox"].toggle:checked + label::before {
   background-color: #023F3A;
 }
 
+// Pricing styles
+.pricing-content-wrapper {
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  display: flex;
+  margin: 0 10%;
+}
+.toggle-container {
+  margin: 16px 0px;
+}
+.pricing-section {
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    color: #023F3A;
+    font-size: 48px;
+  }
+  h5 {
+    font-family: 'Libre Baskerville', sans-serif;
+    color: #023F3A;
+    font-size: 24px;
+  }
+  h2 {
+    font-family: "Libre Baskerville", serif;
+    color: #023F3A;
+    font-size: 32px;
+  }
+}
+.pricing-text {
+  font-family: 'Montserrat', serif;
+  font-size: 16px;
+  color: #023F3A;
+
+}
+.popular {
+  border: 2px solid #FBB718;
+}
+.month-card {
+  position: relative;
+  width: 33%;
+  background-color: #fff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 8px;
+  padding: 44px 24px;
+  margin: 16px;
+
+  h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #023F3A;
+
+  }
+  h4 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    background-color: #FBB718;
+    padding: 8px 16px;
+    border-radius: 0px 0px 8px 8px;
+    top:0px;
+    right:0px;
+  }
+}
+.standard-months-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+button {
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 24px;
+  margin-left: 16px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #e29e00;
+  }
+}
+
+.hide {
+  display: none;
+}
 // play button Style
 
 
@@ -446,7 +534,6 @@ input[type="checkbox"].toggle:checked + label::before {
       width: 90%;
     }
   }
-
   .compost-section {
     h1 {
       font-size: 32px;
@@ -494,6 +581,13 @@ input[type="checkbox"].toggle:checked + label::before {
       font-size: 32px;
     }
 
+  }
+
+  .standard-months-container {
+    flex-direction: column;
+  }
+  .month-card {
+    width: 85%;
   }
 }
 

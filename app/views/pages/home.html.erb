@@ -201,9 +201,9 @@
 </section>
 
 <!-- Pricing -->
-<section data-controller="pricing">
+<section data-controller="pricing" class="pricing-section">
   <h1>How it works</h1>
-  <div class="content-wrapper">
+  <div class="pricing-content-wrapper">
     <div class="description-container">
       <p>We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. If you are a bigger family, or just a very avid juicer, you may need to move up to the XL package. With this model you can fill a 20L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 20L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
       </p>
@@ -216,8 +216,57 @@
       </div>
       <h5 data-pricing-target="title">Standard</h5>
     </div>
-    <div class="one-month-container">
-
+    <div class="standard-months-container" data-pricing-target="standard">
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R260</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R260</p>
+        <button>
+          <%= link_to 'Select', root_path, class:"link-title-light" %>
+        </button>
+      </div>
+      <div class="month-card">
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R220</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R660</p>
+        <button>
+          <%= link_to 'Select', root_path, class:"link-title-light" %>
+        </button>
+    </div>
+        <div class="month-card">
+      <h3>6 months</h3>
+      <p class="pricing-text"><strong>R180</strong> per month</p>
+      <p class="pricing-text"><strong>Total:</strong> R1080</p>
+      <button>
+      <%= link_to 'Select', root_path, class:"link-title-light" %>
+      </button>
+    </div>
+    </div>
+    <div class="standard-months-container hide" data-pricing-target="extra">
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R300</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R300</p>
+        <button>
+          <%= link_to 'Select', root_path, class:"link-title-light" %>
+        </button>
+      </div>
+      <div class="month-card popular">
+        <h4>Most popular</h4>
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R270</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R810</p>
+        <button>
+          <%= link_to 'Select', root_path, class:"link-title-light" %>
+        </button>
+    </div>
+    <div class="month-card">
+      <h3>6 months</h3>
+      <p class="pricing-text"><strong>R240</strong> per month</p>
+      <p class="pricing-text"><strong>Total:</strong> R1440</p>
+      <button>
+      <%= link_to 'Select', root_path, class:"link-title-light" %>
+      </button>
     </div>
   </div>
 </section>
