@@ -1,4 +1,5 @@
 .navbar {
+  position: relative;
   justify-content: flex-end;
   background: #ffffff;
   border-radius: 0px 0px 8px 8px;
@@ -124,8 +125,45 @@
     padding: 16px;
     transition: all 0.3s ease;
 
-    &:hover {
+    &:active {
       background-color: #023f3a38;
+    }
+  }
+}
+@media screen and (max-width: 375px){
+  .hide {
+    display: none;
+  }
+
+  .inner-mobile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      width: 100%;
+      margin-top: 32px;
+      color: #ffffff;
+    }
+  }
+  .link-title-light {
+    color: #ffffff;
+  }
+
+  .mobile-menu {
+    padding: 16px;
+    position: absolute;
+    left: 0px;
+    flex-direction: column;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100vh;
+
+    a {
+      font-family: 'Montserrat', sans-serif;
+      text-decoration: none;
+      color:#18191F;
+      margin: 8px 0px;
     }
   }
 }

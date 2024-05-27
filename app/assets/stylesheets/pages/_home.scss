@@ -393,6 +393,38 @@ section {
     padding: 8px 32px;
     width: 100%;
   }
+  .mission-section {
+    margin-top: auto;
+  }
+  .content-wrapper {
+    flex-direction: column;
+    margin: 0;
+  }
+  .info-container{
+    width: 80%;
+  }
+  .icons-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  .images-container {
+    width: 85%;
+    margin-left: 0;
+    margin-top: 24px;
+  }
+  .info-card-container {
+    flex-direction: column;
+    width: 85%;
+  }
+  .testimonials-container {
+    flex-direction: column;
+  }
+  .testimonial-card {
+    width: 85%;
+  }
+  .compostable-container {
+    margin-left: 16px;
+  }
 }
 
 @media screen and (max-width: 2160px) {
