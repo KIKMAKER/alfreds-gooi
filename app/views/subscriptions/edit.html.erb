@@ -19,9 +19,11 @@
       <%= f.input :collection_day, collection: Subscription.collection_days.keys.map { |day| [day.titleize, day] }, include_blank: false %>
       <%= f.input :collection_order %>
       <%= f.input :customer_id %>
+      <%= f.input :start_date %>
       <%= f.input :is_paused, as: :boolean %>
       <div class="centre">
         <%= f.button :submit, "Update Subscription", class: "gooi-submit-button" %>
       </div>
     <% end %>
+  </div>
 </div>

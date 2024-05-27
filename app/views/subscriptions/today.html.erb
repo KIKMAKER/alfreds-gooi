@@ -15,7 +15,7 @@
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
           <div class="grid-item">
-            <%= subscription.street_address&.truncate(35) %>
+            <%= link_to subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{subscription.street_address}", target: :_blank %>
           </div>
           <div class="grid-item gooi-collect-button">
             <% if today_collection.nil? %>
@@ -44,8 +44,10 @@
     <div class="outline">
       <% if current_user.admin? %>
         <%= link_to "NOTES", today_notes_path, class: "gooi-button" %>
-      <% else %>
+      <% elsif current_user.driver? && @drivers_day.nil? %>
         <p><em>No collections without a driver</em></p>
+      <% elsif current_user.driver? %>
+        <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "gooi-button" %>
       <% end %>
     <% else %>
       <div class="outline">

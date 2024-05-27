@@ -1,25 +1,35 @@
 <div class="gooi-container">
   <div class="outline">
-    <div>
-      <% if @drivers_day %>
-        <h1>Driver: <%= @drivers_day.user.first_name %></h1>
-        <p>Total kms: <%= (@drivers_day.end_kms || 0) - (@drivers_day.start_kms || 0) %></p>
-        <p>Alfred's message: <%= @drivers_day.message_from_alfred || "No message" %></p>
-      <% end %>
-    </div>
-    <div>
-      <h1>All collections made <%= @today %></h1>
-      <% @collections.each do |collection| %>
-        <% if collection.skip %>
-          <s>
-            <p><%= collection.subscription.user.first_name %> skipped</p>
-          </s>
+    <h1 class="m-3"><%= @subscription.user.first_name %>'s Collections</h1>
+    <div class="grid-container-sub-show">
+      <div class="grid-header">
+        <div class="grid-item "><strong>ID</strong></div>
+        <div class="grid-item"><strong>DATE</strong></div>
+        <% if @subscription.XL? %>
+          <div class="grid-item"><strong>BUCKETS</strong></div>
         <% else %>
-          <p><%= collection.subscription.user.first_name %>: <%= collection.subscription.XL? ? collection.buckets || 0 : collection.bags || 0 %> <%= collection.subscription.XL? ? 'buckets' : 'bags' %></p>
-          <p><%= collection.alfred_message if collection&.alfred_message %></p>
+          <div class="grid-item"><strong>BAGS</strong></div>
         <% end %>
+        <div class="grid-item"><strong>KIKI:</strong></div>
+        <div class="grid-item"><strong>ALFRED:</strong></div>
+      </div>
+      <% @collections.each do |collection| %>
+        <div class="grid-row">
+          <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
+          <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
+          <% if @subscription.XL? %>
+            <div class="grid-item"><%= collection.buckets %></div>
+          <% else %>
+            <div class="grid-item"><%= collection.bags %></div>
+          <% end %>
+          <div class="grid-item"><%= collection.kiki_note %></div>
+          <div class="grid-item"><%= collection.alfred_message %></div>
+        </div>
       <% end %>
     </div>
-    <%= link_to "home", root_path, class: "gooi-button" %>
+    <div class="outline">
+      <%= link_to "home", root_path, class: "gooi-button" %>
+
+    </div>
   </div>
 </div>
