@@ -1,7 +1,7 @@
 
   <!--header-->
 
-<section class="gooi-header"> 
+<section class="gooi-header">
   <div class="inner-header-container">
   <h1>Organic waste recycling made easy</h1>
   <p>Gooi makes composting your food waste as easy as throwing it in the bin.
@@ -51,24 +51,20 @@
   <div class="content-wrapper">
       <!--left-->
     <div class="info-container">
-      <h1>Mission we are working on<span class="yellow-txt">.</span></h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. Aliquip ex ea commodo consequat. <br><br> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <strong class="yellow-txt">Excepteur sint</strong> occaecat cupidatat non proident.</p>
+      <h1>Our Mission<span class="yellow-txt">.</span></h1>
+      <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br><br> Join us in turning waste into a valuable resource</p>
       <div class="icons-container">
         <div class="icon-container">
           <%= image_tag('plant.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Promote Growth</h3>
         </div>
         <div class="icon-container">
           <%= image_tag('bag.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Enrich Soil</h3>
         </div>
         <div class="icon-container">
           <%= image_tag('mower.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
-        </div>
-        <div class="icon-container">
-          <%= image_tag('mower.png' , class: 'icon' ) %>
-          <h3>Lorem ipsum</h3>
+          <h3>Support Farmers</h3>
         </div>
       </div>
     </div>
@@ -99,23 +95,23 @@
             <%= image_tag('compost-s-1.png', class: 'compost-image') %>
           </div>
           <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
         </div>
         <div class="info-card">
           <div class="image-container">
             <div class="overlay"></div>
             <%= image_tag('compost-s-2.png', class: 'compost-image') %>
           </div>
-          <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <h3>Enhance Soil Health</h3>
+          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
         </div>
         <div class="info-card">
           <div class="image-container">
             <div class="overlay"></div>
             <%= image_tag('compost-s-3.png', class: 'compost-image') %>
           </div>
-          <h3>Reduce landfill waste</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+          <h3>Support Local Agriculture</h3>
+          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
         </div>
       </div>
   </div>
@@ -128,25 +124,25 @@
     <div class="content-wrapper">
       <div class="testimonials-container">
         <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
+          <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+<!--          <div class="testimonial-image">-->
             <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+<!--          </div>-->
+        <!-- <h4>name</h4>-->
         </div>
                 <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
+          <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+<!--          <div class="testimonial-image">-->
             <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+<!--          </div>
+          <h4>name</h4>-->
         </div>
                 <div class="testimonial-card">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-          <div class="testimonial-image">
+          <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+<!--          <div class="testimonial-image">-->
             <%#= image_tag('gooi_logo_CR.png') %>
-          </div>
-          <h4>name</h4>
+<!--          </div>
+          <h4>name</h4>-->
         </div>
       </div>
     </div>
@@ -158,20 +154,46 @@
   <div class="content-wrapper">
     <div class="compostable-container">
       <div class="compostable-card">
-        <%= image_tag('tomatoes.svg') %>
-        <p>Tomatoes</p>
+        <div class="overlay"></div>
+        <%= image_tag('fruit-veg.svg') %>
+        <p class="compost-title">Fruit and Vegetable Scraps</p>
+        <p>All fruit and vegetable scraps are compostable.</p>
       </div>
-            <div class="compostable-card">
-        <%= image_tag('carrots.svg') %>
-        <p>Carrots</p>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('coffee-tea.svg') %>
+        <p class="compost-title">Coffee Grounds and Tea Bags</p>
+        <p>Used coffee grounds and paper tea bags are great for composting and add valuable nitrogen.</p>
       </div>
-            <div class="compostable-card">
-        <%= image_tag('potatoes.svg') %>
-        <p>Potatoes</p>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('garden-waste.svg') %>
+        <p class="compost-title">Garden Waste</p>
+        <p>Green garden waste is ideal for composting, but avoid large branches or diseased plants.</p>
       </div>
-            <div class="compostable-card">
-        <%= image_tag('ladyfingers.svg') %>
-        <p>Ladyfingers</p>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('paper-products.svg') %>
+        <p class="compost-title">Paper Products</p>
+        <p>Only uncoated paper and cardboard should be composted. Avoid glossy or colored paper.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('food-scraps.svg') %>
+        <p class="compost-title">Food Scraps (Non-dairy and Non-meat)</p>
+        <p>These items are compostable but avoid composting meat, dairy, and oily foods as they attract pests and decompose slowly.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('yard-trimmings.svg') %>
+        <p class="compost-title">Yard Trimmings</p>
+        <p>These items are compostable but may take longer to break down. Shredding them first helps.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('natural-fibres.svg') %>
+        <p class="compost-title">Natural Fibers</p>
+        <p>Natural fibers like cotton and wool can be composted. Ensure they are not dyed or treated with chemicals.</p>
       </div>
     </div>
   </div>
