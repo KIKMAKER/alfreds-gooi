@@ -6,11 +6,10 @@
       </div>
       <br>
       <h1>All Subscriptions</h1>
-
-        <% @subscriptions.each do |subscription| %>
-           <p> <%= link_to subscription.user.first_name, subscription_path(subscription) %> - <%= subscription.customer_id %></p>
-            <%#= link_to "log collection", new_subscription_collection_path(subscription) %>
-        <% end %>
+      <% @subscriptions.each do |subscription| %>
+        <p> <%= subscription.customer_id %> - <%= link_to subscription.user.first_name, subscription_path(subscription) %> - <%= subscription.start_date&.strftime('%e %B %Y') %></p>
+        <%#= link_to "log collection", new_subscription_collection_path(subscription) %>
+      <% end %>
     </div>
   </div>
 </div>

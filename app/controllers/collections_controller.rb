@@ -33,16 +33,8 @@ class CollectionsController < ApplicationController
 
   # Regular CRUD stuff
   def index
-    # in testing I want to be able to test the view for a given day
-    # today = "Wednesday"
-    # PRODUCTION
-    # today = Date.today
-    # DEVELOPMENT
-    # today = (Date.today + 1)
-    # @today = today.strftime("%A")
-    @drivers_day = DriversDay.find(params[:drivers_day_id])
-    @collections = @drivers_day.collections
-    # @collections = Collection.where(date: today)
+    @subscription = Subscription.find(params[:subscription_id])
+    @collections = @subscription.collections
   end
 
   def show
