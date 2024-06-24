@@ -92,7 +92,7 @@ section {
   p {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 .info-container  {
@@ -315,7 +315,7 @@ section {
   .compost-title {
     text-align: left;
     position: absolute;
-    top:150px;
+    top:136px;
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
     font-size: 18px;
@@ -527,7 +527,7 @@ button {
 @media screen and (max-width:430px) {
   .gooi-header{
     h1 {
-      font-size: 24px;
+      font-size: 48px;
       padding-top:24px;
     }
     p {
@@ -548,7 +548,7 @@ button {
   }
   .content-wrapper {
     flex-direction: column;
-    margin: 0;
+    margin: -24px 0;
   }
   .info-container{
     width: 80%;
