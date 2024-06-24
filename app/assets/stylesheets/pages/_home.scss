@@ -81,7 +81,7 @@ section {
 // Mission Section
 
 .mission-section {
-  margin-top: 250px;
+  margin-top: 204px;
 
   h1 {
     font-family: 'Libre Baskerville', serif;
@@ -499,7 +499,7 @@ button {
 
 // Responsive Styles
 
-@media  screen and (max-width: 803px) {
+@media  screen and (max-width: 700px) {
 
   .inner-header-container {
     margin:0 5%;
@@ -597,7 +597,7 @@ button {
     bottom: 80px;
   }
   .gooi-header {
-    height: 80vh;
+    height: 95vh;
   }
 
   .info-card {
