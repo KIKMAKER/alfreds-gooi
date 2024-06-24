@@ -8,7 +8,8 @@
     Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
     Gooi offers weekly collection of food scraps from your doorstep.
     Ready to join the food waste revolution?</p>
-    <button class="btn-gooi">Gooi</button>
+    <!--<button class="btn-gooi">sign up</button>-->
+    <%= button_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
   </div>
   <!--video-->
   <div class="video-container">
@@ -201,7 +202,7 @@
 </section>
 
 <!-- Pricing -->
-<section data-controller="pricing" class="pricing-section">
+<section data-controller="pricing" class="pricing-section" id="pricing">
   <h1>How it works</h1>
   <div class="pricing-content-wrapper">
     <div class="description-container">
@@ -268,5 +269,6 @@
       <%= link_to 'Select', root_path, class:"link-title-light" %>
       </button>
     </div>
+  </div>
   </div>
 </section>
