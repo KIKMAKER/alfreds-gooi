@@ -74,7 +74,7 @@ section {
 }
 .gooi-video {
   margin-top: 16px;
-  width: 60%;
+  width: 50%;
   position: relative;
   border-radius: 30px;
   z-index: 100;
@@ -185,19 +185,17 @@ section {
   position: relative;
   margin: 8px;
   text-align: left;
+}
+.text-container-compost {
+  position:absolute;
+  bottom: 0px;
+  left: 16px;
 
-  h3 {
-    top: 180px;
-    left: 16px;
-    position: absolute;
-  }
-  p {
-    width: 90%;
-    height: 70px;
-    top: 224px;
-    left: 16px;
-    position: absolute;
-    overflow: hidden;
+  .compost-title {
+    font-family: 'Libre Baskerville', serif;
+    color: #ffffff;
+    font-size: 18px;
+  
   }
 }
 .info-card-container {
@@ -401,7 +399,7 @@ input[type="checkbox"].toggle:checked + label::before {
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  margin: 0 10%;
+  margin:24px 10%;
 }
 .toggle-container {
   margin: 16px 0px;
@@ -604,12 +602,22 @@ button {
     width: 85%;
   }
 }
+@media screen and (max-width: 1792px) {
+  .gooi-header {
+    height: 80vh;
+  }
+  .mission-section {
+    margin-top: 324px;
+  }
 
+}
 @media screen and (max-width: 2160px) {
   .gooi-header {
     height: 80vh;
   }
-
+  .mission-section {
+    margin-top: 244px;
+  }
   .info-card {
     h3 {
       font-size: 18px;
@@ -622,6 +630,10 @@ button {
 }
 @media  screen and (max-width: 1440px) {
 
+  .gooi-header {
+    height: 70vh;
+
+  }
   .mission-section {
     margin-top: 190px;
   }
