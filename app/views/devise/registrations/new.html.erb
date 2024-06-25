@@ -12,14 +12,18 @@
                   required: true,
                   autofocus: true,
                   input_html: { autocomplete: "email" }%>
-        <%= f.input :phone_number,
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email" }%>
         <%= f.input :email,
                   required: true,
                   autofocus: true,
                   input_html: { autocomplete: "email" }%>
+        <%= f.input :phone_number,
+                  required: true,
+                  autofocus: true,
+                  input_html: { autocomplete: "email" }%>
+        <%= f.simple_fields_for :subscription do |subscription_fields| %>
+          <%= subscription_fields.input :street_address %>
+          <%= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
+        <% end %>
         <%= f.input :password,
                   required: true,
                   hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),

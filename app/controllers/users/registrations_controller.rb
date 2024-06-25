@@ -75,7 +75,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    new_subscription_path(plan: resource.subscriptions.first.plan, duration: resource.subscriptions.first.duration)
+    edit_subscription_path(resource.subscriptions.first, plan: resource.subscriptions.first.plan, duration: resource.subscriptions.first.duration)
   end
 
 end

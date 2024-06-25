@@ -2,7 +2,7 @@ class User < ApplicationRecord
   before_validation :make_international
 
   enum role: %i[customer driver admin drop_off]
-  has_many :subscriptions
+  has_many :subscriptions, dependent: :destroy
   has_many :collections, through: :subscriptions
   has_many :drivers_days
 
