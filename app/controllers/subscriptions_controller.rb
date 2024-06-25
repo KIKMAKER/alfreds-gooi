@@ -40,6 +40,10 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def invoice
+    @subscription = Subscription.find(params[:id])
+  end
+
   def edit
     @subscription = Subscription.find(params[:id])
   end
