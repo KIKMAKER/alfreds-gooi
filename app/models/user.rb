@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :collections, through: :subscriptions
   has_many :drivers_days
 
+  accepts_nested_attributes_for :subscriptions
+
   # Callbacks
 
   # Custom validation

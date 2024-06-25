@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  # before_action :configure_sign_up_params, only: [:create]
+  before_action :configure_sign_up_params, only: [:create, :new]
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -9,13 +9,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @plan = params[:plan]
     @duration = params[:duration]
     super
-    raise
   end
 
   # POST /resource
   def create
-    raise
-    super
+    super do |resource|
+      if resource.persisted?
+        @subscription = Subscription.new(user_id: resource.id)
+        @subscription.save
+        @subscription.update(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration])
+      end
+    end
   end
 
   # GET /resource/edit
@@ -63,4 +67,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  protected
+
+  def configure_sign_up_params
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscription_attributes: [:plan, :duration]])
+  end
+
+  def after_sign_up_path_for(resource)
+    new_subscription_path(plan: resource.subscriptions.first.plan, duration: resource.subscriptions.first.duration)
+  end
+
 end
