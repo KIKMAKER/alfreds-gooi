@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "pages#home"
 
+
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: %i[ edit update] do
     collection do
@@ -17,6 +18,9 @@ Rails.application.routes.draw do
 
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
+    member do
+      get :invoice
+    end
     resources :collections, only: %i[index new create]
     # - here I am creating /subscriptions/today
     collection do
