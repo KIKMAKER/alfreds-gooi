@@ -7,7 +7,7 @@ class Subscription < ApplicationRecord
   accepts_nested_attributes_for :user
 
   ## VALIDATIONS
-  validates :street_address, :suburb, :plan, :duration, presence: true
+  # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
   enum status: %i[active pause pending]
