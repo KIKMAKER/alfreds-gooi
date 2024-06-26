@@ -42,6 +42,7 @@ class SubscriptionsController < ApplicationController
 
   def invoice
     @subscription = Subscription.find(params[:id])
+    @invoices = current_user.invoices
   end
 
   def edit

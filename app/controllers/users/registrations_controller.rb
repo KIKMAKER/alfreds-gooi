@@ -19,6 +19,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         @subscription.update(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration])
       end
     end
+    resource.create_initial_invoice
   end
 
   # GET /resource/edit
