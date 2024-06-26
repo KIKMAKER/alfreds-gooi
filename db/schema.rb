@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_26_130939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,40 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 
+  create_table "invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "product_id", null: false
+    t.float "quantity", default: 1.0, null: false
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
+    t.index ["product_id"], name: "index_invoice_items_on_product_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.date "issued_date"
+    t.date "due_date"
+    t.integer "number"
+    t.float "total_amount"
+    t.boolean "paid", default: false
+    t.bigint "subscription_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.float "price"
+    t.string "is_active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.string "customer_id"
     t.string "access_code"
@@ -79,6 +113,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "updated_at", null: false
     t.integer "collection_order"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "testimonials", force: :cascade do |t|
+    t.string "content"
+    t.integer "ranking"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -104,5 +147,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
+  add_foreign_key "invoice_items", "invoices"
+  add_foreign_key "invoice_items", "products"
+  add_foreign_key "invoices", "subscriptions"
+  add_foreign_key "invoices", "users"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "testimonials", "users"
 end

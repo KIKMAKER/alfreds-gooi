@@ -1,10 +1,13 @@
 class User < ApplicationRecord
   before_validation :make_international
+  after_create :create_initial_invoice unless subscriptions.count > 1
 
   enum role: %i[customer driver admin drop_off]
   has_many :subscriptions, dependent: :destroy
   has_many :collections, through: :subscriptions
   has_many :drivers_days
+  has_many :invoices
+
 
   accepts_nested_attributes_for :subscriptions
 
@@ -12,6 +15,28 @@ class User < ApplicationRecord
 
   # Custom validation
   validate :valid_international_phone_number
+
+  # custom methods
+
+  # initial invoice generation (after sign up)
+
+  def create_initial_invoice
+    # product = Product.find_by(title: "Starter kit")
+    # return unless product
+
+    # invoice = invoices.create(
+    #   issue_date: Time.current,
+    #   due_date: Time.current + 0.5.month,
+    # )
+
+    # invoice.invoice_items.create(
+    #   product: product,
+    #   amount: product.price,
+    #   quantity: duration
+    # )
+  end
+
+  ## phone number validation
 
   def make_international
     puts "Before: #{self.phone_number}"
@@ -26,6 +51,7 @@ class User < ApplicationRecord
   end
 
   private
+  # Custom validation method
 
   def valid_international_phone_number
     return if /\A\+27\d{9}\z/.match?(phone_number)
@@ -38,7 +64,6 @@ class User < ApplicationRecord
     end
   end
 
-  # Custom validation method
 
 
 
