@@ -1,6 +1,6 @@
 class Invoice < ApplicationRecord
-  belongs_to :subscription
-  belongs_to :user
+  belongs_to :subscription, dependent: :destroy
+  belongs_to :user, dependent: :destroy
 
-  validates :issue_date, :due_date, :total_amount, presence: true
+  validates :issued_date, :due_date, :total_amount, presence: true
 end

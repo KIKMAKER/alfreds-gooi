@@ -1,5 +1,8 @@
 <div class="invoice-container">
   <p> AN INVOICE!</p>
-
   <p><%= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>
+  <% @invoices.each do |invoice| %>
+    <p><%= invoice.due_date %></p>
+  <% end %>
+  <% raise %>
 </div>

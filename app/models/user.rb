@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   before_validation :make_international
-  after_create :create_initial_invoice # unless subscriptions.count > 1
+  # after_create_commit :create_initial_invoice # unless subscriptions.count > 1
 
   enum role: %i[customer driver admin drop_off]
   has_many :subscriptions, dependent: :destroy
@@ -29,16 +29,19 @@ class User < ApplicationRecord
     return unless product
 
     invoice = self.invoices.create(
-      issue_date: Time.current,
-      due_date: Time.current + 0.5.month,
+      subscription_id: subscriptions.last.id,
+      issued_date: Time.current,
+      due_date: Time.current + 1.month,
       total_amount: product.price
     )
 
-    invoice.invoice_items.create(
-      product: product,
+    InvoiceItem.create(
+      invoice_id: invoice.id,
+      product_id: product.id,
       amount: product.price,
       quantity: 1
     )
+    raise
   end
 
   private
