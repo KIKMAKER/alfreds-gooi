@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   before_validation :make_international
-  after_create :create_initial_invoice unless subscriptions.count > 1
+  after_create :create_initial_invoice # unless subscriptions.count > 1
 
   enum role: %i[customer driver admin drop_off]
   has_many :subscriptions, dependent: :destroy
