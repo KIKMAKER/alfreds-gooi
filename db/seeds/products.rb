@@ -1,5 +1,5 @@
 puts "Clearing db of products"
-Product.destroy_all
+Products.destroy_all
 
 puts "Creating starter kits"
 
@@ -17,7 +17,7 @@ Product.create(title: "Standard 3 month subscription", description: "Weekly coll
 Product.create(title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080)
 
 standard_subs = Product.count - starter_kits
-puts "#{standard_subs} standard subscriptions created"
+puts "#{standard_subs} starter kits created"
 
 puts "Creating XL subs"
 
@@ -26,14 +26,14 @@ Product.create(title: "XL 3 month subscription", description: "Weekly collection
 Product.create(title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440)
 
 xl_subs = Product.count - starter_kits - standard_subs
-puts "#{xl_subs} XL subscriptions created"
+puts "#{xl_subs} starter kits created"
 
 puts "Creating additional stock"
 Product.create(title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90)
 Product.create(title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80)
 
 additional_products = Product.count - starter_kits - standard_subs - xl_subs
-puts "#{additional_products} additional products created"
+puts "#{additional_products} starter kits created"
 
 
 puts "A total of #{Product.count} products have been seeded to the DB."
