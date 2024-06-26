@@ -15,8 +15,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     super do |resource|
       if resource.persisted?
-        @subscription = Subscription.new(user_id: resource.id)
-        @subscription.save
+        @subscription = Subscription.create(user_id: resource.id)
         @subscription.update(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration])
       end
     end
