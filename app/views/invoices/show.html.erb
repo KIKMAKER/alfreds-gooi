@@ -1,5 +1,11 @@
 <div class="invoice-container">
   <p> AN INVOICE!</p>
+<div class="user-details">
+  <p>For <%= @subscription.user.first_name %></p>
+  <p>Email: <%= @subscription.user.email %></p>
+  <p>Address: <%= @subscription.street_address %></p>
+  <p>Suburb: <%= @subscription.suburb %></p>
+  <p>Due on <%= @invoice.due_date %></p>
+</div>
   <p><%= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>
-  <p><%= @invoice.due_date %></p>
 </div>

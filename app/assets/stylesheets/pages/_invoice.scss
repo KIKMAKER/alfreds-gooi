@@ -2,9 +2,16 @@
 
   height: 80vh;
   margin: 0 4vh;
+  margin-top: 1rem;
 
   p {
     color: $dark-green;
   }
 
+}
+.user-details {
+  p {
+    font-size: 0.7rem;
+    margin-bottom: 0;
+  }
 }

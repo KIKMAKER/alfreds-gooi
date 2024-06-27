@@ -13,12 +13,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    super do |resource|
-      if resource.persisted?
-        @subscription = Subscription.create(user_id: resource.id)
-        @subscription.update(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration])
-      end
-    end
+    super
   end
 
   # GET /resource/edit
@@ -70,10 +65,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscription_attributes: [:plan, :duration]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscription_attributes: [:plan, :duration, :street_address, :suburb]])
   end
 
   def after_sign_up_path_for(resource)
+    if resource.persisted?
+      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
+    end
     resource.create_initial_invoice
     subscription = resource.subscriptions.first
     invoice = subscription.invoices.first
