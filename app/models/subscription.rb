@@ -1,7 +1,7 @@
 class Subscription < ApplicationRecord
   belongs_to :user
   has_many :collections
-  has_many :invoices
+  has_many :invoices, dependent: :destroy
   has_many :contacts, dependent: :destroy
 
   # accepts_nested_attributes_for :contacts

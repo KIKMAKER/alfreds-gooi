@@ -23,13 +23,13 @@ class User < ApplicationRecord
   def create_initial_invoice
     subscription = self.subscriptions.first
     return unless subscription
-
     product_title = determine_product_title(subscription.duration, subscription.plan)
     product = Product.find_by(title: product_title)
     return unless product
 
-    invoice = self.invoices.create(
+    invoice = self.invoices.create!(
       subscription_id: subscriptions.last.id,
+      user_id: self.id,
       issued_date: Time.current,
       due_date: Time.current + 1.month,
       total_amount: product.price
@@ -41,7 +41,7 @@ class User < ApplicationRecord
       amount: product.price,
       quantity: 1
     )
-    raise
+
   end
 
   private
