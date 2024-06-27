@@ -19,7 +19,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
         @subscription.update(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration])
       end
     end
-    resource.create_initial_invoice
   end
 
   # GET /resource/edit
@@ -75,7 +74,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    subscription_invoice_path(resource.subscriptions.first)
+    resource.create_initial_invoice
+    subscription = resource.subscriptions.first
+    invoice = subscription.invoices.first
+    subscription_invoice_path(subscription, invoice)
   end
 
 end
