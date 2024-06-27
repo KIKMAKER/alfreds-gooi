@@ -75,7 +75,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    invoice_subscription_path(resource.subscriptions.first)
+    subscription_invoice_path(resource.subscriptions.first)
   end
 
 end
