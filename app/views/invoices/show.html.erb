@@ -1,11 +1,26 @@
 <div class="invoice-container">
   <p> AN INVOICE!</p>
-<div class="user-details">
-  <p>For <%= @subscription.user.first_name %></p>
-  <p>Email: <%= @subscription.user.email %></p>
-  <p>Address: <%= @subscription.street_address %></p>
-  <p>Suburb: <%= @subscription.suburb %></p>
-  <p>Due on <%= @invoice.due_date %></p>
-</div>
-  <p><%= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>
+  <div class="user-details">
+    <p>For <%= @subscription.user.first_name %></p>
+    <p><%= @subscription.user.email %></p>
+    <p><%= @subscription.street_address %></p>
+    <p><%= @subscription.suburb %></p>
+    <p><%= @invoice.due_date %></p>
+  </div>
+  <div class="invoice-table">
+    <p><%= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>
+    <div class="header">
+      <p>Quantity</p>
+      <p>Item</p>
+      <p>Amount</p>
+    </div>
+      <% @invoice.invoice_items.each do |item| %>
+    <div class="invoice-items">
+
+        <p><%= item.quantity %></p>
+        <p><%= item.product.title %></p>
+        <p><%= item.product.price %></p>
+    </div>
+      <% end %>
+  </div>
 </div>

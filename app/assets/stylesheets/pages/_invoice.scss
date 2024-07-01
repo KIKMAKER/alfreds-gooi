@@ -15,3 +15,22 @@
     margin-bottom: 0;
   }
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: solid black;
+  p {
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+}
+
+.invoice-items {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: solid black;
+  p {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+  }
+}
