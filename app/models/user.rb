@@ -24,20 +24,23 @@ class User < ApplicationRecord
     subscription = self.subscriptions.first
     return unless subscription
 
+    p subscription.plan
+    p "hello"
     starter_kit_title = determine_starter_kit_title(subscription.plan)
     starter_kit = Product.find_by(title: starter_kit_title)
-
+    p starter_kit.price
     subscription_title = determine_subscription_title(subscription.duration, subscription.plan)
-    subscription = Product.find_by(title: subscription_title)
-    return unless subscription
-
-    invoice = self.invoices.create!(
-      subscription_id: subscriptions.last.id,
+    subscription_product = Product.find_by(title: subscription_title)
+    return unless subscription_product
+    p subscription_product.price
+    invoice = Invoice.create!(
+      subscription_id: subscription.id,
       user_id: self.id,
       issued_date: Time.current,
       due_date: Time.current + 1.month,
-      total_amount: subscription.price
+      total_amount: subscription_product.price + starter_kit.price
     )
+    p invoice.total_amount
 
     InvoiceItem.create!(
       invoice_id: invoice.id,
@@ -48,11 +51,13 @@ class User < ApplicationRecord
 
     InvoiceItem.create!(
       invoice_id: invoice.id,
-      product_id: subscription.id,
-      amount: subscription.price,
+      product_id: subscription_product.id,
+      amount: subscription_product.price,
       quantity: 1
     )
 
+    invoice.invoice_items.sum('amount * quantity')
+    invoice.save!
   end
 
   private
@@ -98,7 +103,6 @@ class User < ApplicationRecord
     end
   end
 
-
   # infer product title for first invoice based on subscription plan and duration
 
   def determine_subscription_title(duration, plan)
@@ -129,8 +133,6 @@ class User < ApplicationRecord
       puts "Invalid plan"
     end
   end
-
-
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :trackable and :omniauthable

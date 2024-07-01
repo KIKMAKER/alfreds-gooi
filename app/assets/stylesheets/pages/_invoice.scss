@@ -19,18 +19,65 @@
   display: flex;
   justify-content: space-between;
   border-bottom: solid black;
-  p {
+  h1 {
     font-size: 1rem;
     margin-bottom: 0;
   }
 }
 
-.invoice-items {
+.invoice-table {
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+}
+.quantity-description {
+  display: flex;
+  min-width: 70px;
+  p {
+    display: flex;
+    justify-content: center;
+  }
+}
+.quantity {
+  min-width: 88px;
+}
+.invoice-item {
   display: flex;
   justify-content: space-between;
   border-bottom: solid black;
+  margin: 4px 0;
   p {
     font-size: 0.8rem;
     margin-bottom: 0;
+  }
+}
+
+.invoice-total {
+  display: flex;
+  justify-content: right;
+  p {
+    border-bottom: solid black;
+    font-size: 1.3rem;
+  }
+}
+
+.payment-container {
+  p {
+    font-size: 1rem;
+    margin-bottom: 0px
+  }
+}
+
+.payment-options {
+  display: flex;
+  h1 {
+    font-size: 0.5rem;
+  }
+
+}
+
+.snapcode {
+  img {
+    width: 8rem;
+    border-radius: 8px;
   }
 }

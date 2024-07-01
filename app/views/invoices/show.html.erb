@@ -8,19 +8,50 @@
     <p><%= @invoice.due_date %></p>
   </div>
   <div class="invoice-table">
-    <p><%= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>
+    <!--<p><%#= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>-->
     <div class="header">
-      <p>Quantity</p>
-      <p>Item</p>
-      <p>Amount</p>
+      <div class="quantity-description">
+        <div class="quantity">
+          <h1>Quantity</h1>
+        </div>
+        <h1>Item</h1>
+      </div>
+      <h1>Amount</h1>
     </div>
-      <% @invoice.invoice_items.each do |item| %>
-    <div class="invoice-items">
-
-        <p><%= item.quantity %></p>
-        <p><%= item.product.title %></p>
+    <% @invoice.invoice_items.each do |item| %>
+      <div class="invoice-item">
+        <div class="quantity-description">
+          <div class="quantity">
+            <p><%= item.quantity.to_i %></p>
+          </div>
+          <p><%= item.product.title %></p>
+        </div>
         <p><%= item.product.price %></p>
+      </div>
+    <% end %>
+  </div>
+  <div class="invoice-total">
+    <p>Total: <%= @invoice.total_amount %></p>
+  </div>
+  <div class="payment-container">
+    <p>To kick off your subscription you can make payment via any of these bethods. </p>
+    <div class="payment-options">
+      <div class="bank-card">
+      <h1>BANK CARD</h1>
+      <p>follow this link</p>
+      <p>to use snapscans secure card payment facility.</p>
+      </div>
+      <div class="eft">
+      <h1>EFT</h1>
+      <p>Account Name: Gooi</p>
+      <p>Account Number: 63066225426 </p>
+      <p>FNB - Branch code: 250655</p>
+      </div>
+      <div class="snapcode">
+      <h1>SNAPSCAN</h1>
+      <%= image_tag "gooi snap qr code.jpeg" %>
+      </div>
     </div>
-      <% end %>
+    <p>Ensure you send proof of payment to gooicapetown@gmail.com</p>
   </div>
 </div>
