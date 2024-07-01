@@ -5,7 +5,7 @@ puts "Creating starter kits"
 
 
 Product.create(title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200)
-Product.create(title: "Standard Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300)
+Product.create(title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300)
 starter_kits = Product.count
 
 puts "#{starter_kits} starter kits created"

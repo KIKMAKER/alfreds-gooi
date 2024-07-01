@@ -17,4 +17,6 @@ class Invoice < ApplicationRecord
                             Invoice.last.number
                           end
   end
+
+  
 end

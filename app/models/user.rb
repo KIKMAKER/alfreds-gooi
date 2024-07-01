@@ -23,30 +23,39 @@ class User < ApplicationRecord
   def create_initial_invoice
     subscription = self.subscriptions.first
     return unless subscription
-    product_title = determine_product_title(subscription.duration, subscription.plan)
-    product = Product.find_by(title: product_title)
-    return unless product
+
+    starter_kit_title = determine_starter_kit_title(subscription.plan)
+    starter_kit = Product.find_by(title: starter_kit_title)
+
+    subscription_title = determine_subscription_title(subscription.duration, subscription.plan)
+    subscription = Product.find_by(title: subscription_title)
+    return unless subscription
 
     invoice = self.invoices.create!(
       subscription_id: subscriptions.last.id,
       user_id: self.id,
       issued_date: Time.current,
       due_date: Time.current + 1.month,
-      total_amount: product.price
+      total_amount: subscription.price
     )
 
-    InvoiceItem.create(
+    InvoiceItem.create!(
       invoice_id: invoice.id,
-      product_id: product.id,
-      amount: product.price,
+      product_id: starter_kit.id,
+      amount: starter_kit.price,
+      quantity: 1
+    )
+
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: subscription.id,
+      amount: subscription.price,
       quantity: 1
     )
 
   end
 
   private
-
-
 
   ## phone number validation
 
@@ -76,9 +85,23 @@ class User < ApplicationRecord
     end
   end
 
+  # infer starter kit based on sub plan
+
+  def determine_starter_kit_title(plan)
+    case plan
+    when "standard"
+      "Standard Starter Kit"
+    when "XL"
+      "XL Starter Kit"
+    else
+      puts "Invalid plan"
+    end
+  end
+
+
   # infer product title for first invoice based on subscription plan and duration
 
-  def determine_product_title(duration, plan)
+  def determine_subscription_title(duration, plan)
     case plan
     when "standard"
       case duration
