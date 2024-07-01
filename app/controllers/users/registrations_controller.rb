@@ -65,7 +65,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscription_attributes: [:plan, :duration, :street_address, :suburb]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb]])
   end
 
   def after_sign_up_path_for(resource)
