@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "pages#home"
-  get "dashboard", to: "pages#dashboard"
+  get "manage", to: "pages#manage"
 
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: %i[ edit update] do

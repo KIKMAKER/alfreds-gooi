@@ -1,6 +1,6 @@
 <div class="invoice-wrapper">
   <div class="invoice-container">
-     <h1>Invoice</h1>
+    <h1>Invoice</h1>
     <div class="user-details">
       <p><strong>For:</strong> <%= @subscription.user.first_name %></p>
       <p><strong>Email:</strong> <%= @subscription.user.email %></p>
@@ -34,7 +34,7 @@
       <p>Total: <%= @invoice.total_amount %></p>
     </div>
     <div class="payment-container">
-    <h1>Payment Options</h1>
+      <h1>Payment Options</h1>
       <div class="payment-options">
         <div class="bank-card">
           <h1>BANK CARD</h1>
@@ -53,6 +53,6 @@
       </div>
       <p>Ensure you send proof of payment to gooicapetown@gmail.com</p>
     </div>
-    <%= link_to "PAID", dashboard_path, class: "sign-up-btn" %>
+    <%= link_to "PAID", manage_path, class: "sign-up-btn" %>
   </div>
 </div>

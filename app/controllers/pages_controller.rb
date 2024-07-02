@@ -21,7 +21,7 @@ class PagesController < ApplicationController
 
   end
 
-  def dashboard
+  def manage
 
   end
 end
