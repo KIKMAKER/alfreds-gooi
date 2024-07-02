@@ -1,0 +1,43 @@
+<div class="navbar-container" data-controller="hello">
+  <div class="inner-container">
+    <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
+    <div class="links-container">
+      <%= link_to 'The story',root_path, class:"link-title" %>
+      <%= link_to 'How we compost',root_path, class: "link-title" %>
+      <% if user_signed_in? %>
+        <button>
+          <%= link_to "LOGOUT",destroy_user_session_path, data: {turbo_method: :delete}%>
+        </button>
+      <% else %>
+        <button>
+          <%= link_to "Log in", new_user_session_path %>
+        </button>
+        <button>
+          <%= link_to 'Sign up', root_path, class: "link-title-light" %>
+        </button>
+      <% end %>
+    </div>
+    <div class="hamburger-menu" data-action="click->hello#toggleHide">
+      <div id="menu-icon">
+        <%= image_tag('menu-svgrepo-com.png', class: 'menu-icon', data: { hello_target: 'icon' }) %>
+      </div>
+      <div class="mobile-menu hide" data-hello-target="menu">
+        <div class="inner-mobile-container">
+          <%= link_to 'The Story' , class: 'link-title'%>
+          <%= link_to 'How we compost', class: 'link-title' %>
+          <%= current_user %>
+          <%= user_signed_in? %>
+          <% if user_signed_in? %>
+            <button>
+              <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}, class: "link-title-light"%>
+            </button>
+          <% else %>
+            <button>
+              <%= link_to 'Sign up', root_path, class: "link-title-light" %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
