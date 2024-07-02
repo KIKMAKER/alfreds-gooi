@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :home ]
 
-  def today
+  def vamos
     # in production today will be the current day,
     today = Date.today
     # but in testing I want to be able to test the view for a given day
@@ -22,6 +22,8 @@ class PagesController < ApplicationController
   end
 
   def manage
+    @subscription = current_user.current_sub
 
   end
+
 end

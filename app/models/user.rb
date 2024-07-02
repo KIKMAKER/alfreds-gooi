@@ -2,7 +2,7 @@ class User < ApplicationRecord
   before_validation :make_international
   # after_create_commit :create_initial_invoice # unless subscriptions.count > 1
 
-  enum role: %i[customer driver admin drop_off]
+  enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
   has_many :subscriptions, dependent: :destroy
   has_many :collections, through: :subscriptions
   has_many :drivers_days
@@ -17,6 +17,12 @@ class User < ApplicationRecord
   validate :valid_international_phone_number
 
   # custom methods
+
+  # current subscription
+
+  def current_sub
+    subscriptions.last
+  end
 
   # initial invoice generation (after sign up)
 
