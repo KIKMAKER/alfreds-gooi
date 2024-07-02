@@ -96,6 +96,7 @@ GEM
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.4)
     debug (1.9.0)
@@ -132,6 +133,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -206,6 +208,8 @@ GEM
     rdoc (6.6.1)
       psych (>= 4.0.0)
     redis (4.8.1)
+    redis-client (0.22.2)
+      connection_pool
     regexp_parser (2.8.3)
     reline (0.4.1)
       io-console (~> 0.5)
@@ -226,6 +230,14 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sidekiq (7.3.0)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      logger
+      rack (>= 2.2.4)
+      redis-client (>= 0.22.2)
+    sidekiq-failures (1.0.4)
+      sidekiq (>= 4.0.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -284,6 +296,8 @@ DEPENDENCIES
   redis (~> 4.0)
   sassc-rails
   selenium-webdriver
+  sidekiq (~> 7)
+  sidekiq-failures
   simple_form!
   sprockets-rails
   stimulus-rails

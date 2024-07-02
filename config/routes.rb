@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
-  get 'invoices', to: "invoices#show"
 
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
+  require "sidekiq/web"
+  authenticate :user, ->(user) { user.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
   # Defines the root path route ("/")
   root "pages#home"
   get "manage", to: "pages#manage"

@@ -15,6 +15,7 @@ module AlfredsGooi
     end
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+    config.active_job.queue_adapter = :sidekiq
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -22,7 +23,7 @@ module AlfredsGooi
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    # config.time_zone = 'South Africa Standard Time'
+    config.time_zone = 'South Africa Standard Time'
     # config.active_record.default_timezone = :local
     # config.eager_load_paths << Rails.root.join("extras")
   end
