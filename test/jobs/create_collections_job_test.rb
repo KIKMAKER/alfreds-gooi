@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CreateDriversDayJobTest < ActiveJob::TestCase
+class CreateCollectionsJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end
