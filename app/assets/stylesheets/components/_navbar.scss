@@ -1,6 +1,7 @@
 .navbar {
-  justify-content: flex-start;
-  background: #138a64;
+  position: relative;
+  justify-content: flex-end;
+  background: #ffffff;
   border-radius: 0px 0px 8px 8px;
   display: flex;
   align-items: center;
@@ -9,10 +10,12 @@
   padding-right: 16px;
   margin-top: -13px;
 }
+.hamburger-menu {
+  display: none;
+}
 
 .alt-logo {
   width: 72px;
-  border-radius: 60px;
 }
 
 .logout-link {
@@ -33,4 +36,134 @@
   color: white;
   font-family: "Montserrat", sans-serif;
   width: 60vw;
+}
+
+// Chris Styles
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.navbar-container {
+  z-index: 1000;
+  position: sticky;
+  top:0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.gooi-logo {
+  width: 8em;
+  padding: 24px 16px;
+}
+.inner-container {
+  display: flex;
+  justify-content: space-between;
+  margin:0 8%;
+
+  button {
+    background-color: #FBB718;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    margin-left: 16px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #e29e00;
+    }
+  }
+}
+.links-container {
+  display: flex;
+  align-items: center;
+}
+.link-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  color: #18191F;
+  margin: 0 16px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    font-weight: bold;
+  }
+}
+.link-title-light {
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+@media  screen and (max-width:623px) {
+
+  .inner-container{
+    justify-content: space-between;
+    align-items: center;
+    margin: 0%;
+
+    button {
+      padding:8px 16px;
+    }
+  }
+  .links-container {
+    display: none;
+  }
+  .hamburger-menu {
+    display: block;
+    cursor: pointer;
+    color: #023f3a;
+  }
+  .gooi-logo {
+    width: 6em;
+    padding: 16px;
+  }
+  .menu-icon {
+    width: 32px;
+  }
+  #menu-icon {
+    padding: 16px;
+    transition: all 0.3s ease;
+
+    &:active {
+      background-color: #023f3a38;
+    }
+  }
+}
+@media screen and (max-width: 430px){
+  .hide {
+    display: none;
+  }
+
+  .inner-mobile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      width: 100%;
+      margin-top: 32px;
+      color: #ffffff;
+    }
+  }
+  .link-title-light {
+    color: #ffffff;
+  }
+
+  .mobile-menu {
+    padding: 16px;
+    position: absolute;
+    left: 0px;
+    flex-direction: column;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100vh;
+
+    a {
+      font-family: 'Montserrat', sans-serif;
+      text-decoration: none;
+      color:#18191F;
+      margin: 8px 0px;
+    }
+  }
 }

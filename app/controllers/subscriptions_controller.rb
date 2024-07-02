@@ -26,6 +26,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def new
+    raise
     @subscription = Subscription.new
   end
 
@@ -37,6 +38,11 @@ class SubscriptionsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def invoice
+    @subscription = Subscription.find(params[:id])
+    @invoices = current_user.invoices
   end
 
   def edit

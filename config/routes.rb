@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
+  get 'invoices', to: "invoices#show"
 
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
   root "pages#home"
+  get "manage", to: "pages#manage"
+  get "vamos", to: "pages#vamos"
 
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: %i[ edit update] do
@@ -17,6 +20,8 @@ Rails.application.routes.draw do
 
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
+
+    resources :invoices, only: %i[show]
     resources :collections, only: %i[index new create]
     # - here I am creating /subscriptions/today
     collection do
