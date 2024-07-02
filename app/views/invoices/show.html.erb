@@ -1,57 +1,58 @@
-<div class="invoice-container">
-  <p> AN INVOICE!</p>
-  <div class="user-details">
-    <p>For <%= @subscription.user.first_name %></p>
-    <p><%= @subscription.user.email %></p>
-    <p><%= @subscription.street_address %></p>
-    <p><%= @subscription.suburb %></p>
-    <p><%= @invoice.due_date %></p>
-  </div>
-  <div class="invoice-table">
-    <!--<p><%#= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>-->
-    <div class="header">
-      <div class="quantity-description">
-        <div class="quantity">
-          <h1>Quantity</h1>
-        </div>
-        <h1>Item</h1>
-      </div>
-      <h1>Amount</h1>
+<div class="invoice-wrapper">
+  <div class="invoice-container">
+     <h1>Invoice</h1>
+    <div class="user-details">
+      <p><strong>For:</strong> <%= @subscription.user.first_name %></p>
+      <p><strong>Email:</strong> <%= @subscription.user.email %></p>
+      <p><strong>Address:</strong> <%= @subscription.street_address %>, <%= @subscription.suburb %></p>
+      <p><strong>Due Date:</strong> <%= @invoice.due_date %></p>
     </div>
-    <% @invoice.invoice_items.each do |item| %>
-      <div class="invoice-item">
+    <div class="invoice-table">
+      <!--<p><%#= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>-->
+      <div class="header">
         <div class="quantity-description">
           <div class="quantity">
-            <p><%= item.quantity.to_i %></p>
+            <h1>Quantity</h1>
           </div>
-          <p><%= item.product.title %></p>
+          <h1>Item</h1>
         </div>
-        <p><%= item.product.price %></p>
+        <h1>Amount</h1>
       </div>
-    <% end %>
-  </div>
-  <div class="invoice-total">
-    <p>Total: <%= @invoice.total_amount %></p>
-  </div>
-  <div class="payment-container">
-    <p>To kick off your subscription you can make payment via any of these bethods. </p>
-    <div class="payment-options">
-      <div class="bank-card">
-      <h1>BANK CARD</h1>
-      <p>follow this link</p>
-      <p>to use snapscans secure card payment facility.</p>
-      </div>
-      <div class="eft">
-      <h1>EFT</h1>
-      <p>Account Name: Gooi</p>
-      <p>Account Number: 63066225426 </p>
-      <p>FNB - Branch code: 250655</p>
-      </div>
-      <div class="snapcode">
-      <h1>SNAPSCAN</h1>
-      <%= image_tag "gooi snap qr code.jpeg" %>
-      </div>
+      <% @invoice.invoice_items.each do |item| %>
+        <div class="invoice-item">
+          <div class="quantity-description">
+            <div class="quantity">
+              <p><%= item.quantity.to_i %></p>
+            </div>
+            <p><%= item.product.title %></p>
+          </div>
+          <p><%= item.product.price %></p>
+        </div>
+      <% end %>
     </div>
-    <p>Ensure you send proof of payment to gooicapetown@gmail.com</p>
+    <div class="invoice-total">
+      <p>Total: <%= @invoice.total_amount %></p>
+    </div>
+    <div class="payment-container">
+    <h1>Payment Options</h1>
+      <div class="payment-options">
+        <div class="bank-card">
+          <h1>BANK CARD</h1>
+          <p>follow this link to use snapscans secure card payment facility.</p>
+        </div>
+        <div class="eft">
+          <h1>EFT</h1>
+          <p>Account Name: Gooi</p>
+          <p>Account Number: 63066225426 </p>
+          <p>FNB - Branch code: 250655</p>
+        </div>
+        <div class="snapcode">
+          <h1>SNAPSCAN</h1>
+          <%= image_tag "gooi snap qr code.jpeg" %>
+        </div>
+      </div>
+      <p>Ensure you send proof of payment to gooicapetown@gmail.com</p>
+    </div>
+    <%= link_to "PAID", dashboard_path, class: "sign-up-btn" %>
   </div>
 </div>
