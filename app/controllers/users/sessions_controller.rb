@@ -26,6 +26,7 @@ class Users::SessionsController < Devise::SessionsController
       puts "Redirecting to manage_path"
       manage_path
     elsif resource.driver?
+      CreateDriversDayJob.perform_now
       puts "Redirecting to vamos_path"
       vamos_path
     elsif resource.admin?

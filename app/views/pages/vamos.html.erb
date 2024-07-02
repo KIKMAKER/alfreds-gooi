@@ -1,4 +1,5 @@
 <div class="driver-wrapper">
+<%= @drivers_day.id %>
   <!--Alfred can start the day-->
   <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
     <h1>Good morning <%= current_user.first_name %></h1>
