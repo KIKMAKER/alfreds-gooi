@@ -1,10 +1,15 @@
 <div class="driver-wrapper">
-<%= @drivers_day.id %>
+  <%= @drivers_day.id %>
   <!--Alfred can start the day-->
   <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
     <h1>Good morning <%= current_user.first_name %></h1>
     <h4>It's <%= @today %> today</h4>
     <br>
+      <ol>
+    <% @drivers_day.collections.each do |collection| %>
+        <li><%= collection.subscription.id %></li>
+    <% end %>
+      </ol>
     <!--It's not a gooi day-->
     <% if @subscriptions.empty? %>
       <h2>There are no subscriptions waiting for you.</h2>

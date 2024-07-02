@@ -23,8 +23,8 @@ class CreateCollectionsJob < ApplicationJob
         date: today,
         # Add other necessary attributes
       )
+      collection.update!(skip: true) if today >= subscription.holiday_start && today <= subscription.holiday_end
     end
-    collection.update!(skip: true) if today >= subscription.holiday_start && today <= subscription.holiday_end
 
   end
 end
