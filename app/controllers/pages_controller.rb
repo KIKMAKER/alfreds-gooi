@@ -26,4 +26,7 @@ class PagesController < ApplicationController
 
   end
 
+  def kiki
+  end
+
 end
