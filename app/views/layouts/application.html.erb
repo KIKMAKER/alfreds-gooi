@@ -10,9 +10,17 @@
     <%= favicon_link_tag %>
   </head>
   <body class="background">
-    <%= render "shared/new_navbar" %>
+    <% if user_signed_in? %>
+      <%if current_user.driver? || current_user.admin?  %>
+        <%= render "shared/driver_navbar" %>
+      <% else %>
+        <%= render "shared/new_navbar" %>
+      <%  end %>
+    <% else %>
+      <%= render "shared/new_navbar" %>
+    <%  end %>
+    <%#= render_navbar %>
     <%#= render "shared/navbar" %>
-    <%= render "shared/flashes" %>
     <%= yield %>
     <%= render "shared/footer" %>
   </body>

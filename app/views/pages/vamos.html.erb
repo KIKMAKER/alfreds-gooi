@@ -1,15 +1,9 @@
 <div class="driver-wrapper">
-  <%= @drivers_day.id %>
   <!--Alfred can start the day-->
   <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
     <h1>Good morning <%= current_user.first_name %></h1>
     <h4>It's <%= @today %> today</h4>
     <br>
-      <ol>
-    <% @drivers_day.collections.each do |collection| %>
-        <li><%= collection.subscription.id %></li>
-    <% end %>
-      </ol>
     <!--It's not a gooi day-->
     <% if @subscriptions.empty? %>
       <h2>There are no subscriptions waiting for you.</h2>
@@ -32,7 +26,9 @@
     <% end %>
     <h5>Ready to get started?</h5>
     <br>
-    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
+    <div class="sign-up-btn">
+    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'sign-up-btn' %>
+    </div>
     <!--Alfred has finished the day-->
   <%elsif current_user.driver? && @drivers_day&.respond_to?(:end_time) && @drivers_day.end_time && @drivers_day&.persisted? %>
     <h1>Thank you for your work today</h1>

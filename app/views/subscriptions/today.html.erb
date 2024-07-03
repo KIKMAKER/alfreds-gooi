@@ -1,14 +1,12 @@
   <div class="gooi-container">
   <% if @subscriptions.any? %>
-    <div class="today-outline">
-      <h1><%= @today %></h1>
+    <div class="">
       <div class="grid-container">
         <div class="grid-item"><strong>Name</strong></div>
         <div class="grid-item"><strong>Address</strong></div>
         <div class="grid-item"><strong>Collect</strong></div>
         <% @subscriptions.each do |subscription| %>
           <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today } %>
-          <div class="grid-item">
             <% if today_collection&.skip %>
               <p>SKIP!</p>
             <% end %>
@@ -19,7 +17,7 @@
           </div>
           <div class="grid-item gooi-collect-button">
             <% if today_collection.nil? %>
-              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
+              <%= link_to "Collect", new_subscription_collection_path(subscription) %>
             <% else %>
               <% if today_collection.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection) %>
