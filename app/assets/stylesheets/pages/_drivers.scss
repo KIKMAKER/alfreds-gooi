@@ -7,4 +7,16 @@
   overflow: scroll;
   margin-top: 2vh;
 
+  p {
+    color: $dark-green
+  }
+
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2vh;
 }
