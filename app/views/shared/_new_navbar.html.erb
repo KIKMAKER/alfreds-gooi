@@ -22,8 +22,6 @@
         <div class="inner-mobile-container">
           <%= link_to 'The Story' , class: 'link-title'%>
           <%= link_to 'How we compost', class: 'link-title' %>
-          <%= current_user %>
-          <%= user_signed_in? %>
           <% if user_signed_in? %>
             <button>
               <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}, class: "link-title-light"%>
