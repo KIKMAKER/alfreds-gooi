@@ -7,7 +7,7 @@ class PagesController < ApplicationController
     # but in testing I want to be able to test the view for a given day
     # today = Date.today  + 1
     @today = today.strftime("%A")
-    @drivers_day = DriversDay.find_or_create_by(date: today)
+    @drivers_day = DriversDay.find_by(date: today)
     @subscriptions = Subscription.active_subs_for(@today)
     @count_skip_subscriptions = Subscription.count_skip_subs_for(@today)
     # @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
