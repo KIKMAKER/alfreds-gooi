@@ -10,10 +10,7 @@
         </button>
       <% else %>
         <button>
-          <%= link_to "Log in", new_user_session_path %>
-        </button>
-        <button>
-          <%= link_to 'Sign up', root_path, class: "link-title-light" %>
+          <%= link_to 'Log in', new_user_session_path, class: "link-title-light" %>
         </button>
       <% end %>
     </div>
