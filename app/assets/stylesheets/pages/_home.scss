@@ -78,6 +78,10 @@ section {
   transition: all 0.3s ease;
   text-decoration: none !important;
   color: white;
+  a {
+    text-decoration: none !important;
+    color: white;
+  }
 }
 .header-video {
   width: 100%;

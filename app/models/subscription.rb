@@ -4,6 +4,8 @@ class Subscription < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :contacts, dependent: :destroy
 
+  after_commit :set_customer_id, on: :create
+
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
 
@@ -20,6 +22,15 @@ class Subscription < ApplicationRecord
 
 
   # customised methods
+
+  def set_customer_id
+    last_customer_id = Subscription.order(:customer_id).last.customer_id || "GFWC000"
+    prefix = last_customer_id[0...4]
+    number = last_customer_id[4..].to_i
+    new_number = number + 1
+    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
+    update(customer_id: new_customer_id)
+  end
 
   def total_collections
     collections.count

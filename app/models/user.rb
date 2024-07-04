@@ -29,7 +29,6 @@ class User < ApplicationRecord
   def create_initial_invoice
     subscription = self.subscriptions.first
     return unless subscription
-
     p subscription.plan
     p "hello"
     starter_kit_title = determine_starter_kit_title(subscription.plan)
