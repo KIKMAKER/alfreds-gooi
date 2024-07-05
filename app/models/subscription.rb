@@ -4,8 +4,10 @@ class Subscription < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :contacts, dependent: :destroy
 
-  after_commit :set_customer_id, on: :create
-  after_commit :set_collection_day, on: :create
+  after_create do
+    self.set_customer_id
+    self.set_collection_day
+  end
 
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user

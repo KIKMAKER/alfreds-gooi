@@ -31,7 +31,7 @@ class PagesController < ApplicationController
 
   def welcome
     @subscription = current_user.current_sub
-    @subscription.set_collection_day
+    # @subscription.set_collection_day
     # raise
     @subscription.save!
   end
