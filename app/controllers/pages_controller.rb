@@ -29,4 +29,11 @@ class PagesController < ApplicationController
   def kiki
   end
 
+  def welcome
+    @subscription = current_user.current_sub
+    @subscription.set_collection_day
+    # raise
+    @subscription.save!
+  end
+
 end

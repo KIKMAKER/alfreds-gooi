@@ -5,6 +5,7 @@ class Subscription < ApplicationRecord
   has_many :contacts, dependent: :destroy
 
   after_commit :set_customer_id, on: :create
+  after_commit :set_collection_day, on: :create
 
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
@@ -17,11 +18,28 @@ class Subscription < ApplicationRecord
   enum plan: %i[once_off standard XL]
   enum collection_day: Date::DAYNAMES
 
-  # SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Imizamo Yethu", "Llandudno", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Ndabeni", "Newlands", "Observatory", "Pinelands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "Simon's Town", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
 
+  TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
+
+  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Constantia"].sort!.freeze
+
+  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Observatory", "Salt River"].sort!.freeze
 
   # customised methods
+
+  def set_collection_day
+    if TUESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Tuesday")
+    elsif WEDNESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Wednesday")
+      raise # you may want to comment or remove this raise statement
+    elsif THURSDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Thursday")
+    else
+      puts "it seems there was an issue with the suburb allocation"
+    end
+  end
 
   def set_customer_id
     last_customer_id = Subscription.order(:customer_id).last.customer_id || "GFWC000"
@@ -31,6 +49,7 @@ class Subscription < ApplicationRecord
     new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
     update(customer_id: new_customer_id)
   end
+
 
   def total_collections
     collections.count

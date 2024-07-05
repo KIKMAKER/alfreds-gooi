@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "manage", to: "pages#manage"
   get "vamos", to: "pages#vamos"
   get "kiki", to: "pages#kiki"
+  get "welcome", to: "pages#welcome"
 
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: %i[ edit update] do
