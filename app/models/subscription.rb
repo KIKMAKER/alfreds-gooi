@@ -33,7 +33,6 @@ class Subscription < ApplicationRecord
       update(collection_day: "Tuesday")
     elsif WEDNESDAY_SUBURBS.include?(suburb)
       update(collection_day: "Wednesday")
-      raise # you may want to comment or remove this raise statement
     elsif THURSDAY_SUBURBS.include?(suburb)
       update(collection_day: "Thursday")
     else
