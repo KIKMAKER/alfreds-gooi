@@ -52,10 +52,14 @@ class SubscriptionsController < ApplicationController
   def update
 
     subscription = Subscription.find(params[:id])
-    user = subscription.user
+    # user = subscription.user
 
-    if subscription.update(subscription_params) && user.update(subscription_params[:user_attributes])
-      redirect_to subscription_path(subscription)
+    if subscription.update(subscription_params) #&& user.update(subscription_params[:user_attributes])
+      if @subscription.user == current_user
+        redirect_to welcome_path
+      else
+        redirect_to subscription_path(subscription)
+      end
     else
       render :edit, status: :unprocessable_entity
     end
