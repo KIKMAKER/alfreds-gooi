@@ -23,6 +23,7 @@ class CreateCollectionsJob < ApplicationJob
         date: today,
         # Add other necessary attributes
       )
+      collection.update!(new_customer: true) if subscription.is_new_customer
       collection.update!(skip: true) if today >= subscription.holiday_start && today <= subscription.holiday_end
     end
 
