@@ -8,16 +8,19 @@ class PaymentsController < ApplicationController
     payload = JSON.parse(request_body)
     puts ">>> Received payload: #{payload.inspect}"
 
-    handle_payment_payload(payload["payload"])
+    user = User.find_by(customer_id: payload["payload"]["merchantReference"])
 
-    render json: { status: 'success' }, status: :ok
+    if payload["payload"]["status"] == "completed"
+      handle_payment_payload(payload["payload"], user)
+      render json: { status: 'success' }, status: :ok
+    else
+      render json: { status: 'error', message: 'Payment not successful' }, status: :unprocessable_entity
+    end
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
-
-    # i'd like to handle payload logic here, i.e inspect the payload and update the subscription
-
   end
   def fetch_snapscan_payments
+    ## refactor to model
     api_key = ENV['SNAPSCAN_API_KEY']
     service = SnapscanService.new(api_key)
     payments = service.fetch_payments
@@ -32,7 +35,7 @@ class PaymentsController < ApplicationController
   end
   private
 
-  def handle_payment_payload(payment_data)
+  def handle_payment_payload(payment_data, user)
     Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
@@ -42,8 +45,8 @@ class PaymentsController < ApplicationController
       settle_amount: payment_data["settleAmount"],
       date: payment_data["date"],
       user_reference: payment_data["userReference"],
-      merchant_reference: payment_data["merchantReference"]
-      user_id: current_user.id
+      merchant_reference: payment_data["merchantReference"],
+      user_id: user.id
     )
 
     update_subscription_status(payment_data["merchantReference"])

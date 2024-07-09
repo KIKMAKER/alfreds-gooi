@@ -4,9 +4,10 @@
       <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
     <% end %>
     <div class="links-container">
-      <%= link_to 'The story',root_path, class:"link-title" %>
-      <%= link_to 'How we compost',root_path, class: "link-title" %>
+      <%= link_to 'The story', root_path, class:"link-title" %>
+      <%= link_to 'How we compost', root_path, class: "link-title" %>
       <% if user_signed_in? %>
+        <%= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
         <div class="sign-up-btn">
           <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}%>
         </div>
@@ -25,6 +26,7 @@
           <%= link_to 'The Story' , class: 'link-title'%>
           <%= link_to 'How we compost', class: 'link-title' %>
           <% if user_signed_in? %>
+            <%= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
             <div class="sign-up-btn">
               <%= link_to "LOGOUT", destroy_user_session_path, data: {turbo_method: :delete}%>
             </div>
