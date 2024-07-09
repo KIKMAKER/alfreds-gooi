@@ -1,8 +1,8 @@
 <div class="user-wrapper">
   <h1>Welcome <%= current_user.first_name %></h1>
   <div class="user-container">
-  <p>Your subscription is confirmed.</p>
-  <p>Alfred will deliver your starter kit on <%= @subscription.start_date %>.</p>
+    <p>Your subscription is confirmed.</p>
+    <p>Alfred will deliver your starter kit on <%= @subscription.start_date %>.</p>
     <h2>Here's how it works</h2>
     <p>Gooi your kitchen scraps into the bucket!</p>
     <p>When the bucket is full, tie a knot in the bag.
@@ -12,7 +12,7 @@
     <h2>Going on holiday?</h2>
     <p>If you will be away for more than 2 consecutive weeks you can pause your subscription in advance.</p>
     <p>Simply indicate the dates:</p>
-    <div class="holiday-form">
+    <div class="user-form">
       <%= simple_form_for(@subscription) do |f| %>
         <%= f.input :holiday_start, label: "Start:" %>
         <%= f.input :holiday_end, label: "End:" %>

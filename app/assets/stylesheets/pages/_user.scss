@@ -3,6 +3,8 @@
   flex-direction: column;
   align-items: center;
   margin-top: 2rem;
+  margin-bottom: 5rem;
+  overflow: scroll;
 
   p {
     color: $dark-green;
@@ -21,31 +23,10 @@
     margin-top: 1rem;
     font-size: 1rem;
   }
+
   p {
     font-size: 0.8rem;
     margin: 0.5rem 0;
   }
 }
-.holiday-form {
-  .form-select {
-    font-size: 0.8rem;
-  }
 
-  .date {
-    display: flex;
-    align-items: center;
-    display: flex;
-    align-items: center;
-  }
-
-  .submit-btn {
-    background-color: #FBB718;
-    border: none;
-    border-radius: 50px;
-    padding: 8px 24px;
-    transition: all 0.3s ease;
-    text-decoration: none !important;
-    color: white;
-  }
-
-}
