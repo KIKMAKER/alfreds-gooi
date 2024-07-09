@@ -8,6 +8,9 @@ section {
   text-align: center;
 }
 
+.page-container {
+  margin-bottom: 4rem;
+}
 .gooi-header {
   background-image: url('header-gooi-3.png');
   background-size: cover;
@@ -438,6 +441,7 @@ input[type="checkbox"].toggle:checked + label::before {
     font-family: "Libre Baskerville", serif;
     color: #023F3A;
     font-size: 32px;
+    margin-top: 2rem;
   }
 }
 .pricing-text {

@@ -1,5 +1,5 @@
   <!--header-->
-
+<div class="page-container">
 <section class="gooi-header">
   <div class="inner-header-container">
   <h1>Organic waste recycling made easy</h1>
@@ -8,7 +8,14 @@
     Gooi offers weekly collection of food scraps from your doorstep.
     Ready to join the food waste revolution?</p>
     <!--<button class="btn-gooi">sign up</button>-->
-    <%= button_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+    <%#= link_to '#pricing', class: "btn-gooi" do %>
+<!--    <div>
+      <p>Sign Up</p>
+    </div>
+    <%# end %>-->
+  <div class="mt-5 mb-3">
+    <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+  </div>
   </div>
   <!--video-->
   <div class="video-container">
@@ -271,3 +278,5 @@
   </div>
   </div>
 </section>
+
+</div>
