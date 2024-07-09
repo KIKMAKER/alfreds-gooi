@@ -30,6 +30,14 @@ class Subscription < ApplicationRecord
 
   # customised methods
 
+  def calculate_next_collection_day
+    target_day = Date::DAYNAMES.index(collection_day.capitalize)
+    current_day = Date.today.wday
+    days_until_next_collection = (target_day - current_day) % 7
+    days_until_next_collection = 7 if days_until_next_collection.zero?
+    Date.today + days_until_next_collection
+  end
+
   def set_collection_day
     if TUESDAY_SUBURBS.include?(suburb)
       update(collection_day: "Tuesday")
@@ -49,6 +57,7 @@ class Subscription < ApplicationRecord
     new_number = number + 1
     new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
     update(customer_id: new_customer_id)
+    self.user.update(customer_id: new_customer_id)
   end
 
 

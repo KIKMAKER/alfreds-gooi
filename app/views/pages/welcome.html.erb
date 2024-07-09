@@ -1,23 +1,22 @@
 <div class="user-wrapper">
   <h1>Welcome <%= current_user.first_name %></h1>
-  <p>Your subscription is confirmed.</p>
-  <p>Alfred will deliver your starter kit next <%= @subscription.collection_day %>.</p>
   <div class="user-container">
+  <p>Your subscription is confirmed.</p>
+  <p>Alfred will deliver your starter kit on <%= @subscription.start_date %>.</p>
     <h2>Here's how it works</h2>
     <p>Gooi your kitchen scraps into the bucket!</p>
     <p>When the bucket is full, tie a knot in the bag.
       On collection day, be ready to hand it to Alfred as he comes past, or leave it in a designated (hidden) spot where he can find it. </p>
     <p>We will send a whatsapp message before collection day to remind you to have your bag ready. You can respond to let us know if we should skip you. Please add our number to your phone so that you can receive the weekly broadcast reminder.</p>
     <p>If you are almost out of bags, order another roll on whatsapp and Alfred will drop them off on his next trip. </p>
-    <p>You can update or extend your subscription by scanning the qr code above. Recommend gooi to a friend and get 10% off your next subscription!</p>
     <h2>Going on holiday?</h2>
     <p>If you will be away for more than 2 consecutive weeks you can pause your subscription in advance.</p>
-    <p>Simply indicate the dates here:</p>
+    <p>Simply indicate the dates:</p>
     <div class="holiday-form">
       <%= simple_form_for(@subscription) do |f| %>
-        <%= f.input :holiday_start %>
-        <%= f.input :holiday_end %>
-        <%= f.submit "Save dates", class: "sign-up-btn" %>
+        <%= f.input :holiday_start, label: "Start:" %>
+        <%= f.input :holiday_end, label: "End:" %>
+        <%= f.submit "Save dates", class: "submit-btn" %>
       <% end %>
     </div>
   </div>

@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
+  resources :webhooks, only: :create
+  get 'snapscan/payments', to: 'payments#fetch_snapscan_payments'
+
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   require "sidekiq/web"

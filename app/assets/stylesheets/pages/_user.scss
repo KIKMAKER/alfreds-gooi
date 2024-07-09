@@ -15,6 +15,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 2rem;
+
   h2 {
     margin-top: 1rem;
     font-size: 1rem;
@@ -25,5 +27,25 @@
   }
 }
 .holiday-form {
-  font-size: 0.8rem;
+  .form-select {
+    font-size: 0.8rem;
+  }
+
+  .date {
+    display: flex;
+    align-items: center;
+    display: flex;
+    align-items: center;
+  }
+
+  .submit-btn {
+    background-color: #FBB718;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 24px;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+    color: white;
+  }
+
 }

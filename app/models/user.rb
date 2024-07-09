@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :invoices, dependent: :destroy
+  has_many :payments, dependent: :destroy
 
 
   accepts_nested_attributes_for :subscriptions
