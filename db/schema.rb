@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_05_154316) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_09_112907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_05_154316) do
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.integer "snapscan_id"
+    t.string "status"
+    t.integer "total_amount"
+    t.integer "tip_amount"
+    t.integer "fee_amount"
+    t.integer "settle_amount"
+    t.datetime "date"
+    t.string "user_reference"
+    t.string "merchant_reference"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -112,6 +128,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_05_154316) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "collection_order"
+    t.boolean "is_new_customer", default: true
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -152,6 +169,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_05_154316) do
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"
   add_foreign_key "invoices", "users"
+  add_foreign_key "payments", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
 end

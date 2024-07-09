@@ -34,6 +34,7 @@
         <%= f.fields_for :subscription do |subscription_form| %>
           <%= subscription_form.hidden_field :plan, value: @plan %>
           <%= subscription_form.hidden_field :duration, value: @duration %>
+          <%= subscription_form.hidden_field :is_paused, value: true %>
         <% end %>
       </div>
       <div class="form-actions">
