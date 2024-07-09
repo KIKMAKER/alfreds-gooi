@@ -24,9 +24,7 @@
       >
     </div>-->
   </div>
-</section>
-
-  <!--code to create the wave in the header section-->
+    <!--code to create the wave in the header section-->
 
   <div class="wave-container">
     <svg
@@ -51,6 +49,9 @@
       </g>
     </svg>
   </div>
+</section>
+
+
 
     <!--mission section-->
 
@@ -101,24 +102,30 @@
             <div class="overlay"></div>
             <%= image_tag('compost-s-1.png', class: 'compost-image') %>
           </div>
+          <div class="text-container-compost">
           <h3>Reduce landfill waste</h3>
           <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
+          </div>
         </div>
         <div class="info-card">
           <div class="image-container">
             <div class="overlay"></div>
             <%= image_tag('compost-s-2.png', class: 'compost-image') %>
           </div>
+          <div class="text-container-compost">
           <h3>Enhance Soil Health</h3>
           <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
+          </div>
         </div>
         <div class="info-card">
           <div class="image-container">
             <div class="overlay"></div>
             <%= image_tag('compost-s-3.png', class: 'compost-image') %>
           </div>
+          <div class="text-container-compost">
           <h3>Support Local Agriculture</h3>
           <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
+          </div>
         </div>
       </div>
   </div>
@@ -163,8 +170,10 @@
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('fruit-veg.svg') %>
+         <div class="text-container-compost">
         <p class="compost-title">Fruit and Vegetable Scraps</p>
         <p>All fruit and vegetable scraps are compostable.</p>
+         </div>
       </div>
       <div class="compostable-card">
         <div class="overlay"></div>
@@ -240,7 +249,8 @@
           <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '3'), class:"link-title-light" %>
         </div>
     </div>
-        <div class="month-card">
+        <div class="month-card popular">
+          <h4>Most popular</h4>
       <h3>6 months</h3>
       <p class="pricing-text"><strong>R180</strong> per month</p>
       <p class="pricing-text"><strong>Total:</strong> R1080</p>
@@ -258,8 +268,7 @@
           <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1'), class:"link-title-light" %>
         </div>
       </div>
-      <div class="month-card popular">
-        <h4>Most popular</h4>
+      <div class="month-card">
         <h3>3 months</h3>
         <p class="pricing-text"><strong>R270</strong> per month</p>
         <p class="pricing-text"><strong>Total:</strong> R810</p>
