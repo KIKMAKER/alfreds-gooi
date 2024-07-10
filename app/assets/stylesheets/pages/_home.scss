@@ -11,6 +11,7 @@ section {
 .page-container {
   margin-bottom: 4rem;
 }
+
 .gooi-header {
   position: relative;
   background-image: url('header-gooi-3.png');
@@ -26,16 +27,18 @@ section {
     text-align: center;
     padding-top: 15vh;
   }
+
   p {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     font-size: 1.3rem;
-    color:white;
+    color: white;
     text-align: center;
   }
 }
+
 .inner-header-container {
-  margin:0 10%;
+  margin: 0 10%;
 }
 
 // WAVES STYLE
@@ -44,10 +47,10 @@ section {
   width: 100%;
   height: 15vh;
   bottom: -1px;
-  right:0px;
+  right: 0px;
 }
 
-.yellow-txt{
+.yellow-txt {
   color: #FBB718;
   font-weight: 700;
 }
@@ -69,9 +72,10 @@ section {
     border: 1px solid #fff;
     padding: 16px 80px;
   }
+
   a {
     text-decoration: none;
-    }
+  }
 }
 
 .sign-up-btn {
@@ -83,16 +87,21 @@ section {
   transition: all 0.3s ease;
   text-decoration: none !important;
   color: white;
+  margin-top: 1rem;
+  max-width: 10rem;
+
   a {
     text-decoration: none !important;
     color: white;
   }
 }
+
 .header-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .gooi-video {
   margin-top: 16px;
   width: 50%;
@@ -118,23 +127,28 @@ section {
     font-size: 1rem;
   }
 }
-.info-container  {
+
+.info-container {
   width: 50%;
   text-align: left;
 }
+
 .content-wrapper {
   justify-content: space-evenly;
   align-items: center;
   display: flex;
   margin: 0 10%;
 }
+
 .icon {
   width: 40px;
 }
+
 .icons-container {
   display: flex;
-  flex-wrap :wrap;
+  flex-wrap: wrap;
 }
+
 .icon-container {
   margin: 8px 0px;
   display: flex;
@@ -148,6 +162,7 @@ section {
     color: #18191F;
   }
 }
+
 .images-container {
   margin-left: 5%;
   width: 50%;
@@ -157,21 +172,26 @@ section {
   grid-template-rows: 1fr;
 
 }
+
 .img-1 .img-2 .img-3 {
   background-color: aqua;
 }
-.img-1{
+
+.img-1 {
   grid-column: 1 / span 2;
   grid-row: 1 / span 1;
 }
+
 .img-2 {
   grid-column: 1 / span 1;
   grid-row: 2 / span 1;
 }
+
 .img-3 {
   grid-column: 2 / span 1;
   grid-row: 2 / span 1;
 }
+
 .mission-image {
   max-height: 300px;
   object-fit: cover;
@@ -189,26 +209,30 @@ section {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
     font-size: 48px;
-    margin:44px 0px;
+    margin: 44px 0px;
   }
+
   p {
     font-family: 'Montserrat', sans-serif;
     color: #fff;
     font-size: 16px;
   }
+
   h3 {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
     font-size: 24px;
   }
 }
+
 .info-card {
   position: relative;
   margin: 8px;
   text-align: left;
 }
+
 .text-container-compost {
-  position:absolute;
+  position: absolute;
   bottom: 0px;
   left: 16px;
 
@@ -216,13 +240,15 @@ section {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
     font-size: 18px;
-  
+
   }
 }
+
 .info-card-container {
   display: flex;
   justify-content: space-around;
 }
+
 .image-container {
   position: relative;
   max-height: 362px;
@@ -237,6 +263,7 @@ section {
     border-radius: 14px;
   }
 }
+
 .overlay {
   position: absolute;
   width: 100%;
@@ -252,6 +279,7 @@ section {
     opacity: 0.8;
   }
 }
+
 // Testimonial styles
 
 .testimonial-section {
@@ -266,6 +294,7 @@ section {
   }
 
 }
+
 .testimonial-card {
   background-color: #023f3a00;
   width: 33%;
@@ -283,7 +312,7 @@ section {
   }
 
   p {
-    font-family: 'Montserrat','sans-serif';
+    font-family: 'Montserrat', 'sans-serif';
     font-size: 18px;
   }
 
@@ -294,6 +323,7 @@ section {
   }
 
 }
+
 .testimonial-image {
   border: solid 4px #FBB718;
   background-color: #525560;
@@ -301,11 +331,12 @@ section {
   height: 72px;
   border-radius: 200px;
 }
+
 .testimonials-container {
   margin-top: 32px;
   display: flex;
   align-items: center;
-  width:100%;
+  width: 100%;
 }
 
 // Compostable Styles
@@ -321,12 +352,14 @@ section {
     font-size: 48px;
   }
 }
+
 .compostable-container {
-  overflow-x:scroll;
+  overflow-x: scroll;
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
+
 .compostable-card {
   position: relative;
   margin: 8px;
@@ -336,7 +369,7 @@ section {
   .compost-title {
     text-align: left;
     position: absolute;
-    top:136px;
+    top: 136px;
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
     font-size: 18px;
@@ -353,8 +386,10 @@ section {
     color: #fff;
   }
 }
+
 .description-container {
   width: 85%;
+
   p {
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
@@ -368,19 +403,20 @@ section {
   display: flex;
   justify-content: center;
 }
+
 input[type="checkbox"] {
   opacity: 0;
   position: absolute;
 }
 
-input[type="checkbox"].toggle + label {
+input[type="checkbox"].toggle+label {
   position: relative;
   display: flex;
   font-size: 24px;
   align-items: center;
 }
 
-input[type="checkbox"].toggle + label::before {
+input[type="checkbox"].toggle+label::before {
   content: '';
   width: 2em;
   height: 1em;
@@ -389,7 +425,8 @@ input[type="checkbox"].toggle + label::before {
   background-color: #e2e2e2;
   transition: 200ms ease-in-out;
 }
-input[type="checkbox"].toggle + label::after {
+
+input[type="checkbox"].toggle+label::after {
   position: absolute;
   left: .1em;
   content: '';
@@ -401,16 +438,17 @@ input[type="checkbox"].toggle + label::after {
   transition: 200ms ease-in-out;
 }
 
-input[type="checkbox"].toggle:checked + label::after {
+input[type="checkbox"].toggle:checked+label::after {
   transform: translateX(100%);
   background-color: #ffffff;
 }
-input[type="checkbox"].toggle:checked + label {
+
+input[type="checkbox"].toggle:checked+label {
   color: #023F3A;
   cursor: pointer;
 }
 
-input[type="checkbox"].toggle:checked + label::before {
+input[type="checkbox"].toggle:checked+label::before {
   background-color: #023F3A;
 }
 
@@ -420,11 +458,13 @@ input[type="checkbox"].toggle:checked + label::before {
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  margin:24px 10%;
+  margin: 24px 10%;
 }
+
 .toggle-container {
   margin: 16px 0px;
 }
+
 .pricing-section {
 
   h1 {
@@ -432,11 +472,13 @@ input[type="checkbox"].toggle:checked + label::before {
     color: #023F3A;
     font-size: 48px;
   }
+
   h5 {
     font-family: 'Libre Baskerville', sans-serif;
     color: #023F3A;
     font-size: 24px;
   }
+
   h2 {
     font-family: "Libre Baskerville", serif;
     color: #023F3A;
@@ -444,15 +486,18 @@ input[type="checkbox"].toggle:checked + label::before {
     margin-top: 2rem;
   }
 }
+
 .pricing-text {
   font-family: 'Montserrat', serif;
   font-size: 16px;
   color: #023F3A;
 
 }
+
 .popular {
   border: 2px solid #FBB718;
 }
+
 .month-card {
   position: relative;
   width: 33%;
@@ -461,6 +506,9 @@ input[type="checkbox"].toggle:checked + label::before {
   border-radius: 8px;
   padding: 44px 24px;
   margin: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   h3 {
     font-family: 'Libre Baskerville', serif;
@@ -469,6 +517,7 @@ input[type="checkbox"].toggle:checked + label::before {
     color: #023F3A;
 
   }
+
   h4 {
     font-family: "Montserrat", sans-serif;
     font-size: 16px;
@@ -477,10 +526,11 @@ input[type="checkbox"].toggle:checked + label::before {
     background-color: #FBB718;
     padding: 8px 16px;
     border-radius: 0px 0px 8px 8px;
-    top:0px;
-    right:0px;
+    top: 0px;
+    right: 0px;
   }
 }
+
 .standard-months-container {
   display: flex;
   justify-content: space-between;
@@ -503,6 +553,7 @@ button {
 .hide {
   display: none;
 }
+
 // play button Style
 
 
@@ -521,13 +572,14 @@ button {
 
 // Responsive Styles
 
-@media  screen and (max-width: 850px) {
+@media screen and (max-width: 850px) {
 
   .inner-header-container {
-    margin:0 5%;
+    margin: 0 5%;
     text-align: -webkit-center;
 
   }
+
   .standard-months-container {
     flex-direction: column;
 
@@ -535,28 +587,34 @@ button {
       width: 100%;
     }
   }
+
   .mission-section {
     margin-top: 260px;
   }
+
   .content-wrapper {
     flex-direction: column;
   }
-  .info-container{
+
+  .info-container {
     width: 100%;
   }
+
   .images-container {
     width: 100%;
     margin: 16px 0px;
   }
+
   .gooi-header {
 
     height: 100vh;
 
     p {
       font-size: 1rem;
-      width:70%;
+      width: 70%;
     }
   }
+
   .gooi-video {
     width: 90%;
     border-radius: 16px;
@@ -564,27 +622,32 @@ button {
 }
 
 @media screen and (max-width:430px) {
-  .gooi-header{
+  .gooi-header {
     h1 {
       font-size: 48px;
-      padding-top:24px;
+      padding-top: 24px;
     }
+
     p {
       width: 90%;
     }
   }
+
   .compost-section {
     h1 {
       font-size: 32px;
     }
   }
+
   .btn-gooi {
     padding: 8px 32px;
     width: 100%;
+
     a {
       text-decoration: none;
     }
   }
+
   .mission-section {
     margin-top: auto;
   }
@@ -593,21 +656,26 @@ button {
     flex-direction: column;
     width: 100%;
   }
+
   .images-container {
     width: 85%;
     margin-left: 0;
     margin-top: 24px;
   }
+
   .info-card-container {
     flex-direction: column;
     width: 85%;
   }
+
   .testimonials-container {
     flex-direction: column;
   }
+
   .testimonial-card {
     width: 85%;
   }
+
   .compostable-container {
     margin-left: 16px;
   }
@@ -623,47 +691,57 @@ button {
   .standard-months-container {
     flex-direction: column;
   }
+
   .month-card {
     width: 85%;
   }
 }
+
 @media screen and (max-width: 1792px) {
   .gooi-header {
     height: 80vh;
   }
+
   .mission-section {
     margin-top: 324px;
   }
 
 }
+
 @media screen and (max-width: 2160px) {
   .gooi-header {
     height: 80vh;
   }
+
   .mission-section {
     margin-top: 244px;
   }
+
   .info-card {
     h3 {
       font-size: 18px;
     }
+
     p {
       font-size: 12px;
     }
   }
 
 }
-@media  screen and (max-width: 1440px) {
+
+@media screen and (max-width: 1440px) {
 
   .gooi-header {
     height: 70vh;
 
   }
+
   .mission-section {
     margin-top: 190px;
   }
 
 }
+
 @media screen and (max-width: 1080px) {
   .mission-section {
     margin-top: 200px;

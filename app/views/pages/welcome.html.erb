@@ -2,7 +2,7 @@
   <h1>Welcome <%= current_user.first_name %></h1>
   <div class="user-container">
     <p>Your subscription is confirmed.</p>
-    <p>Alfred will deliver your starter kit on <%= @subscription.start_date %>.</p>
+    <p>Alfred will deliver your starter kit on <%= @subscription.start_date.strftime('%A, %b %d') %>.</p>
     <h2>Here's how it works</h2>
     <p>Gooi your kitchen scraps into the bucket!</p>
     <p>When the bucket is full, tie a knot in the bag.
