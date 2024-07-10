@@ -104,7 +104,7 @@ section {
 
 .gooi-video {
   margin-top: 16px;
-  width: 50%;
+  width: 70%;
   position: relative;
   border-radius: 30px;
   z-index: 100;
@@ -500,12 +500,12 @@ input[type="checkbox"].toggle:checked+label::before {
 
 .month-card {
   position: relative;
-  width: 33%;
+  width: 32%;
   background-color: #fff;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-radius: 8px;
   padding: 44px 24px;
-  margin: 16px;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -535,6 +535,8 @@ input[type="checkbox"].toggle:checked+label::before {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  align-items: center;
+
 }
 
 button {
@@ -584,7 +586,7 @@ button {
     flex-direction: column;
 
     .month-card {
-      width: 100%;
+      width: 80%;
     }
   }
 
@@ -729,10 +731,12 @@ button {
 
 }
 
+
+
 @media screen and (max-width: 1440px) {
 
   .gooi-header {
-    height: 70vh;
+    height: 83vh;
 
   }
 
@@ -742,9 +746,44 @@ button {
 
 }
 
+
 @media screen and (max-width: 1080px) {
   .mission-section {
-    margin-top: 200px;
+    margin-top: 7rem;
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+
+  .gooi-header {
+    height: 65vh;
+
+  }
+
+  .mission-section {
+    margin-top: 4rem;
+  }
+
+  .compost-section {
+    margin-top: 3rem;
+  }
+
+}
+
+@media screen and (max-width: 375px) {
+
+  .gooi-header {
+    height: 58vh;
+
+  }
+
+  .mission-section {
+    margin-top: 7rem;
+  }
+
+  .compost-section {
+    margin-top: 3rem;
   }
 
 }
