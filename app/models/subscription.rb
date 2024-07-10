@@ -8,7 +8,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id
     self.set_collection_day
   end
-
+  
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
 
