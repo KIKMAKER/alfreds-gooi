@@ -27,6 +27,7 @@ class PagesController < ApplicationController
   end
 
   def kiki
+    @collections = Collection.where(created_at: Date.today.all_day, date: Date.today + 6)[0..5]
   end
 
   def welcome

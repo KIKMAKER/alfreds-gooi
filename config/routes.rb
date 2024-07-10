@@ -16,10 +16,10 @@ Rails.application.routes.draw do
   get "collection", to: "pages#collection"
   get "vamos", to: "pages#vamos"
   get "kiki", to: "pages#kiki"
+  post "perform_create_collections", to: "collections#perform_create_collections"
   get "welcome", to: "pages#welcome"
-
   # Defines getting the csv - the form then sends the data to the import_csv route
-  resources :collections, only: %i[ edit update] do
+  resources :collections, only: %i[ edit update destroy] do
     collection do
       get :export_csv, to: 'collections#export_csv'
       get :load_csv, to: 'collections#load_csv'
@@ -39,7 +39,6 @@ Rails.application.routes.draw do
       get :yesterday
     end
   end
-
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes
 
   # I want get and patch requests on these custom drivers_day routes
@@ -56,5 +55,5 @@ Rails.application.routes.draw do
       patch :end
     end
   end
-  resources :collections, only: %i[edit update destroy]
+
 end
