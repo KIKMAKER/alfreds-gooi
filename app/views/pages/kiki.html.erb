@@ -1,3 +1,14 @@
-<div class="drivers-wrapper">
+<div class="driver-wrapper">
   <h1>Manage this weeks subs</h1>
+  <%= button_to 'Create Collections', perform_create_collections_path, class: 'btn btn-primary', data: { confirm: 'Are you sure you want to run this job?' } %>
+  <br>
+  <h3>Collections:</h3>
+  <p>Tuesday: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 6).count %></p>
+  <p>Wednesday: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 7).count %></p>
+  <p>Thursday: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 8).count %></p>
+  <div class="skip-collections">
+    <% @collections.each do |collection| %>
+      <%= render 'skip', collection: collection %>
+    <% end %>
+  </div>
 </div>

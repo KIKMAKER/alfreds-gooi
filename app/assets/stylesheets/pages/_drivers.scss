@@ -3,9 +3,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 72vh;
+  height: 80vh;
   overflow: scroll;
   margin-top: 2vh;
+
+  h1 {
+    margin: 1rem;
+  }
 
   p {
     color: $dark-green
@@ -14,6 +18,19 @@
 }
 
 .form-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2vh;
+}
+
+.skip {
+  display: flex;
+  flex-direction: row;
+}
+
+.skip-box {
   display: flex;
   flex-direction: row;
   justify-content: center;

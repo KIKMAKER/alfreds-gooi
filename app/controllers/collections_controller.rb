@@ -2,6 +2,12 @@ require 'csv'
 class CollectionsController < ApplicationController
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
+
+  def perform_create_collections
+    CreateCollectionsJob.perform_now
+    flash[:notice] = "Create Collections Job has been triggered."
+    redirect_to kiki_path
+  end
   # Create - done by the import method and not really needing to Read or Destroy collections
   def import_csv
     # find the driver (there is only one)
@@ -60,10 +66,12 @@ class CollectionsController < ApplicationController
   end
 
   def edit
+
     @subscription = @collection.subscription
   end
 
   def update
+    raise
     if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else

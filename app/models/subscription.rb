@@ -5,10 +5,10 @@ class Subscription < ApplicationRecord
   has_many :contacts, dependent: :destroy
 
   after_create do
-    self.set_customer_id
+    # self.set_customer_id
     self.set_collection_day
   end
-  
+
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
 
