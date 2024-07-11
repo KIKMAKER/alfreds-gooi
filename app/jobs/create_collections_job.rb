@@ -4,7 +4,7 @@ class CreateCollectionsJob < ApplicationJob
 
   def perform
 
-    today = Date.today + 5
+    today = Date.today + 4
     puts "#{today}"
     # Ensure the job is run on Monday
     return unless today.monday?
@@ -40,4 +40,3 @@ class CreateCollectionsJob < ApplicationJob
     end
   end
 end
-

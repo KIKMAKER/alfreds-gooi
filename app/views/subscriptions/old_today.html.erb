@@ -1,0 +1,60 @@
+<div class="gooi-container">
+  <% if @subscriptions.any? %>
+    <div class="grid-container">
+      <div class="grid-item"><strong>Name</strong></div>
+      <div class="grid-item"><strong>Address</strong></div>
+      <div class="grid-item"><strong>Collect</strong></div>
+      </div>
+      <% @subscriptions.each do |subscription| %>
+      <div class="grid-container">
+        <div class="grid-item">
+        <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today + 7 } %>
+        <% if today_collection&.skip %>
+          <p>SKIP!</p>
+        <% end %>
+        <%= link_to subscription.user.first_name, subscription_path(subscription) %>
+        </div>
+        <div class="grid-item">
+          <%= link_to subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{subscription.street_address}", target: :_blank %>
+        </div>
+        <div class="grid-item gooi-collect-button">
+          <% if today_collection.nil? %>
+            <%= link_to "Collect", new_subscription_collection_path(subscription) %>
+          <% else %>
+            <% if today_collection.skip %>
+              <%= link_to "No Collection!", edit_collection_path(today_collection) %>
+            <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
+              <%= link_to "Got #{pluralize(today_collection.bags, 'bag')}. Collect more?", edit_collection_path(today_collection) %>
+            <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
+              <%= link_to "Got #{pluralize(today_collection.buckets, 'bucket')}. Collect more?", edit_collection_path(today_collection) %>
+            <% elsif today_collection.new_customer %>
+              <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection) %>
+            <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
+              <%= link_to "Dropped off #{pluralize(today_collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(today_collection) %>
+            <% elsif today_collection.subscription.user.drop_off? %>
+              <%= link_to "Drop off", edit_collection_path(today_collection) %>
+            <% else %>
+              <%= link_to "Collect!", edit_collection_path(today_collection) %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <div class="outline">
+      <% if current_user.admin? %>
+        <%= link_to "NOTES", today_notes_path, class: "gooi-button" %>
+      <% elsif current_user.driver? && @drivers_day.nil? %>
+        <p><em>No collections without a driver</em></p>
+      <% elsif current_user.driver? %>
+        <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "gooi-button" %>
+      <% end %>
+    <% else %>
+      <div class="outline">
+        <h1>No collections for <%= @today %>.</h1>
+        <p>yet...</p>
+        <br>
+        <%= link_to "go to home page", root_path, class: 'gooi-button' %>
+      </div>
+    </div>
+  <% end %>
+</div>

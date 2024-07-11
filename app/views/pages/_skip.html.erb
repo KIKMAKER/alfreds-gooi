@@ -1,8 +1,0 @@
-<div class="skip">
-  <%= simple_form_for [collection] do |f| %>
-    <div class="skip-box">
-      <%= f.input :skip, label: collection.subscription.user.first_name, as: :boolean %>
-      <%= f.submit "Skip", class: "btn btn-primary" %>
-    </div>
-  <% end %>
-</div>

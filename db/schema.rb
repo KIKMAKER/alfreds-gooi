@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_10_134309) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_11_191811) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,19 +18,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_10_134309) do
     t.datetime "time"
     t.string "kiki_note"
     t.string "alfred_message", default: "N/A"
-    t.integer "bags"
+    t.integer "bags", default: 0
     t.bigint "subscription_id", null: false
     t.boolean "is_done", default: false, null: false
     t.boolean "skip", default: false, null: false
-    t.integer "needs_bags"
+    t.integer "needs_bags", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "drivers_day_id"
     t.date "date"
     t.boolean "new_customer", default: false
-    t.float "buckets"
-    t.integer "dropped_off_buckets"
+    t.float "buckets", default: 0.0
+    t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
+    t.integer "order", default: 0
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
