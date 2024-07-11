@@ -8,6 +8,12 @@ class CollectionsController < ApplicationController
     flash[:notice] = "Create Collections Job has been triggered."
     redirect_to kiki_path
   end
+
+  def optimise_route
+    drivers_day = DriversDay.find_by(date: Date.today + 6)
+    RouteOptimiser.optimise_route
+    redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
+  end
   # Create - done by the import method and not really needing to Read or Destroy collections
   def import_csv
     # find the driver (there is only one)

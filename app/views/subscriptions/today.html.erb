@@ -19,6 +19,7 @@
             <% if collection.bags. >= 1 %>
               <p><%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %></p>
             <% else %>
+            <!--<p><%#= collection.subscription.collection_day %></p>-->
               <p><%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %></p>
             <% end %>
             <!--<p class="emoji"><%#= link_to "👜", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello!%20I%27m%20on%20my%20way", target: :_blank %></p>-->

@@ -9,30 +9,27 @@
   <p> <%= (Date.today + 2).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 2, skip: true).count %></p>
   <p> <%= (Date.today + 3).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3).count %></p>
   <p> <%= (Date.today + 3).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3, skip: true).count %></p>
-
   <!--  <p>Wednesday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today + 6).count %></p>
-  <p>Thursday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today + 7).count %></p>-->
+  <p>Thursday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today + 6).count %></p>-->
   <br>
-
   <h2>Skips for <%= @day %>:</h2>
   <div class="skip-collections">
-  <div class="skip-form">
-  <h3>Select to skip</h3>
+    <div class="skip-form">
+      <h3>Select to skip</h3>
       <%= simple_form_for(:skip_today_collections, url: skip_today_collections_path, method: :patch) do |f| %>
         <% @unskipped_collections.each do |collection| %>
-        <div class="collection-group">
-          <%= f.input collection.id, label: collection.subscription.user.first_name, as: :boolean %>
-        </div>
+          <div class="collection-group">
+            <%= f.input collection.id, label: collection.subscription.user.first_name, as: :boolean %>
+          </div>
         <% end %>
         <%= f.submit "Update all", class: "small-yellow-btn" %>
       <% end %>
-  </div>
-  <div class="skipped">
-  <h3>Already skipped</h3>
-        <% @skipped_collections.each do |collection| %>
-  <p class="mb-3"><%=  collection.subscription.user.first_name%></p>
-  <% end %>
-
-  </div>
+    </div>
+    <div class="skipped">
+      <h3>Already skipped</h3>
+      <% @skipped_collections.each do |collection| %>
+        <p class="mb-3"><%=  collection.subscription.user.first_name%></p>
+      <% end %>
     </div>
   </div>
+</div>

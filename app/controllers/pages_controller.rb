@@ -28,8 +28,8 @@ class PagesController < ApplicationController
 
   def kiki
     @day = Date.today.strftime("%A")
-    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today + 7, skip: false)
-    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today + 7, skip: true)
+    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today + 6, skip: false)
+    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today + 6, skip: true)
 
   end
 
