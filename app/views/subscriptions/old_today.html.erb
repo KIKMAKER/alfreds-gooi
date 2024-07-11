@@ -8,7 +8,7 @@
       <% @subscriptions.each do |subscription| %>
       <div class="grid-container">
         <div class="grid-item">
-        <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today + 7 } %>
+        <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today + 6 } %>
         <% if today_collection&.skip %>
           <p>SKIP!</p>
         <% end %>
