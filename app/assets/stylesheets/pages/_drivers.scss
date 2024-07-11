@@ -3,37 +3,80 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  min-height: 80vh;
   overflow: scroll;
   margin-top: 2vh;
 
   h1 {
     margin: 1rem;
   }
-
+  h3 {
+        font-size: 1rem;
+      }
   p {
     color: $dark-green
   }
 
+  .skip-collections {
+    // overflow: scroll;
+    margin-bottom: 4vh;
+    display: flex;
+
+
+  }
+
+  .form-check-input {
+    opacity: 1 !important;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2vh;
+  }
 }
 
-.form-row {
+.collection-header {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 2vh;
+  width: 80vw;
+  border-bottom: 2px solid #2c3e50;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+  }
+
+}
+.collections {
+  margin-bottom: 2rem;
 }
 
-.skip {
+.collection {
   display: flex;
-  flex-direction: row;
-}
-
-.skip-box {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 2vh;
+  width: 80vw;
+  border-bottom: 1px solid #2c3e50;
+  height: 3rem;
+  a {
+   text-decoration: none;
+  }
+
+  .car {
+    width: 20%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .emoji {
+      a {
+        font-size: 2rem;
+      }
+
+    }
+  }
 }

@@ -71,12 +71,27 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    raise
     if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def skip_today
+    skipped_params = 0
+    skipped = 0
+    params[:skip_today_collections].each do |id, collection_params|
+      collection = Collection.find(id)
+      skipped_params += 1 if collection_params == "1"
+      if collection_params == "1" && collection.update!(skip: collection_params)
+        skipped += 1
+      else
+        puts "Failed to skip collection #{collection.id}"
+      end
+    end
+    flash[:notice] = "Collections updated successfully!" if skipped_params == skipped
+    redirect_to kiki_path
   end
 
   def destroy

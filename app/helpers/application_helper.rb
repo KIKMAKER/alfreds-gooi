@@ -9,4 +9,6 @@ module ApplicationHelper
     end
     render "shared/new_navbar"
   end
+
+  
 end

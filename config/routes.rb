@@ -1,29 +1,31 @@
 Rails.application.routes.draw do
+
+  # admin
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
+  # payments
   resources :webhooks, only: :create
   get 'snapscan/payments', to: 'payments#fetch_snapscan_payments'
 
+  # users
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # sidekiq
   require "sidekiq/web"
   authenticate :user, ->(user) { user.admin? } do
     mount Sidekiq::Web => '/sidekiq'
   end
-  # Defines the root path route ("/")
-  root "pages#home"
-  get "collection", to: "pages#collection"
-  get "vamos", to: "pages#vamos"
-  get "kiki", to: "pages#kiki"
+
+
   post "perform_create_collections", to: "collections#perform_create_collections"
-  get "welcome", to: "pages#welcome"
   # Defines getting the csv - the form then sends the data to the import_csv route
-  resources :collections, only: %i[ edit update destroy] do
+  resources :collections, only: [:edit, :update, :destroy] do
     collection do
-      get :export_csv, to: 'collections#export_csv'
-      get :load_csv, to: 'collections#load_csv'
-      post :import_csv, to: 'collections#import_csv'
+      patch :skip_today
+      get :export_csv
+      get :load_csv
+      post :import_csv
     end
   end
 
@@ -55,5 +57,12 @@ Rails.application.routes.draw do
       patch :end
     end
   end
+
+    # static pages
+    root "pages#home"
+    get "collection", to: "pages#collection"
+    get "vamos", to: "pages#vamos"
+    get "kiki", to: "pages#kiki"
+    get "welcome", to: "pages#welcome"
 
 end
