@@ -3,13 +3,14 @@
   flex-direction: column;
   align-items: center;
   margin-top: 2rem;
-  margin-bottom: 5rem;
   overflow: scroll;
 
   p {
     color: $dark-green;
     font-size: 1.2rem;
   }
+
+
 }
 
 .user-container {
@@ -28,5 +29,8 @@
     font-size: 0.8rem;
     margin: 0.5rem 0;
   }
-}
+  li {
 
+    font-size: 0.9rem;
+  }
+}

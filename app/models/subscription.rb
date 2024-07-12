@@ -4,8 +4,12 @@ class Subscription < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :contacts, dependent: :destroy
 
+  geocoded_by :street_address
+  after_validation :geocode, if: :will_save_change_to_street_address?
+
+
   after_create do
-    # self.set_customer_id
+    self.set_customer_id
     self.set_collection_day
   end
 

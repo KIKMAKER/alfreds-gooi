@@ -12,7 +12,8 @@ class PaymentsController < ApplicationController
       verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
-      payload = JSON.parse(request_body)["payload"]
+      parsed_params = Rack::Utils.parse_nested_query(request_body)
+      payload = JSON.parse(parsed_params["payload"])
       Rails.logger.debug "Received payload: #{payload.inspect}"
 
       # Find the user by customer_id
