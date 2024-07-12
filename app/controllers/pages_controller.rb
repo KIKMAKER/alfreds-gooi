@@ -21,7 +21,7 @@ class PagesController < ApplicationController
 
   end
 
-  def collection
+  def manage
     @subscription = current_user.current_sub
 
   end

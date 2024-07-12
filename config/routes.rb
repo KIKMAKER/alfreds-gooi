@@ -60,7 +60,7 @@ Rails.application.routes.draw do
 
     # static pages
     root "pages#home"
-    get "collection", to: "pages#collection"
+    get "manage", to: "pages#manage"
     get "vamos", to: "pages#vamos"
     get "kiki", to: "pages#kiki"
     get "welcome", to: "pages#welcome"

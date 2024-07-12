@@ -24,13 +24,13 @@ class Users::SessionsController < Devise::SessionsController
     puts "User signed in with role: #{resource.role}"
     if resource.customer?
       puts "Redirecting to manage_path"
-      collection_path
+      manage_path
     elsif resource.driver?
       CreateCollectionsJob.perform_now
       puts "Redirecting to vamos_path"
       vamos_path
     elsif resource.admin?
-      puts "Redirecting to vamos_path"
+      puts "Redirecting to kiki_path"
       kiki_path
     else
       puts "Redirecting to root_path"
