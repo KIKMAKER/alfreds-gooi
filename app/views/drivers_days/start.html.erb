@@ -27,8 +27,8 @@
     <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
   <div class="start-form">
       <%= f.input :start_kms, label: false, placeholder: "Enter starting kms", required: true, input_html: { min: 0 } %>
-      <!-- Hidden field for start_time -->
-      <%#= f.hidden_field :start_time, value: Time.current %>
+       Hidden field for start_time
+      <%= f.hidden_field :start_time, value: Time.current %>
       <%= f.submit "Time to vamos!", class: "small-yellow-btn" %>
   </div>
     <% end %>

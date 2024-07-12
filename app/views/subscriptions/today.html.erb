@@ -11,21 +11,35 @@
           <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello!%20I%27m%20on%20my%20way", target: :_blank %></p>
           <p><%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %></p>
         </div>
-        <p><%= link_to collection.subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %></p>
+        <%= link_to collection.subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
         <div class="bag">
           <% if collection.skip %>
-            <p><%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %></p>
+            <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
           <% else %>
             <% if collection.bags. >= 1 %>
-              <p><%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %></p>
+              <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
+            <% elsif collection.new_customer %>
+              <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+            <% elsif collection.dropped_off_buckets > 1 && collection.updated_at < Time.now %>
+              <%= link_to "Dropped off #{pluralize(collection.dropped_off_buckets, 'buckets')}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+            <% elsif collection.subscription.user.drop_off? %>
+              <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
             <% else %>
-            <!--<p><%#= collection.subscription.collection_day %></p>-->
-              <p><%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %></p>
+              <%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %>
             <% end %>
-            <!--<p class="emoji"><%#= link_to "👜", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello!%20I%27m%20on%20my%20way", target: :_blank %></p>-->
           <% end %>
         </div>
       </div>
+    <% end %>
+  </div>
+  <div class="start-form">
+    <% if current_user.admin? %>
+      <%= link_to "NOTES", today_notes_path, class: "sign-up-btn" %>
+      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
+    <% elsif current_user.driver? && @drivers_day.nil? %>
+      <p><em>No collections without a driver</em></p>
+    <% elsif current_user.driver? %>
+      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
     <% end %>
   </div>
 </div>
