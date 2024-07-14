@@ -1,0 +1,143 @@
+
+.mapboxgl-ctrl-geocoder {
+  max-width: none;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid black;
+  box-shadow: none;
+  background-color: #f4f4f4;
+  height: 38px;
+
+  .mapboxgl-ctrl-geocoder--input {
+    text-align: left;
+    // padding-left: 48px;
+    padding-bottom: 7px;
+    margin-bottom: 17px;   // Reset padding to ensure text is truly centered
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 40px;
+    height: 37px
+  }
+  ::placeholder {
+    display: flex;
+
+  }
+  :focus {
+    outline: none; // Remove the default focus outline
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    border-radius: 16px;// Add a custom focus outline (optional)
+  }
+
+  .mapboxgl-ctrl-geocoder--icon-search {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 23px;
+    height: 23px;
+  }
+}
+.user_subscription_street_address {
+  margin-bottom: 0.6rem !important;
+}
+.after-address {
+  margin-top: 1rem;
+}
+
+.street-label {
+  margin-bottom: 0px;
+}
+
+@media screen and (max-width: 380px) {
+  .mapboxgl-ctrl-geocoder--input {
+    padding-bottom: 0px;
+  }
+  // .mapboxgl-ctrl-geocoder--icon-search {
+  // }
+
+  // .user_subscription_street_address {
+  //   margin-bottom: 0.5rem;
+  // }
+  // .street-label {
+  //   margin-bottom: 0px;
+  // }
+
+}
+
+// Mapbox input media queries
+
+// @media screen and (max-width: 1792px) {
+//   .mapboxgl-ctrl-geocoder--input {
+//   }
+//   .mapboxgl-ctrl-geocoder--icon-search {
+//   }
+
+// }
+
+// @media screen and (max-width: 2160px) {
+//   .mapboxgl-ctrl-geocoder--input {
+//   }
+//   .mapboxgl-ctrl-geocoder--icon-search {
+//   }
+
+//   .user_subscription_street_address {
+//     margin-bottom: 0.5rem;
+//   }
+//   .street-label {
+//     margin-bottom: 0px;
+//   }
+//   .after-address {
+//     margin-top: 1rem;
+//   }
+// }
+
+// @media screen and (max-width: 1440px) {
+//   .mapboxgl-ctrl-geocoder--input {
+//   }
+//   .mapboxgl-ctrl-geocoder--icon-search {
+//   }
+
+//   .user_subscription_street_address {
+//     margin-bottom: 0.5rem;
+//   }
+//   .street-label {
+//     margin-bottom: 0px;
+//   }
+//   .after-address {
+//     margin-top: 1rem;
+//   }
+
+// }
+
+// @media screen and (max-width: 1080px) {
+//   .mapboxgl-ctrl-geocoder--input {
+//   }
+//   .mapboxgl-ctrl-geocoder--icon-search {
+//   }
+
+//   .user_subscription_street_address {
+//     margin-bottom: 0.5rem;
+//   }
+//   .street-label {
+//     margin-bottom: 0px;
+//   }
+//   .after-address {
+//     margin-top: 1rem;
+//   }
+// }
+
+// @media screen and (max-width: 768px) {
+//   .mapboxgl-ctrl-geocoder--input {
+//   }
+//   .mapboxgl-ctrl-geocoder--icon-search {
+//   }
+
+//   .user_subscription_street_address {
+//     margin-bottom: 0.5rem;
+//   }
+//   .street-label {
+//     margin-bottom: 0px;
+//   }
+//   .after-address {
+//     margin-top: 1rem;
+//   }
+// }

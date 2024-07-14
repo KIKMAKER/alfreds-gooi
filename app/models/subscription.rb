@@ -10,6 +10,7 @@ class Subscription < ApplicationRecord
 
   after_create do
     self.set_customer_id
+    self.set_suburb
     self.set_collection_day
   end
 
@@ -24,15 +25,30 @@ class Subscription < ApplicationRecord
   enum plan: %i[once_off standard XL]
   enum collection_day: Date::DAYNAMES
 
-  SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
+  SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
 
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
 
-  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
+  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
 
-  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Observatory", "Salt River"].sort!.freeze
+  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock", "Observatory", "Salt River"].sort!.freeze
 
   # customised methods
+
+  def set_suburb
+    parts = street_address.split(',')
+    if parts.length >= 3
+      # Assume the suburb is the second to last part before the province and country
+      suburb = parts[-3].strip
+      # return suburb
+      puts suburb
+    end
+    if SUBURBS.include?(suburb)
+      update(suburb: suburb)
+      puts "found the sub in the list of subs"
+    end
+    nil
+  end
 
   def calculate_next_collection_day
     target_day = Date::DAYNAMES.index(collection_day.capitalize)
