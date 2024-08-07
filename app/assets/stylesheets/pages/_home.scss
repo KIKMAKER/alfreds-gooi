@@ -195,7 +195,7 @@ section {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
     font-size: 18px;
-  
+
   }
 }
 .info-card-container {
@@ -301,7 +301,8 @@ section {
   }
 }
 .compostable-container {
-  overflow-x:scroll;
+  overflow-x: scroll;
+  overflow-y: hidden;
   width: 100%;
   display: flex;
   justify-content: space-between;
