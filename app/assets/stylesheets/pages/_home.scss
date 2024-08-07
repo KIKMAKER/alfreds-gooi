@@ -574,6 +574,80 @@ button {
 
 // Responsive Styles
 
+
+@media screen and (max-width: 2460px) {
+
+  .gooi-header {
+    h1 {
+      font-size: 5vh;
+    }
+
+    p {
+      font-size: 2.3vh;
+    }
+
+    height: 80vh;
+  }
+
+  .mission-section {
+    margin-top: 40vh;
+
+    p {
+      font-size: 2vh;
+    }
+  }
+
+  .info-card {
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 2.3vh;
+    }
+  }
+
+}
+
+@media screen and (max-width: 1792px) {
+  .gooi-header {
+    height: 78vh;
+  }
+
+  .mission-section {
+    margin-top: 14vh;
+  }
+
+}
+
+
+@media screen and (max-width: 1440px) {
+
+  .gooi-header {
+    height: 65vh;
+
+  }
+
+  .mission-section {
+    margin-top: 16vh;
+  }
+
+}
+
+
+@media screen and (max-width: 1080px) {
+
+  .gooi-header {
+    height: 65vh;
+
+  }
+
+  .mission-section {
+    margin-top: 7vh;
+  }
+
+}
+
 @media screen and (max-width: 850px) {
 
   .inner-header-container {
@@ -591,7 +665,7 @@ button {
   }
 
   .mission-section {
-    margin-top: 260px;
+    margin-top: 5vh;
   }
 
   .content-wrapper {
@@ -609,7 +683,7 @@ button {
 
   .gooi-header {
 
-    height: 100vh;
+    height: 65vh;
 
     p {
       font-size: 1rem;
@@ -623,8 +697,33 @@ button {
   }
 }
 
+
+@media screen and (max-width: 768px) {
+
+  .gooi-header {
+    height: 55vh;
+
+    h1 {
+      font-size: 3rem;
+      padding-top: 4rem;
+    }
+
+  }
+
+  .mission-section {
+    margin-top: 6vh;
+  }
+
+  .compost-section {
+    margin-top: 3rem;
+  }
+
+}
+
 @media screen and (max-width:430px) {
   .gooi-header {
+    height: 55vh;
+
     h1 {
       font-size: 48px;
       padding-top: 24px;
@@ -651,7 +750,7 @@ button {
   }
 
   .mission-section {
-    margin-top: auto;
+    margin-top: 2vh;
   }
 
   .icons-container {
@@ -699,95 +798,20 @@ button {
   }
 }
 
-@media screen and (max-width: 1792px) {
-  .gooi-header {
-    height: 80vh;
-  }
-
-  .mission-section {
-    margin-top: 324px;
-  }
-
-}
-
-@media screen and (max-width: 2160px) {
-  .gooi-header {
-    height: 80vh;
-  }
-
-  .mission-section {
-    margin-top: 244px;
-  }
-
-  .info-card {
-    h3 {
-      font-size: 18px;
-    }
-
-    p {
-      font-size: 12px;
-    }
-  }
-
-}
-
-
-
-@media screen and (max-width: 1440px) {
-
-  .gooi-header {
-    height: 83vh;
-
-  }
-
-  .mission-section {
-    margin-top: 190px;
-  }
-
-}
-
-
-@media screen and (max-width: 1080px) {
-  .mission-section {
-    margin-top: 7rem;
-  }
-
-}
-
-@media screen and (max-width: 768px) {
-
-  .gooi-header {
-    height: 80vh;
-    h1 {
-      font-size: 3rem;
-      padding-top: 4rem;
-    }
-
-  }
-
-  .mission-section {
-    margin-top: 4rem;
-  }
-
-  .compost-section {
-    margin-top: 3rem;
-  }
-
-}
-
 @media screen and (max-width: 380px) {
 
   .gooi-header {
-    height: 88vh;
+    height: 60vh;
+
     h1 {
-      font-size: 5vh;
+      font-size: 4vh;
     }
 
   }
 
-  .mission-section {
-    margin-top: 7rem;
-  }
+  // .mission-section {
+  //   margin-top: 5vh;
+  // }
 
   .compost-section {
     margin-top: 3rem;
