@@ -8,10 +8,10 @@
     <% @collections.each do |collection| %>
       <div class="collection">
         <div class="car">
-          <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello!%20I%27m%20on%20my%20way", target: :_blank %></p>
+          <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
           <p><%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %></p>
         </div>
-        <%= link_to collection.subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
+        <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
         <div class="bag">
           <% if collection.skip %>
             <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
@@ -32,7 +32,7 @@
       </div>
     <% end %>
   </div>
-  <div class="start-form">
+  <div class="drivers-form">
     <% if current_user.admin? %>
       <%= link_to "NOTES", today_notes_path, class: "sign-up-btn" %>
       <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>

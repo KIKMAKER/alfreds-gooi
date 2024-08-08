@@ -4,15 +4,15 @@
       <div class="grid-item"><strong>Name</strong></div>
       <div class="grid-item"><strong>Address</strong></div>
       <div class="grid-item"><strong>Collect</strong></div>
-      </div>
-      <% @subscriptions.each do |subscription| %>
+    </div>
+    <% @subscriptions.each do |subscription| %>
       <div class="grid-container">
         <div class="grid-item">
-        <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today + 6 } %>
-        <% if today_collection&.skip %>
-          <p>SKIP!</p>
-        <% end %>
-        <%= link_to subscription.user.first_name, subscription_path(subscription) %>
+          <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today  } %>
+          <% if today_collection&.skip %>
+            <p>SKIP!</p>
+          <% end %>
+          <%= link_to subscription.user.first_name, subscription_path(subscription) %>
         </div>
         <div class="grid-item">
           <%= link_to subscription.street_address&.truncate(35), "https://maps.google.com/?q=#{subscription.street_address}", target: :_blank %>

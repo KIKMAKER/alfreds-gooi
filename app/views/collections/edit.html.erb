@@ -3,7 +3,7 @@
     <!--div containing back and whatsapp button-->
     <div class="collection-body-heading">
       <div>
-        <%= link_to 'Back', :back, class: 'back_button' %>
+        <%= link_to 'Back', :back, class: 'small-yellow-btn' %>
       </div>
       <div>
         <h1><strong><%= @subscription.user.first_name %></strong></h1>
@@ -84,7 +84,7 @@
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
         <div class="centre">
-          <%= f.submit 'Done!', class: 'gooi-button' %>
+          <%= f.submit 'Done!', class: 'small-yellow-btn' %>
         </div>
       <% end %>
     <% end %>

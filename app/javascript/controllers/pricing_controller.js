@@ -10,7 +10,7 @@ export default class extends Controller {
   toggle() {
     console.log("I'm toggling!")
     if(this.titleTarget.innerText === "Standard") {
-    this.titleTarget.innerText = "Extra large";
+    // this.titleTarget.innerText = "Extra large";
   } else {
     this.titleTarget.innerText = "Standard";
   }

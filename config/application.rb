@@ -13,7 +13,7 @@ module AlfredsGooi
       generate.helper false
       generate.test_framework :test_unit, fixture: false
     end
-    puts "Autoload paths: #{ActiveSupport::Dependencies.autoload_paths.inspect}"
+    # puts "Autoload paths: #{ActiveSupport::Dependencies.autoload_paths.inspect}"
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.active_job.queue_adapter = :sidekiq

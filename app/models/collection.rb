@@ -36,4 +36,5 @@ class Collection < ApplicationRecord
       end
     end
   end
+
 end
