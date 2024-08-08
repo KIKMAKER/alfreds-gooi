@@ -141,6 +141,8 @@ section {
   justify-content: space-evenly;
   align-items: center;
   display: flex;
+  margin-left: 1rem;
+
 }
 
 .icon {
@@ -829,7 +831,7 @@ button {
 @media screen and (max-width: 380px) {
 
   .gooi-header {
-    height: 60vh;
+    height: 100vh;
 
     h1 {
       font-size: 4vh;
@@ -843,6 +845,12 @@ button {
 
   .compost-section {
     margin-top: 3rem;
+  }
+
+  .pricing-section {
+    h5 {
+      font-size: 1rem
+    }
   }
 
 }
