@@ -5,7 +5,7 @@ class DriversDaysController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today + 6
+    today = Date.today
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
     # today = (Date.today + 1)
@@ -51,16 +51,22 @@ class DriversDaysController < ApplicationController
     @drivers_day.save!
     @collections = @drivers_day.collections
     @total_bags_collected = @collections&.sum(:bags) || 0
-    @total_buckets_collected = @collections&.sum(:buckets) || 0
+    @total_bags_collected = @total_bags_collected.floor
+
+    @total_buckets_collected = @collections&.sum(:buckets).floor || 0
     return unless request.patch?
 
-    if update_drivers_day(drivers_day_params, next_path: root_path)
+    if update_drivers_day(drivers_day_params, next_path: vamos_path)
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
     else
       flash.now[:alert] = "Failed to end the Day"
       render :end
     end
+  end
+
+  def todays_collections
+    @collections = Collection.where(date: Date.today)
   end
 
   def index

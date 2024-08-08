@@ -59,6 +59,7 @@ gem "sidekiq", "~> 7"
 gem "sidekiq-failures"
 gem "rails_admin", "3.0"
 gem "geocoder"
+gem 'faker'
 
 group :development, :test do
   gem "dotenv-rails"

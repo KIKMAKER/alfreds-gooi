@@ -9,8 +9,8 @@
   <p> <%= (Date.today + 2).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 2, skip: true).count %></p>
   <p> <%= (Date.today + 3).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3).count %></p>
   <p> <%= (Date.today + 3).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3, skip: true).count %></p>
-  <!--  <p>Wednesday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today + 6).count %></p>
-  <p>Thursday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today + 6).count %></p>-->
+  <!--  <p>Wednesday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today ).count %></p>
+  <p>Thursday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today ).count %></p>-->
   <br>
   <h2>Skips for <%= @day %>:</h2>
   <div class="skip-collections">

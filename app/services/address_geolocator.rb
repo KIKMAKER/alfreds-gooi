@@ -8,7 +8,7 @@ class RouteOptimiser
   MAX_WAYPOINTS = 25
 
   def self.optimise_route
-    collections = Collection.includes(subscription: :user).where(skip: false, date: Date.today + 6)
+    collections = Collection.includes(subscription: :user).where(skip: false, date: Date.today )
     return if collections.empty?
 
     # Sort collections by suburb and street address

@@ -55,6 +55,7 @@ Rails.application.routes.draw do
       patch :drop_off
       get :end
       patch :end
+      get :todays_collections
     end
   end
 

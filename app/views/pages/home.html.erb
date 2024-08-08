@@ -170,15 +170,15 @@
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('fruit-veg.svg') %>
-         <div class="text-container-compost">
-        <p class="compost-title">Fruit and Vegetable Scraps</p>
-        <p>All fruit and vegetable scraps are compostable.</p>
+          <div>
+            <p class="compost-title">Fruit and Vegetable Scraps</p>
+            <p>All fresh fruit and vegetable scraps are compostable.</p>
          </div>
       </div>
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('coffee-tea.svg') %>
-        <p class="compost-title">Coffee Grounds and Tea Bags</p>
+        <p class="compost-title">Tea and Coffee</p>
         <p>Used coffee grounds and paper tea bags are great for composting and add valuable nitrogen.</p>
       </div>
       <div class="compostable-card">
@@ -196,8 +196,8 @@
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('food-scraps.svg') %>
-        <p class="compost-title">Food Scraps (Non-dairy and Non-meat)</p>
-        <p>These items are compostable but avoid composting meat, dairy, and oily foods as they attract pests and decompose slowly.</p>
+        <p class="compost-title">Food Scraps (No meat or dairy)</p>
+        <p>These items are compostable but avoid oily or spiced foods as they attract pests and decompose slowly.</p>
       </div>
       <div class="compostable-card">
         <div class="overlay"></div>
@@ -221,16 +221,20 @@
   <h1>How it works</h1>
   <div class="pricing-content-wrapper">
     <div class="description-container">
-      <p id="pricing">We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. If you are a bigger family, or just a very avid juicer, you may need to move up to the XL package. With this model you can fill a 20L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 20L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
+      <p id="pricing">We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
       </p>
     </div>
     <div class="toggle-subscription">
-      <h2>subscription rates</h2>
+      <h2>Subscription rates</h2>
+    <div class="toggle">
+      <!--<p>Standard</p>-->
+      <h5 data-pricing-target="title">Standard</h5>
       <div class="toggle-container">
       <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
       <label for="check" class="toggle-label"></label>
       </div>
-      <h5 data-pricing-target="title">Standard</h5>
+      <h5>XL</h5>
+    </div>
     </div>
     <div class="standard-months-container" data-pricing-target="standard">
       <div class="month-card">

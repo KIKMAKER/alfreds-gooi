@@ -1,0 +1,41 @@
+<div class="driver-wrapper">
+  <h1>Collections made <%= Date.today.strftime('%A') %></h1>
+  <div class="driver-wrapper">
+    <div class="collection-header">
+      <p>Name</p>
+      <p>Note</p>
+      <p>Collected</p>
+    </div>
+    <div class="collections">
+      <% @collections.each do |collection| %>
+        <div class="collection">
+          <div>
+            <%= collection.subscription.user.first_name %>
+          </div>
+          <% if collection.alfred_message %>
+            <p><%= collection.alfred_message %></p>
+          <% else %>
+            <p>No message from Alfred yet</p>
+          <% end %>
+          <div class="bag">
+            <% if collection.skip %>
+              <%= link_to "skipped", edit_collection_path(collection), class: "small-yellow-btn" %>
+            <% else %>
+              <% if collection.bags. >= 1 %>
+                <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
+              <% elsif collection.new_customer %>
+                <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+              <% elsif collection.dropped_off_buckets > 1 && collection.updated_at < Time.current %>
+                <%= link_to "Dropped off #{pluralize(collection.dropped_off_buckets, 'buckets')}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+              <% elsif collection.subscription.user.drop_off? %>
+                <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
+              <% else %>
+                <%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

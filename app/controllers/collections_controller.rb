@@ -10,7 +10,7 @@ class CollectionsController < ApplicationController
   end
 
   def optimise_route
-    drivers_day = DriversDay.find_by(date: Date.today + 6)
+    drivers_day = DriversDay.find_by(date: Date.today)
     RouteOptimiser.optimise_route
     redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
   end
