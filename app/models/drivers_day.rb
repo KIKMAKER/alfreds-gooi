@@ -21,7 +21,7 @@ class DriversDay < ApplicationRecord
   end
 
   # def todays_driver
-  #   DriversDay.where(date: Date.today)
+  #   DriversDay.where(date: Date.today + 2 #)
   # end
 
   private
