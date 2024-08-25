@@ -1,4 +1,3 @@
-  
 <div class="gooi-container">
   <% if @subscriptions.any? %>
     <div class="today-outline">
@@ -12,6 +11,8 @@
           <div class="grid-item">
             <% if today_collection&.skip %>
               <p>SKIP!</p>
+            <% elsif today_collection&.wants_veggies %>
+              <p>🥬</p>
             <% end %>
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
