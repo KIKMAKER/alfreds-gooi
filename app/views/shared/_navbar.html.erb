@@ -28,7 +28,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto">
           <% if user_signed_in? %>
-            <% drivers_day = DriversDay.find_by(date: Date.today) %>
+            <% drivers_day = DriversDay.find_by(date: Date.today + 2) %>
             <% if current_user.driver? %>
               <li class="nav-item active">
                 <%= link_to "Start the Day", drivers_day.present? ? start_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
