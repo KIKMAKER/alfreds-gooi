@@ -122,7 +122,7 @@ class CollectionsController < ApplicationController
     puts date
     collection = Collection.new(
       kiki_note: row['note'], skip: row['skip'] == 'TRUE', new_customer: row['new_customer'] == 'TRUE',
-      needs_bags: row['needs_bags'].to_i, soil_bag: row['soil_bag'].to_i, date: date)
+      needs_bags: row['needs_bags'].to_i, soil_bag: row['soil_bag'].to_i, date: date, wants_veggies: row["wants_veggies"] == 'TRUE')
     collection.subscription = subscription
     collection.drivers_day = drivers_day
     if collection.save
