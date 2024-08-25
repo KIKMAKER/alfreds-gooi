@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_25_182502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,19 +18,21 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "time"
     t.string "kiki_note"
     t.string "alfred_message", default: "N/A"
-    t.integer "bags"
+    t.integer "bags", default: 0
     t.bigint "subscription_id", null: false
     t.boolean "is_done", default: false, null: false
     t.boolean "skip", default: false, null: false
-    t.integer "needs_bags"
+    t.integer "needs_bags", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "drivers_day_id"
-    t.datetime "date"
+    t.date "date"
     t.boolean "new_customer", default: false
-    t.float "buckets"
-    t.integer "dropped_off_buckets"
+    t.float "buckets", default: 0.0
+    t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
+    t.integer "order", default: 0
+    t.boolean "wants_veggies"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
@@ -49,17 +51,67 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   create_table "drivers_days", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "end_time"
-    t.integer "start_kms"
-    t.integer "end_kms"
     t.string "note"
     t.bigint "user_id", null: false
     t.integer "total_buckets"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "date"
+    t.date "date"
     t.datetime "sfl_time"
+    t.integer "start_kms"
+    t.integer "end_kms"
     t.string "message_from_alfred"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
+  end
+
+  create_table "invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "product_id", null: false
+    t.float "quantity", default: 1.0, null: false
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
+    t.index ["product_id"], name: "index_invoice_items_on_product_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.date "issued_date"
+    t.date "due_date"
+    t.integer "number"
+    t.float "total_amount"
+    t.boolean "paid", default: false
+    t.bigint "subscription_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "snapscan_id"
+    t.string "status"
+    t.integer "total_amount"
+    t.integer "tip_amount"
+    t.integer "fee_amount"
+    t.integer "settle_amount"
+    t.datetime "date"
+    t.string "user_reference"
+    t.string "merchant_reference"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.float "price"
+    t.string "is_active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -73,12 +125,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.integer "plan"
     t.boolean "is_paused", default: false, null: false
     t.bigint "user_id", null: false
-    t.datetime "holiday_start"
-    t.datetime "holiday_end"
+    t.date "holiday_start", default: "2000-01-01"
+    t.date "holiday_end", default: "2000-01-01"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "collection_order"
+    t.boolean "is_new_customer", default: true
+    t.float "latitude"
+    t.float "longitude"
+    t.string "apartment_unit_number"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "testimonials", force: :cascade do |t|
+    t.string "content"
+    t.integer "ranking"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -96,6 +161,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
     t.datetime "last_sign_in_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -104,5 +170,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_02_150651) do
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
+  add_foreign_key "invoice_items", "invoices"
+  add_foreign_key "invoice_items", "products"
+  add_foreign_key "invoices", "subscriptions"
+  add_foreign_key "invoices", "users"
+  add_foreign_key "payments", "users"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "testimonials", "users"
 end
