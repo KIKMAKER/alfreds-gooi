@@ -50,13 +50,13 @@
     <div class="outline">
       <%= link_to "TODAY", today_subscriptions_path, class: "gooi-button" %>
 
+    </div>
   <% else %>
     <div class="outline">
       <h1>No collections for <%= @today %>.</h1>
       <p>yet...</p>
       <br>
       <%= link_to "go to home page", root_path, class: 'gooi-button' %>
-    </div>
     </div>
   <% end %>
 </div>
