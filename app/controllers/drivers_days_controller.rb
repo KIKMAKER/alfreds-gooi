@@ -69,6 +69,11 @@ class DriversDaysController < ApplicationController
     @drivers_days = DriversDay.all.order(:date)
   end
 
+  def show
+    @drivers_day = DriversDay.find(params[:id])
+    @collections = @drivers_day.collections
+  end
+
   def edit; end
 
   def update
