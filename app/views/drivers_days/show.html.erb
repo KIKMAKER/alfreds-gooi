@@ -1,0 +1,61 @@
+<div class="gooi-container">
+  <div class="today-outline">
+    <h1><%= @drivers_day.date.strftime('%b %d') %></h1>
+    <strong>
+      <p>Time: <%= @drivers_day.start_time&.strftime('%I:%M') %> - <%= @drivers_day.end_time&.strftime('%I:%M') %></p>
+    </strong>
+    <strong>
+      <p>kms: <%= @drivers_day.start_kms %> -  <%= @drivers_day.end_kms %></p>
+    </strong>
+    <strong>TOTAL BUCKETS</strong>: <%= @drivers_day.collections.sum(:dropped_off_buckets) || @drivers_day.total_buckets  %>
+    <br>
+    <br>
+    <div class="grid-container">
+      <div class="grid-item"><strong>Name</strong></div>
+      <div class="grid-item"><strong>Note</strong></div>
+      <div class="grid-item"><strong>Collect</strong></div>
+      <% @collections.each do |collection| %>
+        <div class="grid-item">
+          <% if collection&.skip %>
+            <p>SKIP!</p>
+          <% end %>
+          <%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %>
+        </div>
+        <div class="grid-item">
+          <% if collection.alfred_message %>
+            <%= collection.alfred_message %>
+          <% elsif collection.skip %>
+            <p>Skipped</p>
+          <% else %>
+            <p>No message from Alfred yet</p>
+          <% end %>
+        </div>
+        <div class="grid-item gooi-collect-button">
+          <% if collection.nil? %>
+            <%#= link_to "Collect! from #{collection.subscription.user.first_name}", new_subscription_collection_path(subscription) %>
+          <% else %>
+            <% if collection.skip %>
+              <%= link_to "No Collection!", edit_collection_path(collection) %>
+            <% elsif collection.bags.present? && collection.updated_at < Time.now %>
+              <%= link_to "Got #{pluralize(collection.bags, 'bags')}. Collect more?", edit_collection_path(collection) %>
+            <% elsif collection.buckets.present? && collection.updated_at < Time.now %>
+              <%= link_to "Got #{pluralize(collection.buckets, 'buckets')}. Collect more?", edit_collection_path(collection) %>
+            <% elsif collection.new_customer %>
+              <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) %>
+            <% elsif collection.dropped_off_buckets.present? && collection.updated_at < Time.now %>
+              <%= link_to "Dropped off #{pluralize(collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(collection) %>
+            <% elsif collection.subscription.user.drop_off? %>
+              <%= link_to "Drop off", edit_collection_path(collection) %>
+            <% else %>
+              <%= link_to "Collect!", edit_collection_path(collection) %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <br>
+    <br>
+      <%= link_to "ALL DAYS", drivers_days_path, class: "gooi-button" %>
+
+  </div>
+</div>
