@@ -60,8 +60,8 @@
     <% end %>
     <p>Travel safe, see you next time</p>
     <div>
-    <br>
-    <br>
+      <br>
+      <br>
       <%= link_to "View all todays collections", todays_collections_drivers_day_path(@drivers_day), class: "small-yellow-btn" %>
     </div>
   <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->

@@ -8,11 +8,11 @@ class RouteOptimiser
   MAX_WAYPOINTS = 25
 
   def self.optimise_route
-    collections = Collection.includes(:subscription).where(created_at: Date.today.all_day, date: Date.today , skip: false)
+    collections = Collection.includes(subscription: :user).where(skip: false, date: Date.today)
     return if collections.empty?
 
     # Sort collections by suburb and street address
-    sorted_collections = collections.sort_by { |c| [c.subscription.suburb] }
+    sorted_collections = collections.sort_by { |c| [c.subscription.suburb, c.subscription.street_address] }
 
     waypoints = sorted_collections.map { |c| c.subscription.street_address }
 
