@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
 
-    resources :invoices, only: %i[show]
+    resources :invoices, only: %i[new create show]
     resources :collections, only: %i[index new create]
     # - here I am creating /subscriptions/today
     collection do
