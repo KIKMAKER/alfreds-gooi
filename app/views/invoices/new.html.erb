@@ -1,10 +1,14 @@
 <div class="collection-container">
   <div class="collection-body">
     <p class = "collection-header">Invoice <%= @subscription.user.first_name %></p>
-    <% raise %>
     <%= simple_form_for [@subscription, @invoice ] do |f| %>
-    
+      <%= simple_fields_for :invoice_items, @invoice.invoice_items.build do |item_form| %>
+        <div class="invoice-item">
+          <%= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>
+          <%= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
 
+        </div>
+      <% end %>
       <%= f.button :submit, class:'gooi-button' %>
     <% end %>
   </div>
