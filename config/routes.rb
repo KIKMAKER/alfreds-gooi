@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_collections", to: "collections#perform_create_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
