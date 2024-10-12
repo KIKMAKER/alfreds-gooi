@@ -40,8 +40,9 @@ class SubscriptionsController < ApplicationController
     end
   end
 
-  def invoice
+  def welcome_invoice
     @subscription = Subscription.find(params[:id])
+    @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
 
