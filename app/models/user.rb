@@ -4,12 +4,21 @@ class User < ApplicationRecord
 
   enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
   has_many :subscriptions, dependent: :destroy
-  has_many :invoices, dependent: :nullify
+  has_many :invoices, through: :subscriptions
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
 
   accepts_nested_attributes_for :subscriptions
+  
+  before_destroy :nullify_subscriptions
+
+
+
+  def nullify_subscriptions
+    self.subscriptions.update_all(user_id: nil)
+  end
+
 
   # Callbacks
 
@@ -24,46 +33,7 @@ class User < ApplicationRecord
     subscriptions.last
   end
 
-  # initial invoice generation (after sign up)
 
-  def create_initial_invoice
-    subscription = self.subscriptions.first
-    return unless subscription
-    p subscription.plan
-    p "hello"
-    starter_kit_title = determine_starter_kit_title(subscription.plan)
-    starter_kit = Product.find_by(title: starter_kit_title)
-    p starter_kit.price
-    subscription_title = determine_subscription_title(subscription.duration, subscription.plan)
-    subscription_product = Product.find_by(title: subscription_title)
-    return unless subscription_product
-    p subscription_product.price
-    invoice = Invoice.create!(
-      subscription_id: subscription.id,
-      user_id: self.id,
-      issued_date: Time.current,
-      due_date: Time.current + 1.month,
-      total_amount: subscription_product.price + starter_kit.price
-    )
-    p invoice.total_amount
-
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: starter_kit.id,
-      amount: starter_kit.price,
-      quantity: 1
-    )
-
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: subscription_product.id,
-      amount: subscription_product.price,
-      quantity: 1
-    )
-
-    invoice.invoice_items.sum('amount * quantity')
-    invoice.save!
-  end
 
   private
 
@@ -92,50 +62,6 @@ class User < ApplicationRecord
     else
       puts errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
       false
-    end
-  end
-
-  # infer starter kit based on sub plan
-
-  def determine_starter_kit_title(plan)
-    case plan
-    when "standard"
-      "Standard Starter Kit"
-    when "XL"
-      "XL Starter Kit"
-    else
-      puts "Invalid plan"
-    end
-  end
-
-  # infer product title for first invoice based on subscription plan and duration
-
-  def determine_subscription_title(duration, plan)
-    case plan
-    when "standard"
-      case duration
-      when 1
-        "Standard 1 month subscription"
-      when 3
-        "Standard 3 month subscription"
-      when 6
-        "Standard 6 month subscription"
-      else
-        puts "Invalid duration"
-      end
-    when "XL"
-      case duration
-      when 1
-        "XL 1 month subscription"
-      when 3
-        "XL 3 month subscription"
-      when 6
-        "XL 6 month subscription"
-      else
-        puts "Invalid duration"
-      end
-    else
-      puts "Invalid plan"
     end
   end
 

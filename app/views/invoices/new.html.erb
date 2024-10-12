@@ -1,0 +1,11 @@
+<div class="collection-container">
+  <div class="collection-body">
+    <p class = "collection-header">Invoice <%= @subscription.user.first_name %></p>
+    <% raise %>
+    <%= simple_form_for [@subscription, @invoice ] do |f| %>
+    
+
+      <%= f.button :submit, class:'gooi-button' %>
+    <% end %>
+  </div>
+</div>

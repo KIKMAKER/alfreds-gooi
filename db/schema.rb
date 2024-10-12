@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_17_195348) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_12_092308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_17_195348) do
     t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
     t.integer "order", default: 0
+    t.boolean "wants_veggies"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
@@ -81,11 +82,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_17_195348) do
     t.float "total_amount"
     t.boolean "paid", default: false
     t.bigint "subscription_id", null: false
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
-    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -172,7 +171,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_17_195348) do
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"
-  add_foreign_key "invoices", "users"
   add_foreign_key "payments", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"

@@ -262,8 +262,7 @@ invoices = Array.new(NUM_INVOICES) do
     number: rand(1000..9999),
     total_amount: Faker::Commerce.price(range: 100..1000),
     paid: [true, false].sample,
-    subscription: subscriptions.sample,
-    user: users.sample
+    subscription: subscriptions.sample
   )
 end
 
