@@ -12,6 +12,7 @@ class InvoicesController < ApplicationController
     invoice.subscription = subscription
     invoice_item = InvoiceItem.new(invoice_item_params)
     invoice_item.invoice = invoice
+    invoice.calculate_total
     if invoice.save && invoice_item.save
       redirect_to subscription_invoice_path(subscription, invoice)
     else
