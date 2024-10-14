@@ -54,6 +54,7 @@
         <% end %>
         <%#= f.input :new_customer, as: :boolean, label: "Dropped off", checked_value: 'negative', unchecked_value: 'positive' %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
+        <%= f.input :wants_veggies %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
         <%= f.hidden_field :new_customer, value: false %>
