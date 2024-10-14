@@ -62,6 +62,7 @@
     <% elsif @collection.subscription.user.drop_off? %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
+        <%= f.input :wants_veggies %>
         <%= f.input :dropped_off_buckets, placeholder: "0" %>
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
@@ -74,6 +75,7 @@
     <% else %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
+        <%= f.input :wants_veggies %>
         <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
         <% if @subscription.standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
