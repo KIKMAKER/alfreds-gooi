@@ -1,15 +1,39 @@
 <div class="collection-container">
   <div class="collection-body">
     <p class = "collection-header">Invoice <%= @subscription.user.first_name %></p>
-    <%= simple_form_for [@subscription, @invoice ] do |f| %>
-      <%= simple_fields_for :invoice_items, @invoice.invoice_items.build do |item_form| %>
-        <div class="invoice-item">
-          <%= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>
-          <%= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
+    <%#= simple_form_for [@subscription, @invoice ] do |f| %>
+      <%#= simple_fields_for :invoice_items, @invoice.invoice_items.build do |item_form| %>
+<!--      <div data-controller="insert-in-list">
 
+        <div class="invoice-item">
+          <%#= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>-->
+          <%#= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
+<!--        </div>
+
+    <div class="invoice-item">
+          <%#= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>-->
+          <%#= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
+<!--        </div>
+      </div>
+          <%#= f.button :submit, class:'gooi-button' %>-->
+      <%# end %>
+    <%# end %>
+    <br>
+    <br>
+    <%= simple_form_for [@subscription, @invoice] do |f| %>
+      <h3>Invoice Items</h3>
+      <div id="invoice-items-container">
+        <% @products.each_with_index do |product, index| %>
+                    <div class="invoice-item">
+          <%= label_tag "invoice_items_product_id_#{index}", "Product" %>
+          <%= select_tag "invoice_items[product_id][]", options_for_select([[product.title, product.id]]), class: "form-control" %>
+          <%= label_tag "invoice_items_quantity_#{index}", "Quantity" %>
+          <%= select_tag "invoice_items[quantity][]", options_for_select((0..10).to_a), class: "form-control" %>
+                    </div>
+          <% end %>
+          <%= f.button :submit, class:'gooi-button' %>
+                </div>
+          <% end %>
         </div>
-      <% end %>
-      <%= f.button :submit, class:'gooi-button' %>
-    <% end %>
-  </div>
-</div>
+      </div>
+    </div>

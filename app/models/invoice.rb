@@ -20,13 +20,17 @@ class Invoice < ApplicationRecord
   end
 
   def calculate_total
-    # self.total_amount = invoice_items.sum('amount * quantity')
-    self.update(total_amount: invoice_items.sum('amount * quantity'))
-    if self.save!
-      puts "Total amount updated successfully"
-    else
-      puts "Failed to update total amount: #{self.errors.full_messages.join(", ")}"
-    end
+  # Calculate the total from the invoice items' amount * quantity
+  total = invoice_items.sum { |item| item.amount * item.quantity }
+
+  # Update the invoice's total_amount field
+  self.update(total_amount: total)
+
+  if self.save
+    puts "Total amount updated successfully"
+  else
+    puts "Failed to update total amount: #{self.errors.full_messages.join(", ")}"
+  end
   end
 
 end
