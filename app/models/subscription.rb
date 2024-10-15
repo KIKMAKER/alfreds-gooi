@@ -32,39 +32,6 @@ class Subscription < ApplicationRecord
   WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
   THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock", "Observatory", "Salt River"].sort!.freeze
 
-  private
-
-  # initial invoice generation (after sign up)
-
-  def create_initial_invoice
-    starter_kit_title = determine_starter_kit_title(plan)
-    starter_kit = Product.find_by(title: starter_kit_title)
-    subscription_title = determine_subscription_title(duration, plan)
-    subscription_product = Product.find_by(title: subscription_title)
-    return unless subscription_product
-    invoice = Invoice.create!(
-      subscription_id: self.id,
-      issued_date: Time.current,
-      due_date: Time.current + 1.month,
-      total_amount: subscription_product.price + starter_kit.price
-    )
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: starter_kit.id,
-      amount: starter_kit.price,
-      quantity: 1
-    )
-
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: subscription_product.id,
-      amount: subscription_product.price,
-      quantity: 1
-    )
-
-    invoice.invoice_items.sum('amount * quantity')
-    invoice.save!
-  end
 
   # infer starter kit based on sub plan
 
@@ -196,5 +163,39 @@ class Subscription < ApplicationRecord
       standard: 'Standard',
       XL: 'Extra Large'
     }
+  end
+  
+  private
+
+  # initial invoice generation (after sign up)
+
+  def create_initial_invoice
+    starter_kit_title = determine_starter_kit_title(plan)
+    starter_kit = Product.find_by(title: starter_kit_title)
+    subscription_title = determine_subscription_title(duration, plan)
+    subscription_product = Product.find_by(title: subscription_title)
+    return unless subscription_product
+    invoice = Invoice.create!(
+      subscription_id: self.id,
+      issued_date: Time.current,
+      due_date: Time.current + 1.month,
+      total_amount: subscription_product.price + starter_kit.price
+    )
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: starter_kit.id,
+      amount: starter_kit.price,
+      quantity: 1
+    )
+
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: subscription_product.id,
+      amount: subscription_product.price,
+      quantity: 1
+    )
+
+    invoice.invoice_items.sum('amount * quantity')
+    invoice.save!
   end
 end
