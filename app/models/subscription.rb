@@ -33,6 +33,57 @@ class Subscription < ApplicationRecord
   THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock", "Observatory", "Salt River"].sort!.freeze
 
 
+
+  def calculate_next_collection_day
+    target_day = Date::DAYNAMES.index(collection_day.capitalize)
+    current_day = Date.today.wday
+    days_until_next_collection = (target_day - current_day) % 7
+    days_until_next_collection = 7 if days_until_next_collection.zero?
+    Date.today + days_until_next_collection
+  end
+
+  def total_collections
+    collections.count
+  end
+
+  def skipped_collections
+    collections.where(skip: true).count
+  end
+
+  def total_bags
+    collections.sum(:bags)
+  end
+
+  def total_buckets
+    collections.sum(:buckets)
+  end
+
+  def total_bags_last_n_months(n)
+    collections.where("created_at >= ?", n.months.ago).sum(:bags)
+  end
+
+  def total_buckets_last_n_months(n)
+    collections.where("created_at >= ?", n.months.ago).sum(:buckets)
+  end
+
+  def self.active_subs_for(day)
+    all.where(collection_day: day).includes(:collections).order(:collection_order)
+  end
+
+  def self.count_skip_subs_for(day)
+    active_subs_for(day).where(collections: { skip: true }).distinct.count
+  end
+
+  def self.humanized_plans
+    {
+      once_off: 'Once Off',
+      standard: 'Standard',
+      XL: 'Extra Large'
+    }
+  end
+
+  private
+
   # infer starter kit based on sub plan
 
   def determine_starter_kit_title(plan)
@@ -94,14 +145,6 @@ class Subscription < ApplicationRecord
     nil
   end
 
-  def calculate_next_collection_day
-    target_day = Date::DAYNAMES.index(collection_day.capitalize)
-    current_day = Date.today.wday
-    days_until_next_collection = (target_day - current_day) % 7
-    days_until_next_collection = 7 if days_until_next_collection.zero?
-    Date.today + days_until_next_collection
-  end
-
   def set_collection_day
     if TUESDAY_SUBURBS.include?(suburb)
       update(collection_day: "Tuesday")
@@ -123,49 +166,6 @@ class Subscription < ApplicationRecord
     update(customer_id: new_customer_id)
     self.user.update(customer_id: new_customer_id)
   end
-
-
-  def total_collections
-    collections.count
-  end
-
-  def skipped_collections
-    collections.where(skip: true).count
-  end
-
-  def total_bags
-    collections.sum(:bags)
-  end
-
-  def total_buckets
-    collections.sum(:buckets)
-  end
-
-  def total_bags_last_n_months(n)
-    collections.where("created_at >= ?", n.months.ago).sum(:bags)
-  end
-
-  def total_buckets_last_n_months(n)
-    collections.where("created_at >= ?", n.months.ago).sum(:buckets)
-  end
-
-  def self.active_subs_for(day)
-    all.where(collection_day: day).includes(:collections).order(:collection_order)
-  end
-
-  def self.count_skip_subs_for(day)
-    active_subs_for(day).where(collections: { skip: true }).distinct.count
-  end
-
-  def self.humanized_plans
-    {
-      once_off: 'Once Off',
-      standard: 'Standard',
-      XL: 'Extra Large'
-    }
-  end
-  
-  private
 
   # initial invoice generation (after sign up)
 
