@@ -10,7 +10,18 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    super
+    super do |resource|
+      if resource.customer?
+        return redirect_to manage_path
+      elsif resource.driver?
+        CreateCollectionsJob.perform_now
+        return redirect_to vamos_path
+      elsif resource.admin?
+        return redirect_to kiki_path
+      else
+        return redirect_to root_path
+      end
+    end
   end
 
   # DELETE /resource/sign_out
@@ -20,23 +31,18 @@ class Users::SessionsController < Devise::SessionsController
 
   protected
 
-  def after_sign_in_path_for(resource)
-    puts "User signed in with role: #{resource.role}"
-    if resource.customer?
-      puts "Redirecting to manage_path"
-      manage_path
-    elsif resource.driver?
-      CreateCollectionsJob.perform_now
-      puts "Redirecting to vamos_path"
-      vamos_path
-    elsif resource.admin?
-      puts "Redirecting to kiki_path"
-      kiki_path
-    else
-      puts "Redirecting to root_path"
-      root_path # Fallback in case none of the conditions match
-    end
-  end
+  # def after_sign_in_path_for(resource)
+  #   if resource.customer?
+  #     return manage_path
+  #   elsif resource.driver?
+  #     CreateCollectionsJob.perform_now
+  #     vamos_path
+  #   elsif resource.admin?
+  #     kiki_path
+  #   else
+  #     root_path # Fallback in case none of the conditions match
+  #   end
+  # end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_in_params
