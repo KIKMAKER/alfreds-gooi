@@ -696,6 +696,9 @@ button {
 
   .info-container {
     width: 100%;
+    h1 {
+      margin-top: 8rem;
+    }
   }
 
   .images-container {
@@ -747,6 +750,13 @@ button {
     margin-top: 3rem;
   }
 
+  .info-container {
+    width: 100%;
+    h1 {
+      margin-top: 6rem;
+    }
+  }
+
 }
 
 @media screen and (max-width:430px) {
@@ -761,6 +771,13 @@ button {
 
     p {
       width: 90%;
+    }
+  }
+
+  .info-container {
+    width: 100%;
+    h1 {
+      margin-top: 10rem;
     }
   }
 
@@ -828,15 +845,21 @@ button {
   }
 }
 
-@media screen and (max-width: 380px) {
+@media screen and (max-width: 391px) {
 
   .gooi-header {
-    height: 100vh;
+    height: 105vh;
 
     h1 {
-      font-size: 4vh;
+      font-size: 2rem;
     }
 
+  }
+  .info-container {
+    width: 100%;
+    h1 {
+      margin-top: 2rem;
+    }
   }
 
   // .mission-section {
