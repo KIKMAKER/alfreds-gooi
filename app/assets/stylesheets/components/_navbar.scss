@@ -10,6 +10,17 @@
   padding-right: 16px;
   margin-top: -13px;
 }
+.navbar-container {
+  .dropdown-menu {
+    background-color: white;
+    transform: translate3d(0px, 55px, 0px);
+    border-top: none;
+    border-right: none;
+    border-left: none;
+  }
+}
+
+
 .hamburger-menu {
   display: none;
   li {

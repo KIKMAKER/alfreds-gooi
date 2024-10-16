@@ -14,7 +14,7 @@
       <%if current_user.driver? || current_user.admin?  %>
         <%= render "shared/driver_navbar" %>
       <% else %>
-        <%= render "shared/new_navbar" %>
+        <%= render "shared/user_navbar" %>
       <%  end %>
     <% else %>
       <%= render "shared/new_navbar" %>
