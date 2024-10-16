@@ -9,34 +9,47 @@
       <% if user_signed_in?  %>
         <%#= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
         <div class="sign-up-btn">
-          <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete}%>
+          <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
         </div>
       <% else %>
-        <button>
-          <%= link_to 'Log in', new_user_session_path, class: "link-title-light" %>
-        </button>
+        <div class="sign-up-btn">
+          <%= link_to "Log in", new_user_session_path %>
+        </div>
       <% end %>
     </div>
     <div class="hamburger-menu" data-action="click->hello#toggleHide">
       <div id="menu-icon">
-        <%= image_tag('menu-svgrepo-com.png', class: 'menu-icon', data: { hello_target: 'icon' }) %>
       </div>
-      <div class="mobile-menu hide" data-hello-target="menu">
-        <div class="inner-mobile-container">
-          <%= link_to 'The Story' , class: 'link-title'%>
-          <%= link_to 'How we compost', class: 'link-title' %>
-          <% if user_signed_in? %>
-            <%#= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
-            <div class="sign-up-btn">
-              <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete}%>
-            </div>
-          <% else %>
-            <button>
-              <%= link_to 'Sign up', root_path, class: "link-title-light" %>
-            </button>
-          <% end %>
-        </div>
-      </div>
+      <ul>
+        <li class="nav-item dropdown">
+          <%= image_tag 'menu-svgrepo-com.png', class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false %>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <%= link_to 'The Story', "#", class: "dropdown-item" %>
+            <%= link_to "Another action", "#", class: "dropdown-item" %>
+            <% if user_signed_in? %>
+              <% link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
+            <% else %>
+              <%= link_to 'Log in', new_user_session_path, class: "dropdown-item" %>
+            <% end %>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
+<!--<div class="mobile-menu hide" data-hello-target="menu">
+        <div class="inner-mobile-container">
+          <%#= link_to 'The Story' , class: 'link-title'%>-->
+<%#= link_to 'How we compost', class: 'link-title' %>
+<%# if user_signed_in? %>
+<%#= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
+<!--            <div class="sign-up-btn">-->
+<%#= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete}%>
+<!--            </div>-->
+<%# else %>
+<!--            <button>-->
+<%#= link_to 'Sign up', root_path, class: "link-title-light" %>
+<!--            </button>-->
+<%# end %>
+<!--        </div>
+      </div>-->

@@ -12,6 +12,15 @@
 }
 .hamburger-menu {
   display: none;
+  li {
+    list-style-type: none;
+  }
+  a {
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    color:#18191F;
+    margin: 8px 0px;
+  }
 }
 
 .alt-logo {
@@ -124,6 +133,7 @@
   #menu-icon {
     padding: 16px;
     transition: all 0.3s ease;
+    text-align: end;
 
     &:active {
       background-color: #023f3a38;
