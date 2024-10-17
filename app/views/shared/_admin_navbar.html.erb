@@ -6,6 +6,7 @@
     <div class="links-container">
       <%= link_to 'Subscriptions', subscriptions_path, class:"link-title" %>
       <%= link_to 'Invoices', invoices_path, class:"link-title" %>
+      <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
       <%= link_to 'How we compost', root_path, class: "link-title" %>
       <% if user_signed_in?  %>
         <%#= link_to 'Last Invoice', subscription_invoice_path(current_user.subscriptions.last, current_user.invoices.last), class: "link-title" %>
@@ -27,6 +28,7 @@
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <%= link_to 'Subscriptions', subscriptions_path, class: "dropdown-item" %>
             <%= link_to 'Invoices', invoices_path, class: "dropdown-item" %>
+            <%= link_to '+ Invoice', new_invoice_path, class: "dropdown-item" %>
             <%= link_to "Another action", "#", class: "dropdown-item" %>
             <% if user_signed_in? %>
               <% link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
