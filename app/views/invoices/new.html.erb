@@ -1,39 +1,30 @@
 <div class="collection-container">
   <div class="collection-body">
-    <p class = "collection-header">Invoice <%= @subscription.user.first_name %></p>
-    <%#= simple_form_for [@subscription, @invoice ] do |f| %>
-      <%#= simple_fields_for :invoice_items, @invoice.invoice_items.build do |item_form| %>
-        <!--      <div data-controller="insert-in-list">
-
-        <div class="invoice-item">
-          <%#= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>-->
-        <%#= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
-        <!--        </div>
-
-    <div class="invoice-item">
-          <%#= item_form.input :product_id, label: 'Product', collection: @products.map { |p| [p.title, p.id] }, include_blank: false %>-->
-        <%#= item_form.input :quantity, label: 'Quantity', as: :select, collection: (1..10).to_a, include_blank: false %>
-        <!--        </div>
+    <p class = "collection-header">New Invoice</p>
+    <br>
+    <br>
+    <%= simple_form_for [@invoice] do |f| %>
+      <h3>Subscription</h3>
+      <div class="form-group">
+        <%= f.input :subscription_id, label: "Select Subscription",
+                collection: Subscription.all.map { |s| ["#{s.user.first_name} #{s.user.last_name} (#{s.street_address})", s.id] },
+                selected: Subscription.order(created_at: :desc).first.id,
+                include_blank: false,
+                class: "form-control" %>
       </div>
-          <%#= f.button :submit, class:'gooi-button' %>-->
-        <%# end %>
-        <%# end %>
-        <br>
-        <br>
-        <%= simple_form_for [@subscription, @invoice] do |f| %>
-          <h3>Invoice Items</h3>
-          <div id="invoice-items-container">
-            <% @products.each_with_index do |product, index| %>
-              <div class="invoice-item">
-                <%= label_tag "invoice[invoice_items_attributes][#{index}][product_id]", "#{product.title}", class:"w-100" %>
-                <%= hidden_field_tag "invoice[invoice_items_attributes][#{index}][product_id]", product.id %>
-                <%= number_field_tag "invoice[invoice_items_attributes][#{index}][quantity]", nil, class: "form-control w-25", min: 0, step: 1 %>
-              </div>
-            <% end %>
-            <br>
-            <%= f.button :submit, class:'gooi-button' %>
+      <h3>Invoice Items</h3>
+      <div id="invoice-items-container">
+        <% @products.each_with_index do |product, index| %>
+          <div class="invoice-item">
+            <%= label_tag "invoice[invoice_items_attributes][#{index}][product_id]", "#{product.title}", class:"w-100" %>
+            <%= hidden_field_tag "invoice[invoice_items_attributes][#{index}][product_id]", product.id %>
+            <%= number_field_tag "invoice[invoice_items_attributes][#{index}][quantity]", nil, class: "form-control w-25", min: 0, step: 1 %>
           </div>
         <% end %>
+        <br>
+        <%= f.button :submit, class:'gooi-button' %>
       </div>
-    </div>
+    <% end %>
   </div>
+</div>
+</div>
