@@ -4,22 +4,20 @@ class InvoicesController < ApplicationController
     @invoices = Invoice.all
   end
   def new
-    @subscription = Subscription.find(params[:subscription_id])
     @invoice = Invoice.new
     @products = Product.all
     @invoice.invoice_items.build
   end
 
   def create
-    subscription = Subscription.find(params[:subscription_id])
     @invoice = Invoice.new(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
-    @invoice.subscription = subscription
-
-    if @invoice.save
+    @invoice.subscription = Subscription.find(params[:invoice][:subscription_id])
+    @invoice.save!
+    if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
 
       create_invoice_items(@invoice)
       @invoice.calculate_total
-      redirect_to subscription_invoice_path(subscription, @invoice), notice: 'Invoice was successfully created.'
+      redirect_to invoice_path(@invoice), notice: 'Invoice was successfully created.'
     else
       @products = Product.all  # Re-fetch products in case of validation errors
       render :new, status: :unprocessable_entity
@@ -27,15 +25,15 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    @subscription = Subscription.find(params[:subscription_id])
     @invoice = Invoice.find(params[:id])
+    @subscription = @invoice.subscription
   end
 
   private
 
   def invoice_items_params
     # params.require(:invoice).permit(:issued_date, :due_date, :subscription_id)
-    params.require(:invoice).permit(invoice_items_attributes: [ :product_id, :quantity ])
+    params.require(:invoice).permit(:subscription_id, invoice_items_attributes: [ :product_id, :quantity ])
   end
 
   def create_invoice_items(invoice)
