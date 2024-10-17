@@ -9,7 +9,6 @@ class Invoice < ApplicationRecord
 
   def set_number
     last_invoice = Invoice.last
-    puts last_invoice
     self.number = if last_invoice.nil?
                             1
                           elsif Invoice.last.number.to_i
