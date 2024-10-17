@@ -6,7 +6,7 @@ class CollectionsController < ApplicationController
   def perform_create_collections
     CreateCollectionsJob.perform_now
     flash[:notice] = "Create Collections Job has been triggered."
-    redirect_to kiki_path
+    redirect_to this_week_collections_path
   end
 
   def optimise_route
@@ -97,7 +97,7 @@ class CollectionsController < ApplicationController
       end
     end
     flash[:notice] = "Collections updated successfully!" if skipped_params == skipped
-    redirect_to kiki_path
+    redirect_to this_week_collections_path
   end
 
   def this_week
