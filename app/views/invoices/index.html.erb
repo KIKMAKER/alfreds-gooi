@@ -1,7 +1,7 @@
 <div class="driver-wrapper mb-2">
   <h1>All invoices</h1>
   <% @invoices.each do |invoice| %>
-    <%= link_to subscription_invoice_path(invoice.subscription, invoice) do %>
+    <%= link_to invoice_path(invoice) do %>
       <p><%= "#{invoice.subscription.user.first_name}" %> issued: <%= invoice.issued_date.strftime('%b %d') %></p>
     <% end %>
   <% end %>

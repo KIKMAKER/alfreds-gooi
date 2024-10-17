@@ -11,7 +11,7 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
     @product.is_active = true
     if @product.save
-      redirect_to invoices_path
+      redirect_to products_path
     else
       render :new, status: :unprocessable_entity
     end
