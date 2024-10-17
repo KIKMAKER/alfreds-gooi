@@ -66,7 +66,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :products, only: [:new, :create]
+  resources :products, only: [:index, :new, :create]
 
     # static pages
     root "pages#home"
