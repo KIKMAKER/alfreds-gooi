@@ -65,6 +65,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :products, only: [:new, :create]
+
     # static pages
     root "pages#home"
     get "manage", to: "pages#manage"
