@@ -1,5 +1,8 @@
 class InvoicesController < ApplicationController
 
+  def index
+    @invoices = Invoice.all
+  end
   def new
     @subscription = Subscription.find(params[:subscription_id])
     @invoice = Invoice.new
