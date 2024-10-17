@@ -100,6 +100,13 @@ class CollectionsController < ApplicationController
     redirect_to kiki_path
   end
 
+  def this_week
+    @day = Date.today.strftime("%A")
+    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: false)
+    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: true)
+
+  end
+
   def destroy
     @collection.destroy
     redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'

@@ -29,13 +29,6 @@ class PagesController < ApplicationController
 
   end
 
-  def kiki
-    @day = Date.today.strftime("%A")
-    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: false)
-    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: true)
-
-  end
-
   def welcome
     @subscription = current_user.current_sub
     # @subscription.set_collection_day
