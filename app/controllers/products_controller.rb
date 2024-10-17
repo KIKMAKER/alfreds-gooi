@@ -5,6 +5,7 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_params)
+    @product.is_active = true
     if @product.save
       redirect_to invoices_path
     else
