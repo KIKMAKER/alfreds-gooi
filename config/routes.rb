@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: [:edit, :update, :destroy] do
     collection do
+      get :this_week
       patch :skip_today
       get :export_csv
       get :load_csv
@@ -68,7 +69,6 @@ Rails.application.routes.draw do
     root "pages#home"
     get "manage", to: "pages#manage"
     get "vamos", to: "pages#vamos"
-    get "kiki", to: "pages#kiki"
     get "welcome", to: "pages#welcome"
 
 end
