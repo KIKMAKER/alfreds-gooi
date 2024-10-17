@@ -11,8 +11,10 @@
   </head>
   <body class="background">
     <% if user_signed_in? %>
-      <%if current_user.driver? || current_user.admin?  %>
+      <%if current_user.driver? %>
         <%= render "shared/driver_navbar" %>
+      <% elsif current_user.admin? %>
+        <%= render "shared/admin_navbar" %>
       <% else %>
         <%= render "shared/user_navbar" %>
       <%  end %>
@@ -20,9 +22,6 @@
       <%= render "shared/new_navbar" %>
     <%  end %>
     <%= render "shared/flashes" %>
-
-    <%#= render_navbar %>
-    <%#= render "shared/navbar" %>
     <%= yield %>
     <%= render "shared/footer" %>
   </body>
