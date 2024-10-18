@@ -1,5 +1,19 @@
 <div class="user-wrapper">
-  <h1>Manage your subscription</h1>
-
-  <p> I'm working on it...</p>
+  <h1>Manage my subscription</h1>
+  <h2>Skip collections</h2>
+  <p>Collection day is <%= @subscription.collection_day %></p>
+  <% if @subscription.is_paused? %>
+    <p>Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
+  <% else %>
+    <p>Don't need collection this week?</p>
+    <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
+    <div class="user-holiday-container">
+      <h2>Plan a holiday</h2>
+      <%= simple_form_for @subscription do |f| %>
+        <%= f.input :holiday_start, label: "start" %>
+        <%= f.input :holiday_end, label: "end" %>
+        <%= f.submit "save", class: "submit-btn" %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

@@ -4,11 +4,8 @@ class CreateCollectionsJob < ApplicationJob
 
   def perform
 
-    today = Date.today + 3
+    today = Date.today
     puts "#{today}"
-    # Ensure the job is run on Monday
-    return unless today.monday?
-
     # Define the days to process
     days_to_process = { "Tuesday" => 1, "Wednesday" => 2, "Thursday" => 3 }
 
@@ -32,11 +29,11 @@ class CreateCollectionsJob < ApplicationJob
         drivers_day: drivers_day,
         subscription: subscription,
         date: date,
+        skip: subscription.is_paused?
         # Add other necessary attributes
       )
       puts ">> >> >> #{subscription.customer_id}"
       collection.update!(new_customer: true) if subscription.is_new_customer
-      collection.update!(skip: true) if date >= subscription.holiday_start && date <= subscription.holiday_end
     end
   end
 end
