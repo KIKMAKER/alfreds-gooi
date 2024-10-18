@@ -25,7 +25,7 @@ class PagesController < ApplicationController
   end
 
   def manage
-    # @subscription = current_user.current_sub
+    @subscription = current_user.current_sub
 
   end
 

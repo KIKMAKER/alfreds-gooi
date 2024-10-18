@@ -58,6 +58,16 @@
 
 }
 
+.submit-btn {
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 24px;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  color: white;
+}
+
 .btn {
   a {
     color: white;
@@ -74,4 +84,3 @@
     text-decoration: none;
   }
 }
-

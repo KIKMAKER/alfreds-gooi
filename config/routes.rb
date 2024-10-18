@@ -47,6 +47,8 @@ Rails.application.routes.draw do
     end
     member do
       get :welcome_invoice
+      post :pause
+      patch :holiday_dates
     end
   end
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes

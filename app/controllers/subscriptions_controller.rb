@@ -26,7 +26,6 @@ class SubscriptionsController < ApplicationController
   end
 
   def new
-    raise
     @subscription = Subscription.new
   end
 
@@ -39,19 +38,11 @@ class SubscriptionsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-  def welcome_invoice
-    @subscription = Subscription.find(params[:id])
-    @invoice = @subscription.invoices.first
-    @invoices = current_user.invoices
-  end
-
   def edit
     @subscription = Subscription.find(params[:id])
   end
 
   def update
-
     subscription = Subscription.find(params[:id])
     # user = subscription.user
 
@@ -67,6 +58,29 @@ class SubscriptionsController < ApplicationController
 
   end
 
+  def welcome_invoice
+    @subscription = Subscription.find(params[:id])
+    @invoice = @subscription.invoices.first
+    @invoices = current_user.invoices
+  end
+
+  def pause
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(is_paused: true)
+      redirect_to manage_path, notice: "Collection schedule updated"
+    else
+      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+    end
+  end
+
+  def holiday_dates
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(subscription_params)
+      redirect_to manage_path, notice: "Holiday set!"
+    else
+      redirect_to manage_path, status: :unprocessable_entity
+    end
+  end
   # a special view that will load all of the collections for a given day
   def today
     # in production today will be the current day,

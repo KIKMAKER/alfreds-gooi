@@ -82,6 +82,10 @@ class Subscription < ApplicationRecord
     }
   end
 
+  def is_paused?
+    is_paused || (Date.today >= holiday_start && Date.today <= holiday_end)
+  end
+
   private
 
   # infer starter kit based on sub plan

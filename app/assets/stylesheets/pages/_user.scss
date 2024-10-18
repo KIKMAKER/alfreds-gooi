@@ -1,16 +1,28 @@
 .user-wrapper {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+
   margin-top: 2rem;
   overflow: scroll;
   min-height: 80vh;
+  padding: 1rem;
 
   p {
     color: $dark-green;
     font-size: 1.2rem;
   }
 
+
+}
+
+.user-holiday-container {
+  margin: 1rem auto;
+  width: 85%;
+  .form-select {
+    font-size: 0.8rem;
+  }
 
 }
 

@@ -8,7 +8,7 @@
       <%= link_to 'Invoices', invoices_path, class:"link-title" %>
       <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
       <%= link_to 'this week', this_week_collections_path, class:"link-title" %>
-      <%= link_to 'How we compost', root_path, class: "link-title" %>
+
       <% if user_signed_in?  %>
         <div class="sign-up-btn">
           <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
@@ -28,7 +28,7 @@
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <%= link_to 'Subscriptions', subscriptions_path, class: "dropdown-item" %>
             <%= link_to 'Invoices', invoices_path, class: "dropdown-item" %>
-            <%= link_to '+ Invoice', new_invoice_path, class: "dropdown-item" %>
+            <%= link_to '+ invoice', new_invoice_path, class: "dropdown-item" %>
             <%= link_to 'this week', this_week_collections_path, class:"dropdown-item" %>
             <%= link_to "Another action", "#", class: "dropdown-item" %>
             <% if user_signed_in? %>
