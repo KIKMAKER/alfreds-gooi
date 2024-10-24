@@ -2,7 +2,7 @@
   <h1>Manage this weeks collections</h1>
   <%= button_to 'Create Collections', perform_create_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   <br>
-  <h3>Collections for this week:</h3>
+  <h3>Collections for this week:</h3>count
   <p> <%= (Date.today + 1).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1).count %></p>
   <p> <%= (Date.today + 1).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1, skip: true).count %></p>
   <p> <%= (Date.today + 2).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 2).count %></p>
