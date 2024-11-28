@@ -4,22 +4,35 @@
   justify-content: flex-start;
   align-items: center;
 
-  margin-top: 2rem;
   overflow: scroll;
   min-height: 80vh;
   padding: 1rem;
+  padding-top: 2rem;
+
 
   p {
     color: $dark-green;
     font-size: 1.2rem;
   }
 
+  h1 {
+    margin-bottom: 2rem;
+    font-weight: 900;
+  }
+
 
 }
 
 .user-holiday-container {
-  margin: 1rem auto;
-  width: 85%;
+  // margin: 1rem auto;
+
+  // width: 85%;
+  padding-top: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   .form-select {
     font-size: 0.8rem;
   }

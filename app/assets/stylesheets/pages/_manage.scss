@@ -1,0 +1,19 @@
+.bg-green {
+  background-color: rgba(15, 74, 58, 0.78);
+  color: white
+}
+
+.card-white {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  color: black;
+  margin-top: 0.5rem;
+}
+
+.container-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
