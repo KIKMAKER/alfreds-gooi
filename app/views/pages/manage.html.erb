@@ -8,6 +8,15 @@
     <% else %>
       <p><%= @subscription.collections.last.date.strftime("%a %d %b") %></p>
       <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
+      <div class="d-flex">
+
+      <%= button_to "- bags", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn", data: {turbo: false} %>
+
+        <%= @subscription.collections.last.needs_bags %>
+
+      <%= button_to "+ bags", add_bags_collection_path(@subscription.collections.last), class: "submit-btn", data: {turbo: false} %>
+      </div>
+
     <% end %>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
