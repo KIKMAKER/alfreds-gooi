@@ -4,16 +4,22 @@
   <p>Collection day is <%= @subscription.collection_day %></p>
   <% if @subscription.is_paused? %>
     <p>Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
+    <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
   <% else %>
     <p>Don't need collection this week?</p>
     <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
-    <div class="user-holiday-container">
+  <% end %>
+  <div class="user-holiday-container">
+    <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
       <h2>Plan a holiday</h2>
       <%= simple_form_for @subscription do |f| %>
         <%= f.input :holiday_start, label: "start" %>
         <%= f.input :holiday_end, label: "end" %>
         <%= f.submit "save", class: "submit-btn" %>
       <% end %>
-    </div>
-  <% end %>
+    <% else %>
+      <p>Current Holiday Dates: <%= @subscription.holiday_start %> - <%= @subscription.holiday_end %></p>
+      <%= button_to "Cancel My Holiday", clear_holiday_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
+    <% end %>
+  </div>
 </div>
