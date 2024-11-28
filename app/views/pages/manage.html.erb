@@ -13,8 +13,12 @@
     <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
       <h2>Plan a holiday</h2>
       <%= simple_form_for @subscription do |f| %>
-        <%= f.input :holiday_start, label: "start" %>
-        <%= f.input :holiday_end, label: "end" %>
+        <%= f.input :holiday_start,
+            as: :string,
+            input_html: { data: { controller: "datepicker" } }, label: "start" %>
+        <%= f.input :holiday_end,
+            as: :string,
+            input_html: { data: { controller: "datepicker" } }, label: "end" %>
         <%= f.submit "save", class: "submit-btn" %>
       <% end %>
     <% else %>
