@@ -23,6 +23,10 @@ Rails.application.routes.draw do
   post "perform_create_collections", to: "collections#perform_create_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: [:edit, :update, :destroy] do
+    member do
+      post :add_bags
+      post :remove_bags
+    end
     collection do
       get :this_week
       patch :skip_today
