@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     member do
       post :add_bags
       post :remove_bags
+      post :add_customer_note
     end
     collection do
       get :this_week
