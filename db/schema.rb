@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_12_092308) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_30_100358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_12_092308) do
     t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
     t.integer "order", default: 0
+    t.string "customer_note"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
