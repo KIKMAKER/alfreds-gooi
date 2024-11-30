@@ -1,22 +1,28 @@
 <div class="user-wrapper bg-green">
   <h1>Manage my subscription</h1>
   <h2>Upcoming Collection</h2>
-  <div class="card-white container-flex">
+  <div class="card-white">
     <% if @subscription.is_paused? %>
-      <p>Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
+    <div class="text-center">
+
+      <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
       <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
+    </div>
     <% else %>
-      <p><%= @subscription.collections.last.date.strftime("%a %d %b") %></p>
-      <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
-      <div class="d-flex">
+      <h4 class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%a %d %b") %></h4>
+      <div class="container-flex">
+        <button class="submit-btn">Note</button>
+        <div class="container-flex">
+          <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+          <div>
+            <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
 
-      <%= button_to "- bags", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn", data: {turbo: false} %>
-
-        <%= @subscription.collections.last.needs_bags %>
-
-      <%= button_to "+ bags", add_bags_collection_path(@subscription.collections.last), class: "submit-btn", data: {turbo: false} %>
+          </div>
+          <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+        </div>
+        <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
       </div>
-
+      <p class="text-center">bags</p>
     <% end %>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
@@ -36,7 +42,7 @@
         <% end %>
       </div>
     <% else %>
-        <h2>Upcoming Holiday</h2>
+      <h2>Upcoming Holiday</h2>
       <div class="card-white container-flex">
         <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
         <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn", data: {turbo: false} %>
