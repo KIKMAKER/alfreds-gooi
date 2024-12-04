@@ -4,7 +4,7 @@ class CreateCollectionsJob < ApplicationJob
 
   def perform
 
-    today = Date.today
+    today = Date.today + 4
     puts "#{today}"
     # Define the days to process
     days_to_process = { "Tuesday" => 1, "Wednesday" => 2, "Thursday" => 3 }
@@ -29,7 +29,7 @@ class CreateCollectionsJob < ApplicationJob
         drivers_day: drivers_day,
         subscription: subscription,
         date: date,
-        skip: subscription.is_paused? 
+        skip: subscription.is_paused?
         # Add other necessary attributes
       )
       puts ">> >> >> #{subscription.customer_id}"

@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
 
   def perform_create_collections
@@ -110,6 +110,32 @@ class CollectionsController < ApplicationController
   def destroy
     @collection.destroy
     redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
+  end
+
+  def add_bags
+    if @collection.needs_bags == 3
+      flash[:notice] = "Maximum bags reached"
+    else
+      @collection.needs_bags += 1
+      if @collection.save
+        redirect_to manage_path
+        flash[:notice] = "Added bags"
+      end
+
+    end
+  end
+
+  def remove_bags
+    if @collection.needs_bags == 0
+      flash[:notice] = "Minimum bags reached"
+    else
+      @collection.needs_bags -= 1
+      if @collection.save
+        redirect_to manage_path
+        flash[:notice] = "Removed bags"
+      end
+
+    end
   end
 
   private
