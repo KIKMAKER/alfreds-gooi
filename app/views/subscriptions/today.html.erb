@@ -6,7 +6,6 @@
   </div>
   <div class="collections">
     <% @collections.each do |collection| %>
-    <p>hello</p>
       <div class="collection">
         <div class="car">
           <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
