@@ -21,11 +21,11 @@
     color: $dark-green
   }
 
-  a {
-    text-decoration: none;
-    font-size: 0.7rem;
-    color: $dark-green
-  }
+  // a {
+  //   text-decoration: none;
+  //   font-size: 0.7rem;
+  //   color: $dark-green
+  // }
 
   .skip-collections {
     // overflow: scroll;
@@ -123,6 +123,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: calc(100vh - 72.5px);
 }
 
 .collection-header {
