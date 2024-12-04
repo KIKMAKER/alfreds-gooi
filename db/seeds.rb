@@ -1,16 +1,16 @@
-# # USERS & SUBSCRIPTIONS
-# require 'csv'
+# USERS & SUBSCRIPTIONS
+require 'csv'
 
-# puts "Clearing DB"
-# puts "1"
-# Collection.destroy_all
-# puts "2"
-# Subscription.destroy_all
-# puts "4"
-# DriversDay.destroy_all
-# puts "3"
-# User.destroy_all
-# puts "DB Clear with collections"
+puts "Clearing DB"
+puts "1"
+Collection.destroy_all
+puts "2"
+Subscription.destroy_all
+puts "4"
+DriversDay.destroy_all
+puts "3"
+User.destroy_all
+puts "DB Clear with collections"
 
 
 puts "Uploading users and subscriptions from CSV"

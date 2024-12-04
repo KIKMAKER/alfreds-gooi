@@ -45,6 +45,10 @@ Rails.application.routes.draw do
     member do
       get :welcome_invoice
       post :pause
+      # route to unpause subscription
+      post :unpause
+      # route to clear holiday
+      post :clear_holiday
       patch :holiday_dates
     end
   end

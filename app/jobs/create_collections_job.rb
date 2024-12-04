@@ -29,7 +29,7 @@ class CreateCollectionsJob < ApplicationJob
         drivers_day: drivers_day,
         subscription: subscription,
         date: date,
-        skip: subscription.is_paused?
+        skip: subscription.is_paused? 
         # Add other necessary attributes
       )
       puts ">> >> >> #{subscription.customer_id}"

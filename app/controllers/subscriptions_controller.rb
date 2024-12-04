@@ -47,8 +47,8 @@ class SubscriptionsController < ApplicationController
     # user = subscription.user
 
     if subscription.update(subscription_params) #&& user.update(subscription_params[:user_attributes])
-      if @subscription.user == current_user
-        redirect_to welcome_path
+      if subscription.user == current_user
+        redirect_to manage_path
       else
         redirect_to subscription_path(subscription)
       end
@@ -73,6 +73,15 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def unpause
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(is_paused: false)
+      redirect_to manage_path, notice: "Collection schedule updated"
+    else
+      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+    end
+  end
+
   def holiday_dates
     @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
@@ -81,6 +90,17 @@ class SubscriptionsController < ApplicationController
       redirect_to manage_path, status: :unprocessable_entity
     end
   end
+
+  # set holiday start and end to nil to clear holiday
+  def clear_holiday
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(holiday_start: nil, holiday_end: nil)
+      redirect_to manage_path, notice: "Holiday Canceled!"
+    else
+      redirect_to manage_path, status: :unprocessable_entity
+    end
+  end
+
   # a special view that will load all of the collections for a given day
   def today
     # in production today will be the current day,
