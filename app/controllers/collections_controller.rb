@@ -1,7 +1,19 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
+
+  def perform_create_collections
+    CreateCollectionsJob.perform_now
+    flash[:notice] = "Create Collections Job has been triggered."
+    redirect_to this_week_collections_path
+  end
+
+  def optimise_route
+    drivers_day = DriversDay.find_by(date: Date.today)
+    RouteOptimiser.optimise_route
+    redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
+  end
   # Create - done by the import method and not really needing to Read or Destroy collections
   def import_csv
     # find the driver (there is only one)
@@ -60,6 +72,7 @@ class CollectionsController < ApplicationController
   end
 
   def edit
+
     @subscription = @collection.subscription
   end
 
@@ -71,9 +84,66 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def skip_today
+    skipped_params = 0
+    skipped = 0
+    params[:skip_today_collections].each do |id, collection_params|
+      collection = Collection.find(id)
+      skipped_params += 1 if collection_params == "1"
+      if collection_params == "1" && collection.update!(skip: collection_params)
+        skipped += 1
+      else
+        puts "Failed to skip collection #{collection.id}"
+      end
+    end
+    flash[:notice] = "Collections updated successfully!" if skipped_params == skipped
+    redirect_to this_week_collections_path
+  end
+
+  def this_week
+    @day = Date.today.strftime("%A")
+    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: false)
+    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: true)
+
+  end
+
   def destroy
     @collection.destroy
     redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
+  end
+
+  def add_bags
+    if @collection.needs_bags == 3
+      flash[:notice] = "Maximum bags reached"
+    else
+      @collection.needs_bags += 1
+      if @collection.save
+        redirect_to manage_path
+        flash[:notice] = "Added bags"
+      end
+
+    end
+  end
+
+  def remove_bags
+    if @collection.needs_bags == 0
+      flash[:notice] = "Minimum bags reached"
+    else
+      @collection.needs_bags -= 1
+      if @collection.save
+        redirect_to manage_path
+        flash[:notice] = "Removed bags"
+      end
+
+    end
+  end
+
+  def add_customer_note
+    if @collection.update(customer_note: params[:collection][:customer_note])
+      redirect_to manage_path
+      flash[:notice] = "Note Added!"
+
+    end
   end
 
   private

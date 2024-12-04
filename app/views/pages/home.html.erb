@@ -1,71 +1,287 @@
-<div class="outline">
-  <!--Alfred can start the day-->
-  <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
-    <h1>Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <br>
-    <!--It's not a gooi day-->
-    <% if @subscriptions.empty? %>
-      <h2>There are no subscriptions waiting for you.</h2>
-      <p>But I love that you checked...</p>
-      <!--It's a gooi day-->
-    <% else %>
-      <p>There are <%= @subscriptions.count - @count_skip_subscriptions - (@new_customers.any? ? @new_customers.count : 0 ) %> parcels waiting to be collected</p>
-      <% if @new_customers&.any? %>
-        <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
-        <h5>They are:</h5>
-        <% @new_customers.each do |sub| %>
-          <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
-        <% end %>
-        <p>Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p>
-        <!--<p>Don't forget their bucket.</p>-->
-      <% end %>
-    <% end %>
-    <% unless @drivers_day.note_nil_zero? %>
-      <p>Note for the day: <%= @drivers_day.note %></p>
-    <% end %>
-    <h5>Ready to get started?</h5>
-    <br>
-    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: 'gooi-button' %>
-    <!--Alfred has finished the day-->
-  <%elsif current_user.driver? && @drivers_day&.respond_to?(:end_time) && @drivers_day.end_time && @drivers_day&.persisted? %>
-    <h1>Thank you for your work today</h1>
-    <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
-    <br>
-    <br>
-    <% if @drivers_day.end_kms.nil? %>
-      <p>The end kms didn't save or weren't entered</p>
-      <%= simple_form_for @drivers_day do |f| %>
-        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
-        <%= f.submit "Save kms", class: "gooi-button" %>
-      <% end %>
-    <% else %>
-      <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
-    <% end %>
-    <% unless @drivers_day.start_time && @drivers_day.end_time%>
-      <p>Seems the start/end time of your day wasn't saved</p>
-      <p>Please enter them here:</p>
-      <%= simple_form_for @drivers_day do |f| %>
-        <%= f.input :start_time, label: "Start time", required: true %>
-        <%= f.input :end_time, label: "End time", required: true %>
-        <%= f.submit "Save times", class: "gooi-button" %>
-      <% end %>
-    <% else %>
-      <p>And worked for <%= @hours_worked %></p>
-    <% end %>
-    <p>Travel safe, see you next time</p>
-    <div>
-      <%= link_to "View all todays collections", drivers_day_collections_path(@drivers_day) %>
+  <!--header-->
+<div class="page-container">
+  <section class="gooi-header">
+    <div class="inner-header-container">
+      <h1>Organic waste recycling made easy</h1>
+      <p>Gooi makes composting your food waste as easy as throwing it in the bin.
+        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
+        Gooi offers weekly collection of food scraps from your doorstep.
+        Ready to join the food waste revolution?</p>
+      <!--<button class="btn-gooi">sign up</button>-->
+      <%#= link_to '#pricing', class: "btn-gooi" do %>
+        <!--    <div>
+      <p>Sign Up</p>
     </div>
-  <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
-    <h1>Seems something went wrong when the collections were loaded</h1>
-    <p>Please ask Kiki to update collections</p>
-    <%# elsif current_user.driver? %><!--Alfred is starting the day-->
-  <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
-    <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
-  <% else %>
-    <h1>Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <p>View all <%= link_to "past days", drivers_days_path %></p>
-  <% end %>
+    <%# end %>-->
+        <div class="mt-5 mb-3">
+          <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+        </div>
+      </div>
+      <!--video-->
+      <div class="video-container">
+        <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
+        <!--    <div class="play-btn-container">
+      >
+    </div>-->
+      </div>
+      <!--code to create the wave in the header section-->
+      <%= raw %(
+  <div class="wave-container">
+    <svg
+      class="waves"
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+    <defs>
+      <path
+      id="gentle-wave"
+      d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+      />
+    </defs>
+      <g class="parallax">
+        <use
+          href="#gentle-wave"
+          x="0"
+          y="0"
+          fill="rgba(255,255,255)"
+        />
+      </g>
+    </svg>
+    ) %>
+    </div>
+  </div>
+</section>
+<!--mission section-->
+<section class="mission-section">
+  <div class="content-wrapper">
+    <!--left-->
+    <div class="info-container">
+      <h1>Our Mission<span class="yellow-txt">.</span></h1>
+      <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br>
+        <br>
+         Join us in turning waste into a valuable resource</p>
+      <div class="icons-container">
+        <div class="icon-container">
+          <%= image_tag('plant.png' , class: 'icon' ) %>
+          <h3>Promote Growth</h3>
+        </div>
+        <div class="icon-container">
+          <%= image_tag('bag.png' , class: 'icon' ) %>
+          <h3>Enrich Soil</h3>
+        </div>
+        <div class="icon-container">
+          <%= image_tag('mower.png' , class: 'icon' ) %>
+          <h3>Support Farmers</h3>
+        </div>
+      </div>
+    </div>
+    <!--right-->
+    <div class="images-container">
+      <div class="img-1">
+        <%= image_tag('kobus.jpg', class: 'mission-image') %>
+      </div>
+      <div class="img-2">
+        <%= image_tag('compost-01.jpg', class: 'mission-image') %>
+      </div>
+      <div class="img-3">
+        <%= image_tag('compost-02.jpg', class: 'mission-image') %>
+      </div>
+    </div>
+  </div>
+</section>
+<!--compost section -->
+<section class="compost-section">
+  <h1>Why we compost</h1>
+  <div class="content-wrapper">
+    <div class="info-card-container">
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-1.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Reduce landfill waste</h3>
+          <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-2.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Enhance Soil Health</h3>
+          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Support Local Agriculture</h3>
+          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--testimonial section-->
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <div class="content-wrapper">
+    <div class="testimonials-container">
+      <div class="testimonial-card">
+        <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>-->
+        <!-- <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- What is compostable -->
+<section class="compostable-section">
+  <h1>What is compostable</h1>
+  <div class="content-wrapper">
+    <div class="compostable-container">
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('fruit-veg.svg') %>
+        <div>
+          <p class="compost-title">Fruit and Vegetable Scraps</p>
+          <p>All fresh fruit and vegetable scraps are compostable.</p>
+        </div>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('coffee-tea.svg') %>
+        <p class="compost-title">Tea and Coffee</p>
+        <p>Used coffee grounds and paper tea bags are great for composting and add valuable nitrogen.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('garden-waste.svg') %>
+        <p class="compost-title">Garden Waste</p>
+        <p>Green garden waste is ideal for composting, but avoid large branches or diseased plants.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('paper-products.svg') %>
+        <p class="compost-title">Paper Products</p>
+        <p>Only uncoated paper and cardboard should be composted. Avoid glossy or colored paper.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('food-scraps.svg') %>
+        <p class="compost-title">Food Scraps (No meat or dairy)</p>
+        <p>These items are compostable but avoid oily or spiced foods as they attract pests and decompose slowly.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('yard-trimmings.svg') %>
+        <p class="compost-title">Yard Trimmings</p>
+        <p>These items are compostable but may take longer to break down. Shredding them first helps.</p>
+      </div>
+      <div class="compostable-card">
+        <div class="overlay"></div>
+        <%= image_tag('natural-fibres.svg') %>
+        <p class="compost-title">Natural Fibers</p>
+        <p>Natural fibers like cotton and wool can be composted. Ensure they are not dyed or treated with chemicals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Pricing -->
+<section data-controller="pricing" class="pricing-section" >
+  <h1>How it works</h1>
+  <div class="pricing-content-wrapper">
+    <div class="description-container">
+      <p id="pricing">We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
+      </p>
+    </div>
+    <div class="toggle-subscription">
+      <h2>Subscription rates</h2>
+      <div class="toggle">
+        <!--<p>Standard</p>-->
+        <h5 data-pricing-target="title">Standard</h5>
+        <div class="toggle-container">
+          <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
+          <label for="check" class="toggle-label"></label>
+        </div>
+        <h5>XL</h5>
+      </div>
+    </div>
+    <div class="standard-months-container" data-pricing-target="standard">
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R260</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R260</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '1'), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R220</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R660</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '3'), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card popular">
+        <h4>Most popular</h4>
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R180</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1080</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '6'), class:"link-title-light" %>
+        </div>
+      </div>
+    </div>
+    <div class="standard-months-container hide" data-pricing-target="extra">
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R300</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R300</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1'), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R270</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R810</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3'), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R240</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1440</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 </div>

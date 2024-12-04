@@ -1,0 +1,86 @@
+<div class="navbar navbar-expand-sm navbar-light navbar-lewagon pt-4">
+  <div class="container-fluid">
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag('gooi_logo_CR.png', alt: 'Your Logo', class: 'alt-logo') %>
+    <% end %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto">
+        <% if user_signed_in? %>
+          <% drivers_day = DriversDay.find_by(date: Date.today) %>
+          <% if current_user.driver? %>
+            <li class="nav-item active">
+              <%= link_to "Welcome", drivers_day.present? ? vamos_path : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+            </li>
+            <li class="nav-item active">
+              <%= link_to "Start the Day", drivers_day.present? ? start_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+            </li>
+            <li class="nav-item active">
+              <%= link_to "Today's List", today_subscriptions_path, class: "nav-link" %>
+            </li>
+            <!-- <li class="nav-item active">-->
+            <%#= link_to "Drop Off Page", drivers_day.present? ? drop_off_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+            <!--              </li>-->
+            <li class="nav-item active">
+              <%= link_to "End the Day", drivers_day.present? ? end_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+            </li>
+          <% elsif current_user.admin? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Collections
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <%= link_to "Load CSV", load_csv_collections_path, class: "dropdown-item" %>
+                <%= link_to "Export CSV", export_csv_collections_path, class: "dropdown-item" %>
+                <%= link_to "Today", today_subscriptions_path, class: "dropdown-item" %>
+                <%= link_to "Tomorrow", tomorrow_subscriptions_path, class: "dropdown-item" %>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Subscriptions
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <%= link_to "Subscriptions", subscriptions_path, class: "dropdown-item" %>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Drivers Days
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <%= link_to "Drivers Days", drivers_days_path, class: "dropdown-item" %>
+                <%= link_to "Today's List", today_subscriptions_path, class: "dropdown-item" %>
+                <%#= link_to "Drop Off Page", drop_off_drivers_day_path(drivers_day), class: "dropdown-item" %>
+                <% if drivers_day %>
+                  <%= link_to "End the Day", end_drivers_day_path(drivers_day), class: "dropdown-item" %>
+                </div>
+              </li>
+            <% end %>
+          <% elsif current_user.customer? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Subscription
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <%= link_to "New", new_subscription_path, class: "dropdown-item" %>
+                <% current_user.subscriptions.each do |subscription| %>
+                  <%= link_to "Edit #{subscription.street_address}", edit_subscription_path(subscription), class: "dropdown-item" %>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+          <li class="nav-item">
+            <%= link_to "Log Out",destroy_user_session_path, data: {turbo_method: :delete}, class: "nav-link" %>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Login", new_user_session_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

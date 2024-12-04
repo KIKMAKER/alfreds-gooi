@@ -1,0 +1,78 @@
+<div class="driver-wrapper">
+  <!--Alfred can start the day-->
+  <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
+    <h1 class="text-center">Good morning <%= current_user.first_name %></h1>
+    <h4>It's <%= @today %> today</h4>
+    <br>
+    <!--It's not a gooi day-->
+    <% if @collections.empty? %>
+      <h2>There are no subscriptions waiting for you.</h2>
+      <p>But I love that you checked...</p>
+      <!--It's a gooi day-->
+    <% else %>
+      <p class="text-center">There <%= @count == 1 ? 'is' : 'are' %> <%= pluralize(@count, 'parcel') %> waiting to be collected</p>
+      <% if @new_customers&.any? %>
+        <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
+        <h5 class="mt-3">They are:</h5>
+        <% @new_customers.each do |collection| %>
+          <p><%= collection.subscription.user.first_name %> at <%= collection.subscription.street_address %> </p>
+        <% end %>
+        <strong><p class="mt-3">Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p></strong>
+        <!--<p>Don't forget their bucket.</p>-->
+      <% end %>
+    <% end %>
+    <% unless @drivers_day.note_nil_zero? %>
+      <p>Note for the day: <%= @drivers_day.note %></p>
+    <% end %>
+    <h5 class="mt-3">Ready to get started?</h5>
+    <br>
+    <!--<div class="submit-btn">-->
+      <%= link_to "Start", start_drivers_day_path(@drivers_day), class: "submit-btn mb-5" %>
+    <!--</div>-->
+    <!--Alfred has finished the day-->
+  <%elsif current_user.driver? && @drivers_day&.respond_to?(:end_time) && @drivers_day.end_time && @drivers_day&.persisted? %>
+    <br>
+    <h1>Thank you for your work today</h1>
+    <br>
+    <%= image_tag'Alfred Sticker.svg', class: 'avatar-large' %>
+    <br>
+    <br>
+    <% if @drivers_day.end_kms.nil? %>
+      <p>The end kms didn't save or weren't entered</p>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
+        <%= f.submit "Save kms", class: "gooi-button" %>
+      <% end %>
+    <% else %>
+      <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
+    <% end %>
+    <% unless @drivers_day.start_time && @drivers_day.end_time%>
+      <p>Seems the start/end time of your day wasn't saved</p>
+      <p>Please enter them here:</p>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :start_time, label: "Start time", required: true %>
+        <%= f.input :end_time, label: "End time", required: true %>
+        <%= f.submit "Save times", class: "gooi-button" %>
+      <% end %>
+    <% else %>
+      <p>And worked for <%= @hours_worked %></p>
+      <p>We composted <%= @drivers_day.total_buckets %> buckets today</p>
+    <% end %>
+    <p>Travel safe, see you next time</p>
+    <div>
+      <br>
+      <br>
+      <%= link_to "View all todays collections", todays_collections_drivers_day_path(@drivers_day), class: "small-yellow-btn" %>
+    </div>
+  <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
+    <h1>Seems something went wrong when the collections were loaded</h1>
+    <p>Please ask Kiki to update collections</p>
+    <%# elsif current_user.driver? %><!--Alfred is starting the day-->
+  <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
+    <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
+  <% else %>
+    <h1>Good morning <%= current_user.first_name %></h1>
+    <h4>It's <%= @today %> today</h4>
+    <p>View all <%= link_to "past days", drivers_days_path %></p>
+  <% end %>
+</div>

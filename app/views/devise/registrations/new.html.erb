@@ -1,44 +1,31 @@
-<div class="gooi-container">
-  <div class="outline">
-
+<!--<div class="gooi-container">-->
+<div class="user-wrapper">
   <h2>Sign up</h2>
-
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <%= f.error_notification %>
-
-    <div class="form-inputs">
-      <%= f.input :first_name,
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email" }%>
-      <%= f.input :last_name,
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email" }%>
-      <%= f.input :phone_number,
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email" }%>
-      <%= f.input :email,
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email" }%>
-
-      <%= f.input :password,
-                  required: true,
-                  hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                  input_html: { autocomplete: "new-password" } %>
-      <%= f.input :password_confirmation,
-                  required: true,
-                  input_html: { autocomplete: "new-password" } %>
-    </div>
-
-    <div class="form-actions">
-      <%= f.button :submit, "Sign up" %>
-    </div>
-  <% end %>
-
-  <%= render "devise/shared/links" %>
-
+  <div class="user-form">
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= f.error_notification %>
+      <%= f.input :first_name, required: true, autofocus: true, input_html: { autocomplete: "given-name" } %>
+      <%= f.input :last_name, required: true, autofocus: true, input_html: { autocomplete: "family-name" } %>
+      <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email" } %>
+      <%= f.input :phone_number, required: true, autofocus: true, input_html: { autocomplete: "tel" } %>
+      <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+        <%= f.simple_fields_for :subscription do |subscription_fields| %>
+          <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
+          <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
+          <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
+        <% end %>
+      </div>
+      <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
+      <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
+      <%= f.fields_for :subscription do |subscription_form| %>
+        <%= subscription_form.hidden_field :plan, value: @plan %>
+        <%= subscription_form.hidden_field :duration, value: @duration %>
+        <%= subscription_form.hidden_field :is_paused, value: true %>
+      <% end %>
+      <div class="form-actions">
+        <%= f.button :submit, "Sign up", class: 'submit-btn' %>
+      </div>
+    <% end %>
+    <%= render "devise/shared/links" %>
   </div>
 </div>
