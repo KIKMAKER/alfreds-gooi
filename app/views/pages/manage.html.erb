@@ -1,43 +1,38 @@
-<div class="user-wrapper bg-green">
+<div class="user-wrapper">
   <h1>Manage my subscription</h1>
   <h2>Upcoming Collection</h2>
-  <div class="card-white" data-controller="toggle">
+  <div  data-controller="toggle">
     <% if @subscription.is_paused? %>
       <div class="text-center">
         <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
         <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
       </div>
     <% else %>
-      <h4 class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%a %d %b") %></h4>
-      <div class="container-flex">
-        <% if @subscription.collections.last.customer_note %>
-        <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Edit Note</button>
-        <% else %>
-        <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
-        <% end %>
-
-        <div>
-          <div class="container-flex">
-            <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
-            <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
-            <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
-          </div>
-          <p class="text-center">bags</p>
+      <p class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%A %d %B") %></p>
+      <div class="text-center ">
+        <div class="container-flex justify-content-center">
+          <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+          <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
+          <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
         </div>
-        <%= button_to "Skip", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
+        <p class="text-center">bags</p>
+        <div class="container-flex mt-3">
+          <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
+          <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
+        </div>
       </div>
     <% end %>
     <div data-toggle-target="form" class="d-none mt-3">
       <%= simple_form_for @subscription.collections.last, url: add_customer_note_collection_path(@subscription.collections.last), method: :post do |f| %>
         <%= f.input :customer_note, value: @subscription.collections.last.customer_note, label: false %>
-        <%= f.button :submit, "Add Note", class: "submit-btn w-100"  %>
+        <%= f.button :submit, "Add Note", class: "submit-btn w-100 p"  %>
       <% end %>
     </div>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
     <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
       <h2>Need to skip more than one week?</h2>
-      <button class="submit-btn" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
+      <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
       <div class="card-white d-none" data-toggle-target="form">
         <h2>Plan a holiday</h2>
         <%= simple_form_for @subscription do |f| %>
