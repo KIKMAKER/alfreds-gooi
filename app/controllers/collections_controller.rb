@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
 
   def perform_create_collections
@@ -134,6 +134,14 @@ class CollectionsController < ApplicationController
         redirect_to manage_path
         flash[:notice] = "Removed bags"
       end
+
+    end
+  end
+
+  def add_customer_note
+    if @collection.update(customer_note: params[:collection][:customer_note])
+      redirect_to manage_path
+      flash[:notice] = "Note Added!"
 
     end
   end
