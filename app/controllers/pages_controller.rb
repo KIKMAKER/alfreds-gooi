@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home ]
+  skip_before_action :authenticate_user!, only: [ :home, :thestory ]
 
   def vamos
     # in production today will be the current day,
@@ -21,7 +21,9 @@ class PagesController < ApplicationController
   end
 
   def home
+  end
 
+  def thestory
   end
 
   def manage

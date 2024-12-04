@@ -1,5 +1,5 @@
 class Invoice < ApplicationRecord
-  belongs_to :subscription, dependent: :destroy
+  belongs_to :subscription
   has_one :user, through: :subscription
   has_many :invoice_items, dependent: :destroy
   accepts_nested_attributes_for :invoice_items

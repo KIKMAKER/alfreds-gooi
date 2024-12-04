@@ -94,7 +94,8 @@ class SubscriptionsController < ApplicationController
     @drivers_day = DriversDay.find_or_create_by(date: today)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = Collection.includes(:subscription, :user).where(created_at: Date.today.all_day, date: Date.today ).order(:order)
+    @collections = Collection.includes(:subscription, :user).where(created_at: Date.today.all_day, date: today ).order(:order)
+
   end
 
   def tomorrow
