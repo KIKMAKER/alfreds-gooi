@@ -16,7 +16,7 @@
           <% if collection.skip %>
             <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
           <% else %>
-            <% if collection.bags. >= 1 %>
+            <% if collection.bags >= 1 %>
               <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
             <% elsif collection.new_customer %>
               <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
