@@ -1,5 +1,7 @@
 <div class="driver-wrapper">
   <h1>Manage this weeks collections</h1>
+
+  <%= link_to 'Create Collections', load_csv_collections_path, class: 'small-yellow-btn' %>
   <%= button_to 'Create Collections', perform_create_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   <br>
   <h3>Collections for this week:</h3>count
