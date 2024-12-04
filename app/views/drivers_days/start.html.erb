@@ -8,6 +8,11 @@
     <% else %>
       <h2>Before you get started...</h2>
       <br>
+    <!--<h2>Before you get started...</h2>
+      <h6><strong> <%#= pluralize(@wants_veggies.count, 'person wants') %> veggies:</strong></h6>
+      <%# @wants_veggies.each do |sub| %>-->
+<!--        <p><%#= sub.user.first_name %> at <%= sub.street_address %> </p>-->
+      <%# end %>
       <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
       <% @skip_subscriptions.each do |sub| %>
         <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
