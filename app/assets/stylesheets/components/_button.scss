@@ -1,3 +1,13 @@
+.small-yellow-btn {
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  color: white;
+}
+
 .gooi-button {
   color: white;
   background-color: #3c8a63;
@@ -16,18 +26,18 @@
 
 .gooi-collect-button {
   a {
-  color: white;
-  background-color: #3c8a63;
-  border: 2px solid #3c8a63;
-  padding: 2px 2px;
-  border-radius: 5px;
-  font-weight: lighter;
-  font-size: 4vmin;
-  box-shadow: 1px 1px lightgray;
-  cursor: pointer;
-  margin-bottom: 2px;
-  font-family: "Montserrat", sans-serif;
-  text-decoration: none;
+    color: white;
+    background-color: #3c8a63;
+    border: 2px solid #3c8a63;
+    padding: 2px 2px;
+    border-radius: 5px;
+    font-weight: lighter;
+    font-size: 4vmin;
+    box-shadow: 1px 1px lightgray;
+    cursor: pointer;
+    margin-bottom: 2px;
+    font-family: "Montserrat", sans-serif;
+    text-decoration: none;
   }
 }
 
@@ -48,28 +58,47 @@
 
 }
 
-.btn {
-  a {
+.submit-btn {
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 24px;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
   color: white;
-  background-color: #3c8a63;
-  border: 2px solid #3c8a63;
-  padding: 2px 2px;
-  border-radius: 5px;
-  font-weight: lighter;
-  font-size: 4vmin;
-  box-shadow: 1px 1px lightgray;
-  cursor: pointer;
-  margin-bottom: 2px;
-  font-family: "Montserrat", sans-serif;
-  text-decoration: none;
-  }
+  margin: 0px 4px;
 }
 
-.back_button {
+button.submit-btn-circle {
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
   color: white;
-  background-color: #3c8a63;
-  border: 2px solid #3c8a63;
-  width: fit-content;
-  padding: 8px;
-  border-radius: 16px;
+  padding: 16px;
+  margin: 0;
+}
+
+
+.btn {
+  a {
+    color: white;
+    background-color: #3c8a63;
+    border: 2px solid #3c8a63;
+    padding: 2px 2px;
+    border-radius: 5px;
+    font-weight: lighter;
+    font-size: 4vmin;
+    box-shadow: 1px 1px lightgray;
+    cursor: pointer;
+    margin-bottom: 2px;
+    font-family: "Montserrat", sans-serif;
+    text-decoration: none;
+  }
 }

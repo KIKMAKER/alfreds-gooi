@@ -1,26 +1,11 @@
 <div class="collection-container">
   <div class="collection-body">
     <div class="centre">
-      <h1>Edit Subscription for <%= @subscription.user.first_name %></h1>
+      <h1>Add some details to your subscription for <%= @subscription.user.first_name %></h1>
     </div>
     <%= simple_form_for(@subscription) do |f| %>
-      <!--nested attribute to edit the user's details-->
-      <%= f.simple_fields_for :user do |user_fields| %>
-        <%= user_fields.input :first_name %>
-        <%= user_fields.input :last_name %>
-        <%= user_fields.input :phone_number %>
-        <%= user_fields.input :email %>
-      <% end %>
       <%= f.input :street_address %>
       <%= f.input :suburb %>
-      <%= f.input :access_code %>
-      <%= f.input :plan, collection: Subscription.plans.keys.map { |plan| [plan.titleize, plan] }, include_blank: false %>
-      <%= f.input :duration, label: "Duration (Months)", collection: [1, 3, 6], include_blank: false %>
-      <%= f.input :collection_day, collection: Subscription.collection_days.keys.map { |day| [day.titleize, day] }, include_blank: false %>
-      <%= f.input :collection_order %>
-      <%= f.input :customer_id %>
-      <%= f.input :start_date %>
-      <%= f.input :is_paused, as: :boolean %>
       <div class="centre">
         <%= f.button :submit, "Update Subscription", class: "gooi-submit-button" %>
       </div>

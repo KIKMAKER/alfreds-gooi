@@ -38,22 +38,67 @@ class SubscriptionsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
   def edit
     @subscription = Subscription.find(params[:id])
   end
 
   def update
-
     subscription = Subscription.find(params[:id])
-    user = subscription.user
+    # user = subscription.user
 
-    if subscription.update(subscription_params) && user.update(subscription_params[:user_attributes])
-      redirect_to subscription_path(subscription)
+    if subscription.update(subscription_params) #&& user.update(subscription_params[:user_attributes])
+      if subscription.user == current_user
+        redirect_to manage_path
+      else
+        redirect_to subscription_path(subscription)
+      end
     else
       render :edit, status: :unprocessable_entity
     end
 
+  end
+
+  def welcome_invoice
+    @subscription = Subscription.find(params[:id])
+    @invoice = @subscription.invoices.first
+    @invoices = current_user.invoices
+  end
+
+  def pause
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(is_paused: true)
+      redirect_to manage_path, notice: "Collection schedule updated"
+    else
+      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+    end
+  end
+
+  def unpause
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(is_paused: false)
+      redirect_to manage_path, notice: "Collection schedule updated"
+    else
+      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+    end
+  end
+
+  def holiday_dates
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(subscription_params)
+      redirect_to manage_path, notice: "Holiday set!"
+    else
+      redirect_to manage_path, status: :unprocessable_entity
+    end
+  end
+
+  # set holiday start and end to nil to clear holiday
+  def clear_holiday
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(holiday_start: nil, holiday_end: nil)
+      redirect_to manage_path, notice: "Holiday Canceled!"
+    else
+      redirect_to manage_path, status: :unprocessable_entity
+    end
   end
 
   # a special view that will load all of the collections for a given day
@@ -68,7 +113,9 @@ class SubscriptionsController < ApplicationController
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_or_create_by(date: today)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
-    @subscriptions = Subscription.active_subs_for(@today)
+    # @subscriptions = Subscription.active_subs_for(@today)
+    @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
+
   end
 
   def tomorrow

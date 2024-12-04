@@ -1,4 +1,4 @@
-<div class="outline">
+<div class="driver-wrapper">
   <% if @subscriptions.empty? %>
     <h2>There are no subscriptions waiting for you.</h2>
   <% else %>
@@ -6,29 +6,34 @@
       <p>hang tight, not all collections have been loaded.</p>
       <p>Maybe give kiki a call?</p>
     <% else %>
-    <h2>Before you get started...</h2>
-      <h6><strong> <%= pluralize(@wants_veggies.count, 'person wants') %> veggies:</strong></h6>
-      <% @wants_veggies.each do |sub| %>
-        <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
-      <% end %>
+      <h2>Before you get started...</h2>
+      <br>
+    <!--<h2>Before you get started...</h2>
+      <h6><strong> <%#= pluralize(@wants_veggies.count, 'person wants') %> veggies:</strong></h6>
+      <%# @wants_veggies.each do |sub| %>-->
+<!--        <p><%#= sub.user.first_name %> at <%= sub.street_address %> </p>-->
+      <%# end %>
       <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
       <% @skip_subscriptions.each do |sub| %>
         <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
       <% end %>
-      <h6><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</strong></h6>
+      <br>
+      <%= link_to "sort the route", optimise_route_path, data: {turbo_method: :patch}, class: "small-yellow-btn" %>
+      <br>
+      <h3><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</strong></h3>
       <% @bags_needed.each do |sub| %>
         <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
       <% end %>
     <% end %>
   <% end %>
-    <br>
-  <div>
-    <h3>Let's get to it!</h3>
-    <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
-      <%= f.input :start_kms, label: "Start Kilometers", required: true, input_html: { min: 0 } %>
-      <!-- Hidden field for start_time -->
-      <%#= f.hidden_field :start_time, value: Time.current %>
-      <%= f.submit "Time to vamos!", class: "gooi-button" %>
-    <% end %>
-  </div>
+  <br>
+  <h2>Let's get to it!</h2>
+  <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
+    <div class="drivers-form">
+      <%= f.input :start_kms, label: false, placeholder: "Enter starting kms", required: true, input_html: { min: 0 } %>
+      <!--  Hidden field for start_time--><!---->
+      <%= f.hidden_field :start_time, value: Time.current %>
+      <%= f.submit "Time to vamos!", class: "small-yellow-btn" %>
+    </div>
+  <% end %>
 </div>

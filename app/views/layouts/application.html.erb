@@ -3,6 +3,7 @@
   <head>
     <title>AlfredsGooi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -10,8 +11,19 @@
     <%= favicon_link_tag %>
   </head>
   <body class="background">
-    <%= render "shared/navbar" %>
+    <% if user_signed_in? %>
+      <%if current_user.driver? %>
+        <%= render "shared/driver_navbar" %>
+      <% elsif current_user.admin? %>
+        <%= render "shared/admin_navbar" %>
+      <% else %>
+        <%= render "shared/user_navbar" %>
+      <%  end %>
+    <% else %>
+      <%= render "shared/new_navbar" %>
+    <%  end %>
     <%= render "shared/flashes" %>
     <%= yield %>
+    <%= render "shared/footer" %>
   </body>
 </html>

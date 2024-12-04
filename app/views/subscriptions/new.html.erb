@@ -1,8 +1,9 @@
 <div class="collection-container">
   <div class="collection-body">
     <p class = "collection-header">New Subscription!</p>
+    <% raise %>
     <%= simple_form_for(@subscription) do |f| %>
-      <%= f.input :customer_id %>
+      <%#= f.input :customer_id %>
       <%= f.input :street_address, class: 'form-styling' %>
       <%= f.input :suburb %>
       <%= f.input :access_code %>

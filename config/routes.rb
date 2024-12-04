@@ -1,21 +1,43 @@
 Rails.application.routes.draw do
   # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
-  devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # admin
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
-  # Defines the root path route ("/")
-  root "pages#home"
+  # payments
+  resources :webhooks, only: :create
+  get 'snapscan/payments', to: 'payments#fetch_snapscan_payments'
 
+  # users
+  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+
+  # sidekiq
+  require "sidekiq/web"
+  authenticate :user, ->(user) { user.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
+
+  patch 'optimise_route', to: 'collections#optimise_route'
+  post "perform_create_collections", to: "collections#perform_create_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
-  resources :collections, only: %i[ edit update] do
+  resources :collections, only: [:edit, :update, :destroy] do
+    member do
+      post :add_bags
+      post :remove_bags
+      post :add_customer_note
+    end
     collection do
-      get :export_csv, to: 'collections#export_csv'
-      get :load_csv, to: 'collections#load_csv'
-      post :import_csv, to: 'collections#import_csv'
+      get :this_week
+      patch :skip_today
+      get :export_csv
+      get :load_csv
+      post :import_csv
     end
   end
 
+  resources :invoices, only: %i[ index new create show]
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
     resources :collections, only: %i[index new create]
@@ -25,8 +47,16 @@ Rails.application.routes.draw do
       get :tomorrow
       get :yesterday
     end
+    member do
+      get :welcome_invoice
+      post :pause
+      # route to unpause subscription
+      post :unpause
+      # route to clear holiday
+      post :clear_holiday
+      patch :holiday_dates
+    end
   end
-
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes
 
   # I want get and patch requests on these custom drivers_day routes
@@ -41,7 +71,18 @@ Rails.application.routes.draw do
       patch :drop_off
       get :end
       patch :end
+      get :todays_collections
     end
   end
-  resources :collections, only: %i[edit update destroy]
+
+  resources :products, only: [:index, :new, :create]
+
+    # static pages
+    root "pages#home"
+    get "thestory", to: "pages#thestory"
+    get "manage", to: "pages#manage"
+    get "vamos", to: "pages#vamos"
+    get "welcome", to: "pages#welcome"
+    get "today", to: "pages#today"
+
 end
