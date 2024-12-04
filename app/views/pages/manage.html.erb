@@ -10,7 +10,7 @@
     <% else %>
       <h4 class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%a %d %b") %></h4>
       <div class="container-flex">
-        <% if @subscription.collections.last.customer_note.length %>
+        <% if @subscription.collections.last.customer_note %>
         <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Edit Note</button>
         <% else %>
         <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
