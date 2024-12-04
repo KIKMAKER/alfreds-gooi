@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'products/new'
+  # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   # admin
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'

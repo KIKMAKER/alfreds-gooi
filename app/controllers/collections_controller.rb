@@ -192,7 +192,7 @@ class CollectionsController < ApplicationController
     puts date
     collection = Collection.new(
       kiki_note: row['note'], skip: row['skip'] == 'TRUE', new_customer: row['new_customer'] == 'TRUE',
-      needs_bags: row['needs_bags'].to_i, soil_bag: row['soil_bag'].to_i, date: date)
+      needs_bags: row['needs_bags'].to_i, soil_bag: row['soil_bag'].to_i, date: date, wants_veggies: row["wants_veggies"] == 'TRUE')
     collection.subscription = subscription
     collection.drivers_day = drivers_day
     if collection.save
@@ -205,7 +205,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :wants_veggies)
     # buckets
   end
 end
