@@ -9,7 +9,7 @@
       <div class="collection">
         <div class="car">
           <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
-          <p><%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %></p>
+          <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
         </div>
         <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
         <div class="bag">
