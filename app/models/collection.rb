@@ -1,5 +1,5 @@
 class Collection < ApplicationRecord
-  belongs_to :subscription
+  belongs_to :subscription, optional: true
   belongs_to :drivers_day
   has_one :user, through: :subscription
 

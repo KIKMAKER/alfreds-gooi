@@ -29,6 +29,13 @@ section {
     margin-bottom: 1vh;
   }
 
+  h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    color: $dark-yellow;
+    text-align: center;
+  }
+
   p {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
@@ -665,7 +672,7 @@ button {
   }
 
   .mission-section {
-    margin-top: 26vh;
+    margin-top: 8vh;
   }
 
 }
@@ -697,7 +704,7 @@ button {
   .info-container {
     width: 100%;
     h1 {
-      margin-top: 8rem;
+      margin-top: 0.2vh;
     }
   }
 
@@ -753,7 +760,7 @@ button {
   .info-container {
     width: 100%;
     h1 {
-      margin-top: 6rem;
+      margin-top: 0.2vh;
     }
   }
 
@@ -777,7 +784,7 @@ button {
   .info-container {
     width: 100%;
     h1 {
-      margin-top: 10rem;
+      margin-top: 0.2vh;
     }
   }
 
@@ -858,7 +865,11 @@ button {
   .info-container {
     width: 100%;
     h1 {
-      margin-top: 2rem;
+      margin-top: 0.2vh;
+    }
+
+    p {
+      color: $font-grey;
     }
   }
 

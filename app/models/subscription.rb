@@ -3,7 +3,6 @@ class Subscription < ApplicationRecord
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
-  has_many :contacts, dependent: :nullify
 
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?

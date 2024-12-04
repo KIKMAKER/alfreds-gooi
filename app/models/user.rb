@@ -3,14 +3,14 @@ class User < ApplicationRecord
   # after_create_commit :create_initial_invoice # unless subscriptions.count > 1
 
   enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
-  has_many :subscriptions, dependent: :destroy
+  has_many :subscriptions, dependent: :nullify
   has_many :invoices, through: :subscriptions
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
 
   accepts_nested_attributes_for :subscriptions
-  
+
   before_destroy :nullify_subscriptions
 
 
