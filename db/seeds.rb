@@ -1,56 +1,68 @@
 # USERS & SUBSCRIPTIONS
 require 'csv'
 
-puts "Clearing DB"
-puts "1"
-Collection.destroy_all
-puts "2"
-Subscription.destroy_all
-puts "4"
-DriversDay.destroy_all
-puts "3"
-User.destroy_all
-puts "DB Clear with collections"
+if Rails.env.development?
+
+  puts "Clearing DB"
+  puts "1"
+  Collection.destroy_all
+  puts "2"
+  Subscription.destroy_all
+  puts "4"
+  DriversDay.destroy_all
+  puts "3"
+  User.destroy_all
+  puts "DB Clear with collections"
 
 
-puts "Uploading users and subscriptions from CSV"
+  puts "Uploading users and subscriptions from CSV"
 
-@import_csv = Rails.root.join('db', './users_and_subscribers20240710.csv')
+  @import_csv = Rails.root.join('db', './users_and_subscribers20240710.csv')
 
-def import_users_from_csv
-  CSV.foreach(@import_csv, headers: :first_row) do |row|
-    puts "importing a user"
-    new_user = User.create!(
-      first_name: row[0], last_name: row[1], email: row[2], phone_number: row[4],
-      password: "password", role: "customer"
-    )
-    puts "importing subscription"
-    new_subscription = Subscription.new(
-      street_address: row[5], plan: row[6], duration: row[7], start_date: row[8], suburb: row[10], customer_id: row[13]
-    )
-    new_subscription.user = new_user
-    new_subscription.save!
-    p "#{new_subscription.collection_day}"
+  def import_users_from_csv
+    CSV.foreach(@import_csv, headers: :first_row) do |row|
+      puts "importing a user"
+      new_user = User.create!(
+        first_name: row[0], last_name: row[1], email: row[2], phone_number: row[4],
+        password: "password", role: "customer"
+      )
+      puts "importing subscription"
+      new_subscription = Subscription.new(
+        street_address: row[5], plan: row[6], duration: row[7], start_date: row[8], suburb: row[10], customer_id: row[13]
+      )
+      new_subscription.user = new_user
+      new_subscription.save!
+      p "#{new_subscription.collection_day}"
+    end
   end
+
+  import_users_from_csv
+
+  puts "#{User.count} users added"
+
+  puts "#{Subscription.count} subscriptions added"
+  puts "Dev Seed file complete with"
+  puts "#{Subscription.where(collection_day: 2).count} subscriptions for Tuesday"
+  puts "#{Subscription.where(collection_day: 3).count} subscriptions for Wednesday"
 end
 
-import_users_from_csv
-
-puts "#{User.count} users added"
-
-puts "#{Subscription.count} subscriptions added"
-
 puts "Creating You"
-kiki = User.create!(first_name: "Kiki", last_name: "Kenn", email: "gooi@gooi.com", password: "password", role: "admin", phone_number: "+27836353126")
+kiki = User.find_or_create_by!(email: "gooi@gooi.com") do |user|
+  user.first_name = "Kiki"
+  user.last_name = "Kenn"
+  user.password = "password"
+  user.role = "admin"
+  user.phone_number = "+27836353126"
+end
 
 puts "Creating Alfred"
-alfred = User.create!(
-  first_name: "Alfred", last_name: "Mbonjwa", email: "driver@gooi.com", password: "password", role: "driver", phone_number: "+27785325513"
-)
-
-puts "Seed file complete with"
-puts "#{Subscription.where(collection_day: 2).count} subscriptions for Tuesday"
-puts "#{Subscription.where(collection_day: 3).count} subscriptions for Wednesday"
+alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
+  user.first_name = "Alfred"
+  user.last_name = "Mbonjwa"
+  user.password = "password"
+  user.role = "driver"
+  user.phone_number = "+27785325513"
+end
 
 puts "Seed complete."
 
@@ -98,20 +110,20 @@ puts "#{additional_products} additional products created"
 
 puts "A total of #{Product.count} products have been seeded to the DB."
 
+if Rails.env.development?
+  # HOLIDAY DATES
 
-# HOLIDAY DATES
+  # a method that sets random past holiday start and end dates for all subscriptions
+  def set_random_holidays
+     subscriptions = Subscription.all.sample(20)
+     subscriptions.each do |subscription|
+      subscription.update!(holiday_start: Date.yesterday - rand(1..3), holiday_end: Date.tomorrow + rand(1..15))
+      puts "#{subscription.user.first_name} has a holiday from #{subscription.holiday_start.strftime('%A, %b %d')} to #{subscription.holiday_end.strftime('%A, %b %d')}"
+     end
+  end
 
-# a method that sets random past holiday start and end dates for all subscriptions
-def set_random_holidays
-   subscriptions = Subscription.all.sample(20)
-   subscriptions.each do |subscription|
-    subscription.update!(holiday_start: Date.yesterday - rand(1..3), holiday_end: Date.tomorrow + rand(1..15))
-    puts "#{subscription.user.first_name} has a holiday from #{subscription.holiday_start.strftime('%A, %b %d')} to #{subscription.holiday_end.strftime('%A, %b %d')}"
-   end
+  set_random_holidays
 end
-
-set_random_holidays
-
 
 # EMERGENCY SEEDS MADE BY CHAT
 
