@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
   # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
 
   def perform_create_collections
@@ -144,6 +144,23 @@ class CollectionsController < ApplicationController
       flash[:notice] = "Note Added!"
 
     end
+  end
+
+  def update_position
+    # Ensure the position comes from the params (it will be handled by `Sortable.js` on the frontend)
+    @collection.insert_at(params[:position].to_i)  # `acts_as_list` handles reordering
+
+    head :no_content  # Return no content on success
+  end
+
+  def reset_order
+    @drivers_day = DriversDay.find(params[:drivers_day_id])
+    @drivers_day.collections.order(:created_at).each_with_index do |collection, index|
+      collection.update(position: index + 1) # Reset position starting from 1
+    end
+
+    # Respond with a redirect or a success message
+    redirect_to today_subscriptions_path, notice: 'Collection order has been reset.'
   end
 
   private

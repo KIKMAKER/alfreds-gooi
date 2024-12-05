@@ -60,6 +60,8 @@ gem "sidekiq-failures"
 gem "rails_admin", "3.0"
 gem "geocoder"
 gem 'faker'
+gem "acts_as_list"
+
 
 group :development, :test do
   gem "dotenv-rails"

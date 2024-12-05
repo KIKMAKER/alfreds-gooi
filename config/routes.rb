@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       post :add_bags
       post :remove_bags
       post :add_customer_note
+      put :update_position
     end
     collection do
       get :this_week
@@ -63,7 +64,11 @@ Rails.application.routes.draw do
   # member routes are created with /drivers_day/:id/custom_route
   # these routes (the get and the patch) allow for form input to the instance of drivers day at each url
   resources :drivers_days do
-    resources :collections, only: %i[index]
+    resources :collections, only: %i[index] do
+      collection do
+        post :reset_order
+      end
+    end
     member do
       get :start
       patch :start
@@ -73,6 +78,7 @@ Rails.application.routes.draw do
       patch :end
       get :todays_collections
     end
+
   end
 
   resources :products, only: [:index, :new, :create]

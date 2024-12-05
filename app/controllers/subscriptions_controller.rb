@@ -106,15 +106,19 @@ class SubscriptionsController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    today = Date.today - 1
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
     # today = Date.today  + 1
     @today = today.strftime("%A")
-    @drivers_day = DriversDay.find_or_create_by(date: today)
+
+driver = User.find_by(first_name: "Alfred")
+    @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
+
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
+    @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
+
 
   end
 
