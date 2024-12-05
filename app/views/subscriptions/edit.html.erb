@@ -6,6 +6,11 @@
     <%= simple_form_for(@subscription) do |f| %>
       <%= f.input :street_address %>
       <%= f.input :suburb %>
+      <%= f.input :duration %>
+      <%= f.input :start_date %>
+      <%= f.input :is_paused %>
+      <%= f.input :collection_day %>
+
       <div class="centre">
         <%= f.button :submit, "Update Subscription", class: "gooi-submit-button" %>
       </div>
