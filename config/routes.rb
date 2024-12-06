@@ -82,5 +82,6 @@ Rails.application.routes.draw do
     get "manage", to: "pages#manage"
     get "vamos", to: "pages#vamos"
     get "welcome", to: "pages#welcome"
+    get "story", to: "pages#story"
 
 end
