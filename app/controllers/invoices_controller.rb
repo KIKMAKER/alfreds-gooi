@@ -49,10 +49,6 @@ class InvoicesController < ApplicationController
       )
 
     end
-
-
-
-
     # [:product_id]
     # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
 
