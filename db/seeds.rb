@@ -63,25 +63,6 @@ puts "Additional stock created"
 
 puts "A total of #{Product.count} products have been seeded to the DB."
 
-# ADMIN + DRIVER
-puts "Creating You"
-kiki = User.find_or_create_by!(email: "gooi@gooi.com") do |user|
-  user.first_name = "Kiki"
-  user.last_name = "Kenn"
-  user.password = "password"
-  user.role = "admin"
-  user.phone_number = "+27836353126"
-end
-
-puts "Creating Alfred"
-alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
-  user.first_name = "Alfred"
-  user.last_name = "Mbonjwa"
-  user.password = "password"
-  user.role = "driver"
-  user.phone_number = "+27785325513"
-end
-
 # DEV ONLY SEEDS
 
 if Rails.env.development?
@@ -139,7 +120,7 @@ if Rails.env.development?
   puts "#{User.count} users added"
 
   puts "#{Subscription.count} subscriptions added"
-  puts "Dev Seed file complete with"
+  puts "Dev Users and Subs Seed file complete with"
   puts "#{Subscription.where(collection_day: 2).count} subscriptions for Tuesday"
   puts "#{Subscription.where(collection_day: 3).count} subscriptions for Wednesday"
   puts "#{Subscription.where(collection_day: 4).count} subscriptions for Thursday"
@@ -155,9 +136,13 @@ if Rails.env.development?
     end
   end
 
+  puts "setting random holidays"
+
   set_random_holidays
 
   # # Create invoices
+
+  puts "Creating invoices"
   invoices = Array.new(Subscription.count) do
     starter_kit = Product.find_by(title: "Standard Starter Kit")
     Invoice.create!(
@@ -184,8 +169,21 @@ if Rails.env.development?
       amount: product.price
     )
   end
+  puts "#{Invoice.count} invoices created with #{InvoiceItem.count} invoice items"
+
+  puts "Creating Alfred"
+  alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
+    user.first_name = "Alfred"
+    user.last_name = "Mbonjwa"
+    user.password = "password"
+    user.role = "driver"
+    user.phone_number = "+27785325513"
+  end
+  puts "Alfred created with user id: #{alfred.id}"
 
   # # Create driver days
+
+  puts "Creating driver days"
   drivers_days = Array.new(7) do |i|
     dd = DriversDay.create!(
       start_time: Time.now + i,
@@ -226,5 +224,23 @@ if Rails.env.development?
 
 end
 
+# ADMIN + DRIVER
+puts "Creating You"
+kiki = User.find_or_create_by!(email: "gooi@gooi.com") do |user|
+  user.first_name = "Kiki"
+  user.last_name = "Kenn"
+  user.password = "password"
+  user.role = "admin"
+  user.phone_number = "+27836353126"
+end
+
+puts "Creating Alfred"
+alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
+  user.first_name = "Alfred"
+  user.last_name = "Mbonjwa"
+  user.password = "password"
+  user.role = "driver"
+  user.phone_number = "+27785325513"
+end
 
 puts "Seed data created successfully!"
