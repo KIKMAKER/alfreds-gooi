@@ -115,7 +115,7 @@ if Rails.env.development?
   # USERS & SUBSCRIPTIONS **** DEV ENV ONLY***
   puts "Uploading users and subscriptions from CSV"
 
-  @import_csv = Rails.root.join('db', './users_and_subscribers20240710.csv')
+  @import_csv = Rails.root.join('db', '.LOGS for CSV - export_csv')
 
   def import_users_from_csv
     CSV.foreach(@import_csv, headers: :first_row) do |row|
@@ -152,6 +152,7 @@ if Rails.env.development?
     subscriptions.each do |subscription|
     subscription.update!(holiday_start: Date.yesterday - rand(1..3), holiday_end: Date.tomorrow + rand(1..15))
     puts "#{subscription.user.first_name} has a holiday from #{subscription.holiday_start.strftime('%A, %b %d')} to #{subscription.holiday_end.strftime('%A, %b %d')}"
+    end
   end
 
   set_random_holidays
