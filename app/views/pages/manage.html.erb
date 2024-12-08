@@ -1,11 +1,19 @@
 <div class="user-wrapper">
   <h1>My subscription</h1>
-  <h2>Upcoming Collection</h2>
   <div  data-controller="toggle">
     <% if @subscription.is_paused? %>
       <div class="text-center">
+        <h2>Upcoming Collection</h2>
         <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
         <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
+      </div>
+    <% elsif @subscription.collections.empty?%>
+      <div class="text-center">
+        <h2>get ready to start gooiing!</h2>
+        <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
+        <%= link_to "https://wa.me/+27785325513", class: 'icon-link', target: '_blank' do %>
+          <i class="fa-brands fa-whatsapp"></i>
+        <% end %>
       </div>
     <% else %>
       <p class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%A %d %B") %></p>
@@ -22,12 +30,14 @@
         </div>
       </div>
     <% end %>
-    <div data-toggle-target="form" class="d-none mt-3">
-      <%= simple_form_for @subscription.collections.last, url: add_customer_note_collection_path(@subscription.collections.last), method: :post do |f| %>
-        <%= f.input :customer_note, value: @subscription.collections.last.customer_note, label: false %>
-        <%= f.button :submit, "Add Note", class: "submit-btn w-100 p"  %>
-      <% end %>
-    </div>
+    <% unless @subscription.collections.empty? %>
+      <div data-toggle-target="form" class="d-none mt-3">
+        <%= simple_form_for @subscription.collections.last, url: add_customer_note_collection_path(@subscription.collections.last), method: :post do |f| %>
+          <%= f.input :customer_note, value: @subscription.collections.last.customer_note, label: false %>
+          <%= f.button :submit, "Add Note", class: "submit-btn w-100 p"  %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
     <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
