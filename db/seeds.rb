@@ -18,6 +18,7 @@ starter_kit_products = [
 ]
 
 seed_products(starter_kit_products)
+STARTER_KIT = Product.first
 
 starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
 puts "#{starter_kits} starter kits created"
@@ -77,7 +78,7 @@ if Rails.env.development?
   puts "2"
   Collection.destroy_all     # Depends on Subscription and DriversDay
   puts "3"
-  Contact.destroy_all        # Depends on Subscription
+  # Contact.destroy_all        # Depends on Subscription
   puts "4"
   Payment.destroy_all
   puts "5"
@@ -87,27 +88,28 @@ if Rails.env.development?
   puts "7"
   Subscription.destroy_all   # Depends on User
   puts "8"
-  Product.destroy_all        # Products can exist independently
-  puts "9"
   User.destroy_all           # Top-level model (referenced by multiple others)
+  puts "9"
 
   puts "DB Clear"
+
+  p STARTER_KIT
 
   # USERS & SUBSCRIPTIONS **** DEV ENV ONLY***
   puts "Uploading users and subscriptions from CSV"
 
-  @import_csv = Rails.root.join('db', '.LOGS for CSV - export_csv')
+  @import_csv = Rails.root.join('db', 'LOGS for CSV - export_csv.csv')
 
   def import_users_from_csv
     CSV.foreach(@import_csv, headers: :first_row) do |row|
       puts "importing a user"
       new_user = User.create!(
-        first_name: row[0], last_name: row[1], email: row[2], phone_number: row[4],
+        first_name: row[0], last_name: row[1], email: row[2], phone_number: row[3],
         password: "password", role: "customer"
       )
       puts "importing subscription"
       new_subscription = Subscription.new(
-        street_address: row[5], plan: row[6], duration: row[7], start_date: row[8], suburb: row[10], customer_id: row[13]
+        street_address: row[4], plan: row[5], duration: row[6], start_date: row[7], suburb: row[9], customer_id: row[11]
       )
       new_subscription.user = new_user
       new_subscription.save!
@@ -144,27 +146,31 @@ if Rails.env.development?
 
   puts "Creating invoices"
   invoices = Array.new(Subscription.count) do
-    starter_kit = Product.find_by(title: "Standard Starter Kit")
     Invoice.create!(
       issued_date: Date.today,
       due_date: Date.today + 30,
       paid: [true, false].sample,
-      subscription: subscriptions.sample
+      subscription: Subscription.all.sample
     )
   end
 
   # # Create invoice items
   invoices.each do |invoice|
+    # starter_kit = Product.first
     InvoiceItem.create!(
       invoice: invoice,
-      product: starter_kit,
+      product: STARTER_KIT,
       quantity: 1,
-      amount: starter_kit.price
+      amount: STARTER_KIT.price
     )
-    product = Product.where("title ILIKE ?", "%subscription%").sample
+    product = Product.find(STARTER_KIT.id + 4)
+
+    p STARTER_KIT
+    p product
 
     InvoiceItem.create!(
       invoice: invoice,
+      product: product,
       quantity: 1,
       amount: product.price
     )
@@ -189,7 +195,7 @@ if Rails.env.development?
       start_time: Time.now + i,
       end_time: Time.now + i + 1,
       note: "generic note",
-      user: users.find { |user| user.role == "driver" },
+      user: User.find_by(role: "driver"),
       total_buckets: rand(5..20),
       date: Date.today + i,
       sfl_time: Date.today + i + 2,
@@ -197,29 +203,32 @@ if Rails.env.development?
       end_kms: rand(200..300),
       message_from_alfred: "generic message from alfred"
     )
-    number_of_subs = Subscriptions.where(collection_day: dd.date.wday).count
-    col = Collection.create!(
-      time: (dd.start_time..dd.end_time).sample,
-      kiki_note: "generic note from kiki",
-      alfred_message: "another note from alfred",
+    # time_range = dd.start_time.to_datetime.step(dd.end_time.to_datetime, 1.hour).map(&:to_time)
+    number_of_subs = Subscription.where(collection_day: dd.date.wday).count
+    if Subscription.where(collection_day: dd.date.wday).any?
+      col = Collection.create!(
+        time: dd.start_time + (i/3),
+        kiki_note: "generic note from kiki",
+        alfred_message: "another note from alfred",
 
-      subscription: Subcription.where(collection_day: dd.date.wday).sample,
-      is_done: [true, true, true, true, false].sample,
-      skip: [true, false, false, false, false].sample,
-      needs_bags: rand(0..1),
-      date: dd.date,
-      new_customer: [true, false, false, false, false, false].sample,
-      soil_bag: rand(0..1),
-      drivers_day: dd
-    )
-
-    if col.subscription.XL?
-      col.update!(buckets: rand(0.0..5.0).round(2))
-    elsif col.subscription.user.drop_off?
-      col.update!(dropped_off_buckets: rand(0..5))
-    else
-      col.update!(bags: rand(1..3))
+        subscription: Subscription.where(collection_day: dd.date.wday).sample,
+        is_done: [true, true, true, true, false].sample,
+        skip: [true, false, false, false, false].sample,
+        needs_bags: rand(0..1),
+        date: dd.date,
+        new_customer: [true, false, false, false, false, false].sample,
+        soil_bag: rand(0..1),
+        drivers_day: dd
+      )
+      if col.subscription.XL?
+        col.update!(buckets: rand(0.0..5.0).round(2))
+      elsif col.subscription.user.drop_off?
+        col.update!(dropped_off_buckets: rand(0..5))
+      else
+        col.update!(bags: rand(1..3))
+      end
     end
+
   end
 
 end
