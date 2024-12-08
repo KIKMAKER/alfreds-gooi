@@ -15,6 +15,11 @@
     font-size: 1.2rem;
   }
 
+  i {
+    color: $dark-green;
+    font-size: 2.2rem;
+  }
+
   h1 {
     margin-bottom: 2rem;
     font-weight: 900;
@@ -59,6 +64,7 @@
     font-size: 0.8rem;
     margin: 0.5rem 0;
   }
+
   li {
 
     font-size: 0.9rem;
@@ -68,6 +74,6 @@
 
 @media screen and (max-width: 380px) {
   .user-wrapper {
-   margin: 0 16px
+    margin: 0 16px
   }
 }
