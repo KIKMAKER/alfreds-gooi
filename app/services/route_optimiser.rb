@@ -22,7 +22,12 @@ class RouteOptimiser
 
     if total_waypoints <= MAX_WAYPOINTS
       # Optimize in one go if within the limit
-      process_batch(waypoints, sorted_collections, true, true)
+      optimized_collections = process_batch(waypoints, sorted_collections, true, true)
+      # Update collections with the optimized order
+      update_collections(optimized_collections)
+
+      # Display the optimized route
+      display_route(optimized_collections)
     else
       # Process in smaller batches
       batches = total_waypoints.fdiv(MAX_WAYPOINTS).ceil
