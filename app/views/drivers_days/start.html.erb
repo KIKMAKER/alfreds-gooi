@@ -8,7 +8,6 @@
     <% else %>
       <h2>Before you get started...</h2>
       <br>
-
       <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
       <% @skip_subscriptions.each do |sub| %>
         <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
