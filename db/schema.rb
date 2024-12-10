@@ -14,17 +14,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_05_072145) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "cars", force: :cascade do |t|
-    t.string "make"
-    t.string "model"
-    t.integer "year"
-    t.string "color"
-    t.string "vin"
-    t.string "registration"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "collections", force: :cascade do |t|
     t.datetime "time"
     t.string "kiki_note"
@@ -43,8 +32,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_05_072145) do
     t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
     t.integer "order", default: 0
-    t.boolean "wants_veggies"
     t.string "customer_note"
+    t.boolean "wants_veggies"
     t.integer "position"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
@@ -64,8 +53,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_05_072145) do
   create_table "drivers_days", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "end_time"
-    t.integer "start_kms"
-    t.integer "end_kms"
     t.string "note"
     t.bigint "user_id", null: false
     t.integer "total_buckets"
@@ -73,23 +60,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_05_072145) do
     t.datetime "updated_at", null: false
     t.date "date"
     t.datetime "sfl_time"
+    t.integer "start_kms"
+    t.integer "end_kms"
     t.string "message_from_alfred"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
-  end
-
-  create_table "fill_ups", force: :cascade do |t|
-    t.datetime "date", default: "2024-04-22 20:08:26"
-    t.decimal "volume"
-    t.integer "odometer"
-    t.decimal "cost", precision: 10, scale: 2
-    t.decimal "cost_per_unit", precision: 10, scale: 2
-    t.text "notes"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "car_id", null: false
-    t.index ["car_id"], name: "index_fill_ups_on_car_id"
-    t.index ["user_id"], name: "index_fill_ups_on_user_id"
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -187,8 +161,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_05_072145) do
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "drivers_days", "users"
-  add_foreign_key "fill_ups", "cars"
-  add_foreign_key "fill_ups", "users"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"

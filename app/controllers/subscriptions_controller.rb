@@ -60,6 +60,8 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
+
+    @subscription.create_initial_invoice if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end

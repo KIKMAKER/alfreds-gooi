@@ -4,13 +4,14 @@ class CreateCollectionsJob < ApplicationJob
 
   def perform
 
-    today = Date.today - 1
+    today = Date.today
     puts "#{today}"
     # Define the days to process
     # days_to_process = { "Tuesday" => 1, "Wednesday" => 2, "Thursday" => 3 }
 
     # days_to_process.each do |day_name, day_offset|
-      process_day(today, today.day)
+    process_day(today, today.day)
+    # end
   end
 
   def process_day(date, day_name)
