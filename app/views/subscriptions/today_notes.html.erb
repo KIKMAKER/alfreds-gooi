@@ -15,7 +15,7 @@
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
           <div class="grid-item">
-            <% if today_collection.alfred_message %>
+            <% if today_collection %>
               <%= today_collection.alfred_message %>
             <% elsif today_collection.skip %>
               <p>Skipped</p>

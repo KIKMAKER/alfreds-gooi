@@ -33,6 +33,37 @@ class Subscription < ApplicationRecord
   THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Observatory", "Salt River"].sort!.freeze
 
 
+  # initial invoice generation (after sign up)
+
+  def create_initial_invoice
+    starter_kit_title = determine_starter_kit_title(plan)
+    starter_kit = Product.find_by(title: starter_kit_title)
+    subscription_title = determine_subscription_title(duration, plan)
+    subscription_product = Product.find_by(title: subscription_title)
+    return unless subscription_product
+    invoice = Invoice.create!(
+      subscription_id: self.id,
+      issued_date: Time.current,
+      due_date: Time.current + 1.month,
+      total_amount: subscription_product.price + starter_kit.price
+    )
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: starter_kit.id,
+      amount: starter_kit.price,
+      quantity: 1
+    )
+
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: subscription_product.id,
+      amount: subscription_product.price,
+      quantity: 1
+    )
+
+    invoice.invoice_items.sum('amount * quantity')
+    invoice.save!
+  end
 
   def calculate_next_collection_day
     target_day = Date::DAYNAMES.index(collection_day.capitalize)
@@ -172,35 +203,5 @@ class Subscription < ApplicationRecord
     self.user.update(customer_id: new_customer_id)
   end
 
-  # initial invoice generation (after sign up)
 
-  def create_initial_invoice
-    starter_kit_title = determine_starter_kit_title(plan)
-    starter_kit = Product.find_by(title: starter_kit_title)
-    subscription_title = determine_subscription_title(duration, plan)
-    subscription_product = Product.find_by(title: subscription_title)
-    return unless subscription_product
-    invoice = Invoice.create!(
-      subscription_id: self.id,
-      issued_date: Time.current,
-      due_date: Time.current + 1.month,
-      total_amount: subscription_product.price + starter_kit.price
-    )
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: starter_kit.id,
-      amount: starter_kit.price,
-      quantity: 1
-    )
-
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: subscription_product.id,
-      amount: subscription_product.price,
-      quantity: 1
-    )
-
-    invoice.invoice_items.sum('amount * quantity')
-    invoice.save!
-  end
 end
