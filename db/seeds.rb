@@ -190,15 +190,19 @@
   # # Create driver days
 
   puts "Creating driver days"
-  drivers_days = Array.new(7) do |i|
+  drivers_days = (0..6).each do |i|
+    day = Date.today + i
+
+    # Only create for Tuesday (2), Wednesday (3), and Thursday (4)
+    next unless [2, 3, 4].include?(day.wday)
     dd = DriversDay.create!(
       start_time: Time.now + i,
       end_time: Time.now + i + 1,
       note: "generic note",
       user: User.find_by(role: "driver"),
       total_buckets: rand(5..20),
-      date: Date.today + i,
-      sfl_time: Date.today + i + 2,
+      date: day,
+      sfl_time: day + 2,
       start_kms: rand(100..200),
       end_kms: rand(200..300),
       message_from_alfred: "generic message from alfred"
