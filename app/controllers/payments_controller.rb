@@ -80,12 +80,12 @@ class PaymentsController < ApplicationController
   end
 
   def verify_signature(request_body, webhook_auth_key)
-    signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
-    auth_signature = "SnapScan signature=#{signature}"
+    received_signature = request.headers['Authorization'].to_s.split('=').last
+    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
 
-    Rails.logger.debug "Expected: #{auth_signature}, Received: #{request.headers['Authorization']}"
+    Rails.logger.debug "Expected: #{computed_signature}, Received: #{received_signature}"
 
-    unless Rack::Utils.secure_compare(auth_signature, request.headers['Authorization'])
+    unless Rack::Utils.secure_compare(computed_signature, received_signature)
       raise "Unauthorized webhook received"
     end
   end
