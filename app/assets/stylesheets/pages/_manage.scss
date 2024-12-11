@@ -18,3 +18,41 @@
   justify-content: space-between;
   // align-items: center;
 }
+
+.collections-carousel {
+  padding: 4vw;
+  margin-top: 4vw;
+}
+
+.collections-card {
+  // padding: 4vw;
+  margin-top: 4vw;
+  width: 88vw;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 8px;
+  color: rgba(15, 74, 58, 0.78);
+
+  // width: 500px;
+    // height: 100px;
+    white-space: nowrap;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+
+  ul {
+    overflow-x: scroll;
+    list-style: none;
+    display: inline-block;
+    width: 100%;
+    float: none;
+    padding: 4vw;
+  }
+
+  li {
+    border-bottom: 1px solid rgba(15, 74, 58, 0.78);
+    padding: 1.5vw;
+    display: flex;
+    justify-content: space-between;
+  }
+}

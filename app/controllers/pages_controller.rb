@@ -39,6 +39,7 @@ class PagesController < ApplicationController
 
   def manage
     @subscription = current_user.current_sub
+    
 
   end
 
