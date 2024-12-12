@@ -7,6 +7,7 @@
   </div>
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>
+  <%= link_to 'todays list', today_subscriptions_path, class: 'small-yellow-btn mt-3' %>
   <!--<h3>Collections for this week:</h3>-->
   <!--<p> <%#= (Date.today + 1).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1).count %></p>
   <p> <%#= (Date.today + 1).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1, skip: true).count %></p>
