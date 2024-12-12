@@ -1,9 +1,8 @@
 <div class="user-wrapper">
-  <h1>My subscription</h1>
+  <h2>Upcoming Collection</h2>
   <div  data-controller="toggle">
     <% if @subscription.is_paused? %>
       <div class="text-center">
-        <h2>Upcoming Collection</h2>
         <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
         <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
       </div>
@@ -18,7 +17,8 @@
       </div>
     <% else %>
       <p class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%A %d %B") %></p>
-      <div class="text-center ">
+      <div class="text-center">
+      <p class="mb-2">Add a roll of bags?</p>
         <div class="container-flex justify-content-center">
           <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
           <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
