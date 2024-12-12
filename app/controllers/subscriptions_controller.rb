@@ -33,11 +33,13 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.new(subscription_params)
     @subscription.user = current_user
     if @subscription.save
-      redirect_to subscription_path(@subscription)
+      @invoice = create_invoice_for_subscription(@subscription)
+      redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
   end
+
   def edit
     @subscription = Subscription.find(params[:id])
   end
@@ -121,7 +123,6 @@ class SubscriptionsController < ApplicationController
                               .includes(:subscription, :user)
                               .joins(:subscription)
                               .order('subscriptions.collection_order ASC')
-
   end
 
   def tomorrow
@@ -154,9 +155,34 @@ class SubscriptionsController < ApplicationController
   end
 
   private
+
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
+
+
+  def create_invoice_for_subscription(subscription)
+    invoice = Invoice.create!(
+      subscription: subscription,
+      issued_date: Time.current,
+      due_date: Time.current + subscription.duration.months,
+      total_amount: 0
+    )
+
+    # Add the subscription product to the invoice
+    product = Product.find_by(title: "#{subscription.plan.capitalize} #{subscription.duration} month subscription")
+    raise "Product not found" unless product
+
+    invoice.invoice_items.create!(
+      product: product,
+      quantity: 1,
+      amount: product.price
+    )
+
+    invoice.calculate_total
+    invoice
+  end
 end
+
