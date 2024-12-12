@@ -109,7 +109,7 @@ class CollectionsController < ApplicationController
 
   def destroy
     @collection.destroy
-    redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
+    redirect_to request.referer || collections_path, notice: "Collection was successfully deleted."
   end
 
   def add_bags

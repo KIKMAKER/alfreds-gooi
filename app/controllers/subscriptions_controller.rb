@@ -46,7 +46,7 @@ class SubscriptionsController < ApplicationController
     subscription = Subscription.find(params[:id])
     # user = subscription.user
 
-    if subscription.update(subscription_params) #&& user.update(subscription_params[:user_attributes])
+    if subscription.update(subscription_params)
       if subscription.user == current_user
         redirect_to manage_path
       else
