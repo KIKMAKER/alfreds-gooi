@@ -147,23 +147,41 @@ class CollectionsController < ApplicationController
   end
 
   def update_position
-    # Ensure the position comes from the params (it will be handled by `Sortable.js` on the frontend)
-    @collection.insert_at(params[:position].to_i)  # `acts_as_list` handles reordering
+    @collection = Collection.find(params[:id])
+    new_position = params[:position].to_i
 
-    head :no_content  # Return no content on success
+    # Use acts_as_list to reorder
+    @collection.insert_at(new_position)
+
+    update_collection_order(@collection.drivers_day)
+
+    head :no_content
   end
 
   def reset_order
     @drivers_day = DriversDay.find(params[:drivers_day_id])
-    @drivers_day.collections.order(:created_at).each_with_index do |collection, index|
-      collection.update(position: index + 1) # Reset position starting from 1
-    end
 
-    # Respond with a redirect or a success message
-    redirect_to today_subscriptions_path, notice: 'Collection order has been reset.'
+    # Order by subscriptions.collection_order and update positions
+    @drivers_day.collections
+                .joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+      collection.update(position: index + 1) # Set position starting from 1
+
   end
+end
+
 
   private
+
+  def update_collection_order(drivers_day)
+    drivers_day.collections.order(:position).each_with_index do |collection, index|
+      # Update the associated subscription's collection_order
+      subscription = collection.subscription
+      subscription.update(collection_order: index + 1) if subscription.present?
+    end
+  end
+
 
   def process_drivers_day(row, driver)
     date = row['date'].present? ? DateTime.parse(row['date']) : nil
