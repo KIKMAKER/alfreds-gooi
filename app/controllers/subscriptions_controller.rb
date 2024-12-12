@@ -122,14 +122,12 @@ driver = User.find_by(first_name: "Alfred")
     # @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
 
     @collections = @drivers_day.collections
+                .includes(:subscription, :user)
                 .joins(:subscription)
                 .order('subscriptions.collection_order')
                 .each_with_index do |collection, index|
-      collection.update(position: index + 1) # Set position starting from 1
-
-  end
-
-
+                  collection.update(position: index + 1) # Set position starting from 1
+                end
   end
 
   def tomorrow
