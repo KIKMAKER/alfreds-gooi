@@ -26,7 +26,7 @@ class CollectionsController < ApplicationController
       @drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
-      puts subscription.collection_day
+      puts subscription.collection_day if subscription
       # Process the collection
       process_collection(row, subscription, @drivers_day) if subscription
     end

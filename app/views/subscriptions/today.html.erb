@@ -5,14 +5,14 @@
     <p>Collect</p>
   </div>
   <div class="collections"  >
-    <%= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
+    <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
     <ul data-controller="sortable">
-   <% @drivers_day.collections.order(:position).each do |collection| %>
+   <% @collections.each do |collection| %>
       <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
         data-sortable-handle
         class="sortable-item">
         <div class="car">
-          <p class="emoji"><p><%= collection.position %> | <%= collection.subscription.collection_order %></p><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
+          <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
           <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
           <% if current_user.admin? %>
             <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
