@@ -54,5 +54,20 @@
     padding: 1.5vw;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    .bucket-height {
+      height: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    p {
+      line-height: 1;
+    }
   }
+}
+
+.bucket-img {
+  width: 2rem;
+  margin-left: 0.5rem;
 }
