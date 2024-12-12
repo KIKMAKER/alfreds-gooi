@@ -8,23 +8,9 @@
               <%= collection.date.strftime('%d %b %Y') %>
               <% if collection.skip == true %>
                 <p>skipped</p>
-              <% end %>
+                <% else %>
               <p><%= collection.bags %> bags</p>
-            </li>
-            <li class="list-item">
-              <%= collection.date.strftime('%d %b %Y') %>
-            </li>
-          <% end %>
-        <% end %>
-      </ul>
-      <ul class="list-group">
-        <% collections_group.each do |collection| %>
-          <% if collection %>
-            <li class="list-item">
-              <%= collection.date.strftime('%d %b %Y') %>
-            </li>
-            <li class="list-item">
-              <%= collection.date.strftime('%d %b %Y') %>
+              <% end %>
             </li>
           <% end %>
         <% end %>
