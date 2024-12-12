@@ -5,11 +5,14 @@
         <% collections_group.each do |collection| %>
           <% if collection %>
             <li class="list-item">
-              <%= collection.date.strftime('%d %b %Y') %>
+              <p><%= collection.date.strftime('%d %b %Y') %></p>
               <% if collection.skip == true %>
-                <p>skipped</p>
-                <% else %>
-              <p><%= collection.bags %> bags</p>
+                <p class="bucket-height">skipped</p>
+              <% else %>
+                <div class="d-flex align-items-center">
+                  <p><%= collection.bags %> x </p>
+                  <%= image_tag 'bucket.jpg', alt: "bucket", class:"bucket-img" %>
+                </div>
               <% end %>
             </li>
           <% end %>
