@@ -108,7 +108,7 @@ class SubscriptionsController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today - 1
+    today = Date.today
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
     # today = Date.today  + 1
@@ -119,7 +119,15 @@ driver = User.find_by(first_name: "Alfred")
 
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
+    # @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
+
+    @collections = @drivers_day.collections
+                .joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+      collection.update(position: index + 1) # Set position starting from 1
+
+  end
 
 
   end
