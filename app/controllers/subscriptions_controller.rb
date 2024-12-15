@@ -38,8 +38,9 @@ class SubscriptionsController < ApplicationController
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
+    raise
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription)
+      @invoice = create_invoice_for_subscription(@subscription, params[:og])
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
       render :new, status: :unprocessable_entity
@@ -68,7 +69,6 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
-
     @subscription.create_initial_invoice if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
@@ -122,7 +122,7 @@ class SubscriptionsController < ApplicationController
     # today = Date.today  + 1
     @today = today.strftime("%A")
 
-driver = User.find_by(first_name: "Alfred")
+    driver = User.find_by(first_name: "Alfred")
     @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
 
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
@@ -176,7 +176,7 @@ driver = User.find_by(first_name: "Alfred")
   end
 
 
-  def create_invoice_for_subscription(subscription)
+  def create_invoice_for_subscription(subscription, og)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
@@ -185,7 +185,11 @@ driver = User.find_by(first_name: "Alfred")
     )
 
     # Add the subscription product to the invoice
-    product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+    if og
+      product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
+    else
+      product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+    end
     raise "Product not found" unless product
 
     invoice.invoice_items.create!(

@@ -41,7 +41,6 @@
     <% if @days_left < 21 %>
       <div class="mt-4 container-flex flex-column text-center align-items-center">
         <p>Your subscription will come to an end in <%= @days_left / 7 %> weeks</p>
-
         <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
       <% end %>
     </div>
