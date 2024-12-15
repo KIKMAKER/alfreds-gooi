@@ -6,7 +6,7 @@
         <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
         <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
       </div>
-    <% elsif @subscription.collections.empty?%>
+    <% elsif @subscription.collections == 0 %>
       <div class="text-center">
         <h2>get ready to start gooiing!</h2>
         <p>Please add us to your contacts list and feel free to get in touch with any comments or questions</p>
@@ -42,8 +42,8 @@
       <div class="mt-4 container-flex flex-column text-center align-items-center">
         <p>Your subscription will come to an end in <%= @days_left / 7 %> weeks</p>
         <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
     <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
