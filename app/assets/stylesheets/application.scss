@@ -13,6 +13,19 @@
 @import "components/index";
 @import "pages/index";
 
+
+h1 {
+  font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: #023F3A;
+}
+h3 {
+  font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #023F3A;
+}
 .centre {
   width: 100%;
   display: flex;

@@ -121,7 +121,7 @@ class Subscription < ApplicationRecord
   end
 
   def end_date
-    start_date + duration
+    (start_date + duration.months).to_date
   end
 
   private

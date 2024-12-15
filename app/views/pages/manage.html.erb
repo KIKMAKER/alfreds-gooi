@@ -17,8 +17,7 @@
       </div>
     <% else %>
       <p class="text-center mb-3"><%= @subscription.collections.last.date.strftime("%A %d %B") %></p>
-      <div class="text-center">
-      <p class="mb-2">Add a roll of bags?</p>
+      <div class="text-center ">
         <div class="container-flex justify-content-center">
           <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
           <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
@@ -39,6 +38,13 @@
         <% end %>
       </div>
     <% end %>
+    <% if @days_left < 21 %>
+      <div class="mt-4 container-flex flex-column text-center align-items-center">
+        <p>Your subscription will come to an end in <%= @days_left / 7 %> weeks</p>
+
+        <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
+      <% end %>
+    </div>
   </div>
   <div class="user-holiday-container" data-controller="toggle">
     <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
