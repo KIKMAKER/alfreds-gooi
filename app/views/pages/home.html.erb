@@ -1,31 +1,31 @@
   <!--header-->
 <div class="page-container">
-<section class="gooi-header">
-  <div class="inner-header-container">
-  <h1>Organic waste recycling made easy</h1>
-  <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-    Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
-    Gooi offers weekly collection of food scraps from your doorstep.
-    Ready to join the food waste revolution?</p>
-    <!--<button class="btn-gooi">sign up</button>-->
-    <%#= link_to '#pricing', class: "btn-gooi" do %>
-<!--    <div>
+  <section class="gooi-header">
+    <div class="inner-header-container">
+      <h1>Organic waste recycling made easy</h1>
+      <p>Gooi makes composting your food waste as easy as throwing it in the bin.
+        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
+        Gooi offers weekly collection of food scraps from your doorstep.
+        Ready to join the food waste revolution?</p>
+      <!--<button class="btn-gooi">sign up</button>-->
+      <%#= link_to '#pricing', class: "btn-gooi" do %>
+        <!--    <div>
       <p>Sign Up</p>
     </div>
     <%# end %>-->
-  <div class="mt-5 mb-3">
-    <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
-  </div>
-  </div>
-  <!--video-->
-  <div class="video-container">
-    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
-<!--    <div class="play-btn-container">
+        <div class="mt-5 mb-3">
+          <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+        </div>
+      </div>
+      <!--video-->
+      <div class="video-container">
+        <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
+        <!--    <div class="play-btn-container">
       >
     </div>-->
-  </div>
-    <!--code to create the wave in the header section-->
-
+      </div>
+      <!--code to create the wave in the header section-->
+      <%= raw %(
   <div class="wave-container">
     <svg
       class="waves"
@@ -48,19 +48,19 @@
         />
       </g>
     </svg>
+    ) %>
+    </div>
   </div>
 </section>
-
-
-
-    <!--mission section-->
-
+<!--mission section-->
 <section class="mission-section">
   <div class="content-wrapper">
-      <!--left-->
+    <!--left-->
     <div class="info-container">
       <h1>Our Mission<span class="yellow-txt">.</span></h1>
-      <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br><br> Join us in turning waste into a valuable resource</p>
+      <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br>
+        <br>
+         Join us in turning waste into a valuable resource</p>
       <div class="icons-container">
         <div class="icon-container">
           <%= image_tag('plant.png' , class: 'icon' ) %>
@@ -90,78 +90,73 @@
     </div>
   </div>
 </section>
-
-  <!--compost section -->
-
+<!--compost section -->
 <section class="compost-section">
   <h1>Why we compost</h1>
   <div class="content-wrapper">
-      <div class="info-card-container">
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-1.png', class: 'compost-image') %>
-          </div>
-          <div class="text-container-compost">
+    <div class="info-card-container">
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-1.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
           <h3>Reduce landfill waste</h3>
           <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
-          </div>
-        </div>
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-2.png', class: 'compost-image') %>
-          </div>
-          <div class="text-container-compost">
-          <h3>Enhance Soil Health</h3>
-          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
-          </div>
-        </div>
-        <div class="info-card">
-          <div class="image-container">
-            <div class="overlay"></div>
-            <%= image_tag('compost-s-3.png', class: 'compost-image') %>
-          </div>
-          <div class="text-container-compost">
-          <h3>Support Local Agriculture</h3>
-          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
-          </div>
         </div>
       </div>
-  </div>
-</section>
-
-  <!--testimonial section-->
-
-  <section class="testimonial-section">
-    <h1>Testimonials</h1>
-    <div class="content-wrapper">
-      <div class="testimonials-container">
-        <div class="testimonial-card">
-          <p>"We love composting our waste, and Alfred is the sweetest man."</p>
-<!--          <div class="testimonial-image">-->
-            <%#= image_tag('gooi_logo_CR.png') %>
-<!--          </div>-->
-        <!-- <h4>name</h4>-->
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-2.png', class: 'compost-image') %>
         </div>
-                <div class="testimonial-card">
-          <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
-<!--          <div class="testimonial-image">-->
-            <%#= image_tag('gooi_logo_CR.png') %>
-<!--          </div>
-          <h4>name</h4>-->
+        <div class="text-container-compost">
+          <h3>Enhance Soil Health</h3>
+          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
         </div>
-                <div class="testimonial-card">
-          <p>"Alfred is always on time and always so kind and with a happy smile."</p>
-<!--          <div class="testimonial-image">-->
-            <%#= image_tag('gooi_logo_CR.png') %>
-<!--          </div>
-          <h4>name</h4>-->
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Support Local Agriculture</h3>
+          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
         </div>
       </div>
     </div>
-  </section>
-
+  </div>
+</section>
+<!--testimonial section-->
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <div class="content-wrapper">
+    <div class="testimonials-container">
+      <div class="testimonial-card">
+        <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>-->
+        <!-- <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+    </div>
+  </div>
+</section>
 <!-- What is compostable -->
 <section class="compostable-section">
   <h1>What is compostable</h1>
@@ -170,10 +165,10 @@
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('fruit-veg.svg') %>
-          <div>
-            <p class="compost-title">Fruit and Vegetable Scraps</p>
-            <p>All fresh fruit and vegetable scraps are compostable.</p>
-         </div>
+        <div>
+          <p class="compost-title">Fruit and Vegetable Scraps</p>
+          <p>All fresh fruit and vegetable scraps are compostable.</p>
+        </div>
       </div>
       <div class="compostable-card">
         <div class="overlay"></div>
@@ -213,9 +208,7 @@
       </div>
     </div>
   </div>
-
 </section>
-
 <!-- Pricing -->
 <section data-controller="pricing" class="pricing-section" >
   <h1>How it works</h1>
@@ -226,24 +219,24 @@
     </div>
     <div class="toggle-subscription">
       <h2>Subscription rates</h2>
-    <div class="toggle">
-      <!--<p>Standard</p>-->
-      <h5 data-pricing-target="title">Standard</h5>
-      <div class="toggle-container">
-      <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
-      <label for="check" class="toggle-label"></label>
+      <div class="toggle">
+        <!--<p>Standard</p>-->
+        <h5 data-pricing-target="title">Standard</h5>
+        <div class="toggle-container">
+          <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
+          <label for="check" class="toggle-label"></label>
+        </div>
+        <h5>XL</h5>
       </div>
-      <h5>XL</h5>
-    </div>
     </div>
     <div class="standard-months-container" data-pricing-target="standard">
       <div class="month-card">
         <h3>1 month</h3>
         <p class="pricing-text"><strong>R260</strong> per month</p>
         <p class="pricing-text"><strong>Total:</strong> R260</p>
-       <div class="sign-up-btn">
+        <div class="sign-up-btn">
           <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '1'), class:"link-title-light" %>
-      </div>
+        </div>
       </div>
       <div class="month-card">
         <h3>3 months</h3>
@@ -252,16 +245,16 @@
         <div class="sign-up-btn">
           <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '3'), class:"link-title-light" %>
         </div>
-    </div>
-        <div class="month-card popular">
-          <h4>Most popular</h4>
-      <h3>6 months</h3>
-      <p class="pricing-text"><strong>R180</strong> per month</p>
-      <p class="pricing-text"><strong>Total:</strong> R1080</p>
-      <div class="sign-up-btn">
-        <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '6'), class:"link-title-light" %>
       </div>
-    </div>
+      <div class="month-card popular">
+        <h4>Most popular</h4>
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R180</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1080</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '6'), class:"link-title-light" %>
+        </div>
+      </div>
     </div>
     <div class="standard-months-container hide" data-pricing-target="extra">
       <div class="month-card">
@@ -279,17 +272,16 @@
         <div class="sign-up-btn">
           <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3'), class:"link-title-light" %>
         </div>
-    </div>
-    <div class="month-card">
-      <h3>6 months</h3>
-      <p class="pricing-text"><strong>R240</strong> per month</p>
-      <p class="pricing-text"><strong>Total:</strong> R1440</p>
-      <div class="sign-up-btn">
-      <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
+      </div>
+      <div class="month-card">
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R240</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1440</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
+        </div>
       </div>
     </div>
   </div>
-  </div>
 </section>
-
 </div>

@@ -21,7 +21,25 @@ class PagesController < ApplicationController
   end
 
   def home
+  end
+  def today
+    today = Date.today
+    # but in testing I want to be able to test the view for a given day
+    # DEVELOPMENT
+    # today = Date.today  + 1
+    @today = today.strftime("%A")
+    @drivers_day = DriversDay.find_or_create_by(date: today)
+    # Fetch subscriptions for the day and eager load related collections (thanks chat)
+    # @subscriptions = Subscription.active_subs_for(@today)
+    @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
+    @collections.joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+                  collection.update(position: index + 1) # Set position starting from 1
+                end
+  end
 
+  def thestory
   end
 
   def manage
