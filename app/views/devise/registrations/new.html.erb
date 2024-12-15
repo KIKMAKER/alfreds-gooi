@@ -11,6 +11,8 @@
       <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
         <%= f.simple_fields_for :subscription do |subscription_fields| %>
           <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
+
+          <%= subscription_fields.input :suburb, collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
           <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
         <% end %>

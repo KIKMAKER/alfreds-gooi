@@ -46,7 +46,7 @@ class SubscriptionsController < ApplicationController
     subscription = Subscription.find(params[:id])
     # user = subscription.user
 
-    if subscription.update(subscription_params) #&& user.update(subscription_params[:user_attributes])
+    if subscription.update(subscription_params)
       if subscription.user == current_user
         redirect_to manage_path
       else
@@ -60,6 +60,8 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
+
+    @subscription.create_initial_invoice if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -100,7 +102,7 @@ class SubscriptionsController < ApplicationController
       redirect_to manage_path, status: :unprocessable_entity
     end
   end
-  
+
   # a special view that will load all of the collections for a given day
   def today
     # in production today will be the current day,
@@ -111,10 +113,21 @@ class SubscriptionsController < ApplicationController
     # DEVELOPMENT
     # today = Date.today  + 1
     @today = today.strftime("%A")
-    @drivers_day = DriversDay.find_or_create_by(date: today)
+
+driver = User.find_by(first_name: "Alfred")
+    @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
+
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = Collection.includes(:subscription, :user).where(created_at: Date.today.all_day, date: today ).order(:order)
+    # @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
+
+    @collections = @drivers_day.collections
+                .includes(:subscription, :user)
+                .joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+                  collection.update(position: index + 1) # Set position starting from 1
+                end
   end
 
   def tomorrow

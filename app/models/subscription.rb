@@ -1,17 +1,19 @@
 class Subscription < ApplicationRecord
   belongs_to :user
-  has_many :collections
-  has_many :invoices
-  has_many :contacts
+  has_many :collections, dependent: :nullify
+  has_many :invoices, dependent: :nullify
+  has_many :invoice_items, through: :invoices
 
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
+
+ 
 
 
 
   after_create do
     self.set_customer_id
-    self.set_suburb
+    # self.set_suburb
     self.set_collection_day
     self.create_initial_invoice
   end
@@ -27,12 +29,43 @@ class Subscription < ApplicationRecord
   enum plan: %i[once_off standard XL]
   enum collection_day: Date::DAYNAMES
 
-  SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
+  SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
-  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock", "Observatory", "Salt River"].sort!.freeze
+  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Observatory", "Salt River"].sort!.freeze
 
 
+  # initial invoice generation (after sign up)
+
+  def create_initial_invoice
+    starter_kit_title = determine_starter_kit_title(plan)
+    starter_kit = Product.find_by(title: starter_kit_title)
+    subscription_title = determine_subscription_title(duration, plan)
+    subscription_product = Product.find_by(title: subscription_title)
+    return unless subscription_product
+    invoice = Invoice.create!(
+      subscription_id: self.id,
+      issued_date: Time.current,
+      due_date: Time.current + 1.month,
+      total_amount: subscription_product.price + starter_kit.price
+    )
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: starter_kit.id,
+      amount: starter_kit.price,
+      quantity: 1
+    )
+
+    InvoiceItem.create!(
+      invoice_id: invoice.id,
+      product_id: subscription_product.id,
+      amount: subscription_product.price,
+      quantity: 1
+    )
+
+    invoice.invoice_items.sum('amount * quantity')
+    invoice.save!
+  end
 
   def calculate_next_collection_day
     target_day = Date::DAYNAMES.index(collection_day.capitalize)
@@ -158,7 +191,7 @@ class Subscription < ApplicationRecord
     elsif THURSDAY_SUBURBS.include?(suburb)
       update(collection_day: "Thursday")
     else
-      puts "it seems there was an issue with the suburb allocation"
+      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
     end
   end
 
@@ -172,35 +205,5 @@ class Subscription < ApplicationRecord
     self.user.update(customer_id: new_customer_id)
   end
 
-  # initial invoice generation (after sign up)
 
-  def create_initial_invoice
-    starter_kit_title = determine_starter_kit_title(plan)
-    starter_kit = Product.find_by(title: starter_kit_title)
-    subscription_title = determine_subscription_title(duration, plan)
-    subscription_product = Product.find_by(title: subscription_title)
-    return unless subscription_product
-    invoice = Invoice.create!(
-      subscription_id: self.id,
-      issued_date: Time.current,
-      due_date: Time.current + 1.month,
-      total_amount: subscription_product.price + starter_kit.price
-    )
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: starter_kit.id,
-      amount: starter_kit.price,
-      quantity: 1
-    )
-
-    InvoiceItem.create!(
-      invoice_id: invoice.id,
-      product_id: subscription_product.id,
-      amount: subscription_product.price,
-      quantity: 1
-    )
-
-    invoice.invoice_items.sum('amount * quantity')
-    invoice.save!
-  end
 end

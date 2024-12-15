@@ -17,6 +17,7 @@ class DriversDaysController < ApplicationController
     @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
+    @wants_veggies = @subscriptions.select { |subscription| subscription.collections.last&.wants_veggies}
     @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     if request.patch?
@@ -72,6 +73,11 @@ class DriversDaysController < ApplicationController
   def index
     # fetch all instances of drivers day with necessary data with .includes
     @drivers_days = DriversDay.all.order(:date)
+  end
+
+  def show
+    @drivers_day = DriversDay.find(params[:id])
+    @collections = @drivers_day.collections
   end
 
   def edit; end

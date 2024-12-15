@@ -16,7 +16,7 @@
       <% @drivers_days.each do |drivers_day| %>
         <div class="grid-row">
           <div class="grid-item grid-item-flexed">
-            <%= link_to drivers_day.date.strftime('%b %d'), drivers_day_collections_path(drivers_day) %>
+            <%= link_to drivers_day.date.strftime('%b %d'), drivers_day_path(drivers_day) %>
             <%= link_to "edit", edit_drivers_day_path(drivers_day) %>
             <%= link_to "delete", drivers_day_path(drivers_day), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
             </div>
