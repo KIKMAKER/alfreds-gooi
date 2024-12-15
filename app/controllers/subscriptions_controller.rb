@@ -38,7 +38,7 @@ class SubscriptionsController < ApplicationController
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
-    raise
+
     if @subscription.save!
       @invoice = create_invoice_for_subscription(@subscription, params[:og])
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
