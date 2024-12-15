@@ -32,7 +32,13 @@ class SubscriptionsController < ApplicationController
   def create
     @subscription = Subscription.new(subscription_params)
     @subscription.user = current_user
-    if @subscription.save
+    @subscription.customer_id = current_user.subscriptions.last.customer_id
+    @subscription.suburb = current_user.subscriptions.last.suburb
+    @subscription.customer_id = current_user.customer_id
+    @subscription.street_address = current_user.subscriptions.last.street_address
+    @subscription.collection_order = current_user.subscriptions.last.collection_order
+    @subscription.is_new_customer = false
+    if @subscription.save!
       @invoice = create_invoice_for_subscription(@subscription)
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
@@ -172,7 +178,7 @@ class SubscriptionsController < ApplicationController
     )
 
     # Add the subscription product to the invoice
-    product = Product.find_by(title: "#{subscription.plan.capitalize} #{subscription.duration} month subscription")
+    product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
     raise "Product not found" unless product
 
     invoice.invoice_items.create!(
@@ -185,4 +191,3 @@ class SubscriptionsController < ApplicationController
     invoice
   end
 end
-

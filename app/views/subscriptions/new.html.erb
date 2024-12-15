@@ -1,8 +1,8 @@
 <div class="user-wrapper">
   <div class="collection-body">
-    <h2 class = "collection-header">Pick a subscription option</h2>
-    <%= simple_form_for(@subscription) do |f| %>
-      <% if current_user.admin? %>
+    <h1 class = "collection-header">Pick a subscription option</h1>
+    <% if current_user.admin? %>
+      <%= simple_form_for(@subscription) do |f| %>
         <%= f.input :customer_id %>
         <%= f.input :street_address, class: 'form-styling' %>
         <%= f.input :suburb %>
@@ -12,71 +12,79 @@
         <%= f.input :plan, label: "Choose a plan", collection: Subscription.humanized_plans.keys, include_blank: false, label_method: lambda { |key| Subscription.humanized_plans[key] } %>
         <%= f.input :duration, collection: %w[1 3 6] %>
         <%= f.button :submit, class:'gooi-button' %>
-      <% else %>
+      <% end %>
+    <% else %>
+      <section>
         <div class="subscription-rates-update">
-          <section>
-            <div class="standard-months-container">
-              <div class="month-card">
-                <h3>1 month</h3>
-                <p class="pricing-text"><strong>R260</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R260</p>
-                <div>
+          <div class="standard-months-container">
+            <div class="month-card">
+              <h3>1 month</h3>
+              <p class="pricing-text"><strong>R260</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R260</p>
+              <div>
                 <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'standard', duration: '1'}), method: :post, class: "sign-up-btn"  %>
-                </div>
-              </div>
-              <div class="month-card">
-                <h3>3 months</h3>
-                <p class="pricing-text"><strong>R220</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R660</p>
-                <div>
-                <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'standard', duration: '3'}), method: :post, class: "sign-up-btn"  %>
-                </div>
-              </div>
-              <div class="month-card popular">
-                <h4>Most popular</h4>
-                <h3>6 months</h3>
-                <p class="pricing-text"><strong>R180</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R1080</p>
-                <div>
-                <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'standard', duration: '6'}), method: :post, class: "sign-up-btn"  %>
-                </div>
+                <%= button_to 'Select', subscriptions_path,
+               params: { subscription: { plan: 'Standard', duration: '1' } },
+               method: :post,
+               class: "sign-up-btn" %>
               </div>
             </div>
-            <div class="standard-months-container">
-              <div class="month-card">
-                <h3>1 month</h3>
-                <p class="pricing-text"><strong>R300</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R300</p>
-                <div>
+            <div class="month-card">
+              <h3>3 months</h3>
+              <p class="pricing-text"><strong>R220</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R660</p>
+              <div>
                 <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'XL', duration: '1'}), method: :post, class: "sign-up-btn"  %>
-                </div>
+                <%= button_to 'Select', subscriptions_path,
+               params: {subscription: { plan: 'Standard', duration: '3' } }, method: :post, class: "sign-up-btn"  %>
               </div>
-              <div class="month-card">
-                <h3>3 months</h3>
-                <p class="pricing-text"><strong>R270</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R810</p>
-                <div>
+            </div>
+            <div class="month-card popular">
+              <h4>Most popular</h4>
+              <h3>6 months</h3>
+              <p class="pricing-text"><strong>R180</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R1080</p>
+              <div>
                 <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'XL', duration: '3'}), method: :post, class: "sign-up-btn"  %>
-                </div>
-              </div>
-              <div class="month-card">
-                <h3>6 months</h3>
-                <p class="pricing-text"><strong>R240</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R1440</p>
-                <div>
-                <br>
-                  <%= button_to 'Select', subscriptions_path(subscription: { plan: 'XL', duration: '6'}), method: :post, class: "sign-up-btn"  %>
-                </div>
+                <%= button_to 'Select', subscriptions_path,
+               params: {subscription: { plan: 'Standard', duration: '6' } }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
           </div>
-        </section>
-      </div>
+          <div class="standard-months-container">
+            <div class="month-card">
+              <h3>1 month</h3>
+              <p class="pricing-text"><strong>R300</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R300</p>
+              <div>
+                <br>
+                <%= button_to 'Select', subscriptions_path,
+               params: {subscription: { plan: 'XL', duration: '1' } }, method: :post, class: "sign-up-btn"  %>
+              </div>
+            </div>
+            <div class="month-card">
+              <h3>3 months</h3>
+              <p class="pricing-text"><strong>R270</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R810</p>
+              <div>
+                <br>
+                <%= button_to 'Select', subscriptions_path,
+               params: {subscription: { plan: 'XL', duration: '3'} }, method: :post, class: "sign-up-btn"  %>
+              </div>
+            </div>
+            <div class="month-card">
+              <h3>6 months</h3>
+              <p class="pricing-text"><strong>R240</strong> per month</p>
+              <p class="pricing-text"><strong>Total:</strong> R1440</p>
+              <div>
+                <br>
+                <%= button_to 'Select', subscriptions_path,
+               params: {subscription: { plan: 'XL', duration: '6'} }, method: :post, class: "sign-up-btn"  %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     <% end %>
-  <% end %>
+  </div>
 </div>
