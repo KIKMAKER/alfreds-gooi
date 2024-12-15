@@ -131,7 +131,7 @@
 <!--testimonial section-->
 <section class="testimonial-section">
   <h1>Testimonials</h1>
-  <div class="content-wrapper">
+  <div class="content-wrapper mb-4">
     <div class="testimonials-container">
       <div class="testimonial-card">
         <p>"We love composting our waste, and Alfred is the sweetest man."</p>
@@ -156,6 +156,9 @@
       </div>
     </div>
   </div>
+      <% if user_signed_in? %>
+        <%= link_to "share yours", "#", class: "btn-gooi" %>
+      <% end %>
 </section>
 <!-- What is compostable -->
 <section class="compostable-section">
@@ -210,78 +213,80 @@
   </div>
 </section>
 <!-- Pricing -->
-<section data-controller="pricing" class="pricing-section" >
-  <h1>How it works</h1>
-  <div class="pricing-content-wrapper">
-    <div class="description-container">
-      <p id="pricing">We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
-      </p>
-    </div>
-    <div class="toggle-subscription">
-      <h2>Subscription rates</h2>
-      <div class="toggle">
-        <!--<p>Standard</p>-->
-        <h5 data-pricing-target="title">Standard</h5>
-        <div class="toggle-container">
-          <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
-          <label for="check" class="toggle-label"></label>
+<% unless user_signed_in? %>
+  <section data-controller="pricing" class="pricing-section" >
+    <h1>How it works</h1>
+    <div class="pricing-content-wrapper">
+      <div class="description-container">
+        <p id="pricing">We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
+        </p>
+      </div>
+      <div class="toggle-subscription">
+        <h2>Subscription rates</h2>
+        <div class="toggle">
+          <!--<p>Standard</p>-->
+          <h5 data-pricing-target="title">Standard</h5>
+          <div class="toggle-container">
+            <input type="checkbox" id="check" class="toggle" data-action="click->pricing#toggle">
+            <label for="check" class="toggle-label"></label>
+          </div>
+          <h5>XL</h5>
         </div>
-        <h5>XL</h5>
+      </div>
+      <div class="standard-months-container" data-pricing-target="standard">
+        <div class="month-card">
+          <h3>1 month</h3>
+          <p class="pricing-text"><strong>R260</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R260</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '1'), class:"link-title-light" %>
+          </div>
+        </div>
+        <div class="month-card">
+          <h3>3 months</h3>
+          <p class="pricing-text"><strong>R220</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R660</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '3'), class:"link-title-light" %>
+          </div>
+        </div>
+        <div class="month-card popular">
+          <h4>Most popular</h4>
+          <h3>6 months</h3>
+          <p class="pricing-text"><strong>R180</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R1080</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '6'), class:"link-title-light" %>
+          </div>
+        </div>
+      </div>
+      <div class="standard-months-container hide" data-pricing-target="extra">
+        <div class="month-card">
+          <h3>1 month</h3>
+          <p class="pricing-text"><strong>R300</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R300</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1'), class:"link-title-light" %>
+          </div>
+        </div>
+        <div class="month-card">
+          <h3>3 months</h3>
+          <p class="pricing-text"><strong>R270</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R810</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3'), class:"link-title-light" %>
+          </div>
+        </div>
+        <div class="month-card">
+          <h3>6 months</h3>
+          <p class="pricing-text"><strong>R240</strong> per month</p>
+          <p class="pricing-text"><strong>Total:</strong> R1440</p>
+          <div class="sign-up-btn">
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="standard-months-container" data-pricing-target="standard">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R260</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R260</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '1'), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R220</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R660</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '3'), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card popular">
-        <h4>Most popular</h4>
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R180</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1080</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'standard', duration: '6'), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-    <div class="standard-months-container hide" data-pricing-target="extra">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R300</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R300</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1'), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R270</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R810</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3'), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R240</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1440</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
+<% end %>
 </div>
