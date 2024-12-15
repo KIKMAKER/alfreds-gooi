@@ -7,7 +7,7 @@ class Subscription < ApplicationRecord
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
- 
+
 
 
 
@@ -118,6 +118,10 @@ class Subscription < ApplicationRecord
   def is_paused?
     # added && condition to prevent calculation of holiday when holiday is nil
     is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
+  end
+
+  def end_date
+    start_date + duration
   end
 
   private
