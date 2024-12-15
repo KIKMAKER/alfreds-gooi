@@ -4,9 +4,13 @@
     <p>Address</p>
     <p>Collect</p>
   </div>
-  <div class="collections">
-    <% @collections.each do |collection| %>
-      <div class="collection">
+  <div class="collections"  >
+    <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
+    <ul data-controller="sortable">
+   <% @collections.each do |collection| %>
+      <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
+        data-sortable-handle
+        class="sortable-item">
         <div class="car">
           <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
           <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
@@ -30,8 +34,9 @@
             <% end %>
           <% end %>
         </div>
-      </div>
+      </li>
     <% end %>
+    </ul>
   </div>
   <div class="drivers-form">
     <% if current_user.admin? %>
