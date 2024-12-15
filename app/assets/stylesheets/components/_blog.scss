@@ -1,0 +1,197 @@
+
+.blog-container {
+  
+  h1 {
+    margin-bottom: 1rem;
+  }
+}
+
+.blog-paragraph-content {
+  margin-bottom: 2rem;
+}
+
+// HEADER
+
+
+
+.blog-header {
+  position: relative;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  h1 {
+    font-size: 2rem;
+    padding-top: 1rem;
+  }
+
+  .blog-header-subheader {
+    margin-bottom: 2rem;
+  }
+
+
+
+  .inner-header-container {
+    margin: 0 10%;
+  }
+
+  // WAVES STYLE
+  .waves {
+    position: absolute;
+    width: 100%;
+    height: 15vh;
+    bottom: -1px;
+    right: 0px;
+  }
+
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3rem;
+    color: white;
+    text-align: center;
+    padding-top: 15vh;
+    margin-bottom: 1vh;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: white;
+    text-align: center;
+  }
+}
+
+// TEXT AND IMAGE BLOCK
+
+
+.blog-text-img-flex {
+  margin: 5% 5%;
+  p{
+
+    color: black;
+  }
+  .flex-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+  }
+
+  .images-container {
+    margin: 0;
+    width: 48%;
+  }
+
+  h1 {
+    color: #023F3A;
+    font-size: 2rem
+  }
+
+  .text-container {
+    width: 48%;
+
+  }
+}
+
+// TEXT ONLY BLOCK
+
+.blog-text-section {
+  margin: 5% 10%;
+  p {
+
+    color: black;
+  }
+  h1 {
+    color: #023F3A;
+    font-size: 2rem;
+  }
+}
+
+// CALL TO ACTION BLOCK
+
+.blog-call-to-action {
+  background-color: #FBB718;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  h1 {
+    color: white;
+    font-size: 2.5rem;
+  }
+
+}
+
+
+
+
+
+
+// MEDIA QUERIES
+
+
+@media screen and (max-width:430px) {
+  .blog-header {
+    height: calc(100vh + 10vh);
+
+    .inner-header-container {
+      margin: 0 5%;
+    }
+
+
+    h1 {
+      font-size: 2rem;
+      padding-top: 2rem;
+      padding-bottom: 1rem;
+    }
+
+    p {
+      width: 100%;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+  }
+
+  .blog-text-img-flex {
+    margin: 5% 5%;
+    h1 {
+      margin-top: 1rem;
+    }
+
+    .text-container {
+      width: 100%;
+    }
+
+    .images-container {
+      width: 100%;
+    }
+
+    p{
+
+      color: black;
+    }
+    .flex-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+    }
+
+
+  }
+  .blog-text-section {
+    margin: 0 5%;
+  }
+
+
+  .images-container {
+    width: 85%;
+    margin-left: 0;
+    margin-top: 1.5rem;
+  }
+
+}

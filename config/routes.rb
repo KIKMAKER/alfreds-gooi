@@ -85,10 +85,10 @@ Rails.application.routes.draw do
 
     # static pages
     root "pages#home"
-    get "thestory", to: "pages#thestory"
     get "manage", to: "pages#manage"
     get "vamos", to: "pages#vamos"
     get "welcome", to: "pages#welcome"
+    get "story", to: "pages#story"
     get "today", to: "pages#today"
 
 end
