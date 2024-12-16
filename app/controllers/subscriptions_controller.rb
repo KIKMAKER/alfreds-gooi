@@ -167,12 +167,77 @@ class SubscriptionsController < ApplicationController
     @subscriptions = Subscription.active_subs_for(@today)
   end
 
+  def import_csv
+    uploaded_file = params[:subscription][:file]
+      # loop through the file and update subscriptions for each row
+      CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
+        # Process the subscription
+        subscription = process_subscription(row)
+        puts subscription.end_date if subscription
+      end
+    redirect_to subscriptions_path, notice: "Subscriptions updated"
+  end
+
+  def update_end_date
+  end
+
+  def export
+    @subscriptions = Subscription.all
+    send_data generate_csv(@subscriptions),
+            filename: "subscriptions_#{Date.today}.csv",
+            type: "text/csv"
+    # generate_csv(@subscriptions, "subscriptions_#{Date.today}.csv")
+
+    # redirect_to subscriptions_path, notice: "Subscription data exported"
+  end
+
   private
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+  end
+
+  def process_subscription(row)
+    subscription = Subscription.find_by(customer_id: row['customer_id'])
+    if subscription
+      is_paused = row['status'] == 'paused'
+      start_date = row['start_date'].present? ? DateTime.parse(row['start_date']) : nil
+
+      if subscription.update!(is_paused: is_paused,
+                              start_date: start_date)
+        puts "Subscription updated for #{subscription.user.first_name}"
+      else
+        puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
+      end
+    # puts subscription.collection_day
+    subscription
+    else
+      puts "Subscription not found for customer_id: #{row['customer_id']}"
+      nil
+    end
+  end
+
+  def generate_csv(subscriptions)
+    CSV.generate(headers: true) do |csv|
+      csv << ["customer_id", "first_name", "email", "suburb", "plan", "duration", "start_date", "end_date", "total_collections", "status"] # Headers
+
+      subscriptions.each do |subscription|
+        csv << [
+          subscription.customer_id,
+          subscription.user.first_name,
+          subscription.user.email,
+          subscription.suburb,
+          subscription.plan,
+          subscription.duration,
+          subscription.start_date&.to_date,
+          subscription.end_date,
+          subscription.total_collections,
+          subscription.is_paused ? "paused" : "active"
+        ]
+      end
+    end
   end
 
 
