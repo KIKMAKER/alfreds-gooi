@@ -41,7 +41,7 @@ class PagesController < ApplicationController
 
   def manage
     @subscription = current_user.current_sub
-    @days_left = (@subscription.end_date - Date.today).to_i 
+    @days_left = (@subscription.end_date - Date.today).to_i if @subscription.start_date
   end
 
   def welcome
