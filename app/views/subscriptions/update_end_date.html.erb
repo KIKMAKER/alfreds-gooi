@@ -1,6 +1,6 @@
 <div class="outline">
   <br>
-<%= simple_form_for :subscription, url: subscriptions_import_csv_path, method: :post, html: { multipart: true } do |f| %>
+<%= simple_form_for :subscription, url: import_csv_subscriptions_path, method: :post, html: { multipart: true } do |f| %>
     <%= f.input :file, as: :file, label: "Upload CSV File" %>
     <%= f.button :submit, "Upload CSV", class: "gooi-button" %>
   <% end %>

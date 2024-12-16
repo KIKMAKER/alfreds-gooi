@@ -38,8 +38,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
-  post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
+  # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
+  # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
   resources :invoices, only: %i[ index new create show]
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
@@ -50,8 +50,9 @@ Rails.application.routes.draw do
       get :today
       get :tomorrow
       get :yesterday
-      # get :update_sub_end_date
-      # post :import_csv
+      get :export
+      get :update_end_date
+      post :import_csv
     end
     member do
       get :welcome_invoice
