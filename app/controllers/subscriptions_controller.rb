@@ -167,12 +167,47 @@ class SubscriptionsController < ApplicationController
     @subscriptions = Subscription.active_subs_for(@today)
   end
 
+  def import_csv
+    uploaded_file = params[:subscription][:file]
+      # loop through the file and update subscriptions for each row
+      CSV.foreach(uploaded_file.path, headers: :first_row) do |row|
+        # Process the subscription
+        subscription = process_subscription(row)
+        puts subscription.collection_day if subscription
+      end
+    redirect_to subscriptions_path, notice: "Subscriptions updated"
+  end
+
+  def update_sub_end_date
+  end
+
+
   private
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+  end
+
+  def process_subscription(row)
+    subscription = Subscription.find_by(customer_id: row['customer_id'])
+    if subscription
+      is_paused = row['status'] == 'paused'
+      start_date = row['start_date'].present? ? DateTime.parse(row['start_date']) : nil
+
+      if subscription.update!(is_paused: is_paused,
+                              start_date: start_date)
+        puts "Subscription updated for #{subscription.user.first_name}"
+      else
+        puts "Failed to update subscription for #{subscription.user.first_name}: #{subscription.errors.full_messages.join(", ")}"
+      end
+    # puts subscription.collection_day
+    subscription
+    else
+      puts "Subscription not found for customer_id: #{row['customer_id']}"
+      nil
+    end
   end
 
 
