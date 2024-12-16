@@ -6,7 +6,7 @@
         <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
         <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
       </div>
-    <% elsif @subscription.collections == 0 %>
+    <% elsif @subscription.collections.count == 0 %>
       <div class="text-center">
         <h2>get ready to start gooiing!</h2>
         <p>Please add us to your contacts list and feel free to get in touch with any comments or questions</p>
