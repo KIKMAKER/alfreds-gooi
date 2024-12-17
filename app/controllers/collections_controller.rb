@@ -2,9 +2,15 @@ require 'csv'
 class CollectionsController < ApplicationController
   before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
 
-  def perform_create_collections
-    CreateCollectionsJob.perform_now
-    flash[:notice] = "Create Collections Job has been triggered."
+  def perform_create_today_collections
+    CreateTodayCollectionsJob.perform_now
+    flash[:notice] = "Create Today Collections Job has been triggered."
+    redirect_to this_week_collections_path
+  end
+
+  def perform_create_tomorrow_collections
+    CreateTomorrowCollectionsJob.perform_now
+    flash[:notice] = "Create Tomorrow Collections Job has been triggered."
     redirect_to this_week_collections_path
   end
 
@@ -31,7 +37,7 @@ class CollectionsController < ApplicationController
     end
     @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
-  rescue CSV::MalformedCSVError => e
+    rescue CSV::MalformedCSVError => e
     redirect_to load_csv_collections_path, alert: "Failed to import CSV: #{e.message}"
   end
   # the form to get the csv (no data needs to be sent from the controller)
