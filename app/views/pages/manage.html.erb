@@ -68,5 +68,9 @@
         <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
       <% end %>
     </div>
+    <div class="collections-carousel">
+    <h2 class="text-center">Past Collections</h2>
+      <%= render "past_collections", subscription: @subscription %>
+    </div>
   </div>
 </div>
