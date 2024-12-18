@@ -1,0 +1,30 @@
+.payment-card {
+  display: flex;
+  width: 45vw;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  i {
+    font-size: 2rem;
+  }
+
+  .payment-card-user {
+    width: 35%;
+  }
+
+  .payment-card-amount {
+    width: 20%;
+    text-align: start;
+  }
+  h2 {
+    margin-bottom: 0px
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .payment-card {
+    width: 90vw;
+  }
+
+}

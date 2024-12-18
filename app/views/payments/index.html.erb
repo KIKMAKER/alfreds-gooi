@@ -1,0 +1,19 @@
+<div class="driver-wrapper">
+  <h1>All snapscan payments persisted to the db</h1>
+  <% @payments.each do |payment| %>
+    <div class="payment-card">
+        <p><%= payment.date.strftime(' %e %b %y') %></p>
+      <div class="payment-card-user">
+        <h3><%= payment.user_reference %> </h3><%= payment.merchant_reference %>
+      </div>
+      <div class="payment-card-amount">
+        <h2>R<%= ((payment.total_amount)/100) %></h2>
+      </div>
+      <% if payment.status == "completed" %>
+        <i class="fa-regular fa-circle-check"></i>
+      <% else %>
+        <i class="fa-regular fa-circle-xmark"></i>
+      <% end %>
+    </div>
+  <% end %>
+</div>

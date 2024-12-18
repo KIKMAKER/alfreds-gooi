@@ -2,6 +2,16 @@
 class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!
+
+
+  def index
+    @payments = Payment.all.order(created_at: :desc)
+  end
+
+  def show
+    @payment = Payment.find(params[:id])
+  end
 
   def snapscan_webhook
     begin
