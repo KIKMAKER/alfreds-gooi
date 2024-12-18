@@ -5,6 +5,7 @@
   padding: 2rem;
   background-color: #f8f8f8;
   flex-direction: column;
+  height: 84vh
 }
 
 .invoice-container {
@@ -16,7 +17,7 @@
   width: 100%;
   max-width: 800px;
   overflow: scroll;
-  margin-bottom: 10rem;
+
 
   h1,
   p {
