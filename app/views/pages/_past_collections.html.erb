@@ -5,7 +5,7 @@
         <% collections_group.each do |collection| %>
           <% if collection %>
             <li class="list-item">
-              <p><%= collection.date.strftime('%d %b %Y') %></p>
+              <p><%= collection.date&.strftime('%d %b %Y') %></p>
               <% if collection.skip == true %>
                 <p class="bucket-height">skipped</p>
               <% else %>
