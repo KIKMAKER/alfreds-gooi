@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   # payments
   resources :webhooks, only: :create
   get 'snapscan/payments', to: 'payments#fetch_snapscan_payments'
+  resources :payments, only: :index
 
   # users
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }

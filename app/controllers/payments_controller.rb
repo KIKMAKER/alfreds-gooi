@@ -2,6 +2,16 @@
 class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!
+
+
+  def index
+    @payments = Payment.all.order(created_at: :desc)
+  end
+
+  def show
+    @payment = Payment.find(params[:id])
+  end
 
   def snapscan_webhook
     begin
@@ -18,9 +28,11 @@ class PaymentsController < ApplicationController
 
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
+      # Find the invoice by the invoice_id
+      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"])
 
       if payload["status"] == "completed"
-        handle_payment_payload(payload, user)
+        handle_payment_payload(payload, user, invoice)
         render json: { status: 'success' }, status: :ok
       else
         render json: { status: 'error', message: 'Payment not successful' }, status: :unprocessable_entity
@@ -49,7 +61,7 @@ class PaymentsController < ApplicationController
 
   private
 
-  def handle_payment_payload(payment_data, user)
+  def handle_payment_payload(payment_data, user, invoice)
     Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
@@ -64,6 +76,7 @@ class PaymentsController < ApplicationController
     )
 
     update_subscription_status(payment_data["merchantReference"])
+    invoice.update(paid: true)
   end
 
   def update_subscription_status(merchant_reference)
