@@ -1,11 +1,16 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note]
-  # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
 
-  def perform_create_collections
-    CreateCollectionsJob.perform_now
-    flash[:notice] = "Create Collections Job has been triggered."
+  def perform_create_today_collections
+    CreateTodayCollectionsJob.perform_now
+    flash[:notice] = "Create Today Collections Job has been triggered."
+    redirect_to this_week_collections_path
+  end
+
+  def perform_create_tomorrow_collections
+    CreateTomorrowCollectionsJob.perform_now
+    flash[:notice] = "Create Tomorrow Collections Job has been triggered."
     redirect_to this_week_collections_path
   end
 
@@ -14,7 +19,7 @@ class CollectionsController < ApplicationController
     RouteOptimiser.optimise_route
     redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
   end
-  # Create - done by the import method and not really needing to Read or Destroy collections
+
   def import_csv
     # find the driver (there is only one)
     driver = User.find_by(role: 'driver')
@@ -26,13 +31,13 @@ class CollectionsController < ApplicationController
       @drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
-      puts subscription.collection_day
+      puts subscription.collection_day if subscription
       # Process the collection
       process_collection(row, subscription, @drivers_day) if subscription
     end
     @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
-  rescue CSV::MalformedCSVError => e
+    rescue CSV::MalformedCSVError => e
     redirect_to load_csv_collections_path, alert: "Failed to import CSV: #{e.message}"
   end
   # the form to get the csv (no data needs to be sent from the controller)
@@ -72,7 +77,6 @@ class CollectionsController < ApplicationController
   end
 
   def edit
-
     @subscription = @collection.subscription
   end
 
@@ -109,7 +113,7 @@ class CollectionsController < ApplicationController
 
   def destroy
     @collection.destroy
-    redirect_to subscription_path(@collection.subscription), notice: 'Collection was successfully deleted.'
+    redirect_to request.referer || collections_path, notice: "Collection was successfully deleted."
   end
 
   def add_bags
@@ -142,11 +146,42 @@ class CollectionsController < ApplicationController
     if @collection.update(customer_note: params[:collection][:customer_note])
       redirect_to manage_path
       flash[:notice] = "Note Added!"
+    end
+  end
 
+  def update_position
+    @collection = Collection.find(params[:id])
+    new_position = params[:position].to_i
+
+    # Use acts_as_list to reorder
+    @collection.insert_at(new_position)
+
+    update_collection_order(@collection.drivers_day)
+
+    head :no_content
+  end
+
+  def reset_order
+    @drivers_day = DriversDay.find(params[:drivers_day_id])
+
+    # Order by subscriptions.collection_order and update positions
+    @drivers_day.collections
+                .joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+      collection.update(position: index + 1) # Set position starting from 1
     end
   end
 
   private
+
+  def update_collection_order(drivers_day)
+    drivers_day.collections.order(:position).each_with_index do |collection, index|
+      # Update the associated subscription's collection_order
+      subscription = collection.subscription
+      subscription.update(collection_order: index + 1) if subscription.present?
+    end
+  end
 
   def process_drivers_day(row, driver)
     date = row['date'].present? ? DateTime.parse(row['date']) : nil
