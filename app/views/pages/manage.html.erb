@@ -5,9 +5,9 @@
       <p>Please settle your account to continue gooiing</p>
       <%= link_to "view invoice", invoice_path(@unpaid_invoice) %>
     <% else %>
-      <h2>Upcoming Collection</h2>
       <% if @subscription.is_paused? %>
         <div class="text-center">
+          <h2>Upcoming Collection</h2>
           <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
           <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
         </div>
