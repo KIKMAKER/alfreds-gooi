@@ -1,21 +1,40 @@
 <div class="gooi-container">
   <div class="outline">
     <div>
+
+      <div class="d-flex justify-content-end">
+        <%= link_to "Today's Subscriptions", today_subscriptions_path, class: "btn-today-green" %>
+
       <div class="d-flex">
         <%= link_to "Today's Subscriptions", today_subscriptions_path, class: "text-center" %>
         <p>|</p>
         <%= link_to "Export's Subscriptions", export_subscriptions_path, class: "text-center" %>
         <p>|</p>
         <%= link_to "Update Subscriptions End Dates", update_end_date_subscriptions_path, class: "text-center" %>
+
       </div>
       <br>
       <h1>All Subscriptions</h1>
-      <h4>customer id - name - start date</h4>
 
-      <% @subscriptions.each do |subscription| %>
-        <p> <%= subscription.customer_id %> - <%= link_to subscription.user.first_name, subscription_path(subscription) %> - <%= subscription.start_date&.strftime('%e %B %Y') %></p>
-        <%#= link_to "log collection", new_subscription_collection_path(subscription) %>
-      <% end %>
+      <table class="table table-bordered">
+<thead>
+    <tr>
+
+      <th scope="col">Customer ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Start Date</th>
+    </tr>
+  </thead>
+  <tbody>
+     <% @subscriptions.each do |subscription| %>
+    <tr>
+      <td><%= subscription.customer_id %></td>
+      <td><%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %></td>
+      <td><%= subscription.start_date&.strftime('%e %B %Y') %></td>
+    </tr>
+    <% end %>
+      </table>
+
     </div>
   </div>
 </div>
