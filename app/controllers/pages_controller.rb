@@ -42,16 +42,54 @@ class PagesController < ApplicationController
   def manage
     @subscription = current_user.current_sub
     @days_left = (@subscription.end_date - Date.today).to_i if @subscription.start_date
+    @unpaid_invoice = @subscription.invoices.find_by(paid: false)
   end
 
   def welcome
     @subscription = current_user.current_sub
-    # @subscription.set_collection_day
-    # raise
-    @subscription.save!
+    merchant_reference = params[:merchantReference]
+    if merchant_reference.present?
+      # Fetch payments (this can be refactored into a service)
+      payments = fetch_snapscan_payments(merchant_reference)
+
+      # Check for a successful payment
+      successful_payment = payments.find { |payment| payment["status"] == "completed" }
+
+      if successful_payment
+        handle_successful_payment(successful_payment)
+        flash[:notice] = "Payment received! Your subscription is now active."
+      else
+        flash[:alert] = "No successful payment found for this subscription."
+      end
+    else
+      flash[:alert] = "No merchant reference provided."
+    end
+
   end
 
   def story
+  end
+
+  private
+
+  def fetch_snapscan_payments(merchant_reference)
+    # Example: Replace with actual SnapScan API fetch logic
+    api_key = ENV['WEBHOOK_AUTH_KEY']
+    service = SnapscanService.new(api_key)
+    payments = service.fetch_payments
+    payments.select { |payment| payment["merchantReference"] == merchant_reference }
+  end
+
+  def handle_successful_payment(successful_payment)
+    # Find the user and subscription by merchant reference
+    subscription = Subscription.find_by(customer_id: successful_payment["merchantReference"])
+    return unless subscription
+    last_invoice = @subscription.invoices.order(created_at: :desc).first
+    # Update subscription and mark the last invoice as paid
+    if last_invoice && last_invoice.total_amount.to_i == successful_payment["totalAmount"].to_i
+      last_invoice.update!(paid: true)
+      subscription.update!(status: 'active', start_date: subscription.calculate_next_collection_day)
+    end
   end
 
 end
