@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home, :thestory ]
+  skip_before_action :authenticate_user!, only: [ :home, :story ]
 
   def vamos
     # in production today will be the current day,
@@ -32,15 +32,16 @@ class PagesController < ApplicationController
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
     @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
-  end
-
-  def thestory
+    @collections.joins(:subscription)
+                .order('subscriptions.collection_order')
+                .each_with_index do |collection, index|
+                  collection.update(position: index + 1) # Set position starting from 1
+                end
   end
 
   def manage
     @subscription = current_user.current_sub
-    
-
+    @days_left = (@subscription.end_date - Date.today).to_i if @subscription.start_date
   end
 
   def welcome
@@ -48,6 +49,9 @@ class PagesController < ApplicationController
     # @subscription.set_collection_day
     # raise
     @subscription.save!
+  end
+
+  def story
   end
 
 end

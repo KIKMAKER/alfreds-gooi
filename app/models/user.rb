@@ -13,13 +13,6 @@ class User < ApplicationRecord
 
   before_destroy :nullify_subscriptions
 
-
-
-  def nullify_subscriptions
-    self.subscriptions.update_all(user_id: nil)
-  end
-
-
   # Callbacks
 
   # Custom validation
@@ -33,6 +26,9 @@ class User < ApplicationRecord
     subscriptions.last
   end
 
+  def total_collections
+    subscriptions.joins(:collections).count
+  end
 
 
   private
@@ -50,8 +46,6 @@ class User < ApplicationRecord
   def starts_0?
     phone_number.start_with?('0')
   end
-
-  private
   # Custom validation method
 
   def valid_international_phone_number
@@ -64,6 +58,12 @@ class User < ApplicationRecord
       false
     end
   end
+
+  # before destroy
+  def nullify_subscriptions
+    self.subscriptions.update_all(user_id: nil)
+  end
+
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :trackable and :omniauthable
