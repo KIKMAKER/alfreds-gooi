@@ -1,11 +1,11 @@
 <div class="user-wrapper">
-  <% if @unpaid_invoice %>
-    <h2>You have an unpaid invoice</h2>
-    <p>Please settle your account to continue gooiing</p>
-    <%= link_to "view invoice", invoice_path(@unpaid_invoice) %>
-  <% else %>
-    <h2>Upcoming Collection</h2>
-    <div  data-controller="toggle">
+  <div  data-controller="toggle">
+    <% if @unpaid_invoice %>
+      <h2>You have an unpaid invoice</h2>
+      <p>Please settle your account to continue gooiing</p>
+      <%= link_to "view invoice", invoice_path(@unpaid_invoice) %>
+    <% else %>
+      <h2>Upcoming Collection</h2>
       <% if @subscription.is_paused? %>
         <div class="text-center">
           <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
@@ -49,38 +49,38 @@
         <%#= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>-->
       <!--      </div>-->
       <%# end %>
-    </div>
-    <div class="user-holiday-container" data-controller="toggle">
-      <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
-        <h2>Need to skip more than one week?</h2>
-        <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
-        <div class="card-white d-none" data-toggle-target="form">
-          <h2>Plan a holiday</h2>
-          <%= simple_form_for @subscription do |f| %>
-            <%= f.input :holiday_start,
+      <div class="user-holiday-container" data-controller="toggle">
+        <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
+          <h2>Need to skip more than one week?</h2>
+          <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
+          <div class="card-white d-none" data-toggle-target="form">
+            <h2>Plan a holiday</h2>
+            <%= simple_form_for @subscription do |f| %>
+              <%= f.input :holiday_start,
             as: :string,
             input_html: { data: { controller: "datepicker" } }, label: "start:" %>
-            <%= f.input :holiday_end,
+              <%= f.input :holiday_end,
             as: :string,
             input_html: { data: { controller: "datepicker" } }, label: "end:" %>
-            <%= f.submit "save", class: "submit-btn" %>
+              <%= f.submit "save", class: "submit-btn" %>
+            <% end %>
+          </div>
+        <% else %>
+          <h2>Upcoming Holiday</h2>
+          <div class="mt-4 container-flex flex-column">
+            <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
+            <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
           <% end %>
         </div>
-      <% else %>
-        <h2>Upcoming Holiday</h2>
-        <div class="mt-4 container-flex flex-column">
-          <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
-          <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
+        <div class="collections-carousel">
+          <h2 class="text-center">Past Collections</h2>
+          <% if @subscription.collections.any? %>
+            <%= render "past_collections", subscription: @subscription %>
+          <% else %>
+            <p class="text-center">You haven't had any collections yet</p>
+          </div>
         <% end %>
       </div>
-      <div class="collections-carousel">
-        <h2 class="text-center">Past Collections</h2>
-        <% if @subscription.collections.any? %>
-          <%= render "past_collections", subscription: @subscription %>
-        <% else %>
-          <p class="text-center">You haven't had any collections yet</p>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
