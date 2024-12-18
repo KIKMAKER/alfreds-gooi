@@ -1,8 +1,17 @@
 <div class="gooi-container">
   <div class="outline">
     <div>
+
       <div class="d-flex justify-content-end">
         <%= link_to "Today's Subscriptions", today_subscriptions_path, class: "btn-today-green" %>
+
+      <div class="d-flex">
+        <%= link_to "Today's Subscriptions", today_subscriptions_path, class: "text-center" %>
+        <p>|</p>
+        <%= link_to "Export's Subscriptions", export_subscriptions_path, class: "text-center" %>
+        <p>|</p>
+        <%= link_to "Update Subscriptions End Dates", update_end_date_subscriptions_path, class: "text-center" %>
+
       </div>
       <br>
       <h1>All Subscriptions</h1>

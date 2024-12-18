@@ -7,12 +7,12 @@ class Subscription < ApplicationRecord
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
- 
+
 
 
 
   after_create do
-    self.set_customer_id
+    self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
     self.create_initial_invoice
@@ -26,7 +26,7 @@ class Subscription < ApplicationRecord
 
   ## ENUMS
   enum status: %i[active pause pending]
-  enum plan: %i[once_off standard XL]
+  enum plan: %i[once_off Standard XL]
   enum collection_day: Date::DAYNAMES
 
   SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
@@ -118,6 +118,10 @@ class Subscription < ApplicationRecord
   def is_paused?
     # added && condition to prevent calculation of holiday when holiday is nil
     is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
+  end
+
+  def end_date
+    (start_date + duration.months).to_date if start_date
   end
 
   private

@@ -133,6 +133,8 @@ section {
   align-items: center;
   display: flex;
   margin-left: 1rem;
+  position: relative;
+
 
 }
 
@@ -356,11 +358,23 @@ section {
 }
 
 .compostable-container {
+
   overflow-x: scroll;
   overflow-y: hidden;
   width: 100%;
   display: flex;
   justify-content: space-between;
+
+
+}
+.arrow-right {
+  position: absolute;
+  top: 25%;
+  right: 3vw;
+  transform: translateY(-25%);
+  color: white;
+  z-index: 2;
+  font-size: 3vw;
 }
 
 .compostable-card {
@@ -755,7 +769,7 @@ button {
     height: 100vh;
 
     h1 {
-      font-size: 48px;
+      font-size: 2rem;
       padding-top: 4rem;
       padding-bottom: 1rem;
     }

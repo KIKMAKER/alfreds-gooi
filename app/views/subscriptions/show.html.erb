@@ -28,7 +28,7 @@
       <br>
       <div>
         <h2>Details</h2>
-        <p>Plan: <%= Subscription.humanized_plans[@subscription.plan.to_sym] %></p>
+        <p>Plan: <%= @subscription.plan %></p>
         <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
         <p>Collection day: <%= @subscription.collection_day %></p>
         <p>Address: <%= @subscription.street_address %></p>
