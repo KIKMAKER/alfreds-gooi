@@ -1,0 +1,26 @@
+.btn-today-green {
+  background-color: $dark-green;
+  display: flex;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px;
+  // margin-left: 16px;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  color: white;
+  // margin-top: 1rem;
+  max-width: 10rem;
+
+  a {
+    text-decoration: none !important;
+    color: white;
+  }
+}
+
+.link-green {
+  text-decoration: none;
+  color: $dark-green;
+  font-weight: 600;
+}

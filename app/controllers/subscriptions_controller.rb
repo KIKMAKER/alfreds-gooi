@@ -2,7 +2,8 @@ class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.all
+      @subscriptions = Subscription.joins(:user).order('users.first_name ASC')
+
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
     end
