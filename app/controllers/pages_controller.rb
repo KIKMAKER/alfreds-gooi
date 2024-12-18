@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home, :thestory ]
+  skip_before_action :authenticate_user!, only: [ :home, :story ]
 
   def vamos
     # in production today will be the current day,
@@ -39,12 +39,9 @@ class PagesController < ApplicationController
                 end
   end
 
-  def thestory
-  end
-
   def manage
     @subscription = current_user.current_sub
-
+    @days_left = (@subscription.end_date - Date.today).to_i if @subscription.start_date
   end
 
   def welcome
@@ -52,6 +49,9 @@ class PagesController < ApplicationController
     # @subscription.set_collection_day
     # raise
     @subscription.save!
+  end
+
+  def story
   end
 
 end

@@ -1,11 +1,16 @@
 require 'csv'
 class CollectionsController < ApplicationController
   before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
-  # I have basically all the CRUD actions, but I'm only using edit and update (the U in CRUD)
 
-  def perform_create_collections
-    CreateCollectionsJob.perform_now
-    flash[:notice] = "Create Collections Job has been triggered."
+  def perform_create_today_collections
+    CreateTodayCollectionsJob.perform_now
+    flash[:notice] = "Create Today Collections Job has been triggered."
+    redirect_to this_week_collections_path
+  end
+
+  def perform_create_tomorrow_collections
+    CreateTomorrowCollectionsJob.perform_now
+    flash[:notice] = "Create Tomorrow Collections Job has been triggered."
     redirect_to this_week_collections_path
   end
 
@@ -14,7 +19,7 @@ class CollectionsController < ApplicationController
     RouteOptimiser.optimise_route
     redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
   end
-  # Create - done by the import method and not really needing to Read or Destroy collections
+
   def import_csv
     # find the driver (there is only one)
     driver = User.find_by(role: 'driver')
@@ -32,7 +37,7 @@ class CollectionsController < ApplicationController
     end
     @drivers_day.update!(note: params[:csv_upload][:drivers_note])
     redirect_to subscriptions_path, notice: 'CSV imported successfully'
-  rescue CSV::MalformedCSVError => e
+    rescue CSV::MalformedCSVError => e
     redirect_to load_csv_collections_path, alert: "Failed to import CSV: #{e.message}"
   end
   # the form to get the csv (no data needs to be sent from the controller)
@@ -72,7 +77,6 @@ class CollectionsController < ApplicationController
   end
 
   def edit
-
     @subscription = @collection.subscription
   end
 
@@ -142,7 +146,6 @@ class CollectionsController < ApplicationController
     if @collection.update(customer_note: params[:collection][:customer_note])
       redirect_to manage_path
       flash[:notice] = "Note Added!"
-
     end
   end
 
@@ -167,10 +170,8 @@ class CollectionsController < ApplicationController
                 .order('subscriptions.collection_order')
                 .each_with_index do |collection, index|
       collection.update(position: index + 1) # Set position starting from 1
-
+    end
   end
-end
-
 
   private
 
@@ -181,7 +182,6 @@ end
       subscription.update(collection_order: index + 1) if subscription.present?
     end
   end
-
 
   def process_drivers_day(row, driver)
     date = row['date'].present? ? DateTime.parse(row['date']) : nil

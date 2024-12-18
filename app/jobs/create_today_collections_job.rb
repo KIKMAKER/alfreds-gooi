@@ -1,5 +1,5 @@
 # app/jobs/create_drivers_day_job.rb
-class CreateCollectionsJob < ApplicationJob
+class CreateTodayCollectionsJob < ApplicationJob
   queue_as :default
 
   def perform
