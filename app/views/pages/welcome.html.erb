@@ -6,26 +6,28 @@
       <p>Alfred will deliver your starter kit on <%= @subscription.start_date.strftime('%A, %b %d') %>.</p>
       <h2>Here's how it works</h2>
       <p>Gooi your kitchen scraps into the bucket!</p>
-      <p>When the bucket is full, tie a knot in the bag.
-        On collection day, be ready to hand it to Alfred as he comes past, or leave it in a designated (hidden) spot where he can find it. </p>
-      <p>There are a few things you can manage through this portal</p>
-      <ol>
-        <li><p>Let us know if we should skip your collection for the week</p></li>
-        <li><p>Set your next holiday dates if you will be away for more than two consecutive weeks</p></li>
-        <li><p>Order another roll of compostable bags</p></li>
-        <li><p>Update your subscription details</p></li>
-      </ol>
-      <%= link_to "Manage my collections", manage_path, class: "small-yellow-btn" %>
-      <!--<div class="user-form">-->
-      <%#= simple_form_for(@subscription) do |f| %>
-        <%#= f.input :holiday_start, label: "Start:" %>
-        <%#= f.input :holiday_end, label: "End:" %>
-        <%#= f.submit "Save dates", class: "submit-btn" %>
-        <%# end %>
-        <!--      </div>-->
-      <% else %>
-        <p>There seems to have been a hiccup in setting your subscription up.</p>
-        <p>If you have made payment successfully, please email your proof of payment to gooicapetown@gmail.com and we will manually commence your subscription.</p>
-      <% end %>
+      <p>When the bucket is full, tie a knot in the bag.</p>
+      <p>On collection day, be ready to hand it to Alfred as he comes past. </p>
+        <p>Or, leave it in a designated (hidden) spot where he can find it. </p>
+        <p>There are a few things you can manage through this portal</p>
+        <ol>
+          <li>
+            <p>Let us know if we should skip your collection for the week</p>
+          </li>
+          <li>
+            <p>Set your next holiday dates if you will be away for more than two consecutive weeks</p>
+          </li>
+          <li>
+            <p>Order another roll of compostable bags</p>
+          </li>
+          <li>
+            <p>Update your subscription details</p>
+          </li>
+        </ol>
+        <%= link_to "Manage my collections", manage_path, class: "small-yellow-btn" %>
+        <% else %>
+          <p>There seems to have been a hiccup in setting your subscription up.</p>
+          <p>If you have made payment successfully, please email your proof of payment to gooicapetown@gmail.com and we will manually commence your subscription.</p>
+        <% end %>
+      </div>
     </div>
-  </div>
