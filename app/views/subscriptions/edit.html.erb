@@ -7,6 +7,7 @@
       <%= f.input :street_address %>
       <%= f.input :suburb %>
       <% if current_user.admin? %>
+        <%= f.input :customer_id %>
         <%= f.input :duration %>
         <%= f.input :start_date %>
         <%= f.input :collection_order %>

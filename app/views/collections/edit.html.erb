@@ -81,7 +81,7 @@
         <%= f.input :skip %>
         <%= f.input :wants_veggies %>
         <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
-        <% if @subscription.standard? %>
+        <% if @subscription.Standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% elsif @subscription.XL? %>
           <%= f.input :buckets, label: "Number of buckets collected", placeholder: "0" %>

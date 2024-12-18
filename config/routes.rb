@@ -20,7 +20,8 @@ Rails.application.routes.draw do
 
 
   patch 'optimise_route', to: 'collections#optimise_route'
-  post "perform_create_collections", to: "collections#perform_create_collections"
+  post "perform_create_today_collections", to: "collections#perform_create_today_collections"
+  post "perform_create_tomorrow_collections", to: "collections#perform_create_tomorrow_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: [:edit, :update, :destroy] do
     member do
@@ -38,6 +39,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
+  # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
+
   resources :invoices, only: %i[ index new create show]
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
@@ -47,6 +51,9 @@ Rails.application.routes.draw do
       get :today
       get :tomorrow
       get :yesterday
+      get :export
+      get :update_end_date
+      post :import_csv
     end
     member do
       get :welcome_invoice
@@ -85,10 +92,10 @@ Rails.application.routes.draw do
 
     # static pages
     root "pages#home"
-    get "thestory", to: "pages#thestory"
     get "manage", to: "pages#manage"
     get "vamos", to: "pages#vamos"
     get "welcome", to: "pages#welcome"
+    get "story", to: "pages#story"
     get "today", to: "pages#today"
 
 end
