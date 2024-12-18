@@ -70,16 +70,16 @@
           <div class="mt-4 container-flex flex-column">
             <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
             <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
         <div class="collections-carousel">
           <h2 class="text-center">Past Collections</h2>
           <% if @subscription.collections.any? %>
             <%= render "past_collections", subscription: @subscription %>
           <% else %>
             <p class="text-center">You haven't had any collections yet</p>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>
