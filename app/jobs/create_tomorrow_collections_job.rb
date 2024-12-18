@@ -24,15 +24,16 @@ class CreateTomorrowCollectionsJob < ApplicationJob
     # Create collections for each subscription assigned to this day
     subscriptions = Subscription.where(collection_day: day_name)
     subscriptions.each do |subscription|
-      collection = Collection.create!(
-        drivers_day: drivers_day,
-        subscription: subscription,
-        date: tomorrow,
-        skip: subscription.is_paused?
-      )
-      puts ">> >> >> #{subscription.customer_id}"
-      collection.update!(new_customer: true) if subscription.is_new_customer
+      unless subscription.status == "completed"
+        collection = Collection.create!(
+          drivers_day: drivers_day,
+          subscription: subscription,
+          date: tomorrow,
+          skip: subscription.is_paused?
+        )
+        puts ">> >> >> #{subscription.customer_id}"
+        collection.update!(new_customer: true) if subscription.is_new_customer
+      end
     end
   end
 end
-
