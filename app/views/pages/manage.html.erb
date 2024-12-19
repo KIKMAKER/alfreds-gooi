@@ -74,8 +74,8 @@
         <% end %>
         <div class="collections-carousel">
           <h2 class="text-center">Past Collections</h2>
-          <% if @subscription.collections.any? %>
-            <%= render "past_collections", subscription: @subscription %>
+          <% if @all_collections.any? %>
+            <%= render "past_collections", collections: @all_collections %>
           <% else %>
             <p class="text-center">You haven't had any collections yet</p>
           <% end %>
