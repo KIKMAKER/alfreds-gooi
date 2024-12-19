@@ -106,8 +106,8 @@ class CollectionsController < ApplicationController
 
   def this_week
     @day = Date.today.strftime("%A")
-    @unskipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: false)
-    @skipped_collections = Collection.where(created_at: Date.today.all_day, date: Date.today , skip: true)
+    @unskipped_collections = Collection.where(date: Date.today , skip: false)
+    @skipped_collections = Collection.where(date: Date.today , skip: true)
 
   end
 
