@@ -6,7 +6,9 @@
   </div>
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
-    <ul data-controller="sortable">
+    <!--<ul data-controller="sortable">-->
+    <ul>
+
    <% @collections.each do |collection| %>
       <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
         data-sortable-handle
@@ -36,7 +38,7 @@
         </div>
       </li>
     <% end %>
-    </ul>
+      </ul><!--</ul>-->
   </div>
   <div class="drivers-form">
     <% if current_user.admin? %>
