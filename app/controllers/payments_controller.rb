@@ -107,7 +107,10 @@ class PaymentsController < ApplicationController
   end
 
   def verify_signature(request_body, webhook_auth_key)
-
+    received_signature = request.headers['Authorization']&.split('=')&.last
+    Rails.logger.debug "Received Signature: #{received_signature.inspect}"
+    Rails.logger.debug "Webhook Auth Key: #{webhook_auth_key.inspect}"
+    Rails.logger.debug "Request Body: #{request_body.inspect}"
     # # Log raw request body
     # Rails.logger.debug "Raw Request Body: #{request_body.inspect}"
 
