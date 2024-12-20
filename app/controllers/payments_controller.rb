@@ -17,7 +17,8 @@ class PaymentsController < ApplicationController
     Rails.logger.error "ERROR: Testing error logging in production."
 
     begin
-      request_body = request.body.read
+      request_body = request.raw_post
+
       Rails.logger.debug "Request Body: #{request_body}"
 
       # Verify signature
@@ -101,11 +102,16 @@ class PaymentsController < ApplicationController
   end
 
   def verify_signature(request_body, webhook_auth_key)
-    received_signature = request.headers['Authorization'].to_s.split('=').last
-    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
+    # Log raw request body
+    Rails.logger.debug "Raw Request Body: #{request_body.inspect}"
 
-    Rails.logger.debug "Expected: #{computed_signature}, Received: #{received_signature}"
-    puts "Expected: #{computed_signature}, Received: #{received_signature}"
+    # Log authorization header
+    received_signature = request.headers['Authorization'].to_s.split('=').last
+    Rails.logger.debug "Received Signature: #{received_signature}"
+
+    # Compute signature
+    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
+    Rails.logger.debug "Computed Signature: #{computed_signature}"
 
     unless Rack::Utils.secure_compare(computed_signature, received_signature)
       raise "Unauthorized webhook received"
