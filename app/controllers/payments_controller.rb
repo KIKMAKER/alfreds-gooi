@@ -14,6 +14,10 @@ class PaymentsController < ApplicationController
   end
 
   def snapscan_webhook
+    Rails.logger.info "INFO: Testing logging in production."
+    Rails.logger.debug "DEBUG: Testing detailed logging in production."
+    Rails.logger.error "ERROR: Testing error logging in production."
+    
     begin
       request_body = request.body.read
       Rails.logger.debug "Request Body: #{request_body}"
@@ -25,6 +29,7 @@ class PaymentsController < ApplicationController
       parsed_params = Rack::Utils.parse_nested_query(request_body)
       payload = JSON.parse(parsed_params["payload"])
       Rails.logger.debug "Received payload: #{payload.inspect}"
+      puts "Received payload: #{payload.inspect}"
 
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
@@ -32,6 +37,7 @@ class PaymentsController < ApplicationController
       invoice = Invoice.find_by(id: payload["extra"]["invoiceId"])
       if invoice.nil?
         Rails.logger.error "Invoice not found with id: #{payload['extra']['invoice_id']}"
+        puts "Invoice not found with id: #{payload['extra']['invoice_id']}"
         return render json: { error: "Invoice not found" }, status: :not_found
       end
 
@@ -101,6 +107,7 @@ class PaymentsController < ApplicationController
     computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
 
     Rails.logger.debug "Expected: #{computed_signature}, Received: #{received_signature}"
+    puts "Expected: #{computed_signature}, Received: #{received_signature}"
 
     unless Rack::Utils.secure_compare(computed_signature, received_signature)
       raise "Unauthorized webhook received"
