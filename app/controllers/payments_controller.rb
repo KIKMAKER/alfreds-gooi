@@ -1,6 +1,7 @@
 # app/controllers/payments_controller.rb
 class PaymentsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments, :verify_authenticity_token]
+  skip_before_action :verify_authenticity_token, only: [:snapscan_webhook, :fetch_snapscan_payments]
+  skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
     @payments = Payment.all.order(created_at: :desc)
