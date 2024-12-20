@@ -29,7 +29,7 @@ class PaymentsController < ApplicationController
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"])
+      invoice = Invoice.find_by(id: payload["extra"]["invoiceId"])
 
       if payload["status"] == "completed"
         handle_payment_payload(payload, user, invoice)
