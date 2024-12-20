@@ -3,9 +3,7 @@ Rails.application.routes.draw do
 
   # admin
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-  params do
-    requires :payload, String
-  end
+
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
   # payments
