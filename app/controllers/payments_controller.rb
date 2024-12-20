@@ -1,9 +1,6 @@
 # app/controllers/payments_controller.rb
 class PaymentsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
-  skip_before_action :verify_authenticity_token
-  before_action :authenticate_user!
-
+  skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments, :verify_authenticity_token]
 
   def index
     @payments = Payment.all.order(created_at: :desc)
@@ -17,7 +14,7 @@ class PaymentsController < ApplicationController
     Rails.logger.info "INFO: Testing logging in production."
     Rails.logger.debug "DEBUG: Testing detailed logging in production."
     Rails.logger.error "ERROR: Testing error logging in production."
-    
+
     begin
       request_body = request.body.read
       Rails.logger.debug "Request Body: #{request_body}"
