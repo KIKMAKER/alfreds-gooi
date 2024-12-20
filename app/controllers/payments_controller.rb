@@ -27,7 +27,9 @@ class PaymentsController < ApplicationController
       # Parse payload from URL-encoded parameters
       # parsed_params = Rack::Utils.parse_nested_query(request_body)
       # payload = JSON.parse(parsed_params["payload"])
-      payload = JSON.parse(webhook_params)
+      payload = JSON.parse(params[:payload])
+
+
       puts ">>> Received payload: #{payload.inspect}"
       Rails.logger.debug "Received payload: #{payload.inspect}"
 
@@ -71,9 +73,6 @@ class PaymentsController < ApplicationController
 
   private
 
-  def webhook_params
-    params.require(:payload).permit!
-  end
 
   def handle_payment_payload(payment_data, user, invoice)
     Payment.create!(
@@ -107,29 +106,23 @@ class PaymentsController < ApplicationController
   end
 
   def verify_signature(request_body, webhook_auth_key)
-    received_signature = request.headers['Authorization']&.split('=')&.last
+    # Extract the Authorization header and received signature
+    received_auth_header = request.headers['Authorization'].to_s
+    received_signature = received_auth_header.split('=').last
+
     Rails.logger.debug "Received Signature: #{received_signature.inspect}"
     Rails.logger.debug "Webhook Auth Key: #{webhook_auth_key.inspect}"
     Rails.logger.debug "Request Body: #{request_body.inspect}"
-    # # Log raw request body
-    # Rails.logger.debug "Raw Request Body: #{request_body.inspect}"
 
-    # # Log authorization header
-    # received_signature = request.headers['Authorization'].to_s.split('=').last
-    # Rails.logger.debug "Received Signature: #{received_signature}"
+    # Compute the expected signature
+    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
+    expected_auth_header = "SnapScan signature=#{computed_signature}"
 
-    # # Compute signature
-    # computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
-    # Rails.logger.debug "Computed Signature: #{computed_signature}"
+    Rails.logger.debug "Computed Signature: #{computed_signature}"
 
-    # unless Rack::Utils.secure_compare(computed_signature, received_signature)
-    #   raise "Unauthorized webhook received"
-    # end
-    signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
-  auth_signature = "SnapScan signature=#{signature}"
-
-  unless Rack::Utils.secure_compare(auth_signature, headers["Authorization"])
-    raise "Unauthorized webhook received"
-  end
+    # Verify the signature
+    unless Rack::Utils.secure_compare(expected_auth_header, received_auth_header)
+      raise "Unauthorized webhook received"
+    end
   end
 end
