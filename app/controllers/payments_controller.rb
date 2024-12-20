@@ -27,7 +27,7 @@ class PaymentsController < ApplicationController
       # Parse payload from URL-encoded parameters
       # parsed_params = Rack::Utils.parse_nested_query(request_body)
       # payload = JSON.parse(parsed_params["payload"])
-      payload = JSON.parse(params[:payload])
+      payload = JSON.parse(webhook_params)
       puts ">>> Received payload: #{payload.inspect}"
       Rails.logger.debug "Received payload: #{payload.inspect}"
 
@@ -70,6 +70,10 @@ class PaymentsController < ApplicationController
   end
 
   private
+
+  def webhook_params
+    params.require(:payload).permit!
+  end
 
   def handle_payment_payload(payment_data, user, invoice)
     Payment.create!(
