@@ -30,6 +30,10 @@ class PaymentsController < ApplicationController
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
       invoice = Invoice.find_by(id: payload["extra"]["invoiceId"])
+      if invoice.nil?
+        Rails.logger.error "Invoice not found with id: #{payload['extra']['invoice_id']}"
+        return render json: { error: "Invoice not found" }, status: :not_found
+      end
 
       if payload["status"] == "completed"
         handle_payment_payload(payload, user, invoice)
