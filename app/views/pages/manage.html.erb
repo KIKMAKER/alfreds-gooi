@@ -1,6 +1,10 @@
 <div class="user-wrapper">
   <div  data-controller="toggle">
-    <% if @unpaid_invoice %>
+    <% if @subscription.street_address == "" %>
+     <h2>We seem to be missing some of your details</h2>
+      <p>Please update your subscription so we can get you gooiing!</p>
+      <%= link_to "update subscription", edit_subscription_path(@subscription) %>
+    <% elsif @unpaid_invoice %>
       <h2>You have an unpaid invoice</h2>
       <p>Please settle your account to continue gooiing</p>
       <%= link_to "view invoice", invoice_path(@unpaid_invoice) %>

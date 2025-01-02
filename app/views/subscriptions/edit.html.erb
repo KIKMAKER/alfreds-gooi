@@ -1,26 +1,22 @@
-<div class="collection-container">
-  <div class="collection-body">
-    <div class="centre">
-      <h1>Add some details to your subscription for <%= @subscription.user.first_name %></h1>
+<div class="user-wrapper">
+  <h1>Add some details to your subscription</h1>
+  <%= simple_form_for(@subscription) do |f| %>
+    <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+      <%= f.input :suburb, collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
+      <%= f.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
+      <%= f.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
     </div>
-    <%= simple_form_for(@subscription) do |f| %>
-      <%= f.input :street_address %>
-      <%= f.input :suburb %>
-      <% if current_user.admin? %>
-        <%= f.input :customer_id %>
-        <%= f.input :duration %>
-        <%= f.input :start_date %>
-        <%= f.input :collection_order %>
-        <%= f.input :is_paused %>
 
-        <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>
-
-      <% end %>
-
-
-      <div class="centre">
-        <%= f.button :submit, "Update Subscription", class: "gooi-submit-button" %>
-      </div>
+    <% if current_user.admin? %>
+      <%= f.input :customer_id %>
+      <%= f.input :duration %>
+      <%= f.input :start_date %>
+      <%= f.input :collection_order %>
+      <%= f.input :is_paused %>
+      <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>
     <% end %>
-  </div>
+    <div class="centre mt-3">
+      <%= f.button :submit, "Update", class: "sign-up-btn" %>
+    </div>
+  <% end %>
 </div>

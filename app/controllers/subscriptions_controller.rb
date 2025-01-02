@@ -58,7 +58,7 @@ class SubscriptionsController < ApplicationController
 
     if subscription.update(subscription_params)
       if subscription.user == current_user
-        redirect_to manage_path
+        redirect_to manage_path, notice: "Updated, thanks!"
       else
         redirect_to subscription_path(subscription)
       end
