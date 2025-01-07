@@ -25,7 +25,7 @@ class Subscription < ApplicationRecord
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
-  enum status: %i[active pause pending completed]
+  enum status: %i[pending active pause completed]
   enum plan: %i[once_off Standard XL]
   enum collection_day: Date::DAYNAMES
 
