@@ -17,7 +17,7 @@
           <div class="grid-item">
             <% if today_collection %>
               <%= today_collection.alfred_message %>
-            <% elsif today_collection.skip %>
+            <% elsif today_collection&.skip %>
               <p>Skipped</p>
             <% else %>
               <p>No message from Alfred yet</p>
@@ -27,7 +27,7 @@
             <% if today_collection.nil? %>
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
             <% else %>
-              <% if today_collection.skip %>
+              <% if today_collection&.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection) %>
               <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
                 <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}. Collect more?", edit_collection_path(today_collection) %>
