@@ -79,6 +79,14 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def reassign_collections
+    subscription = Subscription.find(params[:id])
+    user = subscription.user
+    additional_collections = subscription.remaining_collections&.to_i.truncate * -1
+    new_sub = user.duplicate_subscription_with_collections(additional_collections)
+    redirect_to subscriptions_path, notice: "collections reassigned"
+  end
+
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
     new = params[:new]

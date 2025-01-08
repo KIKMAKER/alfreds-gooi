@@ -117,13 +117,13 @@ class CollectionsController < ApplicationController
   end
 
   def add_bags
+
     if @collection.needs_bags == 3
-      flash[:notice] = "Maximum bags reached"
+      redirect_to manage_path, notice: "Maximum bags reached"
     else
       @collection.needs_bags += 1
-      if @collection.save
-        redirect_to manage_path
-        flash[:notice] = "Added bags"
+      if @collection.save!
+        redirect_to manage_path, notice: "Added bags"
       end
 
     end
@@ -131,12 +131,11 @@ class CollectionsController < ApplicationController
 
   def remove_bags
     if @collection.needs_bags == 0
-      flash[:notice] = "Minimum bags reached"
+      redirect_to manage_path, notice: "Minimum bags reached"
     else
       @collection.needs_bags -= 1
-      if @collection.save
-        redirect_to manage_path
-        flash[:notice] = "Removed bags"
+      if @collection.save!
+        redirect_to manage_path, notice: "Removed bags"
       end
 
     end
