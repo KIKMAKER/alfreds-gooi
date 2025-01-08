@@ -1,7 +1,11 @@
 class InvoicesController < ApplicationController
 
   def index
-    @invoices = Invoice.all
+    if current_user.admin?
+      @invoices = Invoice.all
+    elsif current_user.customer?
+      @invoices = current_user.invoices
+    end
   end
   def new
     @invoice = Invoice.new

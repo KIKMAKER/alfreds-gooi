@@ -3,10 +3,11 @@ Rails.application.routes.draw do
 
   # admin
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
   # payments
-  resources :webhooks, only: :create
+  # resources :webhooks, only: :create
   get 'snapscan/payments', to: 'payments#fetch_snapscan_payments'
   resources :payments, only: :index
 
@@ -64,6 +65,8 @@ Rails.application.routes.draw do
       # route to clear holiday
       post :clear_holiday
       patch :holiday_dates
+      get :complete
+      get :reassign_collections
     end
   end
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes

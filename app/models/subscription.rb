@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
-    self.create_initial_invoice
+    # self.create_initial_invoice
   end
 
   # accepts_nested_attributes_for :contacts
@@ -25,7 +25,7 @@ class Subscription < ApplicationRecord
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
-  enum status: %i[active pause pending completed]
+  enum status: %i[pending active pause completed]
   enum plan: %i[once_off Standard XL]
   enum collection_day: Date::DAYNAMES
 
@@ -79,6 +79,12 @@ class Subscription < ApplicationRecord
     collections.count
   end
 
+  def remaining_collections
+    total = duration * 4.4
+    remaining = total - self.total_collections
+    return remaining
+  end
+
   def skipped_collections
     collections.where(skip: true).count
   end
@@ -130,7 +136,7 @@ class Subscription < ApplicationRecord
 
   def determine_starter_kit_title(plan)
     case plan
-    when "standard"
+    when "Standard"
       "Standard Starter Kit"
     when "XL"
       "XL Starter Kit"
@@ -143,7 +149,7 @@ class Subscription < ApplicationRecord
 
   def determine_subscription_title(duration, plan)
     case plan
-    when "standard"
+    when "Standard"
       case duration
       when 1
         "Standard 1 month subscription"

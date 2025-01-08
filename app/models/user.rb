@@ -30,6 +30,33 @@ class User < ApplicationRecord
     subscriptions.joins(:collections).count
   end
 
+  def duplicate_subscription_with_collections(num_collections)
+    # Find the user's last subscription
+
+    last_subscription = subscriptions.order(created_at: :desc).first
+    return nil unless last_subscription
+
+    # Duplicate the subscription
+    new_subscription = last_subscription.dup
+    new_subscription.start_date = last_subscription.start_date + last_subscription.duration.months
+    
+    new_subscription.is_new_customer = false # Mark as new customer
+    if new_subscription.save!
+      # Find the last n collections of the prior subscription
+      collections_to_reassign = last_subscription.collections.order(time: :desc).limit(num_collections)
+
+      # Reassign collections to the new subscription
+      collections_to_reassign.update_all(subscription_id: new_subscription.id)
+
+      # Return the new subscription
+      new_subscription
+    else
+      # Handle errors during subscription duplication
+      Rails.logger.error("Failed to create new subscription: #{new_subscription.errors.full_messages.join(', ')}")
+      nil
+    end
+  end
+
 
   private
 
