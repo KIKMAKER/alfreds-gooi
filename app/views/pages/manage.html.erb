@@ -1,7 +1,7 @@
 <div class="user-wrapper">
   <div  data-controller="toggle">
     <% if @subscription.street_address == "" %>
-     <h2>We seem to be missing some of your details</h2>
+      <h2>We seem to be missing some of your details</h2>
       <p>Please update your subscription so we can get you gooiing!</p>
       <%= link_to "update subscription", edit_subscription_path(@subscription) %>
     <% elsif @unpaid_invoice %>
@@ -15,7 +15,7 @@
           <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
           <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
         </div>
-      <% elsif @subscription.collections.count == 0 %>
+      <% elsif @subscription.is_new_customer %>
         <div class="text-center">
           <h2>get ready to start gooiing!</h2>
           <p>Please add us to your contacts list and feel free to get in touch with any comments or questions</p>
@@ -25,19 +25,25 @@
           <% end %>
         </div>
       <% else %>
-        <p class="text-center mb-3"><%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
-        <div class="text-center ">
-          <div class="container-flex justify-content-center">
-            <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
-            <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
-            <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+        <% if @subscription.collections.any? %>
+          <% if @subscription.collections.last.date >= Date.today %>
+            <p class="text-center mb-3">Your next collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
+          <% else %>
+            <p class="text-center mb-3">Your last collection was on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
+          <% end %>
+          <div class="text-center">
+            <div class="container-flex justify-content-center">
+              <%= button_to "-", remove_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+              <p class="text-center mx-3"><%= @subscription.collections.last.needs_bags %></p>
+              <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
+            </div>
+            <p class="text-center">bags</p>
+            <div class="container-flex mt-3">
+              <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
+              <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
+            </div>
           </div>
-          <p class="text-center">bags</p>
-          <div class="container-flex mt-3">
-            <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
-            <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
-          </div>
-        </div>
+        <% end %>
       <% end %>
       <% unless @subscription.collections.empty? %>
         <div data-toggle-target="form" class="d-none mt-3">
@@ -47,14 +53,14 @@
           <% end %>
         </div>
       <% end %>
-      <%# if @days_left < 21 %>
-      <!--      <div class="mt-4 container-flex flex-column text-center align-items-center">
-        <p>Your subscription will come to an end in <%#= @days_left / 7 %> weeks</p>
-        <%#= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>-->
-      <!--      </div>-->
-      <%# end %>
+      <% if @days_left < 2 %>
+        <div class="mt-4 container-flex flex-column text-center align-items-center">
+          <p>Your subscription will come to an end in <%= pluralize(@days_left, 'week') %>.</p>
+          <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
+        </div>
+      <% end %>
       <div class="user-holiday-container" data-controller="toggle">
-        <% if @subscription.holiday_start == nil || @subscription.holiday_end == nil %>
+        <% if @subscription.holiday_end < Date.today %>
           <h2>Need to skip more than one week?</h2>
           <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
           <div class="card-white d-none" data-toggle-target="form">

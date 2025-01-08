@@ -42,7 +42,7 @@ class SubscriptionsController < ApplicationController
     @subscription.is_new_customer = false
 
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, params[:og])
+      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
       render :new, status: :unprocessable_entity
