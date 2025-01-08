@@ -12,7 +12,7 @@ class Subscription < ApplicationRecord
 
 
   after_create do
-    self.set_customer_id unless self.customer_id
+    self.set_customer_id unless self.customer_id 
     # self.set_suburb
     self.set_collection_day
     self.create_initial_invoice
