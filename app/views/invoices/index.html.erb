@@ -1,8 +1,27 @@
-<div class="driver-wrapper mb-2">
+<div class="driver-wrapper link-decoration mb-2">
   <h1>All invoices</h1>
   <% @invoices.each do |invoice| %>
-    <%= link_to invoice_path(invoice) do %>
-      <p><%= "#{invoice.subscription.user.first_name}" %> issued: <%= invoice.issued_date.strftime('%b %d') %></p>
+    <% if current_user.admin? %>
+      <%= link_to invoice_path(invoice) do %>
+        <p><%= "#{invoice.subscription.user.first_name}" %> issued: <%= invoice.issued_date.strftime('%b %d') %></p>
+      <% end %>
+    <% else %>
+      <%= link_to invoice_path(invoice) do %>
+        <div class="payment-card">
+          <p><%= invoice.issued_date.strftime('%b %d') %></p>
+          <div class="payment-card-user">
+            <%= invoice.subscription.street_address %>
+          </div>
+          <div class="payment-card-amount">
+            <h2>R<%= invoice.total_amount.truncate %></h2>
+          </div>
+          <% if invoice.paid %>
+            <i class="fa-regular fa-circle-check"></i>
+          <% else %>
+            <i class="fa-regular fa-circle-xmark"></i>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
 </div>

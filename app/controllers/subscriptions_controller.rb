@@ -11,6 +11,7 @@ class SubscriptionsController < ApplicationController
 
   def show
     @subscription = Subscription.find(params[:id])
+    @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
     @collections = @subscription.collections
 
     @total_collections = @subscription.total_collections
@@ -41,7 +42,7 @@ class SubscriptionsController < ApplicationController
     @subscription.is_new_customer = false
 
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, params[:og])
+      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
       render :new, status: :unprocessable_entity
@@ -68,9 +69,20 @@ class SubscriptionsController < ApplicationController
 
   end
 
+  def complete
+    @subscription = Subscription.find(params[:id])
+    @subscription.completed!
+    if @subscription.update!(end_date: Date.today)
+      redirect_to subscription_path(@subscription), notice: "#{@subscription.user.first_name}'s subscription marked complete"
+    else
+      redirect_to subscription_path(@subscription), notice: "Error marking #{@subscription.user.first_name}'s subscription complete"
+    end
+  end
+
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
-    create_invoice_for_subscription(@subscription, nil)  if @subscription.invoices.empty?
+    new = params[:new]
+    create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -242,7 +254,7 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og)
+  def create_invoice_for_subscription(subscription, og, new)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
@@ -253,16 +265,27 @@ class SubscriptionsController < ApplicationController
     # Add the subscription product to the invoice
     if og
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
+
     else
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
     end
     raise "Product not found" unless product
+
+    if new
+      starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
+      invoice.invoice_items.create!(
+        product: starter_kit,
+        quantity: 1,
+        amount: starter_kit.price
+      )
+    end
 
     invoice.invoice_items.create!(
       product: product,
       quantity: 1,
       amount: product.price
     )
+
 
     invoice.calculate_total
     invoice
