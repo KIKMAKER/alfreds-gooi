@@ -11,6 +11,7 @@ class SubscriptionsController < ApplicationController
 
   def show
     @subscription = Subscription.find(params[:id])
+    @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
     @collections = @subscription.collections
 
     @total_collections = @subscription.total_collections
@@ -66,6 +67,16 @@ class SubscriptionsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
 
+  end
+
+  def complete
+    @subscription = Subscription.find(params[:id])
+    @subscription.completed!
+    if @subscription.update!(end_date: Date.today)
+      redirect_to subscription_path(@subscription), notice: "#{@subscription.user.first_name}'s subscription marked complete"
+    else
+      redirect_to subscription_path(@subscription), notice: "Error marking #{@subscription.user.first_name}'s subscription complete"
+    end
   end
 
   def welcome_invoice
@@ -275,7 +286,7 @@ class SubscriptionsController < ApplicationController
       amount: product.price
     )
 
-   
+
     invoice.calculate_total
     invoice
   end
