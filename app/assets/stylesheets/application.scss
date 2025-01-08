@@ -13,6 +13,11 @@
 @import "components/index";
 @import "pages/index";
 
+.link-decoration {
+  a {
+    text-decoration: none;
+  }
+}
 
 h1 {
   font-family: 'Libre Baskerville', serif;

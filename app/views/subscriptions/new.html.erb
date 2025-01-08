@@ -1,6 +1,6 @@
 <div class="user-wrapper">
   <div class="collection-body">
-    <h1 class = "collection-header">Pick a subscription option</h1>
+    <h1 class= "collection-header">Pick a subscription option</h1>
     <% if current_user.admin? %>
       <%= simple_form_for(@subscription) do |f| %>
         <%= f.input :customer_id %>
@@ -17,83 +17,89 @@
       <section>
         <div class="subscription-rates-update">
           <div class="standard-months-container">
+            <h2 >Standard Subscriptions</h2>
             <% if current_user.total_collections > 1 %>
+              <p>As an Original Gooier you get our special price if you sign up for six month</p>
               <div class="month-card">
-                <h3>6 month Original Gooier</h3>
-                <p class="pricing-text"><strong>R120</strong> per month</p>
-                <p class="pricing-text"><strong>Total:</strong> R720</p>
+                <p>6 month OG</p>
+                <h3 class="pricing-text mt-2"><strong>R720</strong></h3>
+                <p class="pricing-text">R120 per month</p>
                 <div>
                   <br>
                   <%= button_to 'Select', subscriptions_path,
-               params: { subscription: { plan: 'Standard', duration: '6'}, og: true  },
+               params: { subscription: { plan: 'Standard', duration: '6'}, og: true, new: false  },
                method: :post,
                class: "sign-up-btn" %>
                 </div>
               </div>
+              <p>Or...</p>
             <% end %>
+            <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
             <div class="month-card">
-              <h3>1 month</h3>
-              <p class="pricing-text"><strong>R260</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R260</p>
+              <p>1 month</p>
+              <h3 class="pricing-text mt-2"><strong>R260</strong></h3>
+              <p class="pricing-text">R260 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: { subscription: { plan: 'Standard', duration: '1' } },
+               params: { subscription: { plan: 'Standard', duration: '1' }, og: false, new: false },
                method: :post,
                class: "sign-up-btn" %>
               </div>
             </div>
             <div class="month-card">
-              <h3>3 months</h3>
-              <p class="pricing-text"><strong>R220</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R660</p>
+              <p>3 months</p>
+              <h3 class="pricing-text mt-2"><strong>R660</strong></h3>
+              <p class="pricing-text">R220 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'Standard', duration: '3' } }, method: :post, class: "sign-up-btn"  %>
+               params: {subscription: { plan: 'Standard', duration: '3' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card popular">
               <h4>Most popular</h4>
-              <h3>6 months</h3>
-              <p class="pricing-text"><strong>R180</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R1080</p>
+              <p>6 months</p>
+              <h3 class="pricing-text mt-2"><strong>R1080</strong></h3>
+              <p class="pricing-text">R180 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'Standard', duration: '6' } }, method: :post, class: "sign-up-btn"  %>
+               params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
           </div>
+          <h2>XL Subscriptions</h2>
+          <p>Pick a duration for a weekly pick up of 1 large bucket of compostable waste</p>
           <div class="standard-months-container">
             <div class="month-card">
-              <h3>1 month</h3>
-              <p class="pricing-text"><strong>R300</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R300</p>
+              <p>1 month</p>
+              <h3 class="pricing-text mt-2"><strong>R300</strong></h3>
+              <p class="pricing-text">R300 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '1' } }, method: :post, class: "sign-up-btn"  %>
+               params: {subscription: { plan: 'XL', duration: '1' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card">
-              <h3>3 months</h3>
-              <p class="pricing-text"><strong>R270</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R810</p>
+              <p>3 months</p>
+              <h3 class="pricing-text mt-2"><strong>R810</strong></h3>
+              <p class="pricing-text">R270 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '3'} }, method: :post, class: "sign-up-btn"  %>
+               params: {subscription: { plan: 'XL', duration: '3'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card">
-              <h3>6 months</h3>
-              <p class="pricing-text"><strong>R240</strong> per month</p>
-              <p class="pricing-text"><strong>Total:</strong> R1440</p>
+              <p>6 months</p>
+              <h3 class="pricing-text mt-2"><strong>R1440</strong></h3>
+              <p class="pricing-text">R240 per month</p>
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '6'} }, method: :post, class: "sign-up-btn"  %>
+               params: {subscription: { plan: 'XL', duration: '6'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
           </div>
