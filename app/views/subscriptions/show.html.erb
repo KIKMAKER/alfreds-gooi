@@ -1,18 +1,22 @@
 <div class="gooi-container">
   <div class="outline">
     <div>
-      <h1><%= @subscription.user.first_name %>'s Subscription</h1>
-      <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
-      <br>
-      <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
-      <br>
-      <%= link_to "View all collections", subscription_collections_path(@subscription) %>
-      <br>
+      <div>
+        <h1><%= @subscription.user.first_name %>'s <%= @subscription.completed? ? 'Completed' : "" %> Subscription</h1>
+      </div>
+      <div>
+        <h2>Details</h2>
+        <p>Plan: <%= @subscription.plan %></p>
+        <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
+        <p>Collection day: <%= @subscription.collection_day %></p>
+        <p>Address: <%= @subscription.street_address %></p>
+        <p>Collection Order: <%= @subscription.collection_order %></p>
+      </div>
       <div>
         <br>
         <h2>Summary</h2>
-        <p>Total collection: <%= @total_collections %></p>
-        <p>Skipped collection: <%= @skipped_collections %></p>
+        <p>Total collections: <%= @total_collections %></p>
+        <p>Skipped collections: <%= @skipped_collections %></p>
         <% if @subscription.XL? %>
           <p>Total Buckets: <%= @total_buckets %></p>
           <p>Buckets in the Last Month: <%= @buckets_last_month %></p>
@@ -26,19 +30,22 @@
         <% end %>
       </div>
       <br>
-      <div>
-        <h2>Details</h2>
-        <p>Plan: <%= @subscription.plan %></p>
-        <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
-        <p>Collection day: <%= @subscription.collection_day %></p>
-        <p>Address: <%= @subscription.street_address %></p>
-        <p>Collection Order: <%= @subscription.collection_order %></p>
-      </div>
+      <%= link_to "Create new collection", new_subscription_collection_path(@subscription) %>
+      <br>
+      <%= link_to "Edit this subscription", edit_subscription_path(@subscription) %>
+      <br>
+      <%= link_to "View all collections", subscription_collections_path(@subscription) %>
+      <br>
+      <br>
+      <% unless @subscription.completed? %>
+        <%= link_to "mark complete", complete_subscription_path(@subscription), class: 'small-yellow-btn' %>
+      <% else %>
+        <%= link_to "latest subscription", subscription_path(@next_subscription)  %>
+      <% end %>
+      <br>
     </div>
     <div class="outline">
       <%= link_to "All Subscriptions", subscriptions_path %>
     </div>
   </div>
 </div>
-
-<%=  %>
