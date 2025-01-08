@@ -6,7 +6,8 @@
     <div class="links-container">
       <%#= link_to 'The story', the_story_path, class:"link-title" %>
       <%#= link_to 'How we compost', root_path, class: "link-title" %>
-      <%= link_to 'Manage Sub', manage_path, class: "link-title" %>
+      <%= link_to 'Collections', manage_path, class: "link-title" %>
+      <%= link_to "Invoices", invoices_path, class: "link-title" %>
       <% if user_signed_in?  %>
         <div class="sign-up-btn">
           <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
@@ -24,15 +25,11 @@
         <li class="nav-item dropdown">
           <%= image_tag 'menu-svgrepo-com.png', class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false %>
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
-            <% if current_user.invoices.any? %>
-
-            <% else %>
-
-            <% end %>
-
             <%= link_to 'The Story', story_path, class: "dropdown-item" %>
-            <%= link_to "Manage", manage_path, class: "dropdown-item" %>
+            <% if current_user.invoices.any? %>
+              <%= link_to "Invoices", invoices_path, class: "dropdown-item" %>
+            <% end %>
+            <%= link_to "Collections", manage_path, class: "dropdown-item" %>
             <%= link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
           </div>
         </li>
