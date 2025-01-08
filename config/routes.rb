@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       post :clear_holiday
       patch :holiday_dates
       get :complete
+      get :reassign_collections
     end
   end
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes

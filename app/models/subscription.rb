@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
-    self.create_initial_invoice
+    # self.create_initial_invoice
   end
 
   # accepts_nested_attributes_for :contacts
@@ -136,7 +136,7 @@ class Subscription < ApplicationRecord
 
   def determine_starter_kit_title(plan)
     case plan
-    when "standard"
+    when "Standard"
       "Standard Starter Kit"
     when "XL"
       "XL Starter Kit"
@@ -149,7 +149,7 @@ class Subscription < ApplicationRecord
 
   def determine_subscription_title(duration, plan)
     case plan
-    when "standard"
+    when "Standard"
       case duration
       when 1
         "Standard 1 month subscription"
