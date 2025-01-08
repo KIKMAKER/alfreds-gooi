@@ -14,19 +14,38 @@
             <th scope="col">Customer ID</th>
             <th scope="col">Name</th>
             <th scope="col">Start Date</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Total Collections</th>
+            <th scope="col">Remaining Collections</th>
             <th scope="col">Holiday Start</th>
             <th scope="col">Holiday End</th>
           </tr>
         </thead>
         <tbody>
           <% @subscriptions.each do |subscription| %>
-            <tr>
-              <td><%= subscription.customer_id %></td>
-              <td><%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %></td>
-              <td><%= subscription.start_date&.strftime('%e %B %Y') %></td>
-              <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
-              <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
-            </tr>
+            <% if subscription.completed? %>
+              <s>
+              <% end %>
+              <tr>
+                <td><%= subscription.customer_id %></td>
+                <td>
+                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+                </td>
+                <td><%= subscription.start_date&.strftime('%e %B %Y') %></td>
+                <td><%= subscription.duration %></td>
+                <td><%= subscription.total_collections %></td>
+                <td>
+                  <% if subscription.remaining_collections < -1 %>
+                    <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                  <% else %>
+                    <%= subscription.remaining_collections&.to_i.truncate %></td>
+                <% end %>
+                <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
+                <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
+              </tr>
+              <% if subscription.completed? %>
+              </s>
+            <% end %>
           <% end %>
         </table>
       </div>
