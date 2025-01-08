@@ -136,7 +136,7 @@ class Subscription < ApplicationRecord
 
   def determine_starter_kit_title(plan)
     case plan
-    when "standard"
+    when "Standard"
       "Standard Starter Kit"
     when "XL"
       "XL Starter Kit"
@@ -149,7 +149,7 @@ class Subscription < ApplicationRecord
 
   def determine_subscription_title(duration, plan)
     case plan
-    when "standard"
+    when "Standard"
       case duration
       when 1
         "Standard 1 month subscription"
