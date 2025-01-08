@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
-    self.create_initial_invoice
+    # self.create_initial_invoice
   end
 
   # accepts_nested_attributes_for :contacts
