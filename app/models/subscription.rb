@@ -12,7 +12,7 @@ class Subscription < ApplicationRecord
 
 
   after_create do
-    self.set_customer_id unless self.customer_id 
+    self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
     self.create_initial_invoice
@@ -77,6 +77,12 @@ class Subscription < ApplicationRecord
 
   def total_collections
     collections.count
+  end
+
+  def remaining_collections
+    total = duration * 4.4
+    remaining = total - self.total_collections
+    return remaining
   end
 
   def skipped_collections
