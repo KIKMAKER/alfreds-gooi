@@ -70,7 +70,8 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
-    create_invoice_for_subscription(@subscription, nil)  if @subscription.invoices.empty?
+    new = params[:new]
+    create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -242,7 +243,7 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og)
+  def create_invoice_for_subscription(subscription, og, new)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
@@ -253,10 +254,20 @@ class SubscriptionsController < ApplicationController
     # Add the subscription product to the invoice
     if og
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
+
     else
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
     end
     raise "Product not found" unless product
+
+    if new
+      starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
+      invoice.invoice_items.create!(
+        product: starter_kit,
+        quantity: 1,
+        amount: starter_kit.price
+      )
+    end
 
     invoice.invoice_items.create!(
       product: product,
@@ -264,6 +275,7 @@ class SubscriptionsController < ApplicationController
       amount: product.price
     )
 
+   
     invoice.calculate_total
     invoice
   end
