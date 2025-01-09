@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
-    # self.create_initial_invoice
+    self.create_initial_invoice if is_new_customer
   end
 
   # accepts_nested_attributes_for :contacts
@@ -31,8 +31,8 @@ class Subscription < ApplicationRecord
 
   SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
-  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof",  "Woodstock", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
-  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Observatory", "Salt River"].sort!.freeze
+  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
+  THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Observatory", ].sort!.freeze
 
 
   # initial invoice generation (after sign up)
@@ -64,6 +64,7 @@ class Subscription < ApplicationRecord
     )
 
     invoice.invoice_items.sum('amount * quantity')
+    raise
     invoice.save!
   end
 
