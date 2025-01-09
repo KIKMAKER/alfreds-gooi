@@ -11,7 +11,6 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
     self.set_collection_day
-
   end
 
   # accepts_nested_attributes_for :contacts
