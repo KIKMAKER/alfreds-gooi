@@ -57,7 +57,7 @@ class PaymentsController < ApplicationController
 
   def fetch_snapscan_payments
     # Refactor to model
-    api_key = ENV['WEBHOOK_AUTH_KEY']
+    api_key = ENV['SNAPSCAN_API_KEY']
     service = SnapscanService.new(api_key)
     payments = service.fetch_payments
 
