@@ -70,7 +70,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def after_sign_up_path_for(resource)
     if resource.persisted?
-      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
+      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb], is_new_customer: true)
       if @subscription
         welcome_invoice_subscription_path(@subscription, new: true)
       else
@@ -81,7 +81,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
     # resource.create_initial_invoice
     # subscription = resource.subscriptions.first
-    # invoice = subscription.invoices.first
+    # invoice = subscription.invoices.first``
   end
 
 end
