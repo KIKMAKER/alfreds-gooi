@@ -292,7 +292,6 @@ class SubscriptionsController < ApplicationController
         quantity: 1,
         amount: starter_kit.price
       )
-      raise
     end
 
     invoice.invoice_items.create!(
