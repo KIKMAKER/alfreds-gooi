@@ -12,9 +12,9 @@ class PaymentsController < ApplicationController
   end
 
   def snapscan_webhook
-    Rails.logger.info "INFO: Testing logging in production."
-    Rails.logger.debug "DEBUG: Testing detailed logging in production."
-    Rails.logger.error "ERROR: Testing error logging in production."
+    # Rails.logger.info "INFO: Testing logging in production."
+    # Rails.logger.debug "DEBUG: Testing detailed logging in production."
+    # Rails.logger.error "ERROR: Testing error logging in production."
 
     begin
       request_body = request.body.read
@@ -29,14 +29,13 @@ class PaymentsController < ApplicationController
       # payload = JSON.parse(parsed_params["payload"])
       payload = JSON.parse(params[:payload])
 
-
       puts ">>> Received payload: #{payload.inspect}"
       Rails.logger.debug "Received payload: #{payload.inspect}"
 
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoiceId"])
+      invoice = Invoice.find_by(id: payload["extra"]["invoiceId"].to_i)
       if invoice.nil?
         Rails.logger.error "Invoice not found with id: #{payload['extra']['invoice_id']}"
         puts "Invoice not found with id: #{payload['extra']['invoice_id']}"

@@ -88,6 +88,10 @@ class SubscriptionsController < ApplicationController
     redirect_to subscriptions_path, notice: "collections reassigned"
   end
 
+  def welcome
+    @subscription = Subscription.find(params[:id])
+  end
+
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
     new = params[:new]
