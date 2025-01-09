@@ -40,9 +40,11 @@ class SubscriptionsController < ApplicationController
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
+    current_user.subscriptions.last.completed! if current_user.subscriptions.any?
 
     if @subscription.save!
       @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
+
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
       render :new, status: :unprocessable_entity
@@ -278,19 +280,19 @@ class SubscriptionsController < ApplicationController
     # Add the subscription product to the invoice
     if og
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
-
     else
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
     end
     raise "Product not found" unless product
 
-    if new
+    if new == "true"
       starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
       invoice.invoice_items.create!(
         product: starter_kit,
         quantity: 1,
         amount: starter_kit.price
       )
+      raise
     end
 
     invoice.invoice_items.create!(
