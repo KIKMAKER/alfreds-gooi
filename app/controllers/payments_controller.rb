@@ -35,7 +35,7 @@ class PaymentsController < ApplicationController
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoiceId"].to_i)
+      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
       if invoice.nil?
         Rails.logger.error "Invoice not found with id: #{payload['extra']['invoice_id']}"
         puts "Invoice not found with id: #{payload['extra']['invoice_id']}"
