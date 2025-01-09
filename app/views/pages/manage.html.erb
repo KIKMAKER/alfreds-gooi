@@ -17,9 +17,9 @@
         </div>
       <% elsif @subscription.is_new_customer %>
         <div class="text-center">
-          <h2>get ready to start gooiing!</h2>
-          <p>Please add us to your contacts list and feel free to get in touch with any comments or questions</p>
-          <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
+          <h3>get ready to start gooiing!</h3>
+          <p>Please add us to your contacts list and feel free to get in touch with any comments or questions.</p>
+          <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday > 5 ? "this" : "next" %> week.</p>
           <%= link_to "https://wa.me/+27785325513", class: 'icon-link', target: '_blank' do %>
             <i class="fa-brands fa-whatsapp"></i>
           <% end %>

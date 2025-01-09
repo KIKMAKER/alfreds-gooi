@@ -39,8 +39,8 @@ class User < ApplicationRecord
     # Duplicate the subscription
     new_subscription = last_subscription.dup
     new_subscription.start_date = last_subscription.start_date + last_subscription.duration.months
-    
-    new_subscription.is_new_customer = false # Mark as new customer
+
+    new_subscription.is_new_customer = false
     if new_subscription.save!
       # Find the last n collections of the prior subscription
       collections_to_reassign = last_subscription.collections.order(time: :desc).limit(num_collections)

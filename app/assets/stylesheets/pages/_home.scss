@@ -435,6 +435,8 @@ section {
 .toggle-container {
   display: flex;
   justify-content: center;
+  margin: 16px 0px;
+  margin-bottom: 26px;
 }
 
 .toggle {
@@ -499,10 +501,6 @@ input[type="checkbox"].toggle:checked+label::before {
   align-items: center;
   display: flex;
   margin: 24px 5%;
-}
-
-.toggle-container {
-  margin: 16px 0px;
 }
 
 .pricing-section {

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       post :import_csv
     end
     member do
+      get :welcome
       get :welcome_invoice
       post :pause
       # route to unpause subscription
