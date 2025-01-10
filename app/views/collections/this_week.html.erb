@@ -5,6 +5,7 @@
     <%= link_to 'Import collections', load_csv_collections_path, class: 'small-yellow-btn' %>
     <%= button_to 'Create Todays Collections', perform_create_today_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
     <%= button_to 'Create Tomorrows Collections', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
+    <%= button_to 'Create Next Week Collections', perform_create_next_week_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   </div>
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>

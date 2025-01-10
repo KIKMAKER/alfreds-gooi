@@ -10,6 +10,25 @@ class SnapscanService
     @uri = URI(SNAPSCAN_URL)
   end
 
+  def reconcile_old_payments
+    payments = fetch_payments
+    return unless payments
+
+    payments.each do |payment|
+      next if Payment.exists?(snapscan_id: payment['id']) # Skip if already persisted
+
+      Payment.create!(
+        snapscan_id: payment['id'],
+        amount: payment['amount'],
+        status: payment['status'],
+        timestamp: payment['timestamp'],
+        reference: payment['reference']
+      )
+    end
+
+    puts "Reconciliation complete. Persisted payments: #{payments.count}"
+  end
+
   def fetch_payments
     Net::HTTP.start(@uri.host, @uri.port, use_ssl: @uri.scheme == 'https', verify_mode: OpenSSL::SSL::VERIFY_PEER) do |http|
       request = Net::HTTP::Get.new @uri.request_uri
