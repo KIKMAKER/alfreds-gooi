@@ -14,6 +14,12 @@ class CollectionsController < ApplicationController
     redirect_to this_week_collections_path
   end
 
+  def perform_create_next_week_collections
+    CreateNextWeekCollectionsJob.perform_now
+    flash[:notice] = "Create Next Week Collections Job has been triggered."
+    redirect_to this_week_collections_path
+  end
+
   def optimise_route
     drivers_day = DriversDay.find_by(date: Date.today)
     RouteOptimiser.optimise_route
