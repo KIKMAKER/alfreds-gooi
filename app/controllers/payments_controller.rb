@@ -91,30 +91,6 @@ class PaymentsController < ApplicationController
     invoice.update(paid: true)
   end
 
-  payments.each do |payment|
-    next if Payment.exists?(snapscan_id: payment['id']) # Skip if already persisted
-    user = User.find_by(customer_id: payment["merchantReference"])
-    unless user
-        subscription = Subscription.find_by(customer_id: payment["merchantReference"])
-        user = subscription.user
-    if user.update!(customer_id: payment["merchantReference"])
-    puts "user updated"
-    end
-    Payment.create!(
-            snapscan_id: payment["id"],
-      status: payment["status"],
-      total_amount: payment["totalAmount"],
-      tip_amount: payment["tipAmount"],
-      fee_amount: payment["feeAmount"],
-      settle_amount: payment["settleAmount"],
-      date: payment["date"],
-      user_reference: payment["userReference"],
-      merchant_reference: payment["merchantReference"],
-      user_id: subscription.user.id      )
-      end
-    end
-  end
-
   def update_subscription_status(merchant_reference)
     subscription = Subscription.find_by(customer_id: merchant_reference)
     if subscription
