@@ -16,7 +16,7 @@ class CollectionsController < ApplicationController
 
   def perform_create_next_week_collections
     CreateNextWeekCollectionsJob.perform_now
-    flash[:notice] = "Create Tomorrow Collections Job has been triggered."
+    flash[:notice] = "Create Next Week Collections Job has been triggered."
     redirect_to this_week_collections_path
   end
 
