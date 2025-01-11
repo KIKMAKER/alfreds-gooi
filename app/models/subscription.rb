@@ -32,10 +32,10 @@ class Subscription < ApplicationRecord
 
   def calculate_next_collection_day
     target_day = Date::DAYNAMES.index(collection_day.capitalize)
-    current_day = Date.today.wday
+    current_day = Time.zone.today.wday # Use Time.zone.today for time zone awareness
     days_until_next_collection = (target_day - current_day) % 7
     days_until_next_collection = 7 if days_until_next_collection.zero?
-    Date.today + days_until_next_collection
+    Time.zone.today + days_until_next_collection # Use Time.zone.today here as well
   end
 
   def total_collections
