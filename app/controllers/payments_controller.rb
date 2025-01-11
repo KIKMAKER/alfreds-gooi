@@ -94,7 +94,8 @@ class PaymentsController < ApplicationController
   def update_subscription_status(merchant_reference)
     subscription = Subscription.find_by(customer_id: merchant_reference)
     if subscription
-      subscription.update(
+      
+      subscription.update!(
         status: 'active',
         start_date: subscription.calculate_next_collection_day
       )
