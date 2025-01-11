@@ -87,7 +87,7 @@ class PaymentsController < ApplicationController
     )
     subscription = Subscription.find_by(customer_id: payment_data["merchantReference"])
     update_subscription_status(subscription)
-    CreateFirstCollectionsJob.perform_now(subscription)
+    CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
   end
 
