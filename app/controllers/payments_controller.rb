@@ -72,7 +72,6 @@ class PaymentsController < ApplicationController
 
   private
 
-
   def handle_payment_payload(payment_data, user, invoice)
     Payment.create!(
       snapscan_id: payment_data["id"],
@@ -86,45 +85,21 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-
-    update_subscription_status(payment_data["merchantReference"])
+    subscription = Subscription.find_by(customer_id: payment_data["merchantReference"])
+    update_subscription_status(subscription)
+    CreateFirstCollectionsJob.perform_now(subscription)
     invoice.update(paid: true)
   end
 
-  payments.each do |payment|
-    next if Payment.exists?(snapscan_id: payment['id']) # Skip if already persisted
-    user = User.find_by(customer_id: payment["merchantReference"])
-    unless user
-        subscription = Subscription.find_by(customer_id: payment["merchantReference"])
-        user = subscription.user
-    if user.update!(customer_id: payment["merchantReference"])
-    puts "user updated"
-    end
-    Payment.create!(
-            snapscan_id: payment["id"],
-      status: payment["status"],
-      total_amount: payment["totalAmount"],
-      tip_amount: payment["tipAmount"],
-      fee_amount: payment["feeAmount"],
-      settle_amount: payment["settleAmount"],
-      date: payment["date"],
-      user_reference: payment["userReference"],
-      merchant_reference: payment["merchantReference"],
-      user_id: subscription.user.id      )
-      end
-    end
-  end
-
-  def update_subscription_status(merchant_reference)
-    subscription = Subscription.find_by(customer_id: merchant_reference)
+  def update_subscription_status(subscription)
     if subscription
-      subscription.update(
+      subscription.update!(
         status: 'active',
         start_date: subscription.calculate_next_collection_day
       )
-      puts "Subscription #{subscription.id} for customer #{merchant_reference} updated to active with start date #{subscription.start_date}."
+      puts "Subscription #{subscription.id} for customer #{subscription.customer_id} updated to active with start date #{subscription.start_date}."
     else
-      puts "No subscription found for customer #{merchant_reference}."
+      puts "No subscription found for customer #{subscription.customer_id}."
     end
   end
 
