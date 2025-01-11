@@ -1,4 +1,4 @@
-class CreateFirstCollectionsJob < ApplicationJob
+class CreateFirstCollectionJob < ApplicationJob
   queue_as :default
 
   def perform(subscription)
