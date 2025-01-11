@@ -35,11 +35,12 @@ class CreateNextWeekCollectionsJob < ApplicationJob
     subscriptions = Subscription.where(collection_day: day_name)
     subscriptions.each do |subscription|
       next if subscription.status == "completed" # Skip completed subscriptions
-
-      collection = Collection.create!(
+      collection = Collection.find_or_create_by!(
         drivers_day: drivers_day,
         subscription: subscription,
-        date: collection_date,
+        date: collection_date)
+
+      collection.update!(
         skip: subscription.is_paused?
       )
       puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
