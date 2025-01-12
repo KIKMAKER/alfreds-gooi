@@ -4,10 +4,10 @@
       <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
     <% end %>
     <div class="links-container">
-      <%= link_to 'Subscriptions', subscriptions_path, class:"link-title" %>
-      <%= link_to 'Invoices', invoices_path, class:"link-title" %>
-      <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
-      <%= link_to 'this week', this_week_collections_path, class:"link-title" %>
+      <%= link_to 'subscriptions', subscriptions_path, class:"link-title" %>
+      <%= link_to 'invoices', invoices_path, class:"link-title" %>
+      <%= link_to 'payments', payments_path, class:"link-title" %>
+      <%= link_to 'collections', this_week_collections_path, class:"link-title" %>
 
       <% if user_signed_in?  %>
         <div class="sign-up-btn">
