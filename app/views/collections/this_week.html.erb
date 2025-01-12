@@ -1,11 +1,11 @@
 <div class="driver-wrapper">
-  <h1>Manage this weeks collections</h1>
+  <h2>Collections</h2>
+    <%= button_to 'Create for Next Week', perform_create_next_week_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
+  <div class="d-flex mt-3">
 
-  <div class="d-flex">
-    <%= link_to 'Import collections', load_csv_collections_path, class: 'small-yellow-btn' %>
-    <%= button_to 'Create Todays Collections', perform_create_today_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
-    <%= button_to 'Create Tomorrows Collections', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
-    <%= button_to 'Create Next Week Collections', perform_create_next_week_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
+    <%= link_to 'Import from CSV', load_csv_collections_path, class: 'small-yellow-btn' %>
+    <%= button_to 'Create for Today', perform_create_today_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
+    <%= button_to 'Create for Tomorrow', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   </div>
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>
@@ -32,9 +32,7 @@
       <h3>Select to skip</h3>
       <%= simple_form_for(:skip_today_collections, url: skip_today_collections_path, method: :patch) do |f| %>
         <% @unskipped_collections.each do |collection| %>
-
-            <%= f.input collection.id, label: collection.subscription.user.first_name, as: :boolean %>
-
+          <%= f.input collection.id, label: collection.subscription.user.first_name, as: :boolean %>
         <% end %>
         <%= f.submit "Update all", class: "small-yellow-btn" %>
       <% end %>
