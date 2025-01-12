@@ -1,5 +1,8 @@
 <div class="driver-wrapper link-decoration mb-2">
+<div class="d-flex">
   <h1>All invoices</h1>
+  <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
+</div>
   <% @invoices.each do |invoice| %>
     <% if current_user.admin? %>
       <%= link_to invoice_path(invoice) do %>
