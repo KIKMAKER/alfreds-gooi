@@ -77,6 +77,9 @@ Rails.application.routes.draw do
   # member routes are created with /drivers_day/:id/custom_route
   # these routes (the get and the patch) allow for form input to the instance of drivers day at each url
   resources :drivers_days do
+    collection do
+      get :route
+    end
     resources :collections, only: %i[index] do
       collection do
         post :reset_order
