@@ -32,7 +32,7 @@ class CreateNextWeekCollectionsJob < ApplicationJob
     puts "Driver's Day processed for #{collection_date}: #{drivers_day.user.first_name} with ID: #{drivers_day.id}"
 
     # Create collections for subscriptions assigned to this day
-    subscriptions = Subscription.where(collection_day: day_name)
+    subscriptions = Subscription.where(collection_day: day_name, status: "active")
     subscriptions.each do |subscription|
       next if subscription.status == "completed" # Skip completed subscriptions
       collection = Collection.find_or_create_by!(
