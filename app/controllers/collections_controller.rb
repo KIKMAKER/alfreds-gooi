@@ -57,7 +57,7 @@ class CollectionsController < ApplicationController
   # Regular CRUD stuff
   def index
     @subscription = Subscription.find(params[:subscription_id])
-    @collections = @subscription.collections
+    @collections = @subscription.collections.order(date: :desc)
   end
 
   def show
