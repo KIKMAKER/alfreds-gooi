@@ -4,7 +4,7 @@ class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
-    @payments = Payment.all.order(created_at: :desc)
+    @payments = Payment.all.order(date: :desc)
   end
 
   def show
