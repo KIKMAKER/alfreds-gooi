@@ -1,6 +1,7 @@
 require 'csv'
 puts "Welcome to the gooi seed file"
-puts "Enter 'y' to seed the database"
+puts "Enter 'y' to seed the whole database"
+puts "Enter 'products' to seed only products"
 puts "Enter 'p' to seed only payments"
 
 proceed = STDIN.gets.chomp.downcase
@@ -80,6 +81,78 @@ if proceed == "p"
 
   # Call the method to seed payments
   seed_payments
+
+elsif proceed == "products"
+  ## PRODUCTS
+  puts "Creating starter kits"
+
+  def seed_products(products)
+    products.each do |product|
+      Product.find_or_create_by!(title: product[:title]) do |p|
+        p.description = product[:description]
+        p.price = product[:price]
+      end
+    end
+  end
+
+  starter_kit_products = [
+    { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
+    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 }
+  ]
+
+  seed_products(starter_kit_products)
+  STARTER_KIT = Product.first
+
+  starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
+  puts "#{starter_kits} starter kits created"
+
+  puts "Creating standard subs"
+
+  standard_sub_products = [
+    { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
+    { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
+    { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
+    { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
+    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 },
+    { title: "Referral discount standard 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -39 },
+    { title: "Referral discount standard 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -99 },
+    { title: "Referral discount standard 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -162 }
+  ]
+
+  seed_products(standard_sub_products)
+
+  standard_subs = Product.where(title: standard_sub_products.map { |p| p[:title] }).count
+  puts "#{standard_subs} standard subscriptions created"
+
+  puts "Creating XL subs"
+
+  xl_sub_products = [
+    { title: "XL 1 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for one calendar month", price: 300 },
+    { title: "XL 3 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810 },
+    { title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440 },
+    { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -45 },
+    { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -122 },
+    { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -216 }
+  ]
+
+  seed_products(xl_sub_products)
+
+  xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
+  puts "#{xl_subs} XL subscriptions created"
+
+  puts "Creating additional stock"
+
+  additional_stock_products = [
+    { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
+    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 }
+  ]
+
+  seed_products(additional_stock_products)
+
+  puts "Additional stock created"
+
+  puts "A total of #{Product.count} products have been seeded to the DB."
+
 elsif proceed == "y"
   ## PRODUCTS
   puts "Creating starter kits"
