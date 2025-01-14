@@ -97,7 +97,8 @@ class SubscriptionsController < ApplicationController
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
     new = params[:new]
-    create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
+    referral_code = params[:referral_code]
+    create_invoice_for_subscription(@subscription, nil, new, referral_code) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -224,7 +225,7 @@ class SubscriptionsController < ApplicationController
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
-                  user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+                  user_attributes: [:id, :first_name, :last_name, :phone_number, :email], :referral_code)
   end
 
   def process_subscription(row)
@@ -269,7 +270,7 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og, new)
+  def create_invoice_for_subscription(subscription, og, new, referral_code)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
