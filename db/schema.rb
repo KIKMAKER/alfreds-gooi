@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_14_135338) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_14_142101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -114,6 +114,17 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_135338) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "referrals", force: :cascade do |t|
+    t.bigint "referrer_id", null: false
+    t.bigint "referee_id", null: false
+    t.bigint "subscription_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["referee_id"], name: "index_referrals_on_referee_id"
+    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
+    t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.string "customer_id"
     t.string "access_code"
@@ -168,5 +179,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_135338) do
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"
   add_foreign_key "payments", "users"
+  add_foreign_key "referrals", "subscriptions"
+  add_foreign_key "referrals", "users", column: "referee_id"
+  add_foreign_key "referrals", "users", column: "referrer_id"
   add_foreign_key "subscriptions", "users"
 end
