@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   before_validation :make_international
-  # after_create_commit :create_initial_invoice # unless subscriptions.count > 1
+  before_create :generate_referral_code
 
   enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
   has_many :subscriptions, dependent: :nullify
@@ -16,6 +16,7 @@ class User < ApplicationRecord
   # Callbacks
 
   # Custom validation
+  # validates :referral_code, uniqueness: true
   validate :valid_international_phone_number
 
   # custom methods
@@ -85,6 +86,11 @@ class User < ApplicationRecord
       puts errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
       false
     end
+  end
+
+  # before create
+  def generate_referral_code
+    self.referral_code ||= SecureRandom.hex(3).upcase
   end
 
   # before destroy
