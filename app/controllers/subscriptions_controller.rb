@@ -98,7 +98,8 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     new = params[:new]
     referral_code = params[:referral_code]
-    create_invoice_for_subscription(@subscription, nil, new, referral_code) if @subscription.invoices.empty?
+    referee = User.find_by(referral_code: referral_code)
+    create_invoice_for_subscription(@subscription, nil, new, referee) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -224,8 +225,8 @@ class SubscriptionsController < ApplicationController
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
-                  user_attributes: [:id, :first_name, :last_name, :phone_number, :email], :referral_code)
+                  :collection_day, :referral_code, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
+                  user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 
   def process_subscription(row)
@@ -270,7 +271,7 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og, new, referral_code)
+  def create_invoice_for_subscription(subscription, og, new, referee)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
@@ -281,8 +282,18 @@ class SubscriptionsController < ApplicationController
     # Add the subscription product to the invoice
     if og
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
+      invoice.invoice_items.create!(
+        product: product,
+        quantity: 1,
+        amount: product.price
+      )
     else
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+      invoice.invoice_items.create!(
+        product: product,
+        quantity: 1,
+        amount: product.price
+      )
     end
     raise "Product not found" unless product
 
@@ -295,12 +306,15 @@ class SubscriptionsController < ApplicationController
       )
     end
 
-    invoice.invoice_items.create!(
-      product: product,
-      quantity: 1,
-      amount: product.price
-    )
-
+    if referee
+      discount_item = Product.find_by(title: "Referral discount #{subscription.Standard? ? subscription.plan.downcase : subscription.plan.upcase} #{subscription.duration} month")
+      invoice.invoice_items.create!(
+        product: discount_item,
+        quantity: 1,
+        amount: starter_kit.price
+      )
+      raise
+    end
 
     invoice.calculate_total
     invoice
