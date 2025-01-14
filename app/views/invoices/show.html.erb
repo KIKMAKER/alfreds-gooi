@@ -27,12 +27,12 @@
               </div>
               <p><%= item.product.title %></p>
             </div>
-            <p>R<%= item.product.price %></p>
+            <p>R<%= item.product.price.truncate %></p>
           </div>
         <% end %>
       </div>
       <div class="invoice-total">
-        <p>Total: R<%= @invoice.total_amount %></p>
+        <p>Total: R<%= @invoice.total_amount.truncate %></p>
       </div>
       <div class="payment-container">
         <h2>Make a Payment</h2>
