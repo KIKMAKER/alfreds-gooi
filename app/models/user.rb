@@ -59,6 +59,10 @@ class User < ApplicationRecord
     end
   end
 
+  def generate_referral_code
+    self.referral_code ||= SecureRandom.hex(3).upcase
+  end
+
 
   private
 
@@ -89,9 +93,7 @@ class User < ApplicationRecord
   end
 
   # before create
-  def generate_referral_code
-    self.referral_code ||= SecureRandom.hex(3).upcase
-  end
+
 
   # before destroy
   def nullify_subscriptions
