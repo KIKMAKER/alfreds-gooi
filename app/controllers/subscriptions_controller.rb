@@ -311,9 +311,8 @@ class SubscriptionsController < ApplicationController
       invoice.invoice_items.create!(
         product: discount_item,
         quantity: 1,
-        amount: starter_kit.price
+        amount: discount_item.price
       )
-      raise
     end
 
     invoice.calculate_total
