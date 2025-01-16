@@ -61,6 +61,7 @@ gem "rails_admin", "3.0"
 gem "geocoder"
 gem 'faker'
 gem "acts_as_list"
+gem "postmark-rails"
 
 
 group :development, :test do
