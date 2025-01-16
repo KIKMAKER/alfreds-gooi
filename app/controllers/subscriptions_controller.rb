@@ -13,7 +13,6 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
     @collections = @subscription.collections
-
     @total_collections = @subscription.total_collections
     @skipped_collections = @subscription.skipped_collections
     @successful_collections = @total_collections - @skipped_collections
@@ -41,9 +40,10 @@ class SubscriptionsController < ApplicationController
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
-
+    referred_friends = current_user.referrals.count
+    raise
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
+      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new], nil, referred_friends)
 
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else
@@ -99,7 +99,7 @@ class SubscriptionsController < ApplicationController
     new = params[:new]
     referral_code = params[:referral_code]
     referee = User.find_by(referral_code: referral_code)
-    create_invoice_for_subscription(@subscription, nil, new, referee) if @subscription.invoices.empty?
+    create_invoice_for_subscription(@subscription, nil, new, referee, nil) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
   end
@@ -271,7 +271,7 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og, new, referee)
+  def create_invoice_for_subscription(subscription, og, new, referee, referred_friends)
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
@@ -320,6 +320,13 @@ class SubscriptionsController < ApplicationController
       raise
       referral.save!
       puts "referral created with id #{referal.id}"
+    elsif referred_friends
+      referee_discount = Product.find_by(title: "Referred a friend discount")
+      invoice.invoice_items.create!(
+        product: referee_discount,
+        quantity: referred_friends,
+        amount: referee_discount.price
+      )
     end
 
     invoice.calculate_total
