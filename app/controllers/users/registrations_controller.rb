@@ -73,6 +73,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb], is_new_customer: true)
       if @subscription
         UserMailer.with(subscription: @subscription).welcome.deliver_now
+        UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
         welcome_subscription_path(@subscription)
       else
         redirect_to new_user_registration_path(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
