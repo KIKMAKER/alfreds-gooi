@@ -16,11 +16,11 @@
     <% else %>
       <section>
         <div class="subscription-rates-update mt-3">
-            <h2 >Standard Subscriptions</h2>
-            <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
-              <p>As an Original Gooier you get our special price if you sign up for six month</p>
-            <% if current_user.total_collections > 1 %>
-          <div class="standard-months-container">
+          <h2 >Standard Subscriptions</h2>
+          <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
+          <% if current_user.total_collections > 1 %>
+          <p>As an Original Gooier you get our special price if you sign up for six month</p>
+            <div class="standard-months-container">
               <div class="month-card">
                 <p>6 month OG</p>
                 <h3 class="pricing-text mt-2"><strong>R720</strong></h3>
@@ -33,13 +33,12 @@
                class: "sign-up-btn" %>
                 </div>
               </div>
-              </div>
-              <p>Or...</p>
-              <% else %>
+            </div>
+            <p>Or...</p>
+          <% else %>
             <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
-
-            <% end %>
-
+          <% end %>
+          <div class="standard-months-container">
             <div class="month-card">
               <p>1 month</p>
               <h3 class="pricing-text mt-2"><strong>R260</strong></h3>
