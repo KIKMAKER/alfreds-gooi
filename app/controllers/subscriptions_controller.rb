@@ -316,7 +316,8 @@ class SubscriptionsController < ApplicationController
       referal = Referral.new
       referal.subscription = subscription
       referal.referee = current_user
-      referal.referrer = user
+      referal.referrer = referee
+      raise
       referal.save!
       puts "referal created with id #{referal.id}"
     end
