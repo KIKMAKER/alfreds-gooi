@@ -4,7 +4,7 @@ class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
-    @payments = Payment.all.order(created_at: :desc)
+    @payments = Payment.all.order(date: :desc)
   end
 
   def show
@@ -72,7 +72,6 @@ class PaymentsController < ApplicationController
 
   private
 
-
   def handle_payment_payload(payment_data, user, invoice)
     Payment.create!(
       snapscan_id: payment_data["id"],
@@ -86,21 +85,21 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-
-    update_subscription_status(payment_data["merchantReference"])
+    subscription = Subscription.find_by(customer_id: payment_data["merchantReference"])
+    update_subscription_status(subscription)
+    CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
   end
 
-  def update_subscription_status(merchant_reference)
-    subscription = Subscription.find_by(customer_id: merchant_reference)
+  def update_subscription_status(subscription)
     if subscription
-      subscription.update(
+      subscription.update!(
         status: 'active',
         start_date: subscription.calculate_next_collection_day
       )
-      puts "Subscription #{subscription.id} for customer #{merchant_reference} updated to active with start date #{subscription.start_date}."
+      puts "Subscription #{subscription.id} for customer #{subscription.customer_id} updated to active with start date #{subscription.start_date}."
     else
-      puts "No subscription found for customer #{merchant_reference}."
+      puts "No subscription found for customer #{subscription.customer_id}."
     end
   end
 
