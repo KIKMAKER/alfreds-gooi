@@ -97,8 +97,9 @@ class SubscriptionsController < ApplicationController
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
     new = params[:new]
-    referral_code = params[:referral_code]
+    referral_code = @subscription.referral_code
     referee = User.find_by(referral_code: referral_code)
+    raise
     create_invoice_for_subscription(@subscription, nil, new, referee, nil) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
@@ -317,9 +318,8 @@ class SubscriptionsController < ApplicationController
       referral.subscription = subscription
       referral.referee = current_user
       referral.referrer = referee
-      raise
       referral.save!
-      puts "referral created with id #{referal.id}"
+      puts "referral created with id #{referral.id}"
     elsif referred_friends
       referee_discount = Product.find_by(title: "Referred a friend discount")
       invoice.invoice_items.create!(

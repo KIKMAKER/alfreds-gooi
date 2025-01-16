@@ -8,7 +8,29 @@ class User < ApplicationRecord
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
+  # Referrer: The user who referred others
+  has_many :referrals_as_referrer,
+           class_name: 'Referral',
+           foreign_key: 'referrer_id',
+           dependent: :destroy
 
+  # Referees: The users who were referred by this user
+  has_many :referees,
+           through: :referrals_as_referrer,
+           source: :referee
+
+  # Referrals where this user is the referee (was referred by someone else)
+  has_many :referrals_as_referee,
+           class_name: 'Referral',
+           foreign_key: 'referee_id',
+           dependent: :destroy
+
+  # Referrer: The user who referred this user
+  has_one :referrer,
+          through: :referrals_as_referee,
+          source: :referrer
+
+          
   accepts_nested_attributes_for :subscriptions
 
   before_destroy :nullify_subscriptions

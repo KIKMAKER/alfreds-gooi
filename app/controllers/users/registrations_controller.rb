@@ -65,12 +65,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code]])
   end
 
   def after_sign_up_path_for(resource)
     if resource.persisted?
-      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb], is_new_customer: true)
+      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb], is_new_customer: true, referral_code: params[:user][:subscription][:referral_code])
       if @subscription
         welcome_subscription_path(@subscription)
       else
