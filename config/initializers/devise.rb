@@ -26,6 +26,7 @@ Devise.setup do |config|
   # with default "from" parameter.
   config.mailer_sender = '"GOOI" <howzit@gooi.me>'
 
+
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
 
