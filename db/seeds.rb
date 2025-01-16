@@ -141,10 +141,14 @@ elsif proceed == "products"
   puts "#{xl_subs} XL subscriptions created"
 
   puts "Creating additional stock"
-
+  referred_friends = 2
+  def pluralize(count, singular, plural = nil)
+    "#{count} #{count == 1 ? singular : (plural || "#{singular}s")}"
+  end
   additional_stock_products = [
     { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
-    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 }
+    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 },
+    { title: "Referred a friend discount", description: "You referred #{pluralize(referred_friends, 'friend')}!", price: 50 }
   ]
 
   seed_products(additional_stock_products)
