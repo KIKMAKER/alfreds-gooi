@@ -313,13 +313,13 @@ class SubscriptionsController < ApplicationController
         quantity: 1,
         amount: discount_item.price
       )
-      referal = Referral.new
-      referal.subscription = subscription
-      referal.referee = current_user
-      referal.referrer = referee
+      referral = Referral.new
+      referral.subscription = subscription
+      referral.referee = current_user
+      referral.referrer = referee
       raise
-      referal.save!
-      puts "referal created with id #{referal.id}"
+      referral.save!
+      puts "referral created with id #{referal.id}"
     end
 
     invoice.calculate_total
