@@ -289,6 +289,7 @@ class SubscriptionsController < ApplicationController
       )
     else
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+
       invoice.invoice_items.create!(
         product: product,
         quantity: 1,
@@ -319,15 +320,14 @@ class SubscriptionsController < ApplicationController
       referral.referrer = referee
       referral.save!
       puts "referral created with id #{referral.id}"
-    elsif referred_friends
+    elsif referred_friends >= 1
       referee_discount = Product.find_by(title: "Referred a friend discount")
       invoice.invoice_items.create!(
         product: referee_discount,
         quantity: referred_friends,
-        amount: referee_discount.price
+        amount: referee_discount.price * -1
       )
     end
-    raise
     invoice.calculate_total
     invoice
   end
