@@ -33,15 +33,14 @@ class SubscriptionsController < ApplicationController
   def create
     @subscription = Subscription.new(subscription_params)
     @subscription.user = current_user
-    @subscription.customer_id = current_user.subscriptions.last.customer_id
+    @subscription.customer_id = current_user.subscriptions.last.customer_id || @subscription.set_customer_id
     @subscription.suburb = current_user.subscriptions.last.suburb
     @subscription.customer_id = current_user.customer_id
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
-    referred_friends = current_user.referrals.count
-    raise
+    referred_friends = current_user.referrals_as_referrer.count
     if @subscription.save!
       @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new], nil, referred_friends)
 
@@ -99,7 +98,7 @@ class SubscriptionsController < ApplicationController
     new = params[:new]
     referral_code = @subscription.referral_code
     referee = User.find_by(referral_code: referral_code)
-    raise
+
     create_invoice_for_subscription(@subscription, nil, new, referee, nil) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
     @invoices = current_user.invoices
@@ -328,7 +327,7 @@ class SubscriptionsController < ApplicationController
         amount: referee_discount.price
       )
     end
-
+    raise
     invoice.calculate_total
     invoice
   end
