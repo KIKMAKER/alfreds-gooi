@@ -1,6 +1,6 @@
 <div class="user-wrapper">
   <div class="collection-body">
-    <h1 class= "collection-header">Pick a subscription option</h1>
+    <h1 class="mt-4 mb-4">Pick a subscription option:</h1>
     <% if current_user.admin? %>
       <%= simple_form_for(@subscription) do |f| %>
         <%= f.input :customer_id %>
@@ -18,9 +18,9 @@
         <div class="subscription-rates-update mt-3">
           <h2 >Standard Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
-          <% if current_user.total_collections > 1 %>
+          <% if current_user.total_collections > 40 %>
           <p>As an Original Gooier you get our special price if you sign up for six month</p>
-            <div class="standard-months-container">
+            <div class="standard-months-container mt-3">
               <div class="month-card">
                 <p>6 month OG</p>
                 <h3 class="pricing-text mt-2"><strong>R720</strong></h3>
@@ -35,10 +35,8 @@
               </div>
             </div>
             <p>Or...</p>
-          <% else %>
-            <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
           <% end %>
-          <div class="standard-months-container">
+          <div class="standard-months-container mt-3">
             <div class="month-card">
               <p>1 month</p>
               <h3 class="pricing-text mt-2"><strong>R260</strong></h3>
@@ -73,9 +71,9 @@
               </div>
             </div>
           </div>
-          <h2>XL Subscriptions</h2>
+          <h2 class="mt-5">XL Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1 large bucket of compostable waste</p>
-          <div class="standard-months-container">
+          <div class="standard-months-container mt-3">
             <div class="month-card">
               <p>1 month</p>
               <h3 class="pricing-text mt-2"><strong>R300</strong></h3>
