@@ -42,6 +42,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :referrals, only: :show
+
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 

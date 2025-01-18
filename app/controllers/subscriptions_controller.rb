@@ -40,7 +40,7 @@ class SubscriptionsController < ApplicationController
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
-    referred_friends = current_user.referrals_as_referrer.count
+    referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
     og = params[:og] == "true"
     if @subscription.save!
       @invoice = create_invoice_for_subscription(@subscription, og, params[:new], nil, referred_friends)
