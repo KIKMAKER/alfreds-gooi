@@ -41,8 +41,9 @@ class SubscriptionsController < ApplicationController
     @subscription.is_new_customer = false
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
     referred_friends = current_user.referrals_as_referrer.count
+    og = params[:og] == "true"
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new], nil, referred_friends)
+      @invoice = create_invoice_for_subscription(@subscription, og, params[:new], nil, referred_friends)
 
       redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
     else

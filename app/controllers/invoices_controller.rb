@@ -31,6 +31,8 @@ class InvoicesController < ApplicationController
   def show
     @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
+    @referrer_discount = Product.find_by(title: "Referred a friend discount")
+    
   end
 
   private
