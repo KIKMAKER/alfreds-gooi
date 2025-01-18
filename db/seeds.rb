@@ -148,7 +148,7 @@ elsif proceed == "products"
   additional_stock_products = [
     { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
     { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 },
-    { title: "Referred a friend discount", description: "You referred #{pluralize(referred_friends, 'friend')}!", price: 50 }
+    { title: "Referred a friend discount (R50)", description: "You referred #{pluralize(referred_friends, 'friend')}!", price: -50 }
   ]
 
   seed_products(additional_stock_products)

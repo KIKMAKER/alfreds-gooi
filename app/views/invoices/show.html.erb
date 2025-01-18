@@ -27,7 +27,7 @@
               </div>
               <p><%= item.product.title %></p>
             </div>
-            <p>R<%= item.product.price.truncate %></p>
+            <p>R<%= item.product == @referrer_discount ? (item.product.price * item.quantity).truncate : item.product.price.truncate %></p>
           </div>
         <% end %>
       </div>
