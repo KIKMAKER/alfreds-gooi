@@ -326,7 +326,7 @@ class SubscriptionsController < ApplicationController
       invoice.invoice_items.create!(
         product: referee_discount,
         quantity: referred_friends,
-        amount: referee_discount.price * -1
+        amount: referee_discount.price
       )
     end
     invoice.calculate_total
