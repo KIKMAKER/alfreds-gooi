@@ -1,11 +1,13 @@
 <div class="user-wrapper">
-  <h1>Your gooi referrals</h1>
-  <p>Refer a friend!</p>
-  <h2>You can get R50 off your next subscription for <em>each</em> person who uses your referral code</h2>
-  <p>your code is:</p>
-  <h2><%= @referral_code %></h2>
-  <% if @referrals > 0 %>
-    <p>So far <%= @referrals %> people are gooiing with your help!</p>
-    <p>get <strong>R<%= @referrals * 50 %></strong> off your next gooi subscription</p>
+  <h1 class="my-3 fs-1">Refer a friend!</h1>
+  <h3 class="mb-3">You get R50 off <h3>your next subscription for <em>each</em> person </h3> <h3>who uses your referral code</h3>
+  <% if @referral_count > 0 %>
+    <p>So far <%= pluralize(@referral_count, 'person', 'people') %> are gooiing with your help!</p>
+    <% @referrals.each do |referral| %>
+      <p><%= referral.referee.first_name %></p>
+    <% end %>
+    <p>You get <strong>R<%= @referral_count * 50 %></strong> off your next gooi subscription</p>
   <% end %>
+  <p class="mt-3 fs-3">Your code is:</p>
+  <h1 class="fs-1"><%= @referral_code %></h1>
 </div>
