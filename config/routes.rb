@@ -42,8 +42,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :referrals, only: :show
-
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
@@ -104,9 +102,10 @@ Rails.application.routes.draw do
     # static pages
     root "pages#home"
     get "manage", to: "pages#manage"
-    get "vamos", to: "pages#vamos"
     get "welcome", to: "pages#welcome"
-    get "story", to: "pages#story"
+    get "referrals", to: "pages#referrals"
+    get "vamos", to: "pages#vamos"
     get "today", to: "pages#today"
+    get "story", to: "pages#story"
 
 end
