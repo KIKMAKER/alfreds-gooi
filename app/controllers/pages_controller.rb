@@ -79,6 +79,7 @@ class PagesController < ApplicationController
   def referrals
     @referral_code = current_user.referral_code
     @referrals = current_user.referrals_as_referrer
+    @referral_count = @referrals.count
   end
 
   def story

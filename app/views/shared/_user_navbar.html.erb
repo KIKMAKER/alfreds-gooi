@@ -8,6 +8,7 @@
       <%#= link_to 'How we compost', root_path, class: "link-title" %>
       <%= link_to 'Collections', manage_path, class: "link-title" %>
       <%= link_to "Invoices", invoices_path, class: "link-title" %>
+      <%= link_to "Referrals", referrals_path, class: "link-title" %>
       <% if user_signed_in?  %>
         <div class="sign-up-btn">
           <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
