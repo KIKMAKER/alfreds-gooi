@@ -38,9 +38,9 @@
               <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
             </div>
             <p class="text-center">bags</p>
-            <div class="container-flex mt-3">
-              <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
-              <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
+            <div class="mt-3">
+              <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn mb-3", data: {turbo: false} %>
+              <button class="submit-btn" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
             </div>
           </div>
         <% end %>
