@@ -1,10 +1,10 @@
 <div class="driver-wrapper link-decoration mb-2">
-<div class="d-flex">
-  <h1>All invoices</h1>
-  <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
-</div>
+  <div class="d-flex">
+    <h1>All invoices</h1>
+  </div>
   <% @invoices.each do |invoice| %>
     <% if current_user.admin? %>
+      <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
       <%= link_to invoice_path(invoice) do %>
         <p><%= "#{invoice.subscription.user.first_name}" %> issued: <%= invoice.issued_date.strftime('%b %d') %></p>
       <% end %>
