@@ -32,7 +32,7 @@
                   <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
                 </s>
                 </td>
-                <td><s><%= subscription.start_date&.strftime('%e %B %Y') %></s></td>
+                <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></s></td>
                 <td>
                     <%= subscription.duration %>
                 </td>
