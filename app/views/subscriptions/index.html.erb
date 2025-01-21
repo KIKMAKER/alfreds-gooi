@@ -34,9 +34,9 @@
                 </td>
                 <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></s></td>
                 <td>
-                    <%= subscription.duration %>
+                    <%= subscription.duration || "unpaid" %>
                 </td>
-                <td><%= subscription.total_collections %></td>
+                <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
                   <% if subscription.remaining_collections < -1 %>
                     <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
