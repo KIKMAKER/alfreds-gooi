@@ -1,7 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.action_mailer.default_url_options = { host: 'gooi.me', protocol: 'https' }
+  config.action_mailer.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
     port: 587,
