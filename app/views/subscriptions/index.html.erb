@@ -38,11 +38,14 @@
                 </td>
                 <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
+                <% unless subscription.remaining_collections.nil? %>
                   <% if subscription.remaining_collections < -1 %>
                     <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
                   <% else %>
                     <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>
+
+                <% end %>
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
 
