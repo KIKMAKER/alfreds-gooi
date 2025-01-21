@@ -43,7 +43,7 @@ class Subscription < ApplicationRecord
   end
 
   def remaining_collections
-    return "unknown" if duration.nil?
+    return nil if duration.nil?
     total = duration * 4.4
     remaining = total - self.total_collections
     return remaining
