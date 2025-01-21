@@ -27,7 +27,7 @@ Devise.setup do |config|
   config.mailer_sender = 'howzit@gooi.me'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = 'Devise::Mailer'
+  config.mailer = 'Devise::Mailer'
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -225,7 +225,7 @@ Devise.setup do |config|
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
   config.reset_password_within = 6.hours
-  config.mailer.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
+  config.mailers.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
 
   # When set to false, does not sign a user in automatically after their password is
   # reset. Defaults to true, so a user is signed in automatically after a reset.
