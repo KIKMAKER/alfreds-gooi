@@ -25,27 +25,27 @@
           <% @subscriptions.each do |subscription| %>
             <% if subscription.completed? %>
               <tr>
-
                 <td><s><%= subscription.customer_id %></s></td>
                 <td>
-                <s>
-                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
-                </s>
+                  <s>
+                    <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+                  </s>
                 </td>
-                <td><s><%= subscription.start_date&.strftime('%e %B %Y') %></s></td>
+                <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></s></td>
                 <td>
-                    <%= subscription.duration %>
+                  <%= subscription.duration || "unpaid" %>
                 </td>
-                <td><%= subscription.total_collections %></td>
+                <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
-                  <% if subscription.remaining_collections < -1 %>
-                    <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
-                  <% else %>
-                    <%= subscription.remaining_collections&.to_i.truncate %></td>
+                  <% unless subscription.remaining_collections.nil? %>
+                    <% if subscription.remaining_collections < -1 %>
+                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% else %>
+                      <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>
+                <% end %>
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
-
               </tr>
             <% else subscription.completed? %>
               <tr>
@@ -53,22 +53,24 @@
                 <td>
                   <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
                 </td>
-                <td><%= subscription.start_date&.strftime('%e %B %Y') %></td>
-                <td><%= subscription.duration %></td>
-                <td><%= subscription.total_collections %></td>
+                <td><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></td>
+                <td><%= subscription.duration || "unpaid" %></td>
+                <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
-                  <% if subscription.remaining_collections < -1 %>
-                    <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
-                  <% else %>
-                    <%= subscription.remaining_collections&.to_i.truncate %></td>
+                  <% unless subscription.remaining_collections.nil? %>
+                    <% if subscription.remaining_collections < -1 %>
+                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% else %>
+                      <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>
-                <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
-                <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
+                <% end %>
+                <td><%= subscription.holiday_start&.strftime('%e %B %Y') || "unpaid" %></td>
+                <td><%= subscription.holiday_end&.strftime('%e %B %Y') || "unpaid" %></td>
               </tr>
             <% end %>
           <% end %>
-          </tbody>
-        </table>
-      </div>
+        </tbody>
+      </table>
     </div>
   </div>
+</div>
