@@ -45,7 +45,11 @@ Rails.application.routes.draw do
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
-  resources :invoices, only: %i[ index new create show]
+  resources :invoices, only: %i[ index new create show] do
+    collection do
+      get "bags/:bags", to: "invoices#bags", as: :bag
+    end
+  end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
     resources :collections, only: %i[index new create]
