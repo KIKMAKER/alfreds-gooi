@@ -104,7 +104,7 @@ class SubscriptionsController < ApplicationController
 
   def pause
     @subscription = Subscription.find(params[:id])
-    if @subscription.update(is_paused: true)
+    if @subscription.update!(is_paused: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
@@ -112,11 +112,32 @@ class SubscriptionsController < ApplicationController
   end
 
   def unpause
-    @subscription = Subscription.find(params[:id])
-    if @subscription.update(is_paused: false)
-      redirect_to manage_path, notice: "Collection schedule updated"
+    @subscription = Subscription.find_by(id: params[:id])
+
+    if @subscription.nil?
+      redirect_to manage_path, alert: "Subscription not found"
+      return
+    end
+
+    next_collection = @subscription.collections.last
+
+    if next_collection&.date.present? && next_collection.date > Date.today
+      if next_collection.update!(skip: false)
+        @subscription.update!(is_paused: false)
+        redirect_to manage_path, notice: "Collection schedule updated successfully"
+      else
+        Rails.logger.error "Failed to update next collection: #{next_collection.errors.full_messages.join(', ')}"
+        redirect_to manage_path, alert: "Failed to update the collection schedule. Please try again or contact support."
+      end
     else
-      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+      if @subscription.update(is_paused: true)
+        @subscription.update!(is_paused: false)
+        raise
+        redirect_to manage_path, notice: "Subscription unpaused successfully"
+      else
+        Rails.logger.error "Failed to unpause subscription: #{subscription.errors.full_messages.join(', ')}"
+        redirect_to manage_path, alert: "Something went wrong while unpausing the subscription. Please try again or contact support."
+      end
     end
   end
 
