@@ -48,6 +48,7 @@ class User < ApplicationRecord
 
       # Reassign collections to the new subscription
       collections_to_reassign.update_all(subscription_id: new_subscription.id)
+      last_subscription.completed!
 
       # Return the new subscription
       new_subscription

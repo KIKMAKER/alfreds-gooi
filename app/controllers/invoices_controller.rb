@@ -33,6 +33,19 @@ class InvoicesController < ApplicationController
     @subscription = @invoice.subscription
   end
 
+  def bags
+    @subscription = current_user.subscriptions.last
+    @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
+    bags = params[:bags].to_i
+    product = Product.find_by(title: "Compost bin bags")
+    @invoice.invoice_items.create!(
+      product_id: product.id,
+      quantity: bags,
+      amount: product.price * bags
+    )
+    @invoice.calculate_total
+  end
+
   private
 
   def invoice_items_params
