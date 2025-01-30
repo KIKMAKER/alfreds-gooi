@@ -1,0 +1,18 @@
+<p>Dear <%= @subscription.user.first_name %></p>
+
+<p>We are thrilled to have you on board with gooi - the organic waste collection service that helps you achieve your zero-waste goals and make a positive impact on the planet. Thank you for signing up with us and taking a step towards a more sustainable future.</p>
+
+<p>Your invoice for the Gooi starter kit has been generated and is ready for payment. Your starter kit includes a compost bin, compostable bags, and a guide to help you get started with our service. To ensure that you receive your starter kit on time, kindly settle the invoice as soon as possible.</p>
+
+<p>You can pay by direct bank transfer or make use of the snapscan payment portal (card, eft or snapscan) by clicking <%= link_to "here", welcome_invoice_subscription_url(@subscription, new: true) %></p>
+
+<p>We will be in your neighbourhood on <%= @subscription.collection_day %> between 8:30 and 10 o'clock. On week one we will deliver your starter kit, once you have some compost for us to collect, you can be ready with your full bag, or stash it outside before that time, so we can collect it on our way past.</p>
+
+<p>At gooi, we value our customers' contributions to the environment and we want to help you every step of the way. Our team is always available to answer any questions you may have regarding our service or your zero-waste journey.</p>
+
+<p>Once again, we are excited to have you on board and look forward to being your go-to organic waste collection service. Let's work together to create a cleaner, healthier planet for us all.</p>
+
+<p>Thanks!</p>
+
+<p>Regards</p>
+<%= image_tag 'email-signature.png', alt: "kristen kennedy email signature" %>
