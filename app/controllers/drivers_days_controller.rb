@@ -1,6 +1,19 @@
 class DriversDaysController < ApplicationController
   before_action :set_drivers_day, only: %i[drop_off edit update destroy]
 
+  def route
+    selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
+
+    @drivers_day = DriversDay.find_or_create_by!(date: selected_date, user_id: User.find_by(first_name: "Alfred").id)
+    @collections = @drivers_day.collections
+                                .includes(:subscription, :user)
+                                .joins(:subscription)
+                                .order('subscriptions.collection_order')
+                                .each_with_index do |collection, index|
+                                  collection.update(position: index + 1) # Set position starting from 1
+                                end
+  end
+
   def start
     # in production today will be the current day,
     # today = "Wednesday"

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
   post "perform_create_tomorrow_collections", to: "collections#perform_create_tomorrow_collections"
+  post "perform_create_next_week_collections", to: "collections#perform_create_next_week_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: [:edit, :update, :destroy] do
     member do
@@ -44,7 +45,11 @@ Rails.application.routes.draw do
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
-  resources :invoices, only: %i[ index new create show]
+  resources :invoices, only: %i[ index new create show] do
+    collection do
+      get "bags/:bags", to: "invoices#bags", as: :bag
+    end
+  end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
     resources :collections, only: %i[index new create]
@@ -76,6 +81,9 @@ Rails.application.routes.draw do
   # member routes are created with /drivers_day/:id/custom_route
   # these routes (the get and the patch) allow for form input to the instance of drivers day at each url
   resources :drivers_days do
+    collection do
+      get :route
+    end
     resources :collections, only: %i[index] do
       collection do
         post :reset_order
