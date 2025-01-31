@@ -6,12 +6,12 @@
       <%= f.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
       <%= f.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
     </div>
-
     <% if current_user.admin? %>
       <%= f.input :customer_id %>
       <%= f.input :duration %>
       <%= f.input :start_date %>
       <%= f.input :collection_order %>
+      <%= f.input :status, collection: Subscription.statuses.keys, include_blank: false %>
       <%= f.input :is_paused %>
       <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>
     <% end %>
