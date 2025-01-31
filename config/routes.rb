@@ -61,6 +61,10 @@ Rails.application.routes.draw do
       get :export
       get :update_end_date
       post :import_csv
+      get :pending
+      get :active
+      get :paused
+      get :completed
     end
     member do
       get :welcome

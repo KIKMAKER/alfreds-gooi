@@ -16,6 +16,13 @@ class Subscription < ApplicationRecord
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
 
+  # scopes
+  scope :pending, -> { where(status: :pending) }
+  scope :active, -> { where(status: :active) }
+  scope :paused, -> { where(status: :paused) }
+  scope :completed, -> { where(status: :completed) }
+  scope :order_by_user_name, -> { joins(:user).order('users.first_name ASC') }
+
   ## VALIDATIONS
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
