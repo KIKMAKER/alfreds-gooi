@@ -2,18 +2,13 @@
   <div class="outline">
     <div>
        <div class="d-flex justify-content-around mb-3">
-        <%= link_to "Pending", pending_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Active", active_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Completed", completed_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Paused", paused_subscriptions_path, class: "btn-today-green" %>
       </div>
 
-      <div class="d-flex justify-content-around">
-        <%= link_to "Exports Subs", export_subscriptions_path, class: "btn-today-green" %>
-        <%= link_to "Update End Dates", update_end_date_subscriptions_path, class: "btn-today-green" %>
-      </div>
-      <br>
-      <h1>All Subscriptions</h1>
+     <br>
+      <h1>All Pending Subscriptions</h1>
       <table class="table table-bordered">
         <thead>
           <tr>

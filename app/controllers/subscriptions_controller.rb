@@ -2,10 +2,55 @@ class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.joins(:user).order('users.first_name ASC')
+      @subscriptions = Subscription.includes(:user)  # Preloads users to avoid N+1 queries
+      .order_by_user_name
 
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
+    end
+  end
+
+  def pending
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.pending
+                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.pending
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def active
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.active
+                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.active
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def completed
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.completed
+                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.completed
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def paused
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.paused
+                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.paused
+                              .where(user_id: current_user.id)
     end
   end
 
