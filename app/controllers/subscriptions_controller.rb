@@ -244,7 +244,7 @@ class SubscriptionsController < ApplicationController
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
+                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 
