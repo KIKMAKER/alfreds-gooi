@@ -1,6 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+
   config.action_mailer.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
@@ -11,6 +12,7 @@ Rails.application.configure do
     password: ENV['SMTP_PASSWORD'],
     enable_starttls_auto: true
   }
+
 
   # Settings specified here will take precedence over those in config/application.rb.
 

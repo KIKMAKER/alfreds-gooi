@@ -2,8 +2,10 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   Rails.application.configure do
-    config.action_mailer.default_url_options = { host: "http://localhost:3000" }
-    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.asset_host = 'http://localhost:3000'
+    config.action_mailer.delivery_method     = :postmark
+    config.action_mailer.postmark_settings   = { api_token: ENV['POSTMARK_API_TOKEN'] }
+    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
     config.action_mailer.perform_deliveries = true
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.default_options = { from: 'howzit@gooi.me' }
