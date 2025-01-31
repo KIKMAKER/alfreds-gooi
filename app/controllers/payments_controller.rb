@@ -42,12 +42,18 @@ class PaymentsController < ApplicationController
         return render json: { error: "Invoice not found" }, status: :not_found
       end
 
-      if payload["status"] == "completed"
+      case payload["status"]
+      when "completed"
         handle_payment_payload(payload, user, invoice)
         render json: { status: 'success' }, status: :ok
+      when "error"
+        Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
+        render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok # ✅ Use 200 OK instead of 422
       else
-        render json: { status: 'error', message: 'Payment not successful' }, status: :unprocessable_entity
+        Rails.logger.warn "Unhandled payment status: #{payload['status']}"
+        render json: { status: 'ignored', message: 'Unhandled payment status' }, status: :ok
       end
+
     rescue => e
       Rails.logger.error "Error processing SnapScan webhook: #{e.message}"
       render json: { error: e.message }, status: :unprocessable_entity
