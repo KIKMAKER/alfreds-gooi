@@ -25,16 +25,16 @@
               <p>No message from Alfred yet</p>
             <% end %>
           </div>
-          <div class='w-25'>
+          <div class='w-25 ps-5'>
             <% if today_collection.nil? %>
               <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class:"small-yellow-btn" %>
             <% else %>
               <% if today_collection&.skip %>
                 <%= link_to "No Collection!", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}. Collect more?", edit_collection_path(today_collection), class:"small-yellow-btn" %>
+                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}.", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(today_collection), class:"small-yellow-btn" %>
+                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}.", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.new_customer %>
                 <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
