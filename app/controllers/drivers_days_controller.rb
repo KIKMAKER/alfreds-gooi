@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off edit update destroy]
+  before_action :set_drivers_day, only: %i[drop_off edit update destroy collections]
 
   def route
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
@@ -79,8 +79,9 @@ class DriversDaysController < ApplicationController
     end
   end
 
-  def todays_collections
-    @collections = Collection.where(date: Date.today)
+  def collections
+    date = @drivers_day.date
+    @collections = @drivers_day.collections.includes(:subscription).where(date: date).order(date: :desc)
   end
 
   def index

@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     collection do
       get :route
     end
-    resources :collections, only: %i[index] do
+    resources :collections, only: [] do
       collection do
         post :reset_order
       end
@@ -100,7 +100,7 @@ Rails.application.routes.draw do
       patch :drop_off
       get :end
       patch :end
-      get :todays_collections
+      get :collections
     end
 
   end
