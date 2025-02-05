@@ -52,7 +52,7 @@ Rails.application.routes.draw do
   end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
-    resources :collections, only: %i[index new create]
+    resources :collections, only: %i[new create]
     # - here I am creating /subscriptions/today
     collection do
       get :today
@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       get :completed
     end
     member do
+      get :collections
       get :welcome
       get :welcome_invoice
       post :pause
@@ -88,7 +89,7 @@ Rails.application.routes.draw do
     collection do
       get :route
     end
-    resources :collections, only: [] do
+    resources :collections, only: [:index] do
       collection do
         post :reset_order
       end
