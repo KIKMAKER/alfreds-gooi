@@ -2,10 +2,10 @@
   <div class="collection-body">
     <!--div containing back and whatsapp button-->
     <div class="collection-body-heading">
-      <div>
+      <div class="back">
         <%= link_to 'Back', :back, class: 'small-yellow-btn' %>
       </div>
-      <div>
+      <div class="whatsapp">
         <h1><strong><%= @subscription.user.first_name %></strong></h1>
         <%= link_to "https://wa.me/#{@subscription.user.phone_number}" do %>
           <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>

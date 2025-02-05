@@ -2,9 +2,9 @@ class InvoicesController < ApplicationController
 
   def index
     if current_user.admin?
-      @invoices = Invoice.all
+      @invoices = Invoice.includes(subscription: :user).order(issued_date: :desc)
     elsif current_user.customer?
-      @invoices = current_user.invoices
+      @invoices = current_user.invoices.includes(subscription: :user).order(issued_date: :desc)
     end
   end
   def new
