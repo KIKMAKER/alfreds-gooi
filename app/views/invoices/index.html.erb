@@ -1,12 +1,25 @@
 <div class="driver-wrapper link-decoration mb-2">
-<div class="d-flex">
-  <h1>All invoices</h1>
-  <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
-</div>
+  <div class="d-flex">
+    <h1>All invoices</h1>
+    <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
+  </div>
   <% @invoices.each do |invoice| %>
     <% if current_user.admin? %>
       <%= link_to invoice_path(invoice) do %>
-        <p><%= "#{invoice.subscription.user.first_name}" %> issued: <%= invoice.issued_date.strftime('%b %d') %></p>
+        <div class="payment-card">
+          <p><%= invoice.issued_date.strftime('%b %d') %></p>
+          <div class="payment-card-user">
+            <%= invoice.user.first_name %>
+          </div>
+          <div class="payment-card-amount">
+            <h2>R<%= invoice.total_amount.truncate %></h2>
+          </div>
+          <% if invoice.paid %>
+            <i class="fa-regular fa-circle-check"></i>
+          <% else %>
+            <i class="fa-regular fa-circle-xmark"></i>
+          <% end %>
+        </div>
       <% end %>
     <% else %>
       <%= link_to invoice_path(invoice) do %>
