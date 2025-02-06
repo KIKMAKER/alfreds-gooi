@@ -46,6 +46,15 @@ class InvoicesController < ApplicationController
     @invoice.calculate_total
   end
 
+  def paid
+    @invoice = Invoice.find(params[:id])
+    if @invoice.update!(paid: true)
+      redirect_to invoice_path(@invoice)
+    else
+      render :show, status: "An error occured the invoice is #{@invoice.paid ? 'paid' : 'not paid' }"
+    end
+  end
+
   private
 
   def invoice_items_params
