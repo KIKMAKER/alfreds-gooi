@@ -14,6 +14,11 @@
       </div>
       <div>
         <br>
+        <h2>Invoices</h2>
+        <% @subscription.invoices.each do |invoice| %>
+          <%= link_to "id. #{invoice.id} - R#{invoice.total_amount}", invoice_path(invoice)  %>
+        <% end %>
+        <br>
         <h2>Summary</h2>
         <p>Total collections: <%= @total_collections %></p>
         <p>Skipped collections: <%= @skipped_collections %></p>
