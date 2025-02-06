@@ -32,24 +32,24 @@
                     <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
                   </s>
                 </td>
-                <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></s></td>
+                <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unknown" %></s></td>
                 <td>
-                  <%= subscription.duration || "unpaid" %>
+                  <%= subscription.duration || "unknown" %>
                 </td>
-                <td><%= subscription.total_collections || "unpaid" %></td>
+                <td><%= subscription.total_collections || "unknown" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
                     <% if subscription.remaining_collections < -1 %>
                       <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
                     <% else %>
-                      <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
+                      <%= subscription.remaining_collections&.to_i.truncate || "unknown" %></td>
                   <% end %>
                 <% end %>
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
               </tr>
-            <% else subscription.completed? %>
-              <tr>
+              <% elsif !subscription.invoices.first.paid %>
+               <tr>
                 <td><%= subscription.customer_id %></td>
                 <td>
                   <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
@@ -67,6 +67,26 @@
                 <% end %>
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') || "unpaid" %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') || "unpaid" %></td>
+              </tr>
+            <% else %>
+              <tr>
+                <td><%= subscription.customer_id %></td>
+                <td>
+                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+                </td>
+                <td><%= subscription.start_date&.strftime('%e %B %Y') || "check" %></td>
+                <td><%= subscription.duration || "check" %></td>
+                <td><%= subscription.total_collections || "check" %></td>
+                <td>
+                  <% unless subscription.remaining_collections.nil? %>
+                    <% if subscription.remaining_collections < -1 %>
+                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% else %>
+                      <%= subscription.remaining_collections&.to_i.truncate || "check" %></td>
+                  <% end %>
+                <% end %>
+                <td><%= subscription.holiday_start&.strftime('%e %B %Y') || "check" %></td>
+                <td><%= subscription.holiday_end&.strftime('%e %B %Y') || "check" %></td>
               </tr>
             <% end %>
           <% end %>

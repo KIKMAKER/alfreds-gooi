@@ -49,6 +49,7 @@ class InvoicesController < ApplicationController
   def paid
     @invoice = Invoice.find(params[:id])
     if @invoice.update!(paid: true)
+      @invoice.subscription.active!
       redirect_to invoice_path(@invoice)
     else
       render :show, status: "An error occured the invoice is #{@invoice.paid ? 'paid' : 'not paid' }"
