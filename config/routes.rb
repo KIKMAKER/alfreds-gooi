@@ -46,6 +46,9 @@ Rails.application.routes.draw do
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
   resources :invoices, only: %i[ index new create show] do
+    member do
+      get :paid
+    end
     collection do
       get "bags/:bags", to: "invoices#bags", as: :bag
     end
