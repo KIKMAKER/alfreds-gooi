@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_06_200352) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -102,6 +102,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "invoice_id"
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
@@ -112,6 +114,18 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
     t.string "is_active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "referrals", force: :cascade do |t|
+    t.bigint "referrer_id", null: false
+    t.bigint "referee_id", null: false
+    t.bigint "subscription_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "status", default: 0
+    t.index ["referee_id"], name: "index_referrals_on_referee_id"
+    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
+    t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -136,6 +150,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
     t.string "apartment_unit_number"
     t.integer "status", default: 0
     t.datetime "end_date"
+    t.string "referral_code"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -155,6 +170,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "customer_id"
+    t.string "referral_code"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -166,6 +182,10 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_08_151102) do
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"
+  add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "users"
+  add_foreign_key "referrals", "subscriptions"
+  add_foreign_key "referrals", "users", column: "referee_id"
+  add_foreign_key "referrals", "users", column: "referrer_id"
   add_foreign_key "subscriptions", "users"
 end
