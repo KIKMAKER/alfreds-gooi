@@ -2,7 +2,7 @@ class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.includes(:user)  # Preloads users to avoid N+1 queries
+      @subscriptions = Subscription.includes(:user, :invoices)  # Preloads users to avoid N+1 queries
       .order_by_user_name
 
     else
@@ -13,7 +13,7 @@ class SubscriptionsController < ApplicationController
   def pending
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.pending
-                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
                              .order_by_user_name
     else
       @subscriptions = Subscription.pending
@@ -24,7 +24,7 @@ class SubscriptionsController < ApplicationController
   def active
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.active
-                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
                              .order_by_user_name
     else
       @subscriptions = Subscription.active
@@ -35,7 +35,7 @@ class SubscriptionsController < ApplicationController
   def completed
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.completed
-                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
                              .order_by_user_name
     else
       @subscriptions = Subscription.completed
@@ -46,7 +46,7 @@ class SubscriptionsController < ApplicationController
   def paused
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.paused
-                             .includes(:user)  # Preloads users to avoid N+1 queries
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
                              .order_by_user_name
     else
       @subscriptions = Subscription.paused

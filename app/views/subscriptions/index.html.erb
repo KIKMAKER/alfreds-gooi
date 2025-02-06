@@ -48,7 +48,7 @@
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
               </tr>
-              <% elsif !subscription.invoices.first.paid %>
+              <% elsif !subscription.invoices.first&.paid %>
                <tr>
                 <td><%= subscription.customer_id %></td>
                 <td>
