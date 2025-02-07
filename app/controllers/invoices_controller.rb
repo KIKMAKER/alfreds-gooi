@@ -75,18 +75,5 @@ class InvoicesController < ApplicationController
         amount: product.price
       )
     end
-    # [:product_id]
-    # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
-
-    # product_ids.each_with_index do |product_id, index|
-    # product = Product.find(product_id)
-    # quantity = quantities[index].to_f
-    #   unless quantity == 0
-    #     invoice.invoice_items.create!(
-    #       product_id: product.id,
-    #       quantity: quantity,
-    #       amount: product.price * quantity
-    #     )
-    #   end
   end
 end
