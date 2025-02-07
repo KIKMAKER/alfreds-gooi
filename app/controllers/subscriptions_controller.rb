@@ -117,7 +117,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def collections
-    @subscription = Subscription.find(params[:subscription_id])
+    @subscription = Subscription.find(params[:id])
     @collections = @subscription.collections.order(date: :desc)
   end
 
