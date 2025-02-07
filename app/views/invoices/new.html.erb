@@ -1,10 +1,11 @@
-<div class="collection-container">
+<div class="user-wrapper">
   <div class="collection-body">
-    <p class = "collection-header">New Invoice</p>
-    <br>
+  <div class="d-flex justify-content-between">
+    <h1>New Invoice</h1>
+    <%= link_to '+ product', new_product_path %>
+  </div>
     <br>
     <%= simple_form_for [@invoice] do |f| %>
-      <h3>Subscription</h3>
       <div class="form-group">
         <%= f.input :subscription_id, label: "Select Subscription",
                 collection: Subscription.all.map { |s| ["#{s.user.first_name} #{s.user.last_name} (#{s.street_address})", s.id] }.sort,
@@ -12,7 +13,10 @@
                 include_blank: false,
                 class: "form-control" %>
       </div>
+       <div class="d-flex justify-content-between">
       <h3>Invoice Items</h3>
+      <p>quantity</p>
+       </div>
       <div id="invoice-items-container">
         <% @products.each_with_index do |product, index| %>
           <div class="invoice-item">
