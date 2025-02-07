@@ -14,7 +14,7 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    @invoice = Invoice.new(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
+    @invoice = Invoice.new
     @invoice.subscription = Subscription.find(params[:invoice][:subscription_id])
     @invoice.save!
     if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
@@ -66,15 +66,14 @@ class InvoicesController < ApplicationController
   def create_invoice_items(invoice)
     invoice_items_params[:invoice_items_attributes].each do |index, product_hash|
       product = Product.find(product_hash[:product_id])
-      quantity = product_hash[:quantity]
-      next if quantity.blank? || quantity.to_f <= 0
+      quantity = product_hash[:quantity].to_f
+      next if quantity.blank? || quantity <= 0
 
       invoice.invoice_items.create!(
         product_id: product.id,
         quantity: quantity,
-        amount: product.price * quantity.to_f
+        amount: product.price
       )
-
     end
     # [:product_id]
     # quantities = invoice_items_params[:invoice_items_attributes][:quantity]

@@ -111,12 +111,12 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :new, :create]
 
-    # static pages
-    root "pages#home"
-    get "manage", to: "pages#manage"
-    get "vamos", to: "pages#vamos"
-    get "welcome", to: "pages#welcome"
-    get "story", to: "pages#story"
-    get "today", to: "pages#today"
+  # static pages
+  root "pages#home"
+  get "manage", to: "pages#manage"
+  get "vamos", to: "pages#vamos"
+  get "welcome", to: "pages#welcome"
+  get "story", to: "pages#story"
+  get "today", to: "pages#today"
 
 end
