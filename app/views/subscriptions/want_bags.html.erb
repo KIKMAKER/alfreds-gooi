@@ -1,0 +1,14 @@
+<div class="user-wrapper">
+  <h2>Want to add bags?</h2>
+  <%= simple_form_for @invoice do |f| %>
+   <%= f.fields_for :invoice_items do |invoice_item_form| %>
+    <div class="form-group">
+      <%#= invoice_item_form.label :quantity,  %>
+      <%= hidden_field_tag "invoice[invoice_items_attributes][0][product_id]", @product.id %>
+      <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: 1 } %>
+    </div>
+  <% end %>
+    <%= f.submit "Add to Invoice", class: "submit-btn" %>
+  <% end %>
+</div>
+<!--, InvoiceItem.new], url: invoice_path(@invoice), method: :patch-->

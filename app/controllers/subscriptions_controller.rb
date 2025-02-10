@@ -89,19 +89,19 @@ class SubscriptionsController < ApplicationController
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
     current_user.og = params[:og] == "true"
     current_user.save!
-    raise
     if @subscription.save!
       # @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
 
       # redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
-      redirect_to path
+      redirect_to want_bags_subscription_path(@subscription)
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def want_bags
-
+     @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+     @product = Product.find_by(title: "Compost bin bags")
   end
 
   def edit
@@ -356,7 +356,7 @@ class SubscriptionsController < ApplicationController
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
-      due_date: Time.current + subscription.duration.months,
+      due_date: Time.current + 2.week,
       total_amount: 0
     )
 
