@@ -87,12 +87,14 @@ class SubscriptionsController < ApplicationController
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
-
+    current_user.og = params[:og] == "true"
+    current_user.save!
+    raise
     if @subscription.save!
       # @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
 
       # redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
-
+      redirect_to path
     else
       render :new, status: :unprocessable_entity
     end
