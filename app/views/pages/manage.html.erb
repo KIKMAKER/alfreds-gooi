@@ -11,6 +11,7 @@
     <% else %>
       <% if @subscription.is_paused %>
         <div class="text-center">
+          <p></p>
           <h2>Upcoming Collection</h2>
           <p class="mb-3">Alfred will skip you <%= Date.today.wday > 5 ? "this" : "next" %> week</p>
           <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
@@ -57,12 +58,12 @@
           <% end %>
         </div>
       <% end %>
-      <% if @days_left < 2 %>
-        <div class="mt-4 container-flex flex-column text-center align-items-center">
-          <p>Your subscription will come to an end in <%= pluralize(@days_left, 'week') %>.</p>
+      <div class="mt-4 container-flex flex-column text-center align-items-center">
+        <p>Your subscription will come to an end in <%= pluralize(@days_left, 'week') %>.</p>
+        <% if @days_left < 2 %>
           <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
       <div class="user-holiday-container" data-controller="toggle">
         <% if @subscription.holiday_end < Date.today %>
           <h2>Need to skip more than one week?</h2>
