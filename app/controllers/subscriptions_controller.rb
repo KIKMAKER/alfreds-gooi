@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  
+  before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome welcome_invoice]
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
@@ -103,11 +103,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def edit
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
   end
 
   def update
-    subscription = Subscription.find(params[:id])
+    # subscription = Subscription.find(params[:id])
     # user = subscription.user
 
     if subscription.update(subscription_params)
@@ -128,7 +128,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def complete
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     @subscription.completed!
     end_date = @subscription.start_date + @subscription.duration.months
     if @subscription.update!(end_date: end_date)
@@ -139,7 +139,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def reassign_collections
-    subscription = Subscription.find(params[:id])
+    # subscription = Subscription.find(params[:id])
     user = subscription.user
     additional_collections = subscription.remaining_collections&.to_i.truncate * -1
     new_sub = user.duplicate_subscription_with_collections(additional_collections)
@@ -147,11 +147,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def welcome
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
   end
 
   def welcome_invoice
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     new = params[:new]
     create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
@@ -159,7 +159,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def pause
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     if @subscription.update!(is_paused: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
@@ -168,7 +168,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def unpause
-    @subscription = Subscription.find_by(id: params[:id])
+    # @subscription = Subscription.find_by(id: params[:id])
 
     if @subscription.nil?
       redirect_to manage_path, alert: "Subscription not found"
@@ -198,7 +198,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def holiday_dates
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
       redirect_to manage_path, notice: "Holiday set!"
     else
@@ -208,7 +208,7 @@ class SubscriptionsController < ApplicationController
 
   # set holiday start and end to nil to clear holiday
   def clear_holiday
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else
@@ -302,6 +302,10 @@ class SubscriptionsController < ApplicationController
     params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+  end
+
+  def set_subscription
+    @subscription = Subscription.find(params[:id])
   end
 
   def process_subscription(row)
