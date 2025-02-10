@@ -1,5 +1,5 @@
 <div class="user-wrapper">
-  <h1>Add some details to your subscription</h1>
+  <h1 class="mb-3">Update your subscription</h1>
   <%= simple_form_for(@subscription) do |f| %>
     <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
       <%= f.input :suburb, collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
