@@ -28,6 +28,12 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def update
+    @invoice = Invoice.find(params[:id])
+    create_invoice_items(@invoice)
+    redirect_to invoice_path(@invoice)
+  end
+
   def show
     @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
@@ -75,6 +81,8 @@ class InvoicesController < ApplicationController
         amount: product.price
       )
     end
+    invoice.calculate_total
+    
     # [:product_id]
     # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
 

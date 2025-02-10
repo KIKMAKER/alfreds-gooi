@@ -18,7 +18,7 @@
         <div class="subscription-rates-update">
           <h2 >Standard Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
-          <% if current_user.total_collections > 50 %>
+          <% if current_user.total_collections > 1 %>
             <p>As an Original Gooier you get our special price if you sign up for six month</p>
             <div class="standard-months-container justify-content-center mt-3">
               <div class="month-card">
@@ -28,9 +28,9 @@
                 <div>
                   <br>
                   <%= button_to 'Select', subscriptions_path,
-               params: { subscription: { plan: 'Standard', duration: '6'}, og: true, new: false  },
-               method: :post,
-               class: "sign-up-btn" %>
+                params: { subscription: { plan: 'Standard', duration: '6'}, og: true, new: false  },
+                method: :post,
+                class: "sign-up-btn" %>
                 </div>
               </div>
             </div>
@@ -44,9 +44,9 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: { subscription: { plan: 'Standard', duration: '1' }, og: false, new: false },
-               method: :post,
-               class: "sign-up-btn" %>
+                params: { subscription: { plan: 'Standard', duration: '1' }, og: false, new: false },
+                method: :post,
+                class: "sign-up-btn" %>
               </div>
             </div>
             <div class="month-card">
@@ -56,7 +56,7 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'Standard', duration: '3' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'Standard', duration: '3' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card popular">
@@ -67,7 +67,7 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '1' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '1' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card">
@@ -91,7 +91,7 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '3'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '3'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
             <div class="month-card">
@@ -101,7 +101,7 @@
               <div>
                 <br>
                 <%= button_to 'Select', subscriptions_path,
-               params: {subscription: { plan: 'XL', duration: '6'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '6'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
           </div>

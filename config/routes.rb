@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
-  resources :invoices, only: %i[ index new create show] do
+  resources :invoices, only: %i[ index new create show update] do
     member do
       get :paid
     end
