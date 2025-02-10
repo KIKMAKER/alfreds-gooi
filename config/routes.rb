@@ -70,6 +70,7 @@ Rails.application.routes.draw do
       get :completed
     end
     member do
+      get :want_bags
       get :collections
       get :welcome
       get :welcome_invoice

@@ -1,4 +1,5 @@
 class SubscriptionsController < ApplicationController
+  
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
@@ -88,12 +89,17 @@ class SubscriptionsController < ApplicationController
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
 
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
+      # @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
 
-      redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
+      # redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
+
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def want_bags
+
   end
 
   def edit
