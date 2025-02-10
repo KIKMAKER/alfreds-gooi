@@ -112,11 +112,14 @@ class SubscriptionsController < ApplicationController
     # subscription = Subscription.find(params[:id])
     # user = subscription.user
 
-    if subscription.update(subscription_params)
-      if subscription.user == current_user
-        redirect_to manage_path, notice: "Updated, thanks!"
+    if @subscription.update(subscription_params)
+      if @subscription.user == current_user
+        if subscription_params[:street_address].present?
+          @subscription.set_collection_day
+        end
+        redirect_to manage_path, notice: "Updated, your collection day is now #{@subscription.collection_day}"
       else
-        redirect_to subscription_path(subscription)
+        redirect_to subscription_path(@subscription)
       end
     else
       render :edit, status: :unprocessable_entity
@@ -301,7 +304,7 @@ class SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
+    params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end

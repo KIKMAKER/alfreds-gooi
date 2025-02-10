@@ -101,6 +101,18 @@ class Subscription < ApplicationRecord
     (start_date + duration.months).to_date if start_date
   end
 
+  def set_collection_day
+    if TUESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Tuesday")
+    elsif WEDNESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Wednesday")
+    elsif THURSDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Thursday")
+    else
+      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
+    end
+  end
+
   private
 
   # infer starter kit based on sub plan
@@ -164,17 +176,7 @@ class Subscription < ApplicationRecord
     nil
   end
 
-  def set_collection_day
-    if TUESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Tuesday")
-    elsif WEDNESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Wednesday")
-    elsif THURSDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Thursday")
-    else
-      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
-    end
-  end
+
 
   def set_customer_id
     last_customer_id = Subscription.order(:start_date).last.customer_id || "GFWC000"
