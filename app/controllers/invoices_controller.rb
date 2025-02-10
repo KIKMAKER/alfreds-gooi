@@ -82,7 +82,7 @@ class InvoicesController < ApplicationController
       )
     end
     invoice.calculate_total
-    
+
     # [:product_id]
     # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
 
