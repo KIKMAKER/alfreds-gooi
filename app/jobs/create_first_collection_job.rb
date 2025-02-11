@@ -30,8 +30,7 @@ class CreateFirstCollectionJob < ApplicationJob
     collection = Collection.create!(
       drivers_day: drivers_day,
       subscription: subscription,
-      date: collection_date,
-      skip: subscription.is_paused?
+      date: collection_date
     )
     puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
 
