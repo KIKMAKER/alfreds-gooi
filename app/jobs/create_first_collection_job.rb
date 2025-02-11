@@ -36,6 +36,6 @@ class CreateFirstCollectionJob < ApplicationJob
 
     # Update the collection if the subscription is new
     collection.update!(new_customer: true) if subscription.is_new_customer
-
+    return collection
   end
 end

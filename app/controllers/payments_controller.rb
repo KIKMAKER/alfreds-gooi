@@ -47,6 +47,15 @@ class PaymentsController < ApplicationController
       when "completed"
         handle_payment_payload(payload, user, invoice)
         render json: { status: 'success' }, status: :ok
+        product = Product.find_by(title: "Compost bin bags")
+        bags = invoice.invoice_items.find_by(product_id: product.id)
+        subscription = Subscription.where(customer_id: payload["merchantReference"]).last
+        if bags
+          first_collection = CreateFirstCollectionJob.perform_now(subscription)
+          first_collection.update!(needs_bags: bags.quantity)
+          raise
+        end
+
       when "error"
         Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
         render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok # ✅ Use 200 OK instead of 422
@@ -80,7 +89,7 @@ class PaymentsController < ApplicationController
   private
 
   def handle_payment_payload(payment_data, user, invoice)
-    Payment.create!(
+    payment = Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
       total_amount: payment_data["totalAmount"],
@@ -92,7 +101,7 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-    subscription = Subscription.find_by(customer_id: payment_data["merchantReference"])
+    subscription = Subscription.where(customer_id: payment_data["merchantReference"]).last
     update_subscription_status(subscription)
     CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
