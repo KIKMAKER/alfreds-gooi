@@ -1,4 +1,5 @@
 class InvoicesController < ApplicationController
+  before_action :set_invoice, only: %i[show update destroy paid]
 
   def index
     if current_user.admin?
@@ -29,14 +30,20 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    @invoice = Invoice.find(params[:id])
+    # @invoice = Invoice.find(params[:id])
     create_invoice_items(@invoice)
     redirect_to invoice_path(@invoice)
   end
 
   def show
-    @invoice = Invoice.find(params[:id])
+    # @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
+  end
+
+  def destroy
+    # @invoice = Invoice.find(params[:id])
+    @invoice.destroy
+    redirect_to invoices_path
   end
 
   def bags
@@ -53,7 +60,7 @@ class InvoicesController < ApplicationController
   end
 
   def paid
-    @invoice = Invoice.find(params[:id])
+    # @invoice = Invoice.find(params[:id])
     if @invoice.update!(paid: true)
       @invoice.subscription.active!
       redirect_to invoice_path(@invoice)
@@ -67,6 +74,10 @@ class InvoicesController < ApplicationController
   def invoice_items_params
     # params.require(:invoice).permit(:issued_date, :due_date, :subscription_id)
     params.require(:invoice).permit(:subscription_id, invoice_items_attributes: [ :product_id, :quantity ])
+  end
+
+  def set_invoice
+    @invoice = Invoice.find(params[:id])
   end
 
   def create_invoice_items(invoice)
