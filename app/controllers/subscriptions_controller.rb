@@ -110,12 +110,20 @@ class SubscriptionsController < ApplicationController
   def update
     # subscription = Subscription.find(params[:id])
     # user = subscription.user
+    @invoice = @subscription.invoices.first
+    first_collection = CreateFirstCollectionJob.perform_now(@subscription)
+    if @invoice.invoice_items.include?(product_id: @product.id)
+      bags = @invoice.invoice_items.find_by(product_id: @product.id).quantity
+      first_collection.update!(needs_bags: bags)
+    end
+    raise
 
     if @subscription.update(subscription_params)
       if @subscription.user == current_user
         if subscription_params[:street_address].present?
           @subscription.set_collection_day
         end
+
         redirect_to manage_path, notice: "Updated, your collection day is now #{@subscription.collection_day}"
       else
         redirect_to subscription_path(@subscription)
