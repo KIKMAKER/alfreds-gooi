@@ -82,7 +82,6 @@ class SubscriptionsController < ApplicationController
     @subscription.user = current_user
     @subscription.customer_id = current_user.subscriptions.last.customer_id
     @subscription.suburb = current_user.subscriptions.last.suburb
-    @subscription.customer_id = current_user.customer_id
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     @subscription.is_new_customer = false
@@ -100,8 +99,8 @@ class SubscriptionsController < ApplicationController
   end
 
   def want_bags
-     @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
-     @product = Product.find_by(title: "Compost bin bags")
+    @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    @product = Product.find_by(title: "Compost bin bags")
   end
 
   def edit
