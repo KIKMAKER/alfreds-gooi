@@ -27,7 +27,7 @@
         </div>
       <% else %>
         <% if @subscription.collections.any? %>
-          <% if @subscription.collections.any? && @subscription.collections.last.needs_bags.to_i > 0 @subscription.collections.last.date >= Date.today %>
+          <% if @subscription.collections.any? && @subscription.collections.last.needs_bags.to_i > 0 && @subscription.collections.last.date >= Date.today %>
             <p class="text-center mb-3">Your next collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
           <% else %>
             <p class="text-center mb-3">Your last collection was on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
