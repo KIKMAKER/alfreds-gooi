@@ -35,7 +35,7 @@ class PaymentsController < ApplicationController
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoiceId"].to_i)
+      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
 
       if invoice.nil?
         Rails.logger.error "Invoice not found with id: #{payload['extra']['invoiceId']}"
@@ -46,14 +46,13 @@ class PaymentsController < ApplicationController
       case payload["status"]
       when "completed"
         handle_payment_payload(payload, user, invoice)
-        render json: { status: 'success' }, status: :ok
+        # render json: { status: 'success' }, status: :ok
         product = Product.find_by(title: "Compost bin bags")
         bags = invoice.invoice_items.find_by(product_id: product.id)
         subscription = Subscription.where(customer_id: payload["merchantReference"]).last
         if bags
           first_collection = CreateFirstCollectionJob.perform_now(subscription)
           first_collection.update!(needs_bags: bags.quantity)
-          raise
         end
 
       when "error"
