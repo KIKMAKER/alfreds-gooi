@@ -84,9 +84,9 @@ production:
     <<: *default
     database: alfreds_gooi_production
     username: alfreds_gooi
-    password: <%= ENV["ALFREDS_GOOI_DATABASE_PASSWORD"] %>
+    password: <%= ENV["DATABASE_URL"] %>
 
   queue:
-    <<: *primary 
+    <<: *primary
     database: app_production_queue
     migrations_paths: db/queue_migrate
