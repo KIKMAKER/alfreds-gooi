@@ -79,10 +79,14 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+
+primary: &primary
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>  # Heroku requires DATABASE_URL
+
 production:
   primary:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>  # ✅ Use the full database URL here
+    <<: *primary
 
   queue:
     <<: *primary
