@@ -80,11 +80,9 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary
+  primary:
     <<: *default
-    database: alfreds_gooi_production
-    username: alfreds_gooi
-    password: <%= ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] %>  # ✅ Use the full database URL here
 
   queue:
     <<: *primary
