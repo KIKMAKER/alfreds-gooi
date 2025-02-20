@@ -16,7 +16,8 @@ module AlfredsGooi
     # puts "Autoload paths: #{ActiveSupport::Dependencies.autoload_paths.inspect}"
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
-    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_adapter = :solid_queue
+config.solid_queue.connects_to = { database: { writing: :queue } }
 
     # Configuration for the application, engines, and railties goes here.
     #

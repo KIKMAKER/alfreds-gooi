@@ -80,7 +80,13 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  database: alfreds_gooi_production
-  username: alfreds_gooi
-  password: <%= ENV["ALFREDS_GOOI_DATABASE_PASSWORD"] %>
+  primary: &primary
+    <<: *default
+    database: alfreds_gooi_production
+    username: alfreds_gooi
+    password: <%= ENV["ALFREDS_GOOI_DATABASE_PASSWORD"] %>
+
+  queue:
+    <<: *primary 
+    database: app_production_queue
+    migrations_paths: db/queue_migrate
