@@ -14,13 +14,6 @@ Rails.application.routes.draw do
   # users
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
-  # sidekiq
-  require "sidekiq/web"
-  authenticate :user, ->(user) { user.admin? } do
-    mount Sidekiq::Web => '/sidekiq'
-  end
-
-
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
   post "perform_create_tomorrow_collections", to: "collections#perform_create_tomorrow_collections"
