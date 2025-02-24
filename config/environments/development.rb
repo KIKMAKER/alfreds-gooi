@@ -92,6 +92,8 @@ Rails.application.configure do
   config.assets.debug = true
   config.assets.digest = true
 
-
+  # Use Solid Queue in Development.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 
 end
