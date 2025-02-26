@@ -2,8 +2,9 @@ class CreateCollectionsJob < ApplicationJob
   queue_as :default
 
   def perform(day_name)
-    next_collection_date = Date.today.next_occurring(day_name.downcase.to_sym)
+    next_collection_date = Date.today + 7
     process_day(next_collection_date, day_name)
+    Rails.logger.info "Ran Create Collection Job"
   end
 
   private
