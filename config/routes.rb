@@ -113,4 +113,12 @@ Rails.application.routes.draw do
   get "story", to: "pages#story"
   get "today", to: "pages#today"
 
+
+
+  # Block WordPress scanning bots
+  match "/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+
+
 end
