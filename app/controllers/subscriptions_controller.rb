@@ -143,7 +143,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def reassign_collections
-    # subscription = Subscription.find(params[:id])
+    subscription = Subscription.find(params[:id])
     user = subscription.user
     additional_collections = subscription.remaining_collections&.to_i.truncate * -1
     new_sub = user.duplicate_subscription_with_collections(additional_collections)
