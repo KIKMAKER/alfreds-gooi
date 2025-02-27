@@ -66,7 +66,7 @@ class DriversDaysController < ApplicationController
     @collections = @drivers_day.collections
     @total_bags_collected = @collections&.sum(:bags) || 0
     @total_bags_collected = @total_bags_collected.floor
-    day_name = date.strftime("%A")
+    day_name = Date.today.strftime("%A")
     @total_buckets_collected = @collections&.sum(:buckets).floor || 0
     return unless request.patch?
 
