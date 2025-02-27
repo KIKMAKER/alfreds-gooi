@@ -83,6 +83,8 @@ class CollectionsController < ApplicationController
   end
 
   def update
+
+    @collection.subscription.update(is_new_customer: false)
     if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else
