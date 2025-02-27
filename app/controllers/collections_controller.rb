@@ -55,10 +55,6 @@ class CollectionsController < ApplicationController
   end
 
   # Regular CRUD stuff
-  def index
-    @subscription = Subscription.find(params[:subscription_id])
-    @collections = @subscription.collections.order(date: :desc)
-  end
 
   def show
   end
@@ -87,6 +83,8 @@ class CollectionsController < ApplicationController
   end
 
   def update
+
+    @collection.subscription.update(is_new_customer: false)
     if @collection.update!(collection_params)
       redirect_to today_subscriptions_path
     else

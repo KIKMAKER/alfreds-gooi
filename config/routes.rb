@@ -14,13 +14,6 @@ Rails.application.routes.draw do
   # users
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
-  # sidekiq
-  require "sidekiq/web"
-  authenticate :user, ->(user) { user.admin? } do
-    mount Sidekiq::Web => '/sidekiq'
-  end
-
-
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
   post "perform_create_tomorrow_collections", to: "collections#perform_create_tomorrow_collections"
@@ -45,10 +38,17 @@ Rails.application.routes.draw do
   # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
   # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
 
-  resources :invoices, only: %i[ index new create show]
+  resources :invoices do
+    member do
+      get :paid
+    end
+    collection do
+      get "bags/:bags", to: "invoices#bags", as: :bag
+    end
+  end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
-    resources :collections, only: %i[index new create]
+    resources :collections, only: %i[new create]
     # - here I am creating /subscriptions/today
     collection do
       get :today
@@ -57,8 +57,14 @@ Rails.application.routes.draw do
       get :export
       get :update_end_date
       post :import_csv
+      get :pending
+      get :active
+      get :paused
+      get :completed
     end
     member do
+      get :want_bags
+      get :collections
       get :welcome
       get :welcome_invoice
       post :pause
@@ -80,7 +86,7 @@ Rails.application.routes.draw do
     collection do
       get :route
     end
-    resources :collections, only: %i[index] do
+    resources :collections, only: [:index] do
       collection do
         post :reset_order
       end
@@ -92,13 +98,14 @@ Rails.application.routes.draw do
       patch :drop_off
       get :end
       patch :end
-      get :todays_collections
+      get :collections
     end
 
   end
 
   resources :products, only: [:index, :new, :create]
 
+<<<<<<< HEAD
     # static pages
     root "pages#home"
     get "manage", to: "pages#manage"
@@ -107,5 +114,22 @@ Rails.application.routes.draw do
     get "vamos", to: "pages#vamos"
     get "today", to: "pages#today"
     get "story", to: "pages#story"
+=======
+  # static pages
+  root "pages#home"
+  get "manage", to: "pages#manage"
+  get "vamos", to: "pages#vamos"
+  get "welcome", to: "pages#welcome"
+  get "story", to: "pages#story"
+  get "today", to: "pages#today"
+
+
+
+  # Block WordPress scanning bots
+  match "/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+
+>>>>>>> master
 
 end

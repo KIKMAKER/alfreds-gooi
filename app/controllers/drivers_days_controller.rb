@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off edit update destroy]
+  before_action :set_drivers_day, only: %i[drop_off edit update destroy collections]
 
   def route
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
@@ -66,11 +66,12 @@ class DriversDaysController < ApplicationController
     @collections = @drivers_day.collections
     @total_bags_collected = @collections&.sum(:bags) || 0
     @total_bags_collected = @total_bags_collected.floor
-
+    day_name = Date.today.strftime("%A")
     @total_buckets_collected = @collections&.sum(:buckets).floor || 0
     return unless request.patch?
 
     if update_drivers_day(drivers_day_params, next_path: vamos_path)
+      CreateCollectionsJob.perform_now(day_name)
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
     else
@@ -79,13 +80,14 @@ class DriversDaysController < ApplicationController
     end
   end
 
-  def todays_collections
-    @collections = Collection.where(date: Date.today)
+  def collections
+    date = @drivers_day.date
+    @collections = @drivers_day.collections.includes(:subscription).where(date: date).order(date: :desc)
   end
 
   def index
     # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.all.order(:date)
+    @drivers_days = DriversDay.all.order(date: :asc)
   end
 
   def show
@@ -101,19 +103,18 @@ class DriversDaysController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
-
   end
 
   def destroy
-    @drivers_day.delete
-    render :index, note: "Drivers Day deleted"
-  end
+    @drivers_day.collections.update_all(drivers_day_id: nil)
 
+    @drivers_day.destroy
+    redirect_to drivers_days_path, note: "Drivers Day deleted"
+  end
 
   private
 
   def set_drivers_day
-    # raise
     @drivers_day = DriversDay.find(params[:id])
   end
 

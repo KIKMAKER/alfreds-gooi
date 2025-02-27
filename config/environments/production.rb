@@ -1,15 +1,18 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.action_mailer.default_url_options = { host: 'gooi.me', protocol: 'https' }
+
+  config.action_mailer.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
     port: 587,
+    domain: 'gooi.me',
     authentication: :plain,
     user_name: ENV['SMTP_USERNAME'],
     password: ENV['SMTP_PASSWORD'],
     enable_starttls_auto: true
   }
+
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -71,7 +74,9 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+
   # config.active_job.queue_name_prefix = "alfreds_gooi_production"
 
   config.action_mailer.perform_caching = false

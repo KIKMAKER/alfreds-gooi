@@ -36,18 +36,33 @@ class PaymentsController < ApplicationController
       user = User.find_by(customer_id: payload["merchantReference"])
       # Find the invoice by the invoice_id
       invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
+
       if invoice.nil?
-        Rails.logger.error "Invoice not found with id: #{payload['extra']['invoice_id']}"
-        puts "Invoice not found with id: #{payload['extra']['invoice_id']}"
+        Rails.logger.error "Invoice not found with id: #{payload['extra']['invoiceId']}"
+        puts "Invoice not found with id: #{payload['extra']['invoiceId']}"
         return render json: { error: "Invoice not found" }, status: :not_found
       end
 
-      if payload["status"] == "completed"
+      case payload["status"]
+      when "completed"
         handle_payment_payload(payload, user, invoice)
-        render json: { status: 'success' }, status: :ok
+        # render json: { status: 'success' }, status: :ok
+        product = Product.find_by(title: "Compost bin bags")
+        bags = invoice.invoice_items.find_by(product_id: product.id)
+        subscription = Subscription.where(customer_id: payload["merchantReference"]).last
+        if bags
+          first_collection = CreateFirstCollectionJob.perform_now(subscription)
+          first_collection.update!(needs_bags: bags.quantity)
+        end
+
+      when "error"
+        Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
+        render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok # ✅ Use 200 OK instead of 422
       else
-        render json: { status: 'error', message: 'Payment not successful' }, status: :unprocessable_entity
+        Rails.logger.warn "Unhandled payment status: #{payload['status']}"
+        render json: { status: 'ignored', message: 'Unhandled payment status' }, status: :ok
       end
+
     rescue => e
       Rails.logger.error "Error processing SnapScan webhook: #{e.message}"
       render json: { error: e.message }, status: :unprocessable_entity
@@ -73,7 +88,7 @@ class PaymentsController < ApplicationController
   private
 
   def handle_payment_payload(payment_data, user, invoice)
-    Payment.create!(
+    payment = Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
       total_amount: payment_data["totalAmount"],
@@ -85,11 +100,13 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-    subscription = Subscription.find_by(customer_id: payment_data["merchantReference"])
+    subscription = Subscription.where(customer_id: payment_data["merchantReference"]).last
     update_subscription_status(subscription)
     update_referral(subscription)
     CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
+    payment.invoice = invoice
+    payment.save!
   end
 
   def update_subscription_status(subscription)
