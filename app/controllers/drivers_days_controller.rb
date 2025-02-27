@@ -87,7 +87,7 @@ class DriversDaysController < ApplicationController
 
   def index
     # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.all
+    @drivers_days = DriversDay.all.order(date: :asc)
   end
 
   def show
