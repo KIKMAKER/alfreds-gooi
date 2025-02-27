@@ -1,10 +1,11 @@
 class InvoicesController < ApplicationController
+  before_action :set_invoice, only: %i[show update destroy paid]
 
   def index
     if current_user.admin?
-      @invoices = Invoice.all
+      @invoices = Invoice.includes(subscription: :user).order(issued_date: :desc)
     elsif current_user.customer?
-      @invoices = current_user.invoices
+      @invoices = current_user.invoices.includes(subscription: :user).order(issued_date: :desc)
     end
   end
   def new
@@ -14,7 +15,7 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    @invoice = Invoice.new(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
+    @invoice = Invoice.new
     @invoice.subscription = Subscription.find(params[:invoice][:subscription_id])
     @invoice.save!
     if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
@@ -28,11 +29,46 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def update
+    # @invoice = Invoice.find(params[:id])
+    create_invoice_items(@invoice)
+    redirect_to invoice_path(@invoice)
+  end
+
   def show
-    @invoice = Invoice.find(params[:id])
+    # @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
     @referrer_discount = Product.find_by(title: "Referred a friend discount")
     
+  end
+
+  def destroy
+    # @invoice = Invoice.find(params[:id])
+    @invoice.destroy
+    redirect_to invoices_path
+  end
+
+  def bags
+    @subscription = current_user.subscriptions.last
+    @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
+    bags = params[:bags].to_i
+    product = Product.find_by(title: "Compost bin bags")
+    @invoice.invoice_items.create!(
+      product_id: product.id,
+      quantity: bags,
+      amount: product.price * bags
+    )
+    @invoice.calculate_total
+  end
+
+  def paid
+    # @invoice = Invoice.find(params[:id])
+    if @invoice.update!(paid: true)
+      @invoice.subscription.active!
+      redirect_to invoice_path(@invoice)
+    else
+      render :show, status: "An error occured the invoice is #{@invoice.paid ? 'paid' : 'not paid' }"
+    end
   end
 
   private
@@ -42,19 +78,24 @@ class InvoicesController < ApplicationController
     params.require(:invoice).permit(:subscription_id, invoice_items_attributes: [ :product_id, :quantity ])
   end
 
+  def set_invoice
+    @invoice = Invoice.find(params[:id])
+  end
+
   def create_invoice_items(invoice)
     invoice_items_params[:invoice_items_attributes].each do |index, product_hash|
       product = Product.find(product_hash[:product_id])
-      quantity = product_hash[:quantity]
-      next if quantity.blank? || quantity.to_f <= 0
+      quantity = product_hash[:quantity].to_f
+      next if quantity.blank? || quantity <= 0
 
       invoice.invoice_items.create!(
         product_id: product.id,
         quantity: quantity,
-        amount: product.price * quantity.to_f
+        amount: product.price
       )
-
     end
+    invoice.calculate_total
+
     # [:product_id]
     # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
 

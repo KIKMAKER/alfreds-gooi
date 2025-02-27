@@ -1,0 +1,41 @@
+class CreateCollectionsJob < ApplicationJob
+  queue_as :default
+
+  def perform(day_name)
+    next_collection_date = Date.today + 7
+    process_day(next_collection_date, day_name)
+    Rails.logger.info "Ran Create Collection Job"
+  end
+
+  private
+
+  def process_day(collection_date, day_name)
+    driver = User.find_by(role: 'driver')
+    unless driver
+      Rails.logger.warn "No driver found! Skipping processing for #{collection_date}"
+      return
+    end
+
+    drivers_day = DriversDay.find_or_create_by!(
+      date: collection_date,
+      user: driver
+    )
+    Rails.logger.info "Driver's Day created for #{collection_date}: #{drivers_day.user.first_name} (ID: #{drivers_day.id})"
+
+    subscriptions = Subscription.where(collection_day: day_name, status: "active")
+
+    subscriptions.find_each do |subscription|
+
+      collection = Collection.find_or_create_by!(
+        drivers_day: drivers_day,
+        subscription: subscription,
+        date: collection_date
+      )
+
+      collection.update!(skip: subscription.is_paused?)
+      collection.update!(new_customer: true) if subscription.is_new_customer
+
+      Rails.logger.info "Created collection for #{subscription.customer_id} on #{collection_date}"
+    end
+  end
+end

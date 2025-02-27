@@ -17,6 +17,13 @@ class Subscription < ApplicationRecord
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
 
+  # scopes
+  scope :pending, -> { where(status: :pending) }
+  scope :active, -> { where(status: :active) }
+  scope :paused, -> { where(status: :paused) }
+  scope :completed, -> { where(status: :completed) }
+  scope :order_by_user_name, -> { joins(:user).order('users.first_name ASC') }
+
   ## VALIDATIONS
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
@@ -45,6 +52,7 @@ class Subscription < ApplicationRecord
   end
 
   def remaining_collections
+    return nil if duration.nil?
     total = duration * 4.4
     remaining = total - self.total_collections
     return remaining
@@ -93,6 +101,18 @@ class Subscription < ApplicationRecord
 
   def end_date
     (start_date + duration.months).to_date if start_date
+  end
+
+  def set_collection_day
+    if TUESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Tuesday")
+    elsif WEDNESDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Wednesday")
+    elsif THURSDAY_SUBURBS.include?(suburb)
+      update(collection_day: "Thursday")
+    else
+      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
+    end
   end
 
   private
@@ -158,17 +178,7 @@ class Subscription < ApplicationRecord
     nil
   end
 
-  def set_collection_day
-    if TUESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Tuesday")
-    elsif WEDNESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Wednesday")
-    elsif THURSDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Thursday")
-    else
-      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
-    end
-  end
+
 
   def set_customer_id
     last_customer_id = Subscription.order(:start_date).last.customer_id || "GFWC000"

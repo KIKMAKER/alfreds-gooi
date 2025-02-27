@@ -35,6 +35,7 @@ class User < ApplicationRecord
 
   before_destroy :nullify_subscriptions
 
+
   # Callbacks
 
   # Custom validation
@@ -121,6 +122,7 @@ class User < ApplicationRecord
   def nullify_subscriptions
     self.subscriptions.update_all(user_id: nil)
   end
+
 
 
   # Include default devise modules. Others available are:

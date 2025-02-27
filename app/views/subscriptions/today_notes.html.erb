@@ -1,20 +1,22 @@
-<div class="gooi-container">
-  <% if @subscriptions.any? %>
-    <div class="today-outline">
-      <h1><%= @today %></h1>
-      <div class="grid-container">
-        <div class="grid-item"><strong>Name</strong></div>
-        <div class="grid-item"><strong>Note</strong></div>
-        <div class="grid-item"><strong>Collect</strong></div>
-        <% @subscriptions.each do |subscription| %>
-          <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today } %>
-          <div class="grid-item">
+<div class="driver-wrapper">
+  <h1><%= @today %></h1>
+  <div class="collection-header">
+    <% if @subscriptions.any? %>
+      <p><strong>Name</strong></p>
+      <p><strong>Note</strong></p>
+      <p><strong>Collect</strong></p>
+    </div>
+    <div class="collections">
+      <% @subscriptions.each do |subscription| %>
+        <% today_collection = subscription.collections.find { |c| c.date && c.date == Date.today } %>
+        <div class="collection">
+          <div class="w-25">
             <% if today_collection&.skip %>
               <p>SKIP!</p>
             <% end %>
             <%= link_to subscription.user.first_name, subscription_path(subscription) %>
           </div>
-          <div class="grid-item">
+          <div>
             <% if today_collection %>
               <%= today_collection.alfred_message %>
             <% elsif today_collection&.skip %>
@@ -23,33 +25,32 @@
               <p>No message from Alfred yet</p>
             <% end %>
           </div>
-          <div class="grid-item gooi-collect-button">
+          <div class='w-25 ps-5'>
             <% if today_collection.nil? %>
-              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription) %>
+              <%= link_to "Collect! from #{subscription.user.first_name}", new_subscription_collection_path(subscription), class:"small-yellow-btn" %>
             <% else %>
               <% if today_collection&.skip %>
-                <%= link_to "No Collection!", edit_collection_path(today_collection) %>
+                <%= link_to "No Collection!", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.bags.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.bags, 'bags')}.", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}. Collect more?", edit_collection_path(today_collection) %>
+                <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}.", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.new_customer %>
-                <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection) %>
+                <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
-                <%= link_to "Dropped off #{pluralize(today_collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(today_collection) %>
+                <%= link_to "Dropped off #{pluralize(today_collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.subscription.user.drop_off? %>
-                <%= link_to "Drop off", edit_collection_path(today_collection) %>
+                <%= link_to "Drop off", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% else %>
-                <%= link_to "Collect!", edit_collection_path(today_collection) %>
+                <%= link_to "Collect!", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% end %>
             <% end %>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
     <div class="outline">
       <%= link_to "TODAY", today_subscriptions_path, class: "gooi-button" %>
-
     </div>
   <% else %>
     <div class="outline">

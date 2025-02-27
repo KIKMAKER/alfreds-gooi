@@ -3,16 +3,22 @@
     <div>
       <div>
         <h1><%= @subscription.user.first_name %>'s <%= @subscription.completed? ? 'Completed' : "" %> Subscription</h1>
+        <h3>start: <%= @subscription.start_date&.strftime('%b %d') %></h3>
       </div>
       <div>
-        <h2>Details</h2>
         <p>Plan: <%= @subscription.plan %></p>
         <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
         <p>Collection day: <%= @subscription.collection_day %></p>
         <p>Address: <%= @subscription.street_address %></p>
         <p>Collection Order: <%= @subscription.collection_order %></p>
+        <p>Phone number: <%= @subscription.user.phone_number %></p>
       </div>
       <div>
+        <br>
+        <h2>Invoices</h2>
+        <% @subscription.invoices.each do |invoice| %>
+          <%= link_to "id. #{invoice.id} - R#{invoice.total_amount}", invoice_path(invoice)  %>
+        <% end %>
         <br>
         <h2>Summary</h2>
         <p>Total collections: <%= @total_collections %></p>

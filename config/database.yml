@@ -22,8 +22,14 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  <<: *default
-  database: alfreds_gooi_development
+  primary:
+    <<: *default
+    database: alfreds_gooi_development
+
+  queue:
+    <<: *default
+    database: alfreds_gooi_queue
+    migrations_paths: db/queue_migrate
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -79,8 +85,16 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
+
+primary: &primary
   <<: *default
-  database: alfreds_gooi_production
-  username: alfreds_gooi
-  password: <%= ENV["ALFREDS_GOOI_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>  # Heroku requires DATABASE_URL
+
+production:
+  primary:
+    <<: *primary
+
+  queue:
+    <<: *primary
+    database: app_production_queue
+    migrations_paths: db/queue_migrate

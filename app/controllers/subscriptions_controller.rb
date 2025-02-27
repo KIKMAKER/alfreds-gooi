@@ -1,11 +1,57 @@
 class SubscriptionsController < ApplicationController
+  before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome welcome_invoice]
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.joins(:user).order('users.first_name ASC')
+      @subscriptions = Subscription.includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+      .order_by_user_name
 
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
+    end
+  end
+
+  def pending
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.pending
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.pending
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def active
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.active
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.active
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def completed
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.completed
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.completed
+                              .where(user_id: current_user.id)
+    end
+  end
+
+  def paused
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.paused
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.paused
+                              .where(user_id: current_user.id)
     end
   end
 
@@ -31,39 +77,57 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
+    # create sub from the form input
     @subscription = Subscription.new(subscription_params)
+    # assign to logged in user
     @subscription.user = current_user
+    # set gooi customer_id on the sub
     @subscription.customer_id = current_user.subscriptions.last.customer_id || @subscription.set_customer_id
+    # set attributes to match previous sub
     @subscription.suburb = current_user.subscriptions.last.suburb
-    @subscription.customer_id = current_user.customer_id
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
+    # sub should definitely not be new if created through this route
     @subscription.is_new_customer = false
+    # mark previous sub completed
     current_user.subscriptions.last.completed! if current_user.subscriptions.any?
+    # find any friends this user has refered who have actually signed up
     referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
+    # get og from the params as boolean
     og = params[:og] == "true"
+    is_new = params[:new] == "true"
+    # save the sub
     if @subscription.save!
-      @invoice = create_invoice_for_subscription(@subscription, og, params[:new], nil, referred_friends)
-
-      redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
+      # create an invoice
+      @invoice = create_invoice_for_subscription(@subscription, og, is_new, nil, referred_friends)
+      # check if the user wants bags
+      redirect_to want_bags_subscription_path(@subscription)
     else
       render :new, status: :unprocessable_entity
     end
   end
 
+  def want_bags
+    @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    @product = Product.find_by(title: "Compost bin bags")
+  end
+
   def edit
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
   end
 
   def update
-    subscription = Subscription.find(params[:id])
+    # subscription = Subscription.find(params[:id])
     # user = subscription.user
+    if @subscription.update(subscription_params)
+      if @subscription.user == current_user
+        if subscription_params[:street_address].present?
+          @subscription.set_collection_day
+        end
 
-    if subscription.update(subscription_params)
-      if subscription.user == current_user
-        redirect_to manage_path, notice: "Updated, thanks!"
+        redirect_to manage_path, notice: "Updated, your collection day is now #{@subscription.collection_day}"
       else
-        redirect_to subscription_path(subscription)
+        redirect_to subscription_path(@subscription)
       end
     else
       render :edit, status: :unprocessable_entity
@@ -71,8 +135,13 @@ class SubscriptionsController < ApplicationController
 
   end
 
-  def complete
+  def collections
     @subscription = Subscription.find(params[:id])
+    @collections = @subscription.collections.order(date: :desc)
+  end
+
+  def complete
+    # @subscription = Subscription.find(params[:id])
     @subscription.completed!
     end_date = @subscription.start_date + @subscription.duration.months
     if @subscription.update!(end_date: end_date)
@@ -91,11 +160,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def welcome
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
   end
 
   def welcome_invoice
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     new = params[:new]
     referral_code = @subscription.referral_code
     referee = User.find_by(referral_code: referral_code)
@@ -106,8 +175,8 @@ class SubscriptionsController < ApplicationController
   end
 
   def pause
-    @subscription = Subscription.find(params[:id])
-    if @subscription.update(is_paused: true)
+    # @subscription = Subscription.find(params[:id])
+    if @subscription.update!(is_paused: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
@@ -115,16 +184,37 @@ class SubscriptionsController < ApplicationController
   end
 
   def unpause
-    @subscription = Subscription.find(params[:id])
-    if @subscription.update(is_paused: false)
-      redirect_to manage_path, notice: "Collection schedule updated"
+    # @subscription = Subscription.find_by(id: params[:id])
+
+    if @subscription.nil?
+      redirect_to manage_path, alert: "Subscription not found"
+      return
+    end
+
+    next_collection = @subscription.collections.last
+
+    if next_collection&.date.present? && next_collection.date > Date.today
+      if next_collection.update!(skip: false)
+        @subscription.update!(is_paused: false)
+        redirect_to manage_path, notice: "Collection schedule updated successfully"
+      else
+        Rails.logger.error "Failed to update next collection: #{next_collection.errors.full_messages.join(', ')}"
+        redirect_to manage_path, alert: "Failed to update the collection schedule. Please try again or contact support."
+      end
     else
-      redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
+      if @subscription.update(is_paused: true)
+        @subscription.update!(is_paused: false)
+        raise
+        redirect_to manage_path, notice: "Subscription unpaused successfully"
+      else
+        Rails.logger.error "Failed to unpause subscription: #{subscription.errors.full_messages.join(', ')}"
+        redirect_to manage_path, alert: "Something went wrong while unpausing the subscription. Please try again or contact support."
+      end
     end
   end
 
   def holiday_dates
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
       redirect_to manage_path, notice: "Holiday set!"
     else
@@ -134,7 +224,7 @@ class SubscriptionsController < ApplicationController
 
   # set holiday start and end to nil to clear holiday
   def clear_holiday
-    @subscription = Subscription.find(params[:id])
+    # @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else
@@ -225,9 +315,13 @@ class SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:customer_id, :access_code, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :referral_code, :plan, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
+    params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
+                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+  end
+
+  def set_subscription
+    @subscription = Subscription.find(params[:id])
   end
 
   def process_subscription(row)
@@ -272,15 +366,24 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og, new, referee, referred_friends)
+  def create_invoice_for_subscription(subscription, og, is_new, referee, referred_friends)
+    # create an invoice that belongs to the subscriber
     invoice = Invoice.create!(
       subscription: subscription,
       issued_date: Time.current,
-      due_date: Time.current + subscription.duration.months,
+      due_date: Time.current + 2.week,
       total_amount: 0
     )
-
-    # Add the subscription product to the invoice
+    # if new customer add a starter kit
+    if is_new
+        starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
+        invoice.invoice_items.create!(
+          product: starter_kit,
+          quantity: 1,
+          amount: starter_kit.price
+        )
+      end
+    # Add the correct subscription product to the invoice
     if og
       product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
       invoice.invoice_items.create!(
@@ -299,15 +402,8 @@ class SubscriptionsController < ApplicationController
     end
     raise "Product not found" unless product
 
-    if new == "true"
-      starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
-      invoice.invoice_items.create!(
-        product: starter_kit,
-        quantity: 1,
-        amount: starter_kit.price
-      )
-    end
 
+    # if the subscriber has a referral code, give them a discount (shouldn't happen through this route)
     if referee
       discount_item = Product.find_by(title: "Referral discount #{subscription.Standard? ? subscription.plan.downcase : subscription.plan.upcase} #{subscription.duration} month")
       invoice.invoice_items.create!(
@@ -315,12 +411,14 @@ class SubscriptionsController < ApplicationController
         quantity: 1,
         amount: discount_item.price
       )
+      # create a referral for the person who referred them
       referral = Referral.new
       referral.subscription = subscription
       referral.referee = current_user
       referral.referrer = referee
       referral.save!
       puts "referral created with id #{referral.id}"
+    # if they haven't got a referral code they may be a referrer, check if anyone has used their referral code and assign as many discounts as successful referrals
     elsif referred_friends >= 1
       referee_discount = Product.find_by(title: "Referred a friend discount")
       invoice.invoice_items.create!(

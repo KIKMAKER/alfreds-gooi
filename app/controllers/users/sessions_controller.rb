@@ -11,6 +11,12 @@ class Users::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     super do |resource|
+      stored_location = session[:user_return_to] # Get stored location
+      
+      if stored_location
+        session.delete(:user_return_to) # Clear after using
+        return redirect_to stored_location
+      end
       if resource.customer?
         return redirect_to manage_path
       elsif resource.driver?
