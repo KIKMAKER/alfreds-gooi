@@ -1,6 +1,6 @@
 class Collection < ApplicationRecord
   belongs_to :subscription, optional: true
-  belongs_to :drivers_day
+  belongs_to :drivers_day, optional: true
   has_one :user, through: :subscription
   acts_as_list scope: :drivers_day
 
