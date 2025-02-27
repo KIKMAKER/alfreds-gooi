@@ -87,7 +87,7 @@ class DriversDaysController < ApplicationController
 
   def index
     # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.all.order(:date)
+    @drivers_days = DriversDay.all
   end
 
   def show
@@ -103,19 +103,18 @@ class DriversDaysController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
-
   end
 
   def destroy
-    @drivers_day.delete
-    render :index, note: "Drivers Day deleted"
-  end
+    @drivers_day.collections.update_all(drivers_day_id: nil)
 
+    @drivers_day.destroy
+    redirect_to drivers_days_path, note: "Drivers Day deleted"
+  end
 
   private
 
   def set_drivers_day
-    # raise
     @drivers_day = DriversDay.find(params[:id])
   end
 
