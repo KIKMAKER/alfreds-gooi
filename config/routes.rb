@@ -105,23 +105,14 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :new, :create]
 
-<<<<<<< HEAD
-    # static pages
-    root "pages#home"
-    get "manage", to: "pages#manage"
-    get "welcome", to: "pages#welcome"
-    get "referrals", to: "pages#referrals"
-    get "vamos", to: "pages#vamos"
-    get "today", to: "pages#today"
-    get "story", to: "pages#story"
-=======
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
   get "vamos", to: "pages#vamos"
   get "welcome", to: "pages#welcome"
-  get "story", to: "pages#story"
+  get "referrals", to: "pages#referrals"
   get "today", to: "pages#today"
+  get "story", to: "pages#story"
 
 
 
@@ -130,6 +121,5 @@ Rails.application.routes.draw do
   match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
   match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
 
->>>>>>> master
 
 end

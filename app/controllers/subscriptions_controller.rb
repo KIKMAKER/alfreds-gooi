@@ -108,7 +108,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def want_bags
-    @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    @invoice = subscription.invoices.last
     @product = Product.find_by(title: "Compost bin bags")
   end
 
@@ -165,13 +165,16 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     # @subscription = Subscription.find(params[:id])
-    new = params[:new]
+    is_new = params[:new] == "true"
+    # referal code of the referrer (so you kInnow who referred them)
     referral_code = @subscription.referral_code
+    # find the referee by the referral code
     referee = User.find_by(referral_code: referral_code)
 
-    create_invoice_for_subscription(@subscription, nil, new, referee, nil) if @subscription.invoices.empty?
-    @invoice = @subscription.invoices.first
+    create_invoice_for_subscription(@subscription, nil, is_new, referee, nil) if @subscription.invoices.empty?
+    @invoice = @subscription.invoices.last
     @invoices = current_user.invoices
+    redirect_to invoice_path(@invoice)
   end
 
   def pause
@@ -402,9 +405,19 @@ class SubscriptionsController < ApplicationController
     end
     raise "Product not found" unless product
 
+    # if they haven't got a referral code they may be a referrer, check if anyone has used their referral code and assign as many discounts as successful referrals
 
-    # if the subscriber has a referral code, give them a discount (shouldn't happen through this route)
-    if referee
+    if referred_friends
+      if referred_friends >= 1
+        referee_discount = Product.find_by(title: "Referred a friend discount")
+        invoice.invoice_items.create!(
+          product: referee_discount,
+          quantity: referred_friends,
+          amount: referee_discount.price
+        )
+      end
+    # if the subscriber has a referral code, give them a discount
+    elsif referee
       discount_item = Product.find_by(title: "Referral discount #{subscription.Standard? ? subscription.plan.downcase : subscription.plan.upcase} #{subscription.duration} month")
       invoice.invoice_items.create!(
         product: discount_item,
@@ -418,14 +431,6 @@ class SubscriptionsController < ApplicationController
       referral.referrer = referee
       referral.save!
       puts "referral created with id #{referral.id}"
-    # if they haven't got a referral code they may be a referrer, check if anyone has used their referral code and assign as many discounts as successful referrals
-    elsif referred_friends >= 1
-      referee_discount = Product.find_by(title: "Referred a friend discount")
-      invoice.invoice_items.create!(
-        product: referee_discount,
-        quantity: referred_friends,
-        amount: referee_discount.price
-      )
     end
     invoice.calculate_total
     invoice

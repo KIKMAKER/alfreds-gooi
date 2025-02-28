@@ -115,6 +115,16 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def set_customer_id
+    last_customer_id = Subscription.order(:start_date).last.customer_id || "GFWC000"
+    prefix = last_customer_id[0...4]
+    number = last_customer_id[4..].to_i
+    new_number = number + 1
+    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
+    update!(customer_id: new_customer_id)
+    self.user.update!(customer_id: new_customer_id)
+  end
+
   private
 
   # infer starter kit based on sub plan
@@ -180,15 +190,7 @@ class Subscription < ApplicationRecord
 
 
 
-  def set_customer_id
-    last_customer_id = Subscription.order(:start_date).last.customer_id || "GFWC000"
-    prefix = last_customer_id[0...4]
-    number = last_customer_id[4..].to_i
-    new_number = number + 1
-    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
-    update!(customer_id: new_customer_id)
-    self.user.update!(customer_id: new_customer_id)
-  end
+
 
 
 end
