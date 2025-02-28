@@ -1,7 +1,9 @@
 <div class="driver-wrapper link-decoration mb-2">
   <div class="d-flex">
     <h1>All invoices</h1>
-    <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
+    <% if current_user.admin? %>
+      <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
+    <% end %>
   </div>
   <% @invoices.each do |invoice| %>
     <% if current_user.admin? %>
@@ -13,7 +15,7 @@
           </div>
           <div class="payment-card-amount">
             <h2>R<%= invoice.total_amount.truncate %></h2>
-          <%= link_to 'delete', invoice_path(invoice), data: { turbo_method: :delete, turbo_confirm: "Are you sure?"}  %>
+            <%= link_to 'delete', invoice_path(invoice), data: { turbo_method: :delete, turbo_confirm: "Are you sure?"}  %>
           </div>
           <% if invoice.paid %>
             <i class="fa-regular fa-circle-check"></i>

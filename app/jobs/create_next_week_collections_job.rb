@@ -35,6 +35,7 @@ class CreateNextWeekCollectionsJob < ApplicationJob
     subscriptions = Subscription.where(collection_day: day_name, status: "active")
     subscriptions.each do |subscription|
       next if subscription.status == "completed" # Skip completed subscriptions
+      next if subscription.status == "pending" # Skip pending subscriptions
       collection = Collection.find_or_create_by!(
         drivers_day: drivers_day,
         subscription: subscription,

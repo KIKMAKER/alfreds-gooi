@@ -102,6 +102,7 @@ class PaymentsController < ApplicationController
     )
     subscription = Subscription.where(customer_id: payment_data["merchantReference"]).last
     update_subscription_status(subscription)
+    update_referral(subscription)
     CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
     payment.invoice = invoice
@@ -118,6 +119,14 @@ class PaymentsController < ApplicationController
     else
       puts "No subscription found for customer #{subscription.customer_id}."
     end
+  end
+
+  def update_referral(subscription)
+    referral_code = subscription.referral_code
+    referrer = User.find_by(referral_code: referral_code)
+    referee = subscription.user
+    referral = Referral.find_by(referee_id: referee.id, referrer_id: referrer.id)
+    referral.completed!
   end
 
   def verify_signature(request_body, webhook_auth_key)

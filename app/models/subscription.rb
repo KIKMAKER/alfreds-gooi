@@ -3,6 +3,7 @@ class Subscription < ApplicationRecord
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
+  has_many :referrals, dependent: :nullify
 
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
@@ -42,6 +43,7 @@ class Subscription < ApplicationRecord
     current_day = Time.zone.today.wday # Use Time.zone.today for time zone awareness
     days_until_next_collection = (target_day - current_day) % 7
     days_until_next_collection = 7 if days_until_next_collection.zero?
+    puts "next collection day: #{Time.zone.today + days_until_next_collection}"
     Time.zone.today + days_until_next_collection # Use Time.zone.today here as well
   end
 
@@ -113,6 +115,10 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def set_customer_id
+    update!(customer_id: user.customer_id)
+  end
+
   private
 
   # infer starter kit based on sub plan
@@ -178,15 +184,7 @@ class Subscription < ApplicationRecord
 
 
 
-  def set_customer_id
-    last_customer_id = Subscription.order(:start_date).last.customer_id || "GFWC000"
-    prefix = last_customer_id[0...4]
-    number = last_customer_id[4..].to_i
-    new_number = number + 1
-    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
-    update!(customer_id: new_customer_id)
-    self.user.update!(customer_id: new_customer_id)
-  end
+
 
 
 end
