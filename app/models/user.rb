@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
+
   # Referrer: The user who referred others
   has_many :referrals_as_referrer,
            class_name: 'Referral',
@@ -40,6 +41,7 @@ class User < ApplicationRecord
 
   before_validation :make_international
   before_create :generate_referral_code
+  after_create :set_customer_id
   before_destroy :nullify_subscriptions
 
   # Custom validation
@@ -90,6 +92,18 @@ class User < ApplicationRecord
   # before create
   def generate_referral_code
     self.referral_code ||= SecureRandom.hex(3).upcase
+  end
+
+  # after create
+  def set_customer_id
+    customers = User.where(role: 'customer').where.not(customer_id: nil)
+
+    last_id = customers
+      .sort_by { |customer| customer.customer_id[4..-1].to_i } # Sort by the **numeric part** of the ID
+      .last&.customer_id[4..-1].to_i || 0 # Safely handle if there are no customers at all
+
+    next_customer_id = "GFWC" + (last_id + 1).to_s
+    update(customer_id: next_customer_id)
   end
 
  # before destroy
