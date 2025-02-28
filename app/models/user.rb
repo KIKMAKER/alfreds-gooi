@@ -1,8 +1,7 @@
 class User < ApplicationRecord
-  before_validation :make_international
-  before_create :generate_referral_code
+  enum role: %i[customer driver admin drop_off]
 
-  enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
+  # Associations
   has_many :subscriptions, dependent: :nullify
   has_many :invoices, through: :subscriptions
   has_many :collections, through: :subscriptions
@@ -30,21 +29,23 @@ class User < ApplicationRecord
           through: :referrals_as_referee,
           source: :referrer
 
-          
   accepts_nested_attributes_for :subscriptions
 
-  before_destroy :nullify_subscriptions
-
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable, :timeoutable
 
   # Callbacks
 
+  before_validation :make_international
+  before_create :generate_referral_code
+  before_destroy :nullify_subscriptions
+
   # Custom validation
-  # validates :referral_code, uniqueness: true
   validate :valid_international_phone_number
 
-  # custom methods
-
-  # current subscription
+  # Public Instance Methods
 
   def current_sub
     subscriptions.last
@@ -82,15 +83,21 @@ class User < ApplicationRecord
     end
   end
 
+  private
+
+  # Callbacks
+
+  # before create
   def generate_referral_code
     self.referral_code ||= SecureRandom.hex(3).upcase
   end
 
-
-  private
+ # before destroy
+  def nullify_subscriptions
+    self.subscriptions.update_all(user_id: nil)
+  end
 
   ## phone number validation
-
   def make_international
     puts "Before: #{self.phone_number}"
     # return if valid_international_phone_number()
@@ -102,7 +109,8 @@ class User < ApplicationRecord
   def starts_0?
     phone_number.start_with?('0')
   end
-  # Custom validation method
+
+  # Validations
 
   def valid_international_phone_number
     return if /\A\+27\d{9}\z/.match?(phone_number)
@@ -114,21 +122,5 @@ class User < ApplicationRecord
       false
     end
   end
-
-  # before create
-
-
-  # before destroy
-  def nullify_subscriptions
-    self.subscriptions.update_all(user_id: nil)
-  end
-
-
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :timeoutable
-
 
 end

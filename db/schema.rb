@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.0].define(version: 2025_01_18_080935) do
-=======
 ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
->>>>>>> master
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,6 +142,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.boolean "is_active", default: false, null: false
   end
 
+  create_table "referrals", force: :cascade do |t|
+    t.bigint "referrer_id", null: false
+    t.bigint "referee_id", null: false
+    t.bigint "subscription_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "status", default: 0
+    t.index ["referee_id"], name: "index_referrals_on_referee_id"
+    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
+    t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
+  end
+
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false
     t.string "queue_name", null: false
@@ -267,18 +275,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
-  create_table "referrals", force: :cascade do |t|
-    t.bigint "referrer_id", null: false
-    t.bigint "referee_id", null: false
-    t.bigint "subscription_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "status", default: 0
-    t.index ["referee_id"], name: "index_referrals_on_referee_id"
-    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
-    t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
-  end
-
   create_table "subscriptions", force: :cascade do |t|
     t.string "customer_id"
     t.string "access_code"
@@ -321,11 +317,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "customer_id"
-<<<<<<< HEAD
-    t.string "referral_code"
-=======
     t.boolean "og", default: false
->>>>>>> master
+    t.string "referral_code"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -341,17 +334,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
   add_foreign_key "invoices", "subscriptions"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "users"
-<<<<<<< HEAD
   add_foreign_key "referrals", "subscriptions"
   add_foreign_key "referrals", "users", column: "referee_id"
   add_foreign_key "referrals", "users", column: "referrer_id"
-=======
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
->>>>>>> master
   add_foreign_key "subscriptions", "users"
 end
