@@ -155,7 +155,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def welcome_invoice
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
     new = params[:new]
     create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
     @invoice = @subscription.invoices.first
