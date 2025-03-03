@@ -49,9 +49,23 @@ namespace :data do
       status: 'active'
     )
 
-    # Reassign collections after the new start date to the new subscription
-    user.collections.where('date >= ?', start_date).update_all(subscription_id: new_subscription.id)
+    # Find the start date of the next subscription, if there is one.
+    next_sub = user.subscriptions
+                   .where('start_date > ?', start_date)
+                   .order(:start_date)
+                   .first
+
+    # Find all collections within the date range belonging to this user
+    collections_to_reassign = if next_sub
+      user.collections.where('date >= ? AND date < ?', start_date, next_sub.start_date)
+    else
+      user.collections.where('date >= ?', start_date)
+    end
+
+    collections_to_reassign.update_all(subscription_id: new_subscription.id)
 
     puts "✅ New subscription created for #{user.customer_id} with start_date #{start_date} and duration #{duration} months."
+    puts "🔄 Reassigned #{collections_to_reassign.count} collections to new subscription."
   end
+
 end
