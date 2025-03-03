@@ -18,7 +18,7 @@ class User < ApplicationRecord
 
   # Custom validation
   validate :valid_international_phone_number
-
+  validates :customer_id, uniqueness: true
   # custom methods
 
   # current subscription
