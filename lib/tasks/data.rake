@@ -52,7 +52,7 @@ namespace :data do
           user.collections.where("date < ?", csv_start_date).update_all(subscription_id: legacy_sub.id)
 
           # Delete all other past subscriptions (except the new active & legacy ones)
-          subscriptions.where.not(id: [new_sub.id, legacy_sub.id]).each {|sub| sub.invoices.update_all(id: nil) }
+          subscriptions.where.not(id: [new_sub.id, legacy_sub.id]).each {|sub| sub.invoices.update_all(subscription_id: nil) }
           subscriptions.where.not(id: [new_sub.id, legacy_sub.id]).destroy_all
         end
 
