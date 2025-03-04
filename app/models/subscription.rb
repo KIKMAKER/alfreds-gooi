@@ -184,7 +184,8 @@ class Subscription < ApplicationRecord
     number = last_customer_id[4..].to_i
     new_number = number + 1
     new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
-    self.user.update!(customer_id: new_customer_id)
+    self.update!(customer_id: new_customer_id)
+    self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
   end
 
 
