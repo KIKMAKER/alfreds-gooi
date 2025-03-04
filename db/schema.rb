@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_04_085319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -109,7 +109,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.integer "number"
     t.float "total_amount"
     t.boolean "paid", default: false
-    t.bigint "subscription_id", null: false
+    t.bigint "subscription_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
@@ -140,6 +140,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_active", default: false, null: false
+  end
+
+  create_table "referrals", force: :cascade do |t|
+    t.bigint "referrer_id", null: false
+    t.bigint "referee_id", null: false
+    t.bigint "subscription_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "status", default: 0
+    t.index ["referee_id"], name: "index_referrals_on_referee_id"
+    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
+    t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -285,6 +297,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.string "apartment_unit_number"
     t.integer "status", default: 0
     t.datetime "end_date"
+    t.string "referral_code"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -305,6 +318,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
     t.datetime "updated_at", null: false
     t.string "customer_id"
     t.boolean "og", default: false
+    t.string "referral_code"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -320,6 +334,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_27_133524) do
   add_foreign_key "invoices", "subscriptions"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "users"
+  add_foreign_key "referrals", "subscriptions"
+  add_foreign_key "referrals", "users", column: "referee_id"
+  add_foreign_key "referrals", "users", column: "referrer_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
