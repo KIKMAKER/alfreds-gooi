@@ -15,7 +15,7 @@ namespace :data do
           puts "No user found for customer_id #{customer_id}, skipping."
           next
         end
-
+        puts "found #{user.first_name} with customer id #{user.customer_id}"
         subscriptions = user.subscriptions.order(:start_date)
         latest_sub = subscriptions.last
 
@@ -27,6 +27,7 @@ namespace :data do
 
         # Step 1: Create a New Correct Subscription
         new_sub = user.subscriptions.create!(
+          customer_id: user.customer_id
           start_date: csv_start_date,
           duration: csv_duration,
           status: "active",
@@ -40,12 +41,13 @@ namespace :data do
         # Step 3: Collapse Old Subscriptions into One "Legacy" Sub
         if subscriptions.any?
           legacy_sub = user.subscriptions.create!(
+            customer_id: user.customer_id
             start_date: subscriptions.minimum(:start_date), # Earliest known start date
             duration: subscriptions.sum(:duration), # Sum of all past durations
             status: "legacy",
             is_new_customer: false
           )
-          puts "📜 Created Legacy Subscription for #{customer_id} covering all past subs."
+          puts "📜 Created Legacy Subscription for #{user.customer_id} covering all past subs."
 
           # Move all old collections to the legacy sub
           puts "moving all collections to legacy sub"
