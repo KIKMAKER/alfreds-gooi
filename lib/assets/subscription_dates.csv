@@ -1,103 +1,103 @@
-first_name,last_name,email,phone_number,street_address,plan,duration,start_date,sub_end date - 7 days,sub_end date,status,suburb,customer_id
-Xan,Le Grange,xan.wessels@gmail.com,0834104111,"37a Aandbloem Street, Vredehoek, 8001",XL,3,2024-05-30,8/23/2024,8/30/2024,active,Vredehoek,GFWC058
-Althea,Moret,althea@moret.co.za,0824934356,"7 Hastings Street, Tamboerskloof, City Bowl, 8001",standard,7,2024-03-04,9/27/2024,10/4/2024,active,Tamboerskloof,GFWC096
-Caity,Shearer,caity@tbaeacapes.com,0833068877,51 Clovelly Road,standard,9,2024-01-09,10/2/2024,10/9/2024,active,Clovelly,GFWC015
-Susana,Kennedy,thesusanakennedy@gmail.com,0813898983,"46 Victoria Rd, Clifton , 8005",standard,14,2024-02-23,4/16/2025,4/23/2025,active,Clifton,GFWC091
-Leozette,Roode,leozetteroode@gmail.com,0713601104,"Seaways apartment block, 31 Beach Road, Mouille Point, 8005",standard,6,2024-04-23,10/16/2024,10/23/2024,active,Mouille Point,GFWC035
-Matthew,Deacon,matthewmdeacon@gmail.com,0842328463,18 Irwinton Road,standard,7,2024-04-09,11/2/2024,11/9/2024,active,Sea Point,GFWC110
-Marjolijn,Dijksterhuis,marjolijn@comersion.com,0761945733,"92 Kildare Road, Newlands, 7700",standard,6,2024-06-04,11/27/2024,12/4/2024,active,Newlands,GFWC074
-Natasha (African Bush Camps),Dixon,natasha@africanbushcamps.com,0767284574,"Unit 109b, The Foundry, Prestwich Street Green Point Cape Town",,3,2024-09-09,12/2/2024,12/9/2024,active,Green Point,GFWC158
-Ellis,Silverman,ellis.silverman@gmail.com,0828636701,"7 Constantia Road, Gardens, 8001",standard,7,2024-05-23,12/16/2024,12/23/2024,active,Gardens,GFWC024
-Alex,Wunderlich,wunderal@icloud.com,,,,3,2024-09-25,12/18/2024,12/25/2024,active,Zonnebloem,GFWC164
-Rhett,Delaney,rhett.delaney@gmail.com,0721989315,"5 Culver Street, Oranjezicht, 8001",,6,2024-07-01,12/25/2024,1/1/2025,active,Oranjezicht,GFWC151
-Magdaleen,Friederich,mdewet01@gmail.com,0739714128,"1 firmont court, 39 Davenport road, Vredehoek , 8001",standard,6,2024-07-03,12/27/2024,1/3/2025,active,Vredehoek,GFWC105
-Kobus,Meiring,kobusmeiring@gmail.com,0826538570,"214 Ocean View Drive, Fresnaye , 8005",standard,6,2024-07-08,1/1/2025,1/8/2025,active,Fresnaye,GFWC100
-Maia,Nangle,nanglemaia@gmail.com,0763140961,"71 Upper Mill Street, Gardens, 8001",standard,6,2024-07-11,1/4/2025,1/11/2025,active,Gardens,GFWC027
-Tenike,Stoltz,tenikestoltz21@gmail.com,0845696192,"3 Suffolk Road, Lakeside, 7945",standard,6,2024-07-15,1/8/2025,1/15/2025,active,Lakeside,GFWC098
-Chelsea,Chalmers,chelseaannchalmers@gmail.com,0843984454,"24a Kloof Nek Road, Tamboerskloof, 8001",standard,8,2024-07-17,3/10/2025,3/17/2025,active,Tamboerskloof,GFWC049
-Lulu,Read,lulu.read@yahoo.co.uk,0727772990,"13 Princes Road, Harfield Village, Claremont",standard,6,2024-07-17,1/10/2025,1/17/2025,active,Claremont,GFWC112
-Tim,Henderson,timhenderson999@gmail.com,,,standard,6,2024-07-24,1/17/2025,1/24/2025,active,Muizenberg,GFWC141
-Nura,Suleiman,nura@pegasys.co.za,0762006268,"3, 35 Aandbloem Street, Vredehoek, 8001",standard,6,2024-07-30,1/23/2025,1/30/2025,active,Vredehoek,GFWC055
-Christine,Gordons,christineirons@gmail.com,0615827736,"46 Chamberlain Street, Woodstock, 7915",standard,6,2024-07-31,1/24/2025,1/31/2025,active,Woodstock,GFWC060
-Ruth,Berning,ruthieberning@gmail.com,0768193584,"1 Derwent Street, Gardens",standard,6,2024-08-01,1/25/2025,2/1/2025,active,Gardens,GFWC130
-Herman,Breytenbach,panoramagh@gmail.com,0761685678,10 Orchard Heights,,6,2024-08-05,1/29/2025,2/5/2025,active,Newlands,GFWC153
-Liezel,Conradie,conradieliez@gmail.com,0714513742,"46 Campground road, Rondebosch",standard,6,2024-08-06,1/30/2025,2/6/2025,active,Rondebosch,GFWC017
-Aimee,Rawlings,aimeeclairerawlings@gmail.com,0603868922,"24 Junomar Court, 23 Kamp Street, Gardens, 8001",standard,6,2024-08-08,2/1/2025,2/8/2025,active,Gardens,GFWC078
-Natasha,Napoli,natasha@nourishd.co.za,0636481040,8 Solan Street,standard,6,2024-08-15,2/8/2025,2/15/2025,active,Gardens,GFWC029
-Ronel,van Heerden,ronelisme@gmail.com,0846650984,"Apartment 4, Connock Park, 99 Main Road, Fish Hoek",standard,6,2024-08-15,2/8/2025,2/15/2025,active,Fish Hoek,GFWC128
-Sarah,Hewland,shewland@gmail.com,0731470670,"41 St Leger Road, Claremont ,",standard,6,2024-08-15,2/8/2025,2/15/2025,active,Claremont,GFWC014
-Liesl,Prinsloo,lieslmarion@gmail.com,0834079394,"Unit 44, Bay View Lodge, Gill Road, Muizenberg, 7950",standard,6,2024-08-20,2/13/2025,2/20/2025,active,Muizenberg,GFWC086
-Nikita,Dippenaar,nikitastallbom@yahoo.com,0725153971,"47 Brook Street, Bakoven, 8005",standard,6,2024-08-21,2/14/2025,2/21/2025,active,Bakoven,GFWC007
-Kelly,Solinger,kellysolinger@gmail.com,0607505550,"2 Hastings Rd, Muizenberg , 7945",standard,6,2024-08-21,2/14/2025,2/21/2025,active,Muizenberg,GFWC088
-Becca,Irons,bexirons@gmail.com,0825640214',"37 Woodlands Flats, 5 Highstead Road, Rondebosch, Rondebosch , 7700",standard,6,2024-08-22,2/15/2025,2/22/2025,active,Rondebosch,GFWC089
-Cristina,Carlyle-Mitchell,cristinacarlymitchell@gmail.com,0824377349,"6 Maple Avenue, Gardens, Cape Town",standard,6,2024-08-22,2/15/2025,2/22/2025,active,Tamboerskloof,GFWC120
-Plentify,,jess@plentify.io,,,standard,6,2024-08-27,2/20/2025,2/27/2025,active,Ndabeni,GFWC157
-Oliver,van Maasdijk,ovanmaasdijk@gmail.com,0742344487,"14 Aandbloem Street, Vredehoek, 8001",standard,6,2024-08-29,2/21/2025,2/28/2025,active,Vredehoek,GFWC056
-Marti,macFly,martinjameslund@gmail.com,0710661969,171 Beach Road,standard,6,2024-08-28,2/21/2025,2/28/2025,active,Sea Point,GFWC161
-Megan,van Rensburg,megannicolavr@gmail.com,0741022082,"11 Arthur’s Road, Sea Point, Sea Point, 7060",standard,6,2024-09-04,2/25/2025,3/4/2025,active,Sea Point,GFWC092
-Roxanne,Bishop,roxjos@gmail.com,0833979870,"4 Chamberlain Street, Woodstock, 7915",standard,6,2024-09-06,2/27/2025,3/6/2025,active,Woodstock,GFWC065
-Margie,Schneider,margie_who@mweb.co.za,0732535080,"13 Derby Court, 1 Gordon Rd, Kenilworth, 7708",standard,6,2024-09-12,3/5/2025,3/12/2025,active,Kenilworth,GFWC034
-Courtney,Barends,courtsbarends@gmail.com,0790451602,"Unit 39 Sutton Place , 8 Vriende Street, Oranjezicht, 8001",standard,6,2024-09-18,3/11/2025,3/18/2025,active,Oranjezicht,GFWC101
-Lyn-Anne,Joubert,lyn-annejoubert@woolworths.co.za,,,,6,2024-09-18,3/11/2025,3/18/2025,active,Zonnebloem,GFWC160
-Tom,Parkinson,parkinsonchef@gmail.com,0828061420,"49 Balfour Street , Woodstock, 7915",standard,6,2024-09-20,3/13/2025,3/20/2025,active,Woodstock,GFWC064
-Sara,Araujo,sarita.n.araujo@gmail.com,0714737094,"18 Glengariff Rd, Green Point",standard,6,2024-09-20,3/13/2025,3/20/2025,active,Sea Point,GFWC123
-Charlotte,Scott,charlz.scott@gmail.com,0827722936,"21 East Lake Drive, Marina Da Gama, Muizenberg , 7945",standard,6,2024-09-22,3/15/2025,3/22/2025,active,Muizenberg,GFWC041
-Vee,Rein,gabirein9@gmail.com,0663066559,"2 Prima Ave, Bakoven, 8005",XL,6,2024-09-26,3/19/2025,3/26/2025,active,Bakoven,GFWC006
-Kara,Levy,karawendylevy@gmail.com,0824339067,"43 Fairview Avenue , Woodstock, 7915",standard,6,2024-09-27,3/20/2025,3/27/2025,active,Woodstock,GFWC061
-Camila,Menell,camilamenell@yahoo.com,0761573390,"29 Atlantic Road Muizenberg , Sorrento Court Apartment 4,",standard,6,2024-09-27,3/20/2025,3/27/2025,active,Muizenberg,GFWC075
-Daniel,Manners,danmanners23@gmail.com,0743461602,"404 Church Square Apartments , 34 Dickson Street, Woodstock, 7925",standard,6,2024-10-02,3/26/2025,4/2/2025,active,Woodstock,GFWC104
-Clotilde,,clotilde.angelucci@gmail.com,,,standard,6,2024-10-11,4/4/2025,4/11/2025,active,Gardens,GFWC137
-Shae,Strauss,shae1902@gmail.com,0826246090,"17 Milner Road, Sea Point",standard,6,2024-10-14,4/7/2025,4/14/2025,active,Sea Point,GFWC125
-Jerushah,,angiwhittle83@gmail.com,,,standard,11,2024-05-15,4/8/2025,4/15/2025,active,Vredehoek,GFWC146
-Katie,Barry,katherinejbarry@gmail.com,0793658939,"31 Salisbury Street, Woodstock, 7915",standard,6,2024-10-22,4/15/2025,4/22/2025,active,Woodstock,GFWC062
-Suzani,van der Merwe,suzanivandermerwe@gmail.com,0837201404,"3 St Michaels court, 11 Bond street, Tamboerskloof,",standard,6,2024-10-22,4/15/2025,4/22/2025,active,Tamboerskloof,GFWC051
-Ryan,Brouwer,ryan@menno.co.za,0746397176,3 Oxford Road,,4,2024-12-23,4/16/2025,5/9/5829,active,Observatory,GFWC149
-Christina,Tromp,christi.1415@gmail.com,0795016062,"40 Upper Clarens Road, Fresnaye",standard,6,2024-10-30,4/23/2025,4/30/2025,active,Fresnaye,GFWC021
-Faith,Cartwright,mamaallesfood@gmail.com,0824171848,"17 Aberdeen St Woodstock , Woodstock , 7915",XL,6,2024-10-31,4/23/2025,4/30/2025,active,Woodstock,GFWC067
-Erica,Gone. Outdoor,angie@tateclan.co.za,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-11-05,4/28/2025,5/5/2025,active,Constantia,GFWC142
-Franca,Falanga,fmfalanga@icloud.com,0826581939,"14 Clydebank Rd, Greenpoint",standard,6,2024-11-05,4/28/2025,5/5/2025,active,Green Point,GFWC030
-Amanda,Hall,angie@tateclan.co.za,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-11-05,4/28/2025,5/5/2025,active,Constantia,GFWC142
-Sky,,oscarmaeyer@gmail.com,,,standard,6,2024-11-07,4/30/2025,5/7/2025,active,Mouille Point,GFWC173
-Nichelle,Swanepoel,nichelle.swanepoel@gmail.com,0765095209,"Bayview Lodge 19, Bayview Lodge, 9 Gill Road, Muizenberg, 7945",standard,6,2024-11-07,4/30/2025,5/7/2025,active,Muizenberg,GFWC080
-Christine,Evert,evrchr004@gmail.com,0823249613,5A Verwood Road,standard,6,2024-11-08,5/1/2025,5/8/2025,active,Muizenberg,GFWC106
-Mirandi,Nel,hello@mirandinel.com,0723253177,68 Kloof Road,,6,2024-11-18,5/11/2025,5/18/2025,active,Sea Point,GFWC155
-Alice,Sholto-Douglas,alice.sholto.douglas@gmail.com,,,standard,6,2024-11-18,5/11/2025,5/18/2025,active,Observatory,GFWC122
-Katherine,de Wet,katherine.georgina.lister@gmail.com,0714929613,10 Belmont Road,standard,6,2024-11-19,5/12/2025,5/19/2025,active,Mowbray,GFWC117
-Brandon,McCormack,brandon@kitchenrepublik.com,0765486404,145 Albert Road,XL,6,2024-11-20,5/13/2025,5/20/2025,active,Woodstock,GFWC113
-Greg,Sher,gregsher3@gmail.com,0825661036,"6 Lodge Road, Oranjezicht",standard,7,2024-10-23,5/16/2025,5/23/2025,active,Gardens,GFWC127
-Jess,Verheul,verheuljess@gmail.com,0724784963,"1 Camp street, Gardens , 8001",standard,12,2024-05-25,5/18/2025,5/25/2025,active,Gardens,GFWC005
-Lucy,Martin,lucy.evelynn.martin@gmail.com,0825844086,"6 Gordon Road, Fish Hoek, 7975",standard,6,2024-11-27,5/20/2025,5/27/2025,active,Fish Hoek,GFWC019
-Maddy,Bazil,maddybazil@gmail.com,0622486021,"Garden flat (lower driveway gate), 7 Capel Road, Vredehoek, 8001",standard,8,2024-09-28,5/21/2025,5/28/2025,active,Vredehoek,GFWC095
-Adele,Prins,adele@prinsdesign.co.za,0837395225,"272 Main Road,",standard,6,2024-11-28,5/21/2025,5/28/2025,active,Muizenberg,GFWC118
-Camilla,Buenting,cbuenting@gmail.com,0762838518,"1 Ivanhoe road , Fish hoek, 7975",standard,8,2024-10-03,5/27/2025,6/3/2025,active,Fish Hoek,GFWC077
-Gianna,Marais,maraisgianna@gmail.com,0788413814,1 Signal view Close estate,,6,2024-12-06,5/30/2025,6/6/2025,active,Tamboerskloof,GFWC150
-Annemarie,Robertson,annesteenkamp19@gmail.com,0605824300,"71 Ritchie street, University Estate",standard,6,2024-12-12,6/5/2025,6/12/2025,active,Walmer Estate,GFWC070
-Elena,Pillier,elenapiller@gmail.com,,,standard,6,2024-12-13,6/6/2025,6/13/2025,active,Sea Point,GFWC145
-Callum,Broadley,calbre11@gmail.com,0847906485,"18 Maynard Street, Gardens",standard,12,2024-06-14,6/7/2025,6/14/2025,active,Gardens,GFWC071
-Marina,Barend,marinabarend@gmail.com,0820912324,5 Sunbird Avenue,,6,2024-12-20,6/13/2025,6/20/2025,active,Lakeside,GFWC156
-Angie,Tate,angie@tateclan.co.za,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-12-23,6/16/2025,6/23/2025,active,Witteboomen,GFWC142
-Mari,van Lill,marivanlill@icloud.com,,23 Wexford Road,standard,6,2024-12-25,6/18/2025,6/25/2025,active,Mouille Point,GFWC148
-Tessa,Barlin,tbarlin@gmail.com,0823087742,"103 The Herschel, 3 Herschel Close, Claremont ,",standard,6,2025-01-01,6/24/2025,7/1/2025,active,Claremont,GFWC072
-Elise,Varga,elisevarga@gmail.com,0732203269,4 Recreation Road,standard,6,2025-01-03,6/26/2025,7/3/2025,active,Fish Hoek,GFWC162
-Lauren,Edwards,lauren.kendall.edwards@gmail.com,0823755570,"13 Goldbourne Road, Kenilworth, Cape Town, 7708",standard,6,2025-01-03,6/26/2025,7/3/2025,active,Kenilworth,GFWC129
-Gianna,Marais,maraisgianna@gmail.com,,"1 Signal View Close, Tamboerskloof",,6,2025-01-03,6/26/2025,7/3/2025,active,Tamboerskloof,GFWC150
-Brett,Cohen,brett@thinka.co.za,,,XL,7,2024-12-16,7/9/2025,7/16/2025,active,Vredehoek,GFWC138
-Liat,Beinart,liat@staffwise.org,,,standard,6,2025-01-17,7/10/2025,7/17/2025,active,Higgovale,GFWC139
-Melani,Robertson,meljo.robe@gmail.com,0793996185,"34 Dickson Street, Woodstock",standard,6,2025-01-22,7/15/2025,7/22/2025,active,Woodstock,GFWC114
-Stella,Hertantyo,shertantyo@gmail.com,0760246127,"Cape Vistas, Unit 39, 5 Highland close, Devils peak estate, Vredehoek, 8001",standard,6,2025-01-27,7/20/2025,7/27/2025,active,Vredehoek,GFWC057
-Imogen,Clarke,hello@imogenlclarke.com,0792438058,8 Ladan Road,standard,6,2025-02-03,7/27/2025,8/3/2025,active,Kalk Bay,GFWC116
-Zoë,Palmer,palmerish@gmail.com,0790929717,9 Loch Road,standard,12,2024-11-05,10/29/2025,11/5/2025,active,Kalk Bay,GFWC115
-Jenny,Wheeldon,jenny@baseline-ps.co.za,0824171848,"12 Old Farm Road , Rondebosch, 7925",standard,12,2025-02-20,2/13/2026,2/20/2026,active,Rondebosch,GFWC044
-Melite,Vivier,viviermelite@gmail.com,0763815477,"1 a Kohling street , Gardens, 8001",standard,6,2024-02-29,,8/29/2024,paused,Gardens,GFWC028
-Alicia,McFadzean,alicia.mcfadzean@gmail.com,0608075043,"Unit 2 Hyde Park, 7 Quendon Road , Sea Point ,",standard,6,2024-03-21,,9/21/2024,paused,Sea Point,GFWC046
-Manal,Stulgaitis,Manal.stulgaitis@gmail.com,0788730028,21 Poyser Road,,0.5,2024-10-16,,10/16/2024,paused,Tamboerskloof,GFWC154
-Oscar,,oscarmaeyer@gmail.com,,,standard,6,2024-05-07,,11/7/2024,active,Mouille Point,GFWC140
-Ilan,Scher,ilanscher@gmail.com,0745894116,"203, The Fairmont, Solomon's Road, , Seapoint,",standard,6,2024-05-14,,11/14/2024,paused,Sea Point,GFWC047
-David,Perrott,david.r.perrott@gmail.com,,,standard,6,2024-05-28,,11/28/2024,paused,Gardens,GFWC147
-Cara,Eyre,cara.air@gmail.com,0798859448,"12 Ivanhoe Street, Cape Town, Gardens, 8001",standard,5,2024-07-03,,12/3/2024,paused,Gardens,GFWC103
-Kat,Rawlings,rawlings.kh@gmail.com,,,,3,2024-09-18,,12/18/2024,paused,Zonnebloem,GFWC163
-Bianca,Pugin,biancajpugin@gmail.com,0832565184,"3 Devon street, Claremont , 7708",standard,6,2024-07-31,,1/31/2025,paused,Claremont,GFWC011
-Kat,Scriven,katscriven89@gmail.com,0716800771,"3 hampton court, 167 main road, green point , Green point , 8005",standard,9,2024-05-01,,2/1/2025,paused,Green Point,GFWC082
-Ruan,Smith,ruan.smith@gmail.com,0814868640,"7 Royal Road, Muizenberg , 7945",standard,6,2023-08-18,,12/23/5662,paused,Muizenberg,GFWC083
-Justin,van Rooyen,justinvrooyencpt@gmail.com,0835775128,"6 St James Court, 2 st James street,, Vredehoek , 8001",standard,7,2024-01-24,,3/23/5676,paused,Vredehoek,GFWC059
-Rebecca,Hess,rebecca.hess89@gmail.com,0741263033,"Churchsquare Apartment, 506, 34 Dickson Street, Woodstock , 7925",standard,7,2024-02-19,,5/23/5678,paused,Woodstock,GFWC084
+first_name,last_name,email,phone_number,street_address,plan,duration,start_date,sub_end date - 7 days,sub_end date,status,suburb,customer_id,customer_id
+Xan,Le Grange,xan.wessels@gmail.com,0834104111,"37a Aandbloem Street, Vredehoek, 8001",XL,3,2024-05-30,8/23/2024,8/30/2024,active,Vredehoek,GFWC058,GFWC058
+Althea,Moret,althea@moret.co.za,0824934356,"7 Hastings Street, Tamboerskloof, City Bowl, 8001",standard,7,2024-03-04,9/27/2024,10/4/2024,active,Tamboerskloof,GFWC096,GFWC096
+Caity,Shearer,caity@tbaeacapes.com,0833068877,51 Clovelly Road,standard,9,2024-01-09,10/2/2024,10/9/2024,active,Clovelly,GFWC015,GFWC015
+Susana,Kennedy,thesusanakennedy@gmail.com,0813898983,"46 Victoria Rd, Clifton , 8005",standard,14,2024-02-23,4/16/2025,4/23/2025,active,Clifton,GFWC091,GFWC091
+Leozette,Roode,leozetteroode@gmail.com,0713601104,"Seaways apartment block, 31 Beach Road, Mouille Point, 8005",standard,6,2024-04-23,10/16/2024,10/23/2024,active,Mouille Point,GFWC035,GFWC035
+Matthew,Deacon,matthewmdeacon@gmail.com,0842328463,18 Irwinton Road,standard,7,2024-04-09,11/2/2024,11/9/2024,active,Sea Point,GFWC110,GFWC110
+Marjolijn,Dijksterhuis,marjolijn@comersion.com,0761945733,"92 Kildare Road, Newlands, 7700",standard,6,2024-06-04,11/27/2024,12/4/2024,active,Newlands,GFWC074,GFWC074
+Natasha (African Bush Camps),Dixon,natasha@africanbushcamps.com,0767284574,"Unit 109b, The Foundry, Prestwich Street Green Point Cape Town",,3,2024-09-09,12/2/2024,12/9/2024,active,Green Point,GFWC158,GFWC158
+Ellis,Silverman,ellis.silverman@gmail.com,0828636701,"7 Constantia Road, Gardens, 8001",standard,7,2024-05-23,12/16/2024,12/23/2024,active,Gardens,GFWC024,GFWC024
+Alex,Wunderlich,wunderal@icloud.com,,,,3,2024-09-25,12/18/2024,12/25/2024,active,Zonnebloem,GFWC164,GFWC164
+Rhett,Delaney,rhett.delaney@gmail.com,0721989315,"5 Culver Street, Oranjezicht, 8001",,6,2024-07-01,12/25/2024,1/1/2025,active,Oranjezicht,GFWC151,GFWC151
+Magdaleen,Friederich,mdewet01@gmail.com,0739714128,"1 firmont court, 39 Davenport road, Vredehoek , 8001",standard,6,2024-07-03,12/27/2024,1/3/2025,active,Vredehoek,GFWC105,GFWC105
+Kobus,Meiring,kobusmeiring@gmail.com,0826538570,"214 Ocean View Drive, Fresnaye , 8005",standard,6,2024-07-08,1/1/2025,1/8/2025,active,Fresnaye,GFWC100,GFWC100
+Maia,Nangle,nanglemaia@gmail.com,0763140961,"71 Upper Mill Street, Gardens, 8001",standard,6,2024-07-11,1/4/2025,1/11/2025,active,Gardens,GFWC027,GFWC027
+Tenike,Stoltz,tenikestoltz21@gmail.com,0845696192,"3 Suffolk Road, Lakeside, 7945",standard,6,2024-07-15,1/8/2025,1/15/2025,active,Lakeside,GFWC098,GFWC098
+Chelsea,Chalmers,chelseaannchalmers@gmail.com,0843984454,"24a Kloof Nek Road, Tamboerskloof, 8001",standard,8,2024-07-17,3/10/2025,3/17/2025,active,Tamboerskloof,GFWC049,GFWC049
+Lulu,Read,lulu.read@yahoo.co.uk,0727772990,"13 Princes Road, Harfield Village, Claremont",standard,6,2024-07-17,1/10/2025,1/17/2025,active,Claremont,GFWC112,GFWC112
+Tim,Henderson,timhenderson999@gmail.com,,,standard,6,2024-07-24,1/17/2025,1/24/2025,active,Muizenberg,GFWC141,GFWC141
+Nura,Suleiman,nura@pegasys.co.za,0762006268,"3, 35 Aandbloem Street, Vredehoek, 8001",standard,6,2024-07-30,1/23/2025,1/30/2025,active,Vredehoek,GFWC055,GFWC055
+Christine,Gordons,christineirons@gmail.com,0615827736,"46 Chamberlain Street, Woodstock, 7915",standard,6,2024-07-31,1/24/2025,1/31/2025,active,Woodstock,GFWC060,GFWC060
+Ruth,Berning,ruthieberning@gmail.com,0768193584,"1 Derwent Street, Gardens",standard,6,2024-08-01,1/25/2025,2/1/2025,active,Gardens,GFWC130,GFWC130
+Herman,Breytenbach,panoramagh@gmail.com,0761685678,10 Orchard Heights,,6,2024-08-05,1/29/2025,2/5/2025,active,Newlands,GFWC153,GFWC153
+Liezel,Conradie,conradieliez@gmail.com,0714513742,"46 Campground road, Rondebosch",standard,6,2024-08-06,1/30/2025,2/6/2025,active,Rondebosch,GFWC017,GFWC017
+Aimee,Rawlings,aimeeclairerawlings@gmail.com,0603868922,"24 Junomar Court, 23 Kamp Street, Gardens, 8001",standard,6,2024-08-08,2/1/2025,2/8/2025,active,Gardens,GFWC078,GFWC078
+Natasha,Napoli,natasha@nourishd.co.za,0636481040,8 Solan Street,standard,6,2024-08-15,2/8/2025,2/15/2025,active,Gardens,GFWC029,GFWC029
+Ronel,van Heerden,ronelisme@gmail.com,0846650984,"Apartment 4, Connock Park, 99 Main Road, Fish Hoek",standard,6,2024-08-15,2/8/2025,2/15/2025,active,Fish Hoek,GFWC128,GFWC128
+Sarah,Hewland,shewland@gmail.com,0731470670,"41 St Leger Road, Claremont ,",standard,6,2024-08-15,2/8/2025,2/15/2025,active,Claremont,GFWC014,GFWC014
+Liesl,Prinsloo,lieslmarion@gmail.com,0834079394,"Unit 44, Bay View Lodge, Gill Road, Muizenberg, 7950",standard,6,2024-08-20,2/13/2025,2/20/2025,active,Muizenberg,GFWC086,GFWC086
+Nikita,Dippenaar,nikitastallbom@yahoo.com,0725153971,"47 Brook Street, Bakoven, 8005",standard,6,2024-08-21,2/14/2025,2/21/2025,active,Bakoven,GFWC007,GFWC007
+Kelly,Solinger,kellysolinger@gmail.com,0607505550,"2 Hastings Rd, Muizenberg , 7945",standard,6,2024-08-21,2/14/2025,2/21/2025,active,Muizenberg,GFWC088,GFWC088
+Becca,Irons,bexirons@gmail.com,0825640214',"37 Woodlands Flats, 5 Highstead Road, Rondebosch, Rondebosch , 7700",standard,6,2024-08-22,2/15/2025,2/22/2025,active,Rondebosch,GFWC089,GFWC089
+Cristina,Carlyle-Mitchell,cristinacarlymitchell@gmail.com,0824377349,"6 Maple Avenue, Gardens, Cape Town",standard,6,2024-08-22,2/15/2025,2/22/2025,active,Tamboerskloof,GFWC120,GFWC120
+Plentify,,jess@plentify.io,,,standard,6,2024-08-27,2/20/2025,2/27/2025,active,Ndabeni,GFWC157,GFWC157
+Oliver,van Maasdijk,ovanmaasdijk@gmail.com,0742344487,"14 Aandbloem Street, Vredehoek, 8001",standard,6,2024-08-29,2/21/2025,2/28/2025,active,Vredehoek,GFWC056,GFWC056
+Marti,macFly,martinjameslund@gmail.com,0710661969,171 Beach Road,standard,6,2024-08-28,2/21/2025,2/28/2025,active,Sea Point,GFWC161,GFWC161
+Megan,van Rensburg,megannicolavr@gmail.com,0741022082,"11 Arthur’s Road, Sea Point, Sea Point, 7060",standard,6,2024-09-04,2/25/2025,3/4/2025,active,Sea Point,GFWC092,GFWC092
+Roxanne,Bishop,roxjos@gmail.com,0833979870,"4 Chamberlain Street, Woodstock, 7915",standard,6,2024-09-06,2/27/2025,3/6/2025,active,Woodstock,GFWC065,GFWC065
+Margie,Schneider,margie_who@mweb.co.za,0732535080,"13 Derby Court, 1 Gordon Rd, Kenilworth, 7708",standard,6,2024-09-12,3/5/2025,3/12/2025,active,Kenilworth,GFWC034,GFWC034
+Courtney,Barends,courtsbarends@gmail.com,0790451602,"Unit 39 Sutton Place , 8 Vriende Street, Oranjezicht, 8001",standard,6,2024-09-18,3/11/2025,3/18/2025,active,Oranjezicht,GFWC101,GFWC101
+Lyn-Anne,Joubert,lyn-annejoubert@woolworths.co.za,,,,6,2024-09-18,3/11/2025,3/18/2025,active,Zonnebloem,GFWC160,GFWC160
+Tom,Parkinson,parkinsonchef@gmail.com,0828061420,"49 Balfour Street , Woodstock, 7915",standard,6,2024-09-20,3/13/2025,3/20/2025,active,Woodstock,GFWC064,GFWC064
+Sara,Araujo,sarita.n.araujo@gmail.com,0714737094,"18 Glengariff Rd, Green Point",standard,6,2024-09-20,3/13/2025,3/20/2025,active,Sea Point,GFWC123,GFWC123
+Charlotte,Scott,charlz.scott@gmail.com,0827722936,"21 East Lake Drive, Marina Da Gama, Muizenberg , 7945",standard,6,2024-09-22,3/15/2025,3/22/2025,active,Muizenberg,GFWC041,GFWC041
+Vee,Rein,gabirein9@gmail.com,0663066559,"2 Prima Ave, Bakoven, 8005",XL,6,2024-09-26,3/19/2025,3/26/2025,active,Bakoven,GFWC006,GFWC006
+Kara,Levy,karawendylevy@gmail.com,0824339067,"43 Fairview Avenue , Woodstock, 7915",standard,6,2024-09-27,3/20/2025,3/27/2025,active,Woodstock,GFWC061,GFWC061
+Camila,Menell,camilamenell@yahoo.com,0761573390,"29 Atlantic Road Muizenberg , Sorrento Court Apartment 4,",standard,6,2024-09-27,3/20/2025,3/27/2025,active,Muizenberg,GFWC075,GFWC075
+Daniel,Manners,danmanners23@gmail.com,0743461602,"404 Church Square Apartments , 34 Dickson Street, Woodstock, 7925",standard,6,2024-10-02,3/26/2025,4/2/2025,active,Woodstock,GFWC104,GFWC104
+Clotilde,,clotilde.angelucci@gmail.com,,,standard,6,2024-10-11,4/4/2025,4/11/2025,active,Gardens,GFWC137,GFWC137
+Shae,Strauss,shae1902@gmail.com,0826246090,"17 Milner Road, Sea Point",standard,6,2024-10-14,4/7/2025,4/14/2025,active,Sea Point,GFWC125,GFWC125
+Jerushah,,angiwhittle83@gmail.com,,,standard,11,2024-05-15,4/8/2025,4/15/2025,active,Vredehoek,GFWC146,GFWC146
+Katie,Barry,katherinejbarry@gmail.com,0793658939,"31 Salisbury Street, Woodstock, 7915",standard,6,2024-10-22,4/15/2025,4/22/2025,active,Woodstock,GFWC062,GFWC062
+Suzani,van der Merwe,suzanivandermerwe@gmail.com,0837201404,"3 St Michaels court, 11 Bond street, Tamboerskloof,",standard,6,2024-10-22,4/15/2025,4/22/2025,active,Tamboerskloof,GFWC051,GFWC051
+Ryan,Brouwer,ryan@menno.co.za,0746397176,3 Oxford Road,,4,2024-12-23,4/16/2025,5/9/5829,active,Observatory,GFWC149,GFWC149
+Christina,Tromp,christi.1415@gmail.com,0795016062,"40 Upper Clarens Road, Fresnaye",standard,6,2024-10-30,4/23/2025,4/30/2025,active,Fresnaye,GFWC021,GFWC021
+Faith,Cartwright,mamaallesfood@gmail.com,0824171848,"17 Aberdeen St Woodstock , Woodstock , 7915",XL,6,2024-10-31,4/23/2025,4/30/2025,active,Woodstock,GFWC067,GFWC067
+Erica,Gone. Outdoor,erica@goneoutdoor.com,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-11-05,4/28/2025,5/5/2025,active,Constantia,GFWC144,GFWC144
+Franca,Falanga,fmfalanga@icloud.com,0826581939,"14 Clydebank Rd, Greenpoint",standard,6,2024-11-05,4/28/2025,5/5/2025,active,Green Point,GFWC030,GFWC030
+Amanda,Hall,angie@tateclan.co.za,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-11-05,4/28/2025,5/5/2025,active,Constantia,GFWC142,GFWC142
+Sky,,oscarmaeyer@gmail.com,,,standard,6,2024-11-07,4/30/2025,5/7/2025,active,Mouille Point,GFWC173,GFWC173
+Nichelle,Swanepoel,nichelle.swanepoel@gmail.com,0765095209,"Bayview Lodge 19, Bayview Lodge, 9 Gill Road, Muizenberg, 7945",standard,6,2024-11-07,4/30/2025,5/7/2025,active,Muizenberg,GFWC080,GFWC080
+Christine,Evert,evrchr004@gmail.com,0823249613,5A Verwood Road,standard,6,2024-11-08,5/1/2025,5/8/2025,active,Muizenberg,GFWC106,GFWC106
+Mirandi,Nel,hello@mirandinel.com,0723253177,68 Kloof Road,,6,2024-11-18,5/11/2025,5/18/2025,active,Sea Point,GFWC155,GFWC155
+Alice,Sholto-Douglas,alice.sholto.douglas@gmail.com,,,standard,6,2024-11-18,5/11/2025,5/18/2025,active,Observatory,GFWC122,GFWC122
+Katherine,de Wet,katherine.georgina.lister@gmail.com,0714929613,10 Belmont Road,standard,6,2024-11-19,5/12/2025,5/19/2025,active,Mowbray,GFWC117,GFWC117
+Brandon,McCormack,brandon@kitchenrepublik.com,0765486404,145 Albert Road,XL,6,2024-11-20,5/13/2025,5/20/2025,active,Woodstock,GFWC113,GFWC113
+Greg,Sher,gregsher3@gmail.com,0825661036,"6 Lodge Road, Oranjezicht",standard,7,2024-10-23,5/16/2025,5/23/2025,active,Gardens,GFWC127,GFWC127
+Jess,Verheul,verheuljess@gmail.com,0724784963,"1 Camp street, Gardens , 8001",standard,12,2024-05-25,5/18/2025,5/25/2025,active,Gardens,GFWC005,GFWC005
+Lucy,Martin,lucy.evelynn.martin@gmail.com,0825844086,"6 Gordon Road, Fish Hoek, 7975",standard,6,2024-11-27,5/20/2025,5/27/2025,active,Fish Hoek,GFWC019,GFWC019
+Maddy,Bazil,maddybazil@gmail.com,0622486021,"Garden flat (lower driveway gate), 7 Capel Road, Vredehoek, 8001",standard,8,2024-09-28,5/21/2025,5/28/2025,active,Vredehoek,GFWC095,GFWC095
+Adele,Prins,adele@prinsdesign.co.za,0837395225,"272 Main Road,",standard,6,2024-11-28,5/21/2025,5/28/2025,active,Muizenberg,GFWC118,GFWC118
+Camilla,Buenting,cbuenting@gmail.com,0762838518,"1 Ivanhoe road , Fish hoek, 7975",standard,8,2024-10-03,5/27/2025,6/3/2025,active,Fish Hoek,GFWC077,GFWC077
+Gianna,Marais,maraisgianna@gmail.com,0788413814,1 Signal view Close estate,,6,2024-12-06,5/30/2025,6/6/2025,active,Tamboerskloof,GFWC150,GFWC150
+Annemarie,Robertson,annesteenkamp19@gmail.com,0605824300,"71 Ritchie street, University Estate",standard,6,2024-12-12,6/5/2025,6/12/2025,active,Walmer Estate,GFWC070,GFWC070
+Elena,Pillier,elenapiller@gmail.com,,,standard,6,2024-12-13,6/6/2025,6/13/2025,active,Sea Point,GFWC145,GFWC145
+Callum,Broadley,calbre11@gmail.com,0847906485,"18 Maynard Street, Gardens",standard,12,2024-06-14,6/7/2025,6/14/2025,active,Gardens,GFWC071,GFWC071
+Marina,Barend,marinabarend@gmail.com,0820912324,5 Sunbird Avenue,,6,2024-12-20,6/13/2025,6/20/2025,active,Lakeside,GFWC156,GFWC156
+Angie,Tate,angie@tateclan.co.za,0828282236,"5 Chez Belair, 9 belair drive",XL,6,2024-12-23,6/16/2025,6/23/2025,active,Witteboomen,GFWC142,GFWC142
+Mari,van Lill,marivanlill@icloud.com,,23 Wexford Road,standard,6,2024-12-25,6/18/2025,6/25/2025,active,Mouille Point,GFWC148,GFWC148
+Tessa,Barlin,tbarlin@gmail.com,0823087742,"103 The Herschel, 3 Herschel Close, Claremont ,",standard,6,2025-01-01,6/24/2025,7/1/2025,active,Claremont,GFWC072,GFWC072
+Elise,Varga,elisevarga@gmail.com,0732203269,4 Recreation Road,standard,6,2025-01-03,6/26/2025,7/3/2025,active,Fish Hoek,GFWC162,GFWC162
+Lauren,Edwards,lauren.kendall.edwards@gmail.com,0823755570,"13 Goldbourne Road, Kenilworth, Cape Town, 7708",standard,6,2025-01-03,6/26/2025,7/3/2025,active,Kenilworth,GFWC129,GFWC129
+Gianna,Marais,maraisgianna@gmail.com,,"1 Signal View Close, Tamboerskloof",,6,2025-01-03,6/26/2025,7/3/2025,active,Tamboerskloof,GFWC150,GFWC150
+Brett,Cohen,brett@thinka.co.za,,,XL,7,2024-12-16,7/9/2025,7/16/2025,active,Vredehoek,GFWC138,GFWC138
+Liat,Beinart,liat@staffwise.org,,,standard,6,2025-01-17,7/10/2025,7/17/2025,active,Higgovale,GFWC139,GFWC139
+Melani,Robertson,meljo.robe@gmail.com,0793996185,"34 Dickson Street, Woodstock",standard,6,2025-01-22,7/15/2025,7/22/2025,active,Woodstock,GFWC114,GFWC114
+Stella,Hertantyo,shertantyo@gmail.com,0760246127,"Cape Vistas, Unit 39, 5 Highland close, Devils peak estate, Vredehoek, 8001",standard,6,2025-01-27,7/20/2025,7/27/2025,active,Vredehoek,GFWC057,GFWC057
+Imogen,Clarke,hello@imogenlclarke.com,0792438058,8 Ladan Road,standard,6,2025-02-03,7/27/2025,8/3/2025,active,Kalk Bay,GFWC116,GFWC116
+Zoë,Palmer,palmerish@gmail.com,0790929717,9 Loch Road,standard,12,2024-11-05,10/29/2025,11/5/2025,active,Kalk Bay,GFWC115,GFWC115
+Jenny,Wheeldon,jenny@baseline-ps.co.za,0824171848,"12 Old Farm Road , Rondebosch, 7925",standard,12,2025-02-20,2/13/2026,2/20/2026,active,Rondebosch,GFWC044,GFWC044
+Melite,Vivier,viviermelite@gmail.com,0763815477,"1 a Kohling street , Gardens, 8001",standard,6,2024-02-29,,8/29/2024,paused,Gardens,GFWC028,GFWC028
+Alicia,McFadzean,alicia.mcfadzean@gmail.com,0608075043,"Unit 2 Hyde Park, 7 Quendon Road , Sea Point ,",standard,6,2024-03-21,,9/21/2024,paused,Sea Point,GFWC046,GFWC046
+Manal,Stulgaitis,Manal.stulgaitis@gmail.com,0788730028,21 Poyser Road,,0.5,2024-10-16,,10/16/2024,paused,Tamboerskloof,GFWC154,GFWC154
+Oscar,,oscarmaeyer@gmail.com,,,standard,6,2024-05-07,,11/7/2024,active,Mouille Point,GFWC140,GFWC140
+Ilan,Scher,ilanscher@gmail.com,0745894116,"203, The Fairmont, Solomon's Road, , Seapoint,",standard,6,2024-05-14,,11/14/2024,paused,Sea Point,GFWC047,GFWC047
+David,Perrott,david.r.perrott@gmail.com,,,standard,6,2024-05-28,,11/28/2024,paused,Gardens,GFWC147,GFWC147
+Cara,Eyre,cara.air@gmail.com,0798859448,"12 Ivanhoe Street, Cape Town, Gardens, 8001",standard,5,2024-07-03,,12/3/2024,paused,Gardens,GFWC103,GFWC103
+Kat,Rawlings,rawlings.kh@gmail.com,,,,3,2024-09-18,,12/18/2024,paused,Zonnebloem,GFWC163,GFWC163
+Bianca,Pugin,biancajpugin@gmail.com,0832565184,"3 Devon street, Claremont , 7708",standard,6,2024-07-31,,1/31/2025,paused,Claremont,GFWC011,GFWC011
+Kat,Scriven,katscriven89@gmail.com,0716800771,"3 hampton court, 167 main road, green point , Green point , 8005",standard,9,2024-05-01,,2/1/2025,paused,Green Point,GFWC082,GFWC082
+Ruan,Smith,ruan.smith@gmail.com,0814868640,"7 Royal Road, Muizenberg , 7945",standard,6,2023-08-18,,12/23/5662,paused,Muizenberg,GFWC083,GFWC083
+Justin,van Rooyen,justinvrooyencpt@gmail.com,0835775128,"6 St James Court, 2 st James street,, Vredehoek , 8001",standard,7,2024-01-24,,3/23/5676,paused,Vredehoek,GFWC059,GFWC059
+Rebecca,Hess,rebecca.hess89@gmail.com,0741263033,"Churchsquare Apartment, 506, 34 Dickson Street, Woodstock , 7925",standard,7,2024-02-19,,5/23/5678,paused,Woodstock,GFWC084,GFWC084
