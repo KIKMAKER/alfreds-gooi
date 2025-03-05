@@ -76,9 +76,9 @@ namespace :data do
           puts "🔄 Moving all past collections to legacy sub #{legacy_sub.id}"
           user.collections.where("date < ?", csv_start_date).update_all(subscription_id: legacy_sub.id)
 
-          # Reassign all invoices from old subs to the legacy sub
+          # Reassign all invoices from old subs to the new sub
           subscriptions.where.not(id: [new_sub.id, legacy_sub.id]).each do |old_sub|
-            old_sub.invoices.update_all(subscription_id: legacy_sub.id)
+            old_sub.invoices.update_all(subscription_id: new_sub.id)
           end
 
           # Destroy the old subscriptions (except new & legacy)
