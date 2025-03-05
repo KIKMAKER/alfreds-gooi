@@ -44,6 +44,17 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def legacy
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.legacy
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.legacy
+                              .where(user_id: current_user.id)
+    end
+  end
+
   def paused
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.paused
