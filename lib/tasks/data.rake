@@ -42,8 +42,8 @@ namespace :data do
           collection_day: latest_sub.collection_day,
           latitude: latest_sub.latitude,
           longitude: latest_sub.longitude,
-          plan: latest_sub.plan,
-          referral_code: latest_sub.referral_code
+          plan: latest_sub.plan
+          # referral_code: latest_sub.referral_code
         )
         puts "🆕 Created New Subscription for #{customer_id} starting #{new_sub.start_date.strftime('%m-%d-%Y')} based on csv date: #{csv_start_date}"
 
@@ -67,8 +67,8 @@ namespace :data do
             collection_day: latest_sub.collection_day,
             latitude: latest_sub.latitude,
             longitude: latest_sub.longitude,
-            plan: latest_sub.plan,
-            referral_code: latest_sub.referral_code
+            plan: latest_sub.plan
+            # referral_code: latest_sub.referral_code
           )
           puts "📜 Created Legacy Subscription for #{customer_id} covering all past subs."
 
