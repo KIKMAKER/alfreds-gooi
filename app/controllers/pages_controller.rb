@@ -78,7 +78,7 @@ class PagesController < ApplicationController
 
   def fetch_snapscan_payments(merchant_reference)
     # Example: Replace with actual SnapScan API fetch logic
-    api_key = ENV['WEBHOOK_AUTH_KEY']
+    api_key = ENV['SNAPSCAN_API_KEY']
     service = SnapscanService.new(api_key)
     payments = service.fetch_payments
     payments.select { |payment| payment["merchantReference"] == merchant_reference }
