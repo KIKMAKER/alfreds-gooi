@@ -52,8 +52,8 @@ class PaymentsController < ApplicationController
           product = Product.find_by(title: "Compost bin bags")
           bags = invoice.invoice_items.find_by(product_id: product.id)
           subscription = Subscription.where(customer_id: payload["merchantReference"]).last
+          first_collection = CreateFirstCollectionJob.perform_now(subscription)
           if bags
-            first_collection = CreateFirstCollectionJob.perform_now(subscription)
             first_collection.update!(needs_bags: bags.quantity)
           end
       else
@@ -108,7 +108,7 @@ class PaymentsController < ApplicationController
     )
     subscription = Subscription.where(customer_id: payment_data["merchantReference"]).last
     update_subscription_status(subscription)
-    CreateFirstCollectionJob.perform_now(subscription)
+    # CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
     payment.invoice = invoice
     payment.save!
