@@ -24,7 +24,7 @@ class User < ApplicationRecord
   # current subscription
 
   def current_sub
-    subscriptions.last
+    user.subscriptions.order(start_date: :desc).first
   end
 
   def total_collections

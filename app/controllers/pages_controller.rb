@@ -40,9 +40,9 @@ class PagesController < ApplicationController
   end
 
   def manage
-    Rails.logger.info "INFO: Testing logging in production."
-    Rails.logger.debug "DEBUG: Testing detailed logging in production."
-    Rails.logger.error "ERROR: Testing error logging in production."
+    # Rails.logger.info "INFO: Testing logging in production."
+    # Rails.logger.debug "DEBUG: Testing detailed logging in production."
+    # Rails.logger.error "ERROR: Testing error logging in production."
     @subscription = current_user.current_sub
     @days_left = @subscription.remaining_collections.to_i if @subscription.start_date
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
