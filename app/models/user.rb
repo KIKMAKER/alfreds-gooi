@@ -23,8 +23,23 @@ class User < ApplicationRecord
 
   # current subscription
 
+  def whatsapp_notification_link
+    return unless subscriptions.any?
+
+    message = case current_sub.remaining_collections.truncate
+              when 0
+                "Hello! Your subscription with Gooi has come to an end. We hope you want to continue gooiiing. Log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+              when -Float::INFINITY..-1
+                "Hello! Your subscription lapsed #{-current_sub.remaining_collections.truncate} weeks ago. Please log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+              else
+                "Hello! Your subscription will end soon (in about #{current_sub.remaining_collections.truncate} weeks). Log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+              end
+
+    "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
+  end
+
   def current_sub
-    user.subscriptions.order(start_date: :desc).first
+    subscriptions.order(start_date: :desc).first
   end
 
   def total_collections
