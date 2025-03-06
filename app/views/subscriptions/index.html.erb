@@ -80,10 +80,12 @@
                 <td><%= subscription.total_collections || "check" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -1 %>
+                    <% if subscription.remaining_collections < 2 %>
+
+                    <p><%= subscription.remaining_collections.truncate %></p>
                       <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
-                    <% else %>
                       <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
+                    <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "check" %></td>
                   <% end %>
                 <% end %>
