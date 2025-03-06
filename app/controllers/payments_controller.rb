@@ -19,7 +19,7 @@ class PaymentsController < ApplicationController
     begin
       request_body = request.body.read
 
-      Rails.logger.debug "Request Body: #{request_body}"
+      # Rails.logger.debug "Request Body: #{request_body}"
 
       # Verify signature
       verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
@@ -34,26 +34,32 @@ class PaymentsController < ApplicationController
 
       # Find the user by customer_id
       user = User.find_by(customer_id: payload["merchantReference"])
-      # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
+      # check if there is a user (payment may come from the app without any references)
+      if user
+        # Find the invoice by the invoice_id
+        invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
 
-      if invoice.nil?
-        Rails.logger.error "Invoice not found with id: #{payload['extra']['invoiceId']}"
-        puts "Invoice not found with id: #{payload['extra']['invoiceId']}"
-        return render json: { error: "Invoice not found" }, status: :not_found
-      end
-
-      case payload["status"]
-      when "completed"
-        handle_payment_payload(payload, user, invoice)
-        # render json: { status: 'success' }, status: :ok
-        product = Product.find_by(title: "Compost bin bags")
-        bags = invoice.invoice_items.find_by(product_id: product.id)
-        subscription = Subscription.where(customer_id: payload["merchantReference"]).last
-        if bags
-          first_collection = CreateFirstCollectionJob.perform_now(subscription)
-          first_collection.update!(needs_bags: bags.quantity)
+        if invoice.nil?
+          Rails.logger.error "Invoice not found with id: #{payload['extra']['invoiceId']}"
+          puts "Invoice not found with id: #{payload['extra']['invoiceId']}"
+          return render json: { error: "Invoice not found" }, status: :not_found
         end
+
+        case payload["status"]
+        when "completed"
+          handle_payment_payload(payload, user, invoice)
+          # render json: { status: 'success' }, status: :ok
+          product = Product.find_by(title: "Compost bin bags")
+          bags = invoice.invoice_items.find_by(product_id: product.id)
+          subscription = Subscription.where(customer_id: payload["merchantReference"]).last
+          if bags
+            first_collection = CreateFirstCollectionJob.perform_now(subscription)
+            first_collection.update!(needs_bags: bags.quantity)
+          end
+      else
+        # if no user don't try do anything
+         Rails.logger.debug "no user was found"
+      end
 
       when "error"
         Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
