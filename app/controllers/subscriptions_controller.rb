@@ -145,7 +145,13 @@ class SubscriptionsController < ApplicationController
   def complete
     # @subscription = Subscription.find(params[:id])
     @subscription.completed!
-    end_date = @subscription.start_date + @subscription.duration.months
+    if @subscription.start_date
+      end_date = @subscription.start_date + @subscription.duration.months
+    else
+      @subscription.update(start_date: @subscription.created_at.to_date)
+      end_date = @subscription.start_date + @subscription.duration.months
+    end
+
     if @subscription.update!(end_date: end_date)
       redirect_to subscription_path(@subscription), notice: "#{@subscription.user.first_name}'s subscription marked complete"
     else
