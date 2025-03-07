@@ -168,7 +168,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def welcome
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
   end
 
   def welcome_invoice
@@ -180,8 +180,10 @@ class SubscriptionsController < ApplicationController
   end
 
   def pause
-    # @subscription = Subscription.find(params[:id])
-    if @subscription.update!(is_paused: true)
+    @subscription = Subscription.find(params[:id])
+    next_collection = Collection.where("date > ?", Date.today)
+    if next_collection
+    next_collection.update!(skip: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
@@ -189,7 +191,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def unpause
-    # @subscription = Subscription.find_by(id: params[:id])
+    @subscription = Subscription.find_by(id: params[:id])
 
     if @subscription.nil?
       redirect_to manage_path, alert: "Subscription not found"
@@ -219,7 +221,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def holiday_dates
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
       redirect_to manage_path, notice: "Holiday set!"
     else
@@ -229,7 +231,7 @@ class SubscriptionsController < ApplicationController
 
   # set holiday start and end to nil to clear holiday
   def clear_holiday
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else

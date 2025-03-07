@@ -49,6 +49,7 @@ namespace :data do
 
         # Step 2: Reassign Collections to New Subscription
         user.collections.where("date >= ?", csv_start_date).update_all(subscription_id: new_sub.id)
+        user.collections.where("date >= ?", latest_sub.start_date).update_all(subscription_id: latest_sub.id)
         puts "🔄 Reassigned recent collections to new sub #{new_sub.id}"
 
         # Step 3: Collapse Old Subscriptions into One "Legacy" Subscription
