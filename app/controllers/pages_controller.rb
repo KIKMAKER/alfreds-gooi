@@ -44,9 +44,10 @@ class PagesController < ApplicationController
     # Rails.logger.debug "DEBUG: Testing detailed logging in production."
     # Rails.logger.error "ERROR: Testing error logging in production."
     @subscription = current_user.current_sub
+    @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
     @days_left = @subscription.remaining_collections.to_i if @subscription.start_date
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
-    @all_collections = current_user.collections
+    @all_collections = current_user.collections.order(date: :desc)
   end
 
   def welcome

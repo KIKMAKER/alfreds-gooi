@@ -9,56 +9,41 @@
       <p>Please settle your account to continue gooiing</p>
       <%= link_to "view invoice", invoice_path(@unpaid_invoice) %>
     <% else %>
-      <% if @subscription.is_paused %>
+      <% if @next_collection.skip %>
         <div class="text-center">
-          <p></p>
           <h2>Upcoming Collection</h2>
           <p class="mb-3">Alfred will skip you <%= Date.today.wday < 5 ? "this" : "next" %> week</p>
           <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
         </div>
       <% elsif @subscription.is_new_customer %>
-        <!--<div class="text-center">
-          <h3>get ready to start gooiing!</h3>
-          <p>Please add us to your contacts list and feel free to get in touch with any comments or questions.</p>
-          <p></p>
-          <%#= link_to "https://wa.me/+27785325513", class: 'icon-link', target: '_blank' do %>-->
-<!--            <i class="fa-brands fa-whatsapp"></i>-->
-          <%# end %>
-<!--          <p class="mb-3">Alfred will deliver your starter kit <%#= Date.today.wday > 5 ? "this" : "next" %> week.</p>
-        </div>-->
         <div class="text-center contact-section">
-  <h3>Get Ready to Start Gooiing!</h3>
-
-  <div class="contact-links">
-  <!--  <p>-->
-      <%#= link_to "Add to Contacts (VCF)", "/alfred_contact.vcf", class: "btn btn-outline-secondary", download: "AlfredGooiingContact.vcf" %>
-<!--    </p>-->
-
-  <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
-
-  <p>Please add us to your contacts list and feel free to get in touch with any comments or questions.</p>
-    <p class="my-2 link-decoration align-center">
-      <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
+          <h3>Get Ready to Start Gooiing!</h3>
+          <div class="contact-links">
+            <!--  <p>-->
+            <%#= link_to "Add to Contacts (VCF)", "/alfred_contact.vcf", class: "btn btn-outline-secondary", download: "AlfredGooiingContact.vcf" %>
+            <!--    </p>-->
+            <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <p>Please add us to your contacts list and feel free to get in touch with any comments or questions.</p>
+            <p class="my-2 link-decoration align-center">
+              <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
                    target: "_blank" do %>
-        <i class="fa-brands fa-whatsapp"></i>
-        Start the conversation
-      <% end %>
-    </p>
- <!--   <p>
-      <a href="tel:+27785325513" class="btn btn-outline-primary">
-        <i class="fa-solid fa-phone"></i> Call Alfred
-      </a>
-    </p>-->
-  </div>
-
-</div>
-
+                <i class="fa-brands fa-whatsapp"></i>
+                Start the conversation
+              <% end %>
+            </p>
+            <!--   <p>
+              <a href="tel:+27785325513" class="btn btn-outline-primary">
+                <i class="fa-solid fa-phone"></i> Call Alfred
+              </a>
+            </p>-->
+          </div>
+        </div>
       <% else %>
-        <% if @subscription.collections.any? %>
-          <% if @subscription.collections.any? && @subscription.collections.last.needs_bags.to_i > 0 && @subscription.collections.last.date >= Date.today %>
-            <p class="text-center mb-3">Your next collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
-          <% else %>
+        <% if @next_collection %>
+          <% if @next_collection.needs_bags.to_i > 0 && @next_collection.date >= Date.today %>
             <p class="text-center mb-3">Your last collection was on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
+          <% else %>
+            <p class="text-center mb-3">Your next collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
           <% end %>
           <div class="text-center">
             <p class="fs-6 mb-3">Want Alfred to bring you another roll of bonnie bio bags?</p>
@@ -68,7 +53,7 @@
               <%= button_to "+", add_bags_collection_path(@subscription.collections.last), class: "submit-btn-circle", data: {turbo: false} %>
             </div>
             <p class="text-center mt-2">rolls of bags</p>
-            <% if @subscription.collections.any? && @subscription.collections.last.needs_bags.to_i > 0 %>
+            <% if @next_collection && @subscription.collections.last.needs_bags.to_i > 0 %>
               <p class="mt-2">generate an invoice and <%= link_to 'pay now', bag_invoices_path(@subscription.collections.last.needs_bags) %> via snapscan</p>
             <% end %>
             <div class="container-flex mt-3">

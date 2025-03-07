@@ -1,6 +1,6 @@
 <div class="past-collections-cards">
   <div class="collections-card">
-    <% collections.order(date: :desc).in_groups_of(5).each do |collections_group| %>
+    <% collections.in_groups_of(5).each do |collections_group| %>
       <ul class="list-group">
         <% collections_group.each do |collection| %>
           <% if collection %>
