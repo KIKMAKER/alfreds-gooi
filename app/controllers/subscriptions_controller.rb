@@ -111,7 +111,8 @@ class SubscriptionsController < ApplicationController
 
   def want_bags
     @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
-    @product = Product.find_by(title: "Compost bin bags")
+    @compost_bags = Product.find_by(title: "Compost bin bags")
+    @soil_bags = Product.find_by(title: "Soil for Life Compost")
   end
 
   def edit
