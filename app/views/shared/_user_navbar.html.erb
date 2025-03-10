@@ -8,6 +8,7 @@
       <%#= link_to 'How we compost', root_path, class: "link-title" %>
       <%= link_to 'Collections', manage_path, class: "link-title" %>
       <%= link_to 'Edit address', edit_subscription_path(current_user.subscriptions.last), class: "link-title" %>
+      <%= link_to 'Edit personal details', edit_user_registration_path, class: "link-title" %>
       <%= link_to "Invoices", invoices_path, class: "link-title" %>
       <% if user_signed_in?  %>
         <div class="sign-up-btn">
@@ -31,6 +32,7 @@
               <%= link_to "Invoices", invoices_path, class: "dropdown-item" %>
             <% end %>
             <%= link_to 'Edit address', edit_subscription_path(current_user.subscriptions.last), class: "dropdown-item" %>
+            <%= link_to 'Edit personal details', edit_user_registration_path, class: "dropdown-item" %>
             <%= link_to "Collections", manage_path, class: "dropdown-item" %>
             <%= link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
           </div>
