@@ -77,6 +77,13 @@ namespace :data do
           puts "🔄 Moving all past collections to legacy sub #{legacy_sub.id}"
           user.collections.where("date < ?", csv_start_date).update_all(subscription_id: legacy_sub.id)
 
+          # user = User.find_by(first_name: "Lulu")
+          # subscription = user.subscriptions.where(status: "active").first
+          # subscription.update(start_date: Date.new(2025, 01, 15))
+
+          # user.collections.where("date > ?", subscription.start_date).count
+          # user.collections.where("date > ?", subscription.start_date).update_all(subscription_id: subscription.id)
+
           # Reassign all invoices from old subs to the new sub
           subscriptions.where.not(id: [new_sub.id, legacy_sub.id]).each do |old_sub|
             old_sub.invoices.update_all(subscription_id: new_sub.id)
