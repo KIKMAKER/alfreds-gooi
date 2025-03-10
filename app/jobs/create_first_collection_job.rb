@@ -27,7 +27,7 @@ class CreateFirstCollectionJob < ApplicationJob
 
     # Create collection for subscription
 
-    collection = Collection.create!(
+    collection = Collection.find_or_create_by!(
       drivers_day: drivers_day,
       subscription: subscription,
       date: collection_date
