@@ -20,20 +20,23 @@ class PaymentsController < ApplicationController
       request_body = request.body.read
 
       # Rails.logger.debug "Request Body: #{request_body}"
+      Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
 
       # Verify signature
       verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
-      # parsed_params = Rack::Utils.parse_nested_query(request_body)
-      # payload = JSON.parse(parsed_params["payload"])
       payload = JSON.parse(params[:payload])
 
-      puts ">>> Received payload: #{payload.inspect}"
       Rails.logger.debug "Received payload: #{payload.inspect}"
+      customer_id = payload["merchantReference"]
 
+      if customer_id.blank?
+        Rails.logger.error "⚠️ Missing merchantReference - can't find user!"
+        return render json: { error: "Missing merchantReference" }, status: :unprocessable_entity
+      end
       # Find the user by customer_id
-      user = User.find_by(customer_id: payload["merchantReference"])
+      user = User.find_by(customer_id: customer_id)
       # check if there is a user (payment may come from the app without any references)
       if user
         # Find the invoice by the invoice_id
