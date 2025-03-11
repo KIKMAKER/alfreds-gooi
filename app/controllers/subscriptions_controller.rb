@@ -182,9 +182,9 @@ class SubscriptionsController < ApplicationController
 
   def pause
     @subscription = Subscription.find(params[:id])
-    next_collection = Collection.where("date > ?", Date.today)
+    next_collection = @subscription.collections.where("date >= ?", Date.today).order(:date).first
     if next_collection
-    next_collection.update!(skip: true)
+      next_collection.update!(skip: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
