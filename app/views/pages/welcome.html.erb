@@ -1,28 +1,33 @@
 <div class="user-wrapper">
   <h1>Welcome <%= current_user.first_name %></h1>
   <div class="user-container mt-2">
-    <% if  @subscription.start_date %>
-      <h2>Your subscription is confirmed!</h2>
+    <h2>Your subscription is confirmed!</h2>
+    <% if current_user.subscriptions.count == 1  %>
       <p>Alfred will deliver your starter kit on <%= @subscription.start_date.strftime('%A, %b %d') %>.</p>
-      <h2>There are a few things you can manage through this portal</h2>
-      <ol class="text-start ms-6 w-75">
-        <li>
-          <strong><p>Let us know if we should skip your collection for the week</p></strong>
-        </li>
-        <li>
-          <strong><p>Set your next holiday dates if you will be away for more than two consecutive weeks</p></strong>
-        </li>
-        <li>
-          <strong><p>Order another roll of compostable bags</p></strong>
-        </li>
-        <li>
-          <strong><p>Update your subscription details</p></strong>
-        </li>
-      </ol>
-      <%= link_to "Manage collections", manage_path, class: "small-yellow-btn" %>
-    <% else %>
-      <p>There seems to have been a hiccup in setting your subscription up.</p>
-      <p>If you have made payment successfully, please email your proof of payment to gooicapetown@gmail.com and we will manually commence your subscription.</p>
     <% end %>
+    <h2>There are a few things you can manage through this portal</h2>
+    <ol class="text-start ms-6 w-75">
+      <li>
+        <strong>
+          <p>Let us know if we should skip your collection for the week</p>
+        </strong>
+      </li>
+      <li>
+        <strong>
+          <p>Set your next holiday dates if you will be away for more than two consecutive weeks</p>
+        </strong>
+      </li>
+      <li>
+        <strong>
+          <p>Order another roll of compostable bags</p>
+        </strong>
+      </li>
+      <li>
+        <strong>
+          <p>Update your subscription details</p>
+        </strong>
+      </li>
+    </ol>
+    <%= link_to "Manage collections", manage_path, class: "small-yellow-btn" %>
   </div>
 </div>
