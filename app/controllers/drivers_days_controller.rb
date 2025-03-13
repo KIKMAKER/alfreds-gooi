@@ -71,7 +71,7 @@ class DriversDaysController < ApplicationController
     return unless request.patch?
 
     if update_drivers_day(drivers_day_params, next_path: vamos_path)
-      CreateCollectionsJob.perform_now(day_name)
+      CreateCollectionsJob.perform_later(day_name)
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
     else

@@ -199,9 +199,9 @@ class SubscriptionsController < ApplicationController
       return
     end
 
-    next_collection = @subscription.collections.last
+    next_collection = @subscription.collections.where("date >= ?", Date.today).order(:date).first
 
-    if next_collection&.date.present? && next_collection.date > Date.today
+    if next_collection
       if next_collection.update!(skip: false)
         @subscription.update!(is_paused: false)
         redirect_to manage_path, notice: "Collection schedule updated successfully"
@@ -212,7 +212,6 @@ class SubscriptionsController < ApplicationController
     else
       if @subscription.update(is_paused: true)
         @subscription.update!(is_paused: false)
-        raise
         redirect_to manage_path, notice: "Subscription unpaused successfully"
       else
         Rails.logger.error "Failed to unpause subscription: #{subscription.errors.full_messages.join(', ')}"
