@@ -7,37 +7,39 @@
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
     <ul data-controller="sortable">
-
-   <% @collections.each do |collection| %>
-      <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
+      <% @collections.each do |collection| %>
+        <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
         data-sortable-handle
         class="sortable-item">
-        <div class="car">
-          <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
-          <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
-          <% if current_user.admin? %>
-            <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
-          <% end %>
-        </div>
-        <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
-        <div class="bag">
-          <% if collection.skip %>
-            <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
-          <% else %>
-            <% if (collection.bags || 0) >= 1 %>
-              <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
-            <% elsif collection.new_customer %>
-              <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
-            <% elsif collection.subscription.user.drop_off? %>
-              <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
-            <% else %>
-              <%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %>
+          <div class="car">
+            <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
+            <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
+            <% if current_user.admin? %>
+              <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             <% end %>
-          <% end %>
-        </div>
-      </li>
-    <% end %>
-      </ul><!--</ul>-->
+          </div>
+          <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
+          <div class="bag">
+            <% if collection.skip %>
+              <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
+            <% else %>
+              <% if (collection.bags || 0) >= 1 %>
+                <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
+              <% elsif (collection.buckets || 0) >= 1 %>
+                <%= link_to "#{pluralize(collection.buckets, 'bucket')}", edit_collection_path(collection), class: "small-yellow-btn" %>
+              <% elsif collection.new_customer %>
+                <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+              <% elsif collection.subscription.user.drop_off? %>
+                <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
+              <% else %>
+                <%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %>
+              <% end %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <!--</ul>-->
   </div>
   <div class="drivers-form">
     <% if current_user.admin? %>
