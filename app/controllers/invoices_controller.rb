@@ -55,7 +55,7 @@ class InvoicesController < ApplicationController
     @invoice.invoice_items.create!(
       product_id: product.id,
       quantity: bags,
-      amount: product.price * bags
+      amount: product.price
     )
     @invoice.calculate_total
   end
