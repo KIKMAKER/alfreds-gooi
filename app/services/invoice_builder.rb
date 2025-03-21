@@ -45,7 +45,7 @@ class InvoiceBuilder
   end
 
   def apply_discounts(invoice)
-    if @referred_friends.positive?
+    if @referred_friends&.positive?
       discount = Product.find_by(title: "Referred a friend discount")
       invoice.invoice_items.create!(
         product: discount,
@@ -71,4 +71,3 @@ class InvoiceBuilder
     @subscription.user.referrals_as_referrer.completed.each(&:used!)
   end
 end
-

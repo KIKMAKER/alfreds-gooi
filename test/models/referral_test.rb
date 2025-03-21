@@ -9,6 +9,12 @@ class ReferralTest < ActiveSupport::TestCase
       price: 300
     )
 
+    @subscription_product = Product.create!(
+      title: "XL 3 month subscription",
+      description: "Subscription product",
+      price: 810
+    )
+
     @discount = Product.create!(
       title: "Referral discount XL 3 month",
       description: "Referred discount",
@@ -43,6 +49,12 @@ class ReferralTest < ActiveSupport::TestCase
       street_address: "123 Bree Street",
       suburb: "Cape Town"
     )
+    @referral = Referral.new(
+      referrer: @referrer,
+      referee: @referee,
+      subscription: @subscription
+    )
+
   end
 
   test "should be valid with all associations" do
@@ -55,13 +67,19 @@ class ReferralTest < ActiveSupport::TestCase
   end
 
   test "referee invoice includes referral discount and starter kit" do
-    invoice = create_invoice_for_subscription(@subscription, nil, true, @referrer, nil)
-
-    assert_equal 3, invoice.invoice_items.count
+    # invoice = create_invoice_for_subscription(@subscription, nil, true, @referrer, nil)
+    invoice = InvoiceBuilder.new(
+      subscription: @subscription,
+      og: nil,
+      is_new: true,
+      referee: @referrer,
+      referred_friends: nil
+    ).call
     titles = invoice.invoice_items.map { |item| item.product.title }
 
     assert_includes titles, "XL Starter Kit"
     assert_includes titles, "Referral discount XL 3 month"
+    assert_includes titles, "XL 3 month subscription"
   end
 
   test "can transition to completed and used" do

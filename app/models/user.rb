@@ -114,11 +114,7 @@ class User < ApplicationRecord
   # after create
   def set_customer_id
     customers = User.where(role: 'customer').where.not(customer_id: nil)
-
-    last_id = customers
-      .sort_by { |customer| customer.customer_id[4..-1].to_i } # Sort by the **numeric part** of the ID
-      .last&.customer_id[4..-1].to_i || 0 # Safely handle if there are no customers at all
-
+    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
     next_customer_id = "GFWC" + (last_id + 1).to_s
     update(customer_id: next_customer_id)
   end
