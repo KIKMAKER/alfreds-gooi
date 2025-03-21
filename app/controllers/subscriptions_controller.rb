@@ -435,6 +435,10 @@ class SubscriptionsController < ApplicationController
           amount: referee_discount.price
         )
       end
+      completed_referrals = current_user.referrals_as_referrer.completed
+      completed_referrals.each do |referral|
+        referral.used!
+      end
     # if the subscriber has a referral code, give them a discount
     elsif referee
       discount_item = Product.find_by(title: "Referral discount #{subscription.Standard? ? subscription.plan.downcase : subscription.plan.upcase} #{subscription.duration} month")
