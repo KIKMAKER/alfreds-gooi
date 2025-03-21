@@ -160,7 +160,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def welcome
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
   end
 
   def welcome_invoice

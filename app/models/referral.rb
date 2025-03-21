@@ -6,5 +6,5 @@ class Referral < ApplicationRecord
   validates :referrer_id, presence: true
   validates :referee_id, presence: true
 
-  enum status: %i[pending completed]
+  enum status: %i[pending completed used]
 end
