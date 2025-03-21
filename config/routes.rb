@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       get :active
       get :paused
       get :completed
+      get :legacy
     end
     member do
       get :want_bags

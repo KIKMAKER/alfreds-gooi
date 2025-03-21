@@ -1,14 +1,19 @@
 <div class="user-wrapper">
   <h2>Want to add bags?</h2>
   <%= simple_form_for @invoice do |f| %>
-   <%= f.fields_for :invoice_items do |invoice_item_form| %>
     <div class="form-group">
-      <%#= invoice_item_form.label :quantity,  %>
-      <%= hidden_field_tag "invoice[invoice_items_attributes][0][product_id]", @product.id %>
-      <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: 1 } %>
+      <% [@compost_bags, @soil_bags].each do |product| %>
+        <% invoice_item = @invoice.invoice_items.find { |item| item.product_id == product.id } %>
+
+        <p><%= product.title %> (R<%= product.price %>)</p>
+
+        <%= f.fields_for :invoice_items, invoice_item do |invoice_item_form| %>
+          <%= invoice_item_form.hidden_field :id %>
+          <%= invoice_item_form.hidden_field :product_id, value: product.id %>
+          <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: invoice_item&.quantity || 1 } %>
+        <% end %>
+      <% end %>
     </div>
-  <% end %>
     <%= f.submit "Add to Invoice", class: "submit-btn" %>
   <% end %>
 </div>
-<!--, InvoiceItem.new], url: invoice_path(@invoice), method: :patch-->

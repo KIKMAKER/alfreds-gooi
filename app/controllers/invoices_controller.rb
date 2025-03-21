@@ -30,8 +30,9 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    # @invoice = Invoice.find(params[:id])
+    @invoice = Invoice.find(params[:id])
     create_invoice_items(@invoice)
+
     redirect_to invoice_path(@invoice)
   end
 
@@ -56,7 +57,7 @@ class InvoicesController < ApplicationController
     @invoice.invoice_items.create!(
       product_id: product.id,
       quantity: bags,
-      amount: product.price * bags
+      amount: product.price
     )
     @invoice.calculate_total
   end
@@ -75,7 +76,7 @@ class InvoicesController < ApplicationController
 
   def invoice_items_params
     # params.require(:invoice).permit(:issued_date, :due_date, :subscription_id)
-    params.require(:invoice).permit(:subscription_id, invoice_items_attributes: [ :product_id, :quantity ])
+    params.require(:invoice).permit(invoice_items_attributes: [ :product_id, :quantity ])
   end
 
   def set_invoice
