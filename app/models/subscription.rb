@@ -185,11 +185,9 @@ class Subscription < ApplicationRecord
 
 
   def set_customer_id
-    last_customer_id = Subscription.order(:start_date).last.customer_id
-    prefix = last_customer_id[0...4]
-    number = last_customer_id[4..].to_i
-    new_number = number + 1
-    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
+      customers = User.where(role: 'customer').where.not(customer_id: nil)
+    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
+    new_customer_id = "GFWC" + (last_id + 1).to_s
     self.update!(customer_id: new_customer_id)
     self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
   end
