@@ -2,10 +2,23 @@ require "test_helper"
 
 class ReferralFlowTest < ActionDispatch::IntegrationTest
   def setup
+    # Referrer user
     @referrer = User.create!(
-      email: "referrer@example.com",
+      first_name: "Ref",
+      last_name: "User",
+      email: "ref@example.com",
+      phone_number: "+27836353126",
       password: "password",
-      referral_code: "GOOIREF"
+      referral_code: "REF123"
+    )
+
+    # Referee user (who will use the code)
+    @referee = User.create!(
+      first_name: "Ree",
+      last_name: "User",
+      email: "ree@example.com",
+      phone_number: "+27836353126",
+      password: "password"
     )
 
     @discount = Product.create!(
@@ -19,6 +32,11 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       description: "R50 off",
       price: -50
     )
+    @starter_kit = Product.create!(
+      title: "XL Starter Kit",
+      description: "Big kit",
+      price: 300
+    )
 
     @subscription_product = Product.create!(
       title: "XL 3 month subscription",
@@ -28,7 +46,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "referee signs up with referral and gets discount" do
-    referee = User.create!(email: "referee@example.com", password: "password")
+    referee = @referee
 
     subscription = Subscription.create!(
       user: referee,
@@ -39,7 +57,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       suburb: "Cape Town"
     )
 
-    invoice = create_invoice_for_subscription(subscription, nil, true, @referrer, nil)
+    invoice = InvoiceBuilder.new(subscription: subscription, og: nil, is_new:true, referee: @referrer, referred_friends: nil).call
 
     assert invoice.invoice_items.any? { |item| item.product.title == "Referral discount XL 3 month" }
 
@@ -49,7 +67,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "referrer gets discount after referee payment" do
-    referee = User.create!(email: "referee2@example.com", password: "password")
+    referee = @referee
     referee_sub = Subscription.create!(
       user: referee,
       plan: "XL",
@@ -73,9 +91,15 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       suburb: "Cape Town"
     )
 
-    invoice = create_invoice_for_subscription(referrer_sub, false, false, nil, 1)
+    invoice = InvoiceBuilder.new(
+      subscription: referrer_sub,
+      og: false,
+      is_new: false,
+      referee: nil,
+      referred_friends: 1
+    ).call
 
     assert invoice.invoice_items.any? { |item| item.product.title == "Referred a friend discount" }
-    assert_equal -50, invoice.invoice_items.sum(&:amount)
+    assert_equal 760, invoice.invoice_items.sum(&:amount)
   end
 end

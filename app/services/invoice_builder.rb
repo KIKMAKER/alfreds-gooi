@@ -1,6 +1,6 @@
 # app/services/invoice_builder.rb
 class InvoiceBuilder
-  def initialize(subscription:, og: false, is_new: false, referee: nil, referred_friends: 0)
+  def initialize(subscription: , og: false, is_new: false, referee: nil, referred_friends: 0)
     @subscription = subscription
     @og = og
     @is_new = is_new
