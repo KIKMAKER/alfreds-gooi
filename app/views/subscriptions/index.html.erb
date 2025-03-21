@@ -6,6 +6,7 @@
         <%= link_to "Active", active_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Completed", completed_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Paused", paused_subscriptions_path, class: "btn-today-green" %>
+        <%= link_to "Legacy", legacy_subscriptions_path, class: "btn-today-green" %>
       </div>
       <br>
       <h1>All Subscriptions</h1>
@@ -40,7 +41,7 @@
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
                     <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                      <%#= link_to "whatsapp them", send_whatsapp_notification %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unknown" %></td>
                   <% end %>
@@ -48,8 +49,8 @@
                 <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
                 <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
               </tr>
-              <% elsif !subscription.invoices.first&.paid %>
-               <tr>
+            <% elsif !subscription.invoices.first&.paid %>
+              <tr>
                 <td><%= subscription.customer_id %></td>
                 <td>
                   <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
@@ -59,8 +60,9 @@
                 <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% if subscription.remaining_collections < -2 %>
+                     <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
+                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", "#" %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>
@@ -79,8 +81,11 @@
                 <td><%= subscription.total_collections || "check" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% if subscription.remaining_collections < 2 %>
+
+                    <p><%= subscription.remaining_collections.truncate %></p>
+                      <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                      <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "check" %></td>
                   <% end %>

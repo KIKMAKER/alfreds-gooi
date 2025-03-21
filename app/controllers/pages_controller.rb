@@ -39,6 +39,17 @@ class PagesController < ApplicationController
                 end
   end
 
+  def manage
+    # Rails.logger.info "INFO: Testing logging in production."
+    # Rails.logger.debug "DEBUG: Testing detailed logging in production."
+    # Rails.logger.error "ERROR: Testing error logging in production."
+    @subscription = current_user.current_sub
+    @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
+    @days_left = @subscription.remaining_collections.to_i if @subscription.start_date
+    @unpaid_invoice = @subscription.invoices.find_by(paid: false)
+    @all_collections = current_user.collections.order(date: :desc)
+  end
+
   def welcome
     @subscription = current_user.current_sub
     merchant_reference = params[:merchantReference]
@@ -90,7 +101,7 @@ class PagesController < ApplicationController
 
   def fetch_snapscan_payments(merchant_reference)
     # Example: Replace with actual SnapScan API fetch logic
-    api_key = ENV['WEBHOOK_AUTH_KEY']
+    api_key = ENV['SNAPSCAN_API_KEY']
     service = SnapscanService.new(api_key)
     payments = service.fetch_payments
     payments.select { |payment| payment["merchantReference"] == merchant_reference }

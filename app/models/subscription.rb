@@ -28,7 +28,7 @@ class Subscription < ApplicationRecord
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
-  enum status: %i[pending active pause completed]
+  enum status: %i[pending active pause completed legacy]
   enum plan: %i[once_off Standard XL]
   enum collection_day: Date::DAYNAMES
 
@@ -184,7 +184,15 @@ class Subscription < ApplicationRecord
 
 
 
-
+  def set_customer_id
+    last_customer_id = Subscription.order(:start_date).last.customer_id
+    prefix = last_customer_id[0...4]
+    number = last_customer_id[4..].to_i
+    new_number = number + 1
+    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
+    self.update!(customer_id: new_customer_id)
+    self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
+  end
 
 
 end

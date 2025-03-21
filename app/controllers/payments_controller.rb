@@ -19,23 +19,33 @@ class PaymentsController < ApplicationController
     begin
       request_body = request.body.read
 
-      Rails.logger.debug "Request Body: #{request_body}"
+      # Rails.logger.debug "Request Body: #{request_body}"
+      Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
 
       # Verify signature
       verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
-      # parsed_params = Rack::Utils.parse_nested_query(request_body)
-      # payload = JSON.parse(parsed_params["payload"])
       payload = JSON.parse(params[:payload])
 
-      puts ">>> Received payload: #{payload.inspect}"
       Rails.logger.debug "Received payload: #{payload.inspect}"
+      customer_id = payload["merchantReference"]
 
+      if customer_id.blank?
+        Rails.logger.error "⚠️ Missing merchantReference - can't find user!"
+        return render json: { error: "Missing merchantReference" }, status: :unprocessable_entity
+      end
       # Find the user by customer_id
-      user = User.find_by(customer_id: payload["merchantReference"])
-      # Find the invoice by the invoice_id
-      invoice = Invoice.find_by(id: payload["extra"]["invoice_id"].to_i)
+      user = User.find_by(customer_id: customer_id)
+
+      # check if there is a user (payment may come from the app without any references)
+      if user.nil?
+        Rails.logger.error "⚠️ No user found with customer_id: #{customer_id}"
+        return render json: { error: "User not found" }, status: :not_found
+      end
+
+      invoice_id = payload.dig("extra", "invoiceId")&.to_i
+      invoice = Invoice.find_by(id: invoice_id) if invoice_id.present?
 
       if invoice.nil?
         Rails.logger.error "Invoice not found with id: #{payload['extra']['invoiceId']}"
@@ -45,16 +55,33 @@ class PaymentsController < ApplicationController
 
       case payload["status"]
       when "completed"
-        handle_payment_payload(payload, user, invoice)
-        # render json: { status: 'success' }, status: :ok
-        product = Product.find_by(title: "Compost bin bags")
-        bags = invoice.invoice_items.find_by(product_id: product.id)
-        subscription = Subscription.where(customer_id: payload["merchantReference"]).last
-        if bags
-          first_collection = CreateFirstCollectionJob.perform_now(subscription)
-          first_collection.update!(needs_bags: bags.quantity)
-        end
+        payment = handle_payment_payload(payload, user)
+        if invoice.present?
+          subscription = invoice.subscription
 
+          payment.invoice = invoice
+          payment.save!
+
+          invoice.update!(paid: true)
+
+        # render json: { status: 'success' }, status: :ok
+
+          compost_bags = Product.find_by(title: "Compost bin bags")
+          invoice_compost_bags = invoice.invoice_items.find_by(product_id: compost_bags.id)
+          soil_bags = Product.find_by(title: "Soil for Life Compost")
+          invoice_soil_bags = invoice.invoice_items.find_by(product_id: soil_bags.id)
+
+          first_collection = CreateFirstCollectionJob.perform_now(subscription)
+          if invoice_compost_bags
+            first_collection.update!(needs_bags: invoice_compost_bags.quantity)
+          end
+          if invoice_soil_bags
+            first_collection.update!(soil_bag: invoice_soil_bags.quantity)
+          end
+        else
+          # No invoice found - this is a manual SnapScan payment, probably directly into your account
+          Rails.logger.warn "⚠️ Manual SnapScan payment detected! User: #{user.customer_id}, Amount: #{payload['totalAmount']}, SnapScan ID: #{payload['id']}. Follow up manually."
+        end
       when "error"
         Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
         render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok # ✅ Use 200 OK instead of 422
@@ -87,7 +114,7 @@ class PaymentsController < ApplicationController
 
   private
 
-  def handle_payment_payload(payment_data, user, invoice)
+  def handle_payment_payload(payment_data, user)
     payment = Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
@@ -100,13 +127,14 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-    subscription = Subscription.where(customer_id: payment_data["merchantReference"]).last
+    subscription = Subscription.where(customer_id: payment_data["merchantReference"]).order(start_date: :asc).last
     update_subscription_status(subscription)
     update_referral(subscription)
     CreateFirstCollectionJob.perform_now(subscription)
     invoice.update(paid: true)
     payment.invoice = invoice
     payment.save!
+    return payment
   end
 
   def update_subscription_status(subscription)
@@ -117,7 +145,7 @@ class PaymentsController < ApplicationController
       )
       puts "Subscription #{subscription.id} for customer #{subscription.customer_id} updated to active with start date #{subscription.start_date}."
     else
-      puts "No subscription found for customer #{subscription.customer_id}."
+      puts "No subscription found for customer this customer."
     end
   end
 

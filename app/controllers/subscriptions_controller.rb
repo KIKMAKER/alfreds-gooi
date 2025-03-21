@@ -44,6 +44,17 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def legacy
+    if current_user.admin? || current_user.driver?
+      @subscriptions = Subscription.legacy
+                             .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                             .order_by_user_name
+    else
+      @subscriptions = Subscription.legacy
+                              .where(user_id: current_user.id)
+    end
+  end
+
   def paused
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.paused
@@ -108,8 +119,9 @@ class SubscriptionsController < ApplicationController
   end
 
   def want_bags
-    @invoice = subscription.invoices.last
-    @product = Product.find_by(title: "Compost bin bags")
+    @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    @compost_bags = Product.find_by(title: "Compost bin bags")
+    @soil_bags = Product.find_by(title: "Soil for Life Compost")
   end
 
   def edit
@@ -143,7 +155,13 @@ class SubscriptionsController < ApplicationController
   def complete
     # @subscription = Subscription.find(params[:id])
     @subscription.completed!
-    end_date = @subscription.start_date + @subscription.duration.months
+    if @subscription.start_date
+      end_date = @subscription.start_date + @subscription.duration.months
+    else
+      @subscription.update(start_date: @subscription.created_at.to_date)
+      end_date = @subscription.start_date + @subscription.duration.months
+    end
+
     if @subscription.update!(end_date: end_date)
       redirect_to subscription_path(@subscription), notice: "#{@subscription.user.first_name}'s subscription marked complete"
     else
@@ -178,8 +196,10 @@ class SubscriptionsController < ApplicationController
   end
 
   def pause
-    # @subscription = Subscription.find(params[:id])
-    if @subscription.update!(is_paused: true)
+    @subscription = Subscription.find(params[:id])
+    next_collection = @subscription.collections.where("date >= ?", Date.today).order(:date).first
+    if next_collection
+      next_collection.update!(skip: true)
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
@@ -187,16 +207,16 @@ class SubscriptionsController < ApplicationController
   end
 
   def unpause
-    # @subscription = Subscription.find_by(id: params[:id])
+    @subscription = Subscription.find_by(id: params[:id])
 
     if @subscription.nil?
       redirect_to manage_path, alert: "Subscription not found"
       return
     end
 
-    next_collection = @subscription.collections.last
+    next_collection = @subscription.collections.where("date >= ?", Date.today).order(:date).first
 
-    if next_collection&.date.present? && next_collection.date > Date.today
+    if next_collection
       if next_collection.update!(skip: false)
         @subscription.update!(is_paused: false)
         redirect_to manage_path, notice: "Collection schedule updated successfully"
@@ -207,7 +227,6 @@ class SubscriptionsController < ApplicationController
     else
       if @subscription.update(is_paused: true)
         @subscription.update!(is_paused: false)
-        raise
         redirect_to manage_path, notice: "Subscription unpaused successfully"
       else
         Rails.logger.error "Failed to unpause subscription: #{subscription.errors.full_messages.join(', ')}"
@@ -217,7 +236,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def holiday_dates
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
       redirect_to manage_path, notice: "Holiday set!"
     else
@@ -227,7 +246,7 @@ class SubscriptionsController < ApplicationController
 
   # set holiday start and end to nil to clear holiday
   def clear_holiday
-    # @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else

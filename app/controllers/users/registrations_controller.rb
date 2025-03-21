@@ -68,22 +68,60 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code]])
   end
 
+
+
+  # def after_sign_up_path_for(resource)
+  #   if resource.persisted?
+  #     @subscription = Subscription.create!(
+          # user_id: resource.id,
+          # plan: params[:user][:subscription][:plan],
+          # duration: params[:user][:subscription][:duration],
+          # street_address: params[:user][:subscription][:street_address],
+          # suburb: params[:user][:subscription][:suburb],
+          # is_new_customer: true)
+  #     if @subscription
+  #       UserMailer.with(subscription: @subscription).welcome.deliver_now
+  #       UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
+  #       welcome_subscription_path(@subscription)
+  #     else
+  #       redirect_to new_user_registration_path(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
+  #     end
+  #   else
+  #     redirect_to new_user_registration_path(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
+  #   end]
+  #   # resource.create_initial_invoice
+  #   # subscription = resource.subscriptions.first
+  #   # invoice = subscription.invoices.first``
+  # end
+
   def after_sign_up_path_for(resource)
     if resource.persisted?
-      @subscription = Subscription.create!(user_id: resource.id, plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb], is_new_customer: true, referral_code: params[:user][:subscription][:referral_code])
-      if @subscription
+      begin
+        @subscription = Subscription.create!(
+          user_id: resource.id,
+          plan: params[:user][:subscription][:plan],
+          duration: params[:user][:subscription][:duration],
+          street_address: params[:user][:subscription][:street_address],
+          suburb: params[:user][:subscription][:suburb],
+          is_new_customer: true,
+          referral_code: params[:user][:subscription][:referral_code]
+        )
         UserMailer.with(subscription: @subscription).welcome.deliver_now
         UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
         welcome_subscription_path(@subscription)
-      else
-        redirect_to new_user_registration_path(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
+
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "Failed to create subscription: #{e.message}"
+        redirect_to new_user_registration_path(
+          plan: params[:user][:subscription][:plan],
+          duration: params[:user][:subscription][:duration],
+          street_address: params[:user][:subscription][:street_address],
+          suburb: params[:user][:subscription][:suburb]
+        )
       end
-    else
-      redirect_to new_user_registration_path(plan: params[:user][:subscription][:plan], duration: params[:user][:subscription][:duration], street_address: params[:user][:subscription][:street_address], suburb: params[:user][:subscription][:suburb])
     end
-    # resource.create_initial_invoice
-    # subscription = resource.subscriptions.first
-    # invoice = subscription.invoices.first``
+
   end
+
 
 end
