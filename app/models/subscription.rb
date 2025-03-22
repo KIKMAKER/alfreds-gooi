@@ -28,9 +28,9 @@ class Subscription < ApplicationRecord
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
-  enum status: %i[pending active pause completed legacy]
-  enum plan: %i[once_off Standard XL]
-  enum collection_day: Date::DAYNAMES
+  enum :status, %i[pending active pause completed legacy]
+  enum :plan, %i[once_off Standard XL]
+  enum :collection_day, Date::DAYNAMES
 
   SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
@@ -116,6 +116,7 @@ class Subscription < ApplicationRecord
   end
 
   def set_customer_id
+    return if self.customer_id.present?
     update!(customer_id: user.customer_id)
   end
 
@@ -201,7 +202,8 @@ class Subscription < ApplicationRecord
   end
 
   def set_customer_id
-      customers = User.where(role: 'customer').where.not(customer_id: nil)
+    return if self.customer_id.present?
+    customers = User.where(role: 'customer').where.not(customer_id: nil)
     last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
     new_customer_id = "GFWC" + (last_id + 1).to_s
     self.update!(customer_id: new_customer_id)
