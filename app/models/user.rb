@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  enum role: %i[customer driver admin drop_off]
+  enum :role, %i[customer driver admin drop_off]
 
   # Associations
   has_many :subscriptions, dependent: :nullify
@@ -113,6 +113,7 @@ class User < ApplicationRecord
 
   # after create
   def set_customer_id
+    return if self.customer_id.present?
     customers = User.where(role: 'customer').where.not(customer_id: nil)
     last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
     next_customer_id = "GFWC" + (last_id + 1).to_s
