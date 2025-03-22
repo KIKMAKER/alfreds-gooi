@@ -37,7 +37,7 @@ class CollectionsController < ApplicationController
       @drivers_day = process_drivers_day(row, driver)
       # Process the subscription
       subscription = process_subscription(row)
-      puts subscription.collection_day if subscription
+      # puts subscription.collection_day if subscription
       # Process the collection
       process_collection(row, subscription, @drivers_day) if subscription
     end
@@ -101,7 +101,7 @@ class CollectionsController < ApplicationController
       if collection_params == "1" && collection.update!(skip: collection_params)
         skipped += 1
       else
-        puts "Failed to skip collection #{collection.id}"
+         flash[:notice] = "Failed to skip collection #{collection.id}"
       end
     end
     flash[:notice] = "Collections updated successfully!" if skipped_params == skipped

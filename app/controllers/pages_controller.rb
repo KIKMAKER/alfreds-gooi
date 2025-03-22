@@ -90,7 +90,6 @@ class PagesController < ApplicationController
   def referrals
     @referral_code = current_user.referral_code || current_user.generate_referral_code
     @referrals = current_user.referrals_as_referrer.where(status: "completed")
-    raise
     @referral_count = @referrals.count
   end
 
