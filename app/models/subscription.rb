@@ -119,6 +119,24 @@ class Subscription < ApplicationRecord
     update!(customer_id: user.customer_id)
   end
 
+  def suggested_start_date(payment_date: Time.zone.today)
+    last_sub = user.subscriptions.completed.order(end_date: :desc).first
+    return payment_date unless last_sub
+
+    last_end = last_sub.end_date
+    return payment_date unless last_end
+
+    days_since = (payment_date - last_end).to_i
+    expected = (days_since / 7.0).floor
+    actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
+
+    if actual >= expected
+      last_end + 1.day
+    else
+      payment_date
+    end
+  end
+
   private
 
   # infer starter kit based on sub plan
@@ -182,8 +200,6 @@ class Subscription < ApplicationRecord
     nil
   end
 
-
-
   def set_customer_id
       customers = User.where(role: 'customer').where.not(customer_id: nil)
     last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
@@ -191,6 +207,5 @@ class Subscription < ApplicationRecord
     self.update!(customer_id: new_customer_id)
     self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
   end
-
 
 end

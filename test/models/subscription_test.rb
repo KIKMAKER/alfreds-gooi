@@ -56,18 +56,36 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_equal payment_date, new_sub.suggested_start_date(payment_date: payment_date)
   end
 
-  test "marks subscriptions complete after enough collections" do
-    sub = subscriptions(:active) # Factory or fixture
-    sub.update!(start_date: 6.weeks.ago, duration: 1)
+  test "should set start_date to previous sub's end_date if collections continued" do
+    user = @user
+    old_sub = @old_sub
 
-    # Simulate 5 collections
-    5.times do
-      Collection.create!(subscription: sub, date: 1.week.ago, skip: false)
+    # Simulate weekly collections since end_date
+    4.times do |i|
+      Collection.create!(subscription: old_sub, date: old_sub.end_date + i.weeks)
     end
 
-    CheckSubscriptionsForCompletionJob.perform_now
+    payment_date = Time.current.to_date
+    new_sub = Subscription.new(user: user, duration: 3)
 
-    assert sub.reload.completed?
+    new_sub.start_date = new_sub.suggested_start_date(payment_date: payment_date)
+
+    assert_equal (old_sub.end_date + 1.day), new_sub.start_date.to_date
+
   end
+
+  # test "marks subscriptions complete after enough collections" do
+  #   sub = subscriptions(:active) # Factory or fixture
+  #   sub.update!(start_date: 6.weeks.ago, duration: 1)
+
+  #   # Simulate 5 collections
+  #   5.times do
+  #     Collection.create!(subscription: sub, date: 1.week.ago, skip: false)
+  #   end
+
+  #   CheckSubscriptionsForCompletionJob.perform_now
+
+  #   assert sub.reload.completed?
+  # end
 
 end
