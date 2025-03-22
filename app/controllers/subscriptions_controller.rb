@@ -100,8 +100,7 @@ class SubscriptionsController < ApplicationController
     @subscription.collection_order = current_user.subscriptions.last.collection_order
     # sub should definitely not be new if created through this route
     @subscription.is_new_customer = false
-    # mark previous sub completed
-    current_user.subscriptions.last.completed! if current_user.subscriptions.any?
+
     # find any friends this user has refered who have actually signed up
     referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
     # get og from the params as boolean

@@ -72,6 +72,7 @@ class DriversDaysController < ApplicationController
 
     if update_drivers_day(drivers_day_params, next_path: vamos_path)
       CreateCollectionsJob.perform_now(day_name)
+      CheckSubscriptionsForCompletionJob.perform_now
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
     else
