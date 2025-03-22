@@ -44,7 +44,6 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       price: 810
     )
 
-    @subscription = 
   end
 
   test "referee signs up with referral and gets discount" do
@@ -105,6 +104,6 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
     assert_equal 760, invoice.invoice_items.sum(&:amount)
   end
 
-  test "completed payment marks referral as completed" do
+
 
 end
