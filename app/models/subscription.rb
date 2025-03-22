@@ -3,6 +3,7 @@ class Subscription < ApplicationRecord
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
+  has_many :referrals, dependent: :nullify
 
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
@@ -27,9 +28,9 @@ class Subscription < ApplicationRecord
   # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
-  enum status: %i[pending active pause completed legacy]
-  enum plan: %i[once_off Standard XL]
-  enum collection_day: Date::DAYNAMES
+  enum :status, %i[pending active pause completed legacy]
+  enum :plan, %i[once_off Standard XL]
+  enum :collection_day, Date::DAYNAMES
 
   SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
@@ -42,6 +43,7 @@ class Subscription < ApplicationRecord
     current_day = Time.zone.today.wday # Use Time.zone.today for time zone awareness
     days_until_next_collection = (target_day - current_day) % 7
     days_until_next_collection = 7 if days_until_next_collection.zero?
+    puts "next collection day: #{Time.zone.today + days_until_next_collection}"
     Time.zone.today + days_until_next_collection # Use Time.zone.today here as well
   end
 
@@ -113,6 +115,29 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def set_customer_id
+    return if self.customer_id.present?
+    update!(customer_id: user.customer_id)
+  end
+
+  def suggested_start_date(payment_date: Time.zone.today)
+    last_sub = user.subscriptions.completed.order(end_date: :desc).first
+    return payment_date unless last_sub
+
+    last_end = last_sub.end_date
+    return payment_date unless last_end
+
+    days_since = (payment_date - last_end).to_i
+    expected = (days_since / 7.0).floor
+    actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
+
+    if actual >= expected
+      last_end + 1.day
+    else
+      payment_date
+    end
+  end
+
   private
 
   # infer starter kit based on sub plan
@@ -176,17 +201,13 @@ class Subscription < ApplicationRecord
     nil
   end
 
-
-
   def set_customer_id
-    last_customer_id = Subscription.order(:start_date).last.customer_id
-    prefix = last_customer_id[0...4]
-    number = last_customer_id[4..].to_i
-    new_number = number + 1
-    new_customer_id = "#{prefix}#{new_number.to_s.rjust(3, '0')}"
+    return if self.customer_id.present?
+    customers = User.where(role: 'customer').where.not(customer_id: nil)
+    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
+    new_customer_id = "GFWC" + (last_id + 1).to_s
     self.update!(customer_id: new_customer_id)
     self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
   end
-
 
 end

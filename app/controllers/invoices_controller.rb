@@ -18,7 +18,7 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.new
     @invoice.subscription = Subscription.find(params[:invoice][:subscription_id])
     @invoice.save!
-    if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.month, total_amount: 0)
+    if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.week)
 
       create_invoice_items(@invoice)
       @invoice.calculate_total
@@ -39,6 +39,8 @@ class InvoicesController < ApplicationController
   def show
     # @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
+    @referrer_discount = Product.find_by(title: "Referred a friend discount")
+
   end
 
   def destroy

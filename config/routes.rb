@@ -111,8 +111,9 @@ Rails.application.routes.draw do
   get "manage", to: "pages#manage"
   get "vamos", to: "pages#vamos"
   get "welcome", to: "pages#welcome"
-  get "story", to: "pages#story"
+  get "referrals", to: "pages#referrals"
   get "today", to: "pages#today"
+  get "story", to: "pages#story"
 
 
 

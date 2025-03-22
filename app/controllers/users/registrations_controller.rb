@@ -65,7 +65,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code]])
   end
 
 
@@ -103,9 +103,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
           duration: params[:user][:subscription][:duration],
           street_address: params[:user][:subscription][:street_address],
           suburb: params[:user][:subscription][:suburb],
-          is_new_customer: true
+          is_new_customer: true,
+          referral_code: params[:user][:subscription][:referral_code]
         )
-
         UserMailer.with(subscription: @subscription).welcome.deliver_now
         UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
         welcome_subscription_path(@subscription)
@@ -119,14 +119,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
           suburb: params[:user][:subscription][:suburb]
         )
       end
-    else
-      redirect_to new_user_registration_path(
-        plan: params[:user][:subscription][:plan],
-        duration: params[:user][:subscription][:duration],
-        street_address: params[:user][:subscription][:street_address],
-        suburb: params[:user][:subscription][:suburb]
-      )
     end
+
   end
 
 

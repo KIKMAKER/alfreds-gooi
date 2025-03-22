@@ -1,0 +1,9 @@
+<!-- app/views/subscription_mailer/sub_completed.html.erb -->
+<div class="user-wrapper">
+  <h1>Hi <%= @subscription.user.first_name %>!</h1>
+  <br>
+  <p>Your subscription (starting <%= @subscription.start_date.strftime('%e %b %Y') %>) has run its course.</p>
+  <p>We’ve loved collecting your gooi-goodies. You can resubscribe anytime to keep feeding the soil and diverting waste from landfills 🌱</p>
+  <br>
+  <%= link_to "Resubscribe Now", new_subscription_url, class: 'small-yellow-btn' %>
+</div>

@@ -55,17 +55,16 @@ class PaymentsController < ApplicationController
 
       case payload["status"]
       when "completed"
-        payment = handle_payment_payload(payload, user)
+        payment = handle_payment_payload(payload, user, invoice)
+        payment.user = user
+        payment.save!
+        puts "Here should be the first payemnt: #{payment.user.customer_id}"
         if invoice.present?
           subscription = invoice.subscription
 
-          payment.invoice = invoice
-          payment.save!
-
           invoice.update!(paid: true)
 
-        # render json: { status: 'success' }, status: :ok
-
+          puts "Payment: user_id #{payment.user_id}, invoice_id: #{payment.invoice_id}"
           compost_bags = Product.find_by(title: "Compost bin bags")
           invoice_compost_bags = invoice.invoice_items.find_by(product_id: compost_bags.id)
           soil_bags = Product.find_by(title: "Soil for Life Compost")
@@ -78,20 +77,22 @@ class PaymentsController < ApplicationController
           if invoice_soil_bags
             first_collection.update!(soil_bag: invoice_soil_bags.quantity)
           end
+          render json: { status: 'success' }, status: :ok and return
         else
           # No invoice found - this is a manual SnapScan payment, probably directly into your account
           Rails.logger.warn "⚠️ Manual SnapScan payment detected! User: #{user.customer_id}, Amount: #{payload['totalAmount']}, SnapScan ID: #{payload['id']}. Follow up manually."
         end
       when "error"
-        Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice.id}. SnapScan ID: #{payload['id']}"
-        render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok # ✅ Use 200 OK instead of 422
+        Rails.logger.error "Payment failed for user #{user&.id}, invoice #{invoice&.id || 'N/A'}. SnapScan ID: #{payload['id']}"
+        render json: { status: 'failed', message: 'Payment was not successful' }, status: :ok and return # ✅ Use 200 OK instead of 422
       else
         Rails.logger.warn "Unhandled payment status: #{payload['status']}"
-        render json: { status: 'ignored', message: 'Unhandled payment status' }, status: :ok
+        render json: { status: 'ignored', message: 'Unhandled payment status' }, status: :ok and return
       end
 
     rescue => e
-      Rails.logger.error "Error processing SnapScan webhook: #{e.message}"
+      Rails.logger.error "💥 Error processing SnapScan webhook: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
       render json: { error: e.message }, status: :unprocessable_entity
     end
   end
@@ -114,7 +115,7 @@ class PaymentsController < ApplicationController
 
   private
 
-  def handle_payment_payload(payment_data, user)
+  def handle_payment_payload(payment_data, user, invoice)
     payment = Payment.create!(
       snapscan_id: payment_data["id"],
       status: payment_data["status"],
@@ -127,10 +128,15 @@ class PaymentsController < ApplicationController
       merchant_reference: payment_data["merchantReference"],
       user_id: user.id
     )
-    subscription = Subscription.where(customer_id: payment_data["merchantReference"]).order(start_date: :asc).last
-    update_subscription_status(subscription)
-    # CreateFirstCollectionJob.perform_now(subscription)
+    subscription = invoice.subscription
+    return payment unless subscription
+    payment.invoice = invoice
     payment.save!
+    invoice.update!(paid: true)
+    update_subscription_status(subscription)
+    update_referral(subscription)
+    CreateFirstCollectionJob.perform_now(subscription)
+
     return payment
   end
 
@@ -138,7 +144,7 @@ class PaymentsController < ApplicationController
     if subscription
       subscription.update!(
         status: 'active',
-        start_date: subscription.calculate_next_collection_day
+        start_date: subscription.suggested_start_date(payment_date: Time.zone.today)
       )
       puts "Subscription #{subscription.id} for customer #{subscription.customer_id} updated to active with start date #{subscription.start_date}."
     else
@@ -146,7 +152,22 @@ class PaymentsController < ApplicationController
     end
   end
 
+  def update_referral(subscription)
+    return unless subscription # just in case
+    referral_code = subscription.referral_code
+    return unless referral_code # nothing to do
+
+    referrer = User.find_by(referral_code: referral_code)
+    return unless referrer # invalid referral code
+
+    referee = subscription.user
+    referral = Referral.find_by(referee_id: referee.id, referrer_id: referrer.id)
+
+    referral&.completed!
+  end
+
   def verify_signature(request_body, webhook_auth_key)
+    return true if Rails.env.test?
     # Extract the Authorization header and received signature
     received_auth_header = request.headers['Authorization'].to_s
     received_signature = received_auth_header.split('=').last
