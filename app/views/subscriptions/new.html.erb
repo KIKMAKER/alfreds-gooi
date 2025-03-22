@@ -1,6 +1,6 @@
 <div class="user-wrapper">
   <div class="collection-body">
-    <h1 class= "collection-header">Pick a subscription option</h1>
+    <h1 class="mt-4 mb-4">Pick a subscription option:</h1>
     <% if current_user.admin? %>
       <%= simple_form_for(@subscription) do |f| %>
         <%= f.input :customer_id %>
@@ -71,7 +71,7 @@
               </div>
             </div>
           </div>
-          <h2 class="mt-3">XL Subscriptions</h2>
+          <h2 class="mt-5">XL Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1 large bucket of compostable waste</p>
           <div class="standard-months-container mt-3">
             <div class="month-card">

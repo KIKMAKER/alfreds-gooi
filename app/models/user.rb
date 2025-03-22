@@ -1,20 +1,48 @@
 class User < ApplicationRecord
-  before_validation :make_international
-  # after_create_commit :create_initial_invoice # unless subscriptions.count > 1
+  enum :role, %i[customer driver admin drop_off]
 
-  enum role: { customer: 0, driver: 1, admin: 2, drop_off: 3 }
+  # Associations
   has_many :subscriptions, dependent: :nullify
   has_many :invoices, through: :subscriptions
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
 
+  # Referrer: The user who referred others
+  has_many :referrals_as_referrer,
+           class_name: 'Referral',
+           foreign_key: 'referrer_id',
+           dependent: :destroy
+
+  # Referees: The users who were referred by this user
+  has_many :referees,
+           through: :referrals_as_referrer,
+           source: :referee
+
+  # Referrals where this user is the referee (was referred by someone else)
+  has_many :referrals_as_referee,
+           class_name: 'Referral',
+           foreign_key: 'referee_id',
+           dependent: :destroy
+
+  # Referrer: The user who referred this user
+  has_one :referrer,
+          through: :referrals_as_referee,
+          source: :referrer
+
   accepts_nested_attributes_for :subscriptions
 
-  before_destroy :nullify_subscriptions
-
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable, :timeoutable
 
   # Callbacks
+
+  before_validation :make_international
+  before_create :generate_referral_code
+  after_create :set_customer_id
+  before_destroy :nullify_subscriptions
 
   # Custom validation
   validate :valid_international_phone_number
@@ -74,11 +102,30 @@ class User < ApplicationRecord
     end
   end
 
-
   private
 
-  ## phone number validation
+  # Callbacks
 
+  # before create
+  def generate_referral_code
+    self.referral_code ||= SecureRandom.hex(3).upcase
+  end
+
+  # after create
+  def set_customer_id
+    return if self.customer_id.present?
+    customers = User.where(role: 'customer').where.not(customer_id: nil)
+    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
+    next_customer_id = "GFWC" + (last_id + 1).to_s
+    update(customer_id: next_customer_id)
+  end
+
+ # before destroy
+  def nullify_subscriptions
+    self.subscriptions.update_all(user_id: nil)
+  end
+
+  ## phone number validation
   def make_international
     puts "Before: #{self.phone_number}"
     # return if valid_international_phone_number()
@@ -90,7 +137,8 @@ class User < ApplicationRecord
   def starts_0?
     phone_number.start_with?('0')
   end
-  # Custom validation method
+
+  # Validations
 
   def valid_international_phone_number
     return if /\A\+27\d{9}\z/.match?(phone_number)
@@ -102,18 +150,5 @@ class User < ApplicationRecord
       false
     end
   end
-
-  # before destroy
-  def nullify_subscriptions
-    self.subscriptions.update_all(user_id: nil)
-  end
-
-
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :timeoutable
-
 
 end

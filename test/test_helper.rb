@@ -1,6 +1,8 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+# require "active_support/core_ext/string/filters"
+
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers

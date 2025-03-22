@@ -70,7 +70,6 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
     @collections = @subscription.collections
-
     @total_collections = @subscription.total_collections
     @skipped_collections = @subscription.skipped_collections
     @successful_collections = @total_collections - @skipped_collections
@@ -89,20 +88,36 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
+    # create sub from the form input
     @subscription = Subscription.new(subscription_params)
+    # assign to logged in user
     @subscription.user = current_user
-    @subscription.customer_id = current_user.subscriptions.last.customer_id
+    # set gooi customer_id on the sub
+    @subscription.customer_id = current_user.subscriptions.last.customer_id || @subscription.set_customer_id
+    # set attributes to match previous sub
     @subscription.suburb = current_user.subscriptions.last.suburb
     @subscription.street_address = current_user.subscriptions.last.street_address
     @subscription.collection_order = current_user.subscriptions.last.collection_order
+    # sub should definitely not be new if created through this route
     @subscription.is_new_customer = false
-    current_user.subscriptions.last.completed! if current_user.subscriptions.any?
-    current_user.og = params[:og] == "true"
-    current_user.save!
-    if @subscription.save!
-      # @invoice = create_invoice_for_subscription(@subscription, params[:og], params[:new])
 
-      # redirect_to invoice_path(@invoice), notice: 'Subscription and invoice were successfully created.'
+    # find any friends this user has refered who have actually signed up
+    referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
+    # get og from the params as boolean
+    og = params[:og] == "true"
+    is_new = params[:new] == "true"
+    # save the sub
+    if @subscription.save!
+      # create an invoice
+      # @invoice = create_invoice_for_subscription(@subscription, og, is_new, nil, referred_friends)
+      @invoice = InvoiceBuilder.new(
+        subscription: @subscription,
+        og: og,
+        is_new: is_new,
+        referee: nil,
+        referred_friends: referred_friends
+      ).call
+      # check if the user wants bags
       redirect_to want_bags_subscription_path(@subscription)
     else
       render :new, status: :unprocessable_entity
@@ -110,7 +125,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def want_bags
-    @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    # @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
+    @invoice = InvoiceBuilder.new(
+      subscription: @subscription,
+      og: current_user.og
+    ).call
     @compost_bags = Product.find_by(title: "Compost bin bags")
     @soil_bags = Product.find_by(title: "Soil for Life Compost")
   end
@@ -174,10 +193,22 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
-    new = params[:new]
-    create_invoice_for_subscription(@subscription, nil, new) if @subscription.invoices.empty?
-    @invoice = @subscription.invoices.first
-    @invoices = current_user.invoices
+    is_new = params[:new] == "true"
+    # referal code of the referrer (so you kInnow who referred them)
+    referral_code = @subscription.referral_code
+    # find the referee by the referral code
+    referee = User.find_by(referral_code: referral_code)
+
+    if @subscription.invoices.empty?
+      @invoice = InvoiceBuilder.new(
+        subscription: @subscription,
+        og: nil,
+        is_new: is_new,
+        referee: referee
+      ).call
+    end
+    @invoice = @subscription.invoices.order(created_at: :asc).last
+    redirect_to invoice_path(@invoice)
   end
 
   def pause
@@ -323,7 +354,7 @@ class SubscriptionsController < ApplicationController
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order,
+                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 
@@ -373,39 +404,74 @@ class SubscriptionsController < ApplicationController
   end
 
 
-  def create_invoice_for_subscription(subscription, og, new)
-    invoice = Invoice.create!(
-      subscription: subscription,
-      issued_date: Time.current,
-      due_date: Time.current + 2.week,
-      total_amount: 0
-    )
+  # def create_invoice_for_subscription(subscription, og, is_new, referee, referred_friends)
+  #   # create an invoice that belongs to the subscriber
+  #   invoice = Invoice.create!(
+  #     subscription: subscription,
+  #     issued_date: Time.current,
+  #     due_date: Time.current + 2.week,
+  #     total_amount: 0
+  #   )
+  #   # if new customer add a starter kit
+  #   if is_new
+  #       starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
+  #       invoice.invoice_items.create!(
+  #         product: starter_kit,
+  #         quantity: 1,
+  #         amount: starter_kit.price
+  #       )
+  #     end
+  #   # Add the correct subscription product to the invoice
+  #   if og
+  #     product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
+  #     invoice.invoice_items.create!(
+  #       product: product,
+  #       quantity: 1,
+  #       amount: product.price
+  #     )
+  #   else
+  #     product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
 
-    # Add the subscription product to the invoice
-    if og
-      product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month OG subscription")
-    else
-      product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
-    end
-    raise "Product not found" unless product
+  #     invoice.invoice_items.create!(
+  #       product: product,
+  #       quantity: 1,
+  #       amount: product.price
+  #     )
+  #   end
+  #   raise "Product not found" unless product
 
-    if new == "true"
-      starter_kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
-      invoice.invoice_items.create!(
-        product: starter_kit,
-        quantity: 1,
-        amount: starter_kit.price
-      )
-    end
+  #   # if they haven't got a referral code they may be a referrer, check if anyone has used their referral code and assign as many discounts as successful referrals
 
-    invoice.invoice_items.create!(
-      product: product,
-      quantity: 1,
-      amount: product.price
-    )
-
-
-    invoice.calculate_total
-    invoice
-  end
+  #   if referred_friends
+  #     if referred_friends >= 1
+  #       referee_discount = Product.find_by(title: "Referred a friend discount")
+  #       invoice.invoice_items.create!(
+  #         product: referee_discount,
+  #         quantity: referred_friends,
+  #         amount: referee_discount.price
+  #       )
+  #     end
+  #     completed_referrals = current_user.referrals_as_referrer.completed
+  #     completed_referrals.each do |referral|
+  #       referral.used!
+  #     end
+  #   # if the subscriber has a referral code, give them a discount
+  #   elsif referee
+  #     discount_item = Product.find_by(title: "Referral discount #{subscription.Standard? ? subscription.plan.downcase : subscription.plan.upcase} #{subscription.duration} month")
+  #     invoice.invoice_items.create!(
+  #       product: discount_item,
+  #       quantity: 1,
+  #       amount: discount_item.price
+  #     )
+  #     # create a referral for the person who referred them
+  #     referral = Referral.new
+  #     referral.subscription = subscription
+  #     referral.referee = current_user
+  #     referral.referrer = referee
+  #     referral.save!
+  #     puts "referral created with id #{referral.id}"
+  #   end
+  #   invoice.calculate_total
+  #   invoice
+  # end
 end
