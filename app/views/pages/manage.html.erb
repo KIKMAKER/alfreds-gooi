@@ -87,11 +87,11 @@
             <h2>Plan a holiday</h2>
             <%= simple_form_for @subscription do |f| %>
               <%= f.input :holiday_start,
-            as: :string,
-            input_html: { data: { controller: "datepicker" } }, label: "start:" %>
+                          as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "start:" %>
               <%= f.input :holiday_end,
-            as: :string,
-            input_html: { data: { controller: "datepicker" } }, label: "end:" %>
+                          as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "end:" %>
               <%= f.submit "save", class: "submit-btn" %>
             <% end %>
           </div>
