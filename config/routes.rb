@@ -1,11 +1,8 @@
 Rails.application.routes.draw do
   namespace :admin do
-
+    resources :discount_codes, only: [:index, :new, :create, :show]
   end
-  # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
-  # admin
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
