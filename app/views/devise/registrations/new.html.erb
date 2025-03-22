@@ -12,7 +12,8 @@
         <%= f.simple_fields_for :subscription do |subscription_fields| %>
           <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
           <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off" %>
-          <%= subscription_fields.input :suburb, collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
+          <p class="mb-1">If your suburb isn't on this list, contact us at howzit@gooi.me to talk about expansion!</p>
+          <%= subscription_fields.input :suburb, label: false,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
           <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
         <% end %>
