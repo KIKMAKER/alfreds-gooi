@@ -19,6 +19,14 @@ class SubscriptionTest < ActiveSupport::TestCase
       end_date: Date.new(2025, 2, 28),
       status: :completed
     )
+    @one_sub = Subscription.create!(
+      user: @user,
+      plan: "Standard",
+      duration: 1,
+      start_date: Date.new(2025, 2, 1),
+      end_date: Date.new(2025, 2, 28),
+      status: :active
+    )
   end
 
   test "suggested start date is payment date when no collections happened" do
@@ -74,18 +82,18 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   end
 
-  # test "marks subscriptions complete after enough collections" do
-  #   sub = subscriptions(:active) # Factory or fixture
-  #   sub.update!(start_date: 6.weeks.ago, duration: 1)
+  test "marks subscriptions complete after enough collections" do
+    sub = @one_sub
+    sub.update!(start_date: 6.weeks.ago, duration: 1)
 
-  #   # Simulate 5 collections
-  #   5.times do
-  #     Collection.create!(subscription: sub, date: 1.week.ago, skip: false)
-  #   end
+    # Simulate 5 collections
+    5.times do
+      Collection.create!(subscription: sub, date: 1.week.ago, skip: false)
+    end
 
-  #   CheckSubscriptionsForCompletionJob.perform_now
+    CheckSubscriptionsForCompletionJob.perform_now
 
-  #   assert sub.reload.completed?
-  # end
+    assert sub.reload.completed?
+  end
 
 end
