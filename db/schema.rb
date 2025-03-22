@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_22_171019) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_22_171653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -273,6 +273,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_22_171019) do
     t.integer "status", default: 0
     t.datetime "end_date"
     t.string "referral_code"
+    t.string "discount_code"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
