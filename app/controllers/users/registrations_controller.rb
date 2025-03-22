@@ -65,7 +65,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code, :discount_code]])
   end
 
 
@@ -106,6 +106,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
           is_new_customer: true,
           referral_code: params[:user][:subscription][:referral_code]
         )
+        if subscription_params[:discount_code].present?
+          code = DiscountCode.find_by(code: subscription_params[:discount_code].to_s.strip.upcase)
+
+          if code&.available?
+            @subscription.discount_code = code
+            @subscription.save!
+          end
+        end
+
+
         UserMailer.with(subscription: @subscription).welcome.deliver_now
         UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
         welcome_subscription_path(@subscription)

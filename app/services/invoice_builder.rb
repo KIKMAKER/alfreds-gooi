@@ -64,7 +64,19 @@ class InvoiceBuilder
         referrer: @referee,
         status: :pending
       )
+    elsif
+      @subscription.discount_code.present?
+      code = DiscountCode.find_by(code: subscription.discount_code)
+
+      if code&.available?
+        @invoice.total_amount -= code.discount_cents
+        @invoice.total_amount = 0 if @invoice.total_amount.negative?
+        @invoice.save!
+
+        code.increment!(:used_count)
+      end
     end
+
   end
 
   def mark_referrals_used
