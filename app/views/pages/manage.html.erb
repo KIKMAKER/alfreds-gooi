@@ -41,9 +41,9 @@
       <% else %>
         <% if @next_collection %>
           <% if @next_collection.needs_bags.to_i > 0 && @next_collection.date >= Date.today %>
-            <p class="text-center mb-3">Your last collection was on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
+            <p class="text-center mb-3">Your next collection was on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
           <% else %>
-            <p class="text-center mb-3">Your next collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
+            <p class="text-center mb-3">Your last collection is on <%= @subscription.collections.last.date&.strftime("%A %d %B") %></p>
           <% end %>
           <div class="text-center">
             <p class="fs-6 mb-3">Want Alfred to bring you another roll of bonnie bio bags?</p>
