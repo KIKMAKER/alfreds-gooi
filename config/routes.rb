@@ -3,7 +3,6 @@ Rails.application.routes.draw do
     resources :discount_codes, only: [:index, :new, :create, :show]
   end
 
-
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
   # payments
