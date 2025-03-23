@@ -50,7 +50,7 @@ class PagesController < ApplicationController
     @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
 
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
-    @all_collections = current_user.collections
+    @all_collections = current_user.collections.order(date: :desc)
 
   end
 
