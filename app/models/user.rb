@@ -49,8 +49,6 @@ class User < ApplicationRecord
   validates :customer_id, uniqueness: true
   # custom methods
 
-  # current subscription
-
   def whatsapp_notification_link
     return unless subscriptions.any?
 
@@ -102,11 +100,19 @@ class User < ApplicationRecord
     end
   end
 
+  def referral_code
+    if super.blank?
+      generate_referral_code
+    else
+      super
+    end
+  end
+
+  private
+
   def generate_referral_code
     self.referral_code ||= SecureRandom.hex(3).upcase
   end
-  private
-
   # Callbacks
 
   # before create
