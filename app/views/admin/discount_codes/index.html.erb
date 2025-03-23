@@ -1,2 +1,34 @@
-<h1>Admin::DiscountCodes#index</h1>
-<p>Find me in app/views/admin/discount_codes/index.html.erb</p>
+<div class="user-wrapper">
+  <h1>All Discount Codes</h1>
+  <%= link_to "New Code", new_admin_discount_code_path, class: "small-yellow-btn my-5" %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Discount</th>
+        <th>Used</th>
+        <th>Limit</th>
+        <th>Expires</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @discount_codes.each do |code| %>
+        <tr>
+          <td><%= link_to code.code, admin_discount_code_path(code) %></td>
+          <td><%= number_to_currency(code.discount_cents / 100.0, unit: "R") %></td>
+          <td><%= code.used_count %></td>
+          <td><%= code.usage_limit || "∞" %></td>
+          <td><%= code.expires_at ? l(code.expires_at) : "Never" %></td>
+          <td>
+            <% if code.available? %>
+              <span class="badge bg-success">Active</span>
+            <% else %>
+              <span class="badge bg-danger">Expired</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
