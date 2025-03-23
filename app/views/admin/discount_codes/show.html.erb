@@ -3,7 +3,7 @@
   <ul class="list-group mb-4">
     <li class="list-group-item"><strong>Discount:</strong> R<%= @discount_code.discount_cents / 100.0 %></li>
     <li class="list-group-item"><strong>Used:</strong> <%= @discount_code.used_count %> of <%= @discount_code.usage_limit || "∞" %></li>
-    <li class="list-group-item"><strong>Expires At:</strong> <%= @discount_code.expires_at ? l(@discount_code.expires_at, format: :discount_display) : "Never" %></li>
+    <li class="list-group-item"><strong>Expires At:</strong> <%= @discount_code.expires_at ? @discount_code.expires_at : "Never" %></li>
     <li class="list-group-item"><strong>Status:</strong> <%= @discount_code.available? ? "Active" : "Expired or Used Up" %></li>
   </ul>
   <div>

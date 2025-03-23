@@ -30,8 +30,6 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
-
-  time:
+  date:
     formats:
-      discount_display: '%a, %e %b %Y'
+    discount_display: '%a, %e %b %Y' # e.g. "Thu, 21 Mar 2025"
