@@ -1,2 +1,14 @@
-<h1>Admin::DiscountCodes#show</h1>
-<p>Find me in app/views/admin/discount_codes/show.html.erb</p>
+<div class="user-wrapper">
+  <h2>Discount Code: <%= @discount_code.code %></h2>
+  <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Discount:</strong> R<%= @discount_code.discount_cents / 100.0 %></li>
+    <li class="list-group-item"><strong>Used:</strong> <%= @discount_code.used_count %> of <%= @discount_code.usage_limit || "∞" %></li>
+    <li class="list-group-item"><strong>Expires At:</strong> <%= @discount_code.expires_at ? l(@discount_code.expires_at, format: :discount_display) : "Never" %></li>
+    <li class="list-group-item"><strong>Status:</strong> <%= @discount_code.available? ? "Active" : "Expired or Used Up" %></li>
+  </ul>
+  <div>
+    <p>🔒 This code can be used at signup.</p>
+    <p>📎 Coming soon: QR code with signup link</p>
+  </div>
+  <%= link_to "Back to all codes", admin_discount_codes_path, class: "small-yellow-btn" %>
+</div>
