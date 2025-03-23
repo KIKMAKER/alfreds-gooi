@@ -40,14 +40,18 @@ class PagesController < ApplicationController
   end
 
   def manage
-    # Rails.logger.info "INFO: Testing logging in production."
-    # Rails.logger.debug "DEBUG: Testing detailed logging in production."
-    # Rails.logger.error "ERROR: Testing error logging in production."
     @subscription = current_user.current_sub
+    if @subscription.start_date
+      @days_left = @subscription.remaining_collections.to_i
+    else
+      @subscription.update!(start_date: @subscription.suggested_start_date)
+      @days_left = @subscription.remaining_collections.to_i
+    end
     @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
-    @days_left = @subscription.remaining_collections.to_i if @subscription.start_date
+
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
     @all_collections = current_user.collections.order(date: :desc)
+
   end
 
   def welcome
@@ -71,24 +75,10 @@ class PagesController < ApplicationController
     end
 
   end
-  def manage
-    Rails.logger.info "INFO: Testing logging in production."
-    Rails.logger.debug "DEBUG: Testing detailed logging in production."
-    Rails.logger.error "ERROR: Testing error logging in production."
-    @subscription = current_user.current_sub
-    if @subscription.start_date
-      @days_left = @subscription.remaining_collections.to_i
-    else
-      @subscription.update!(start_date: @subscription.calculate_next_collection_day)
-      @days_left = @subscription.remaining_collections.to_i
-    end
 
-    @unpaid_invoice = @subscription.invoices.find_by(paid: false)
-    @all_collections = current_user.collections
-  end
 
   def referrals
-    @referral_code = current_user.referral_code || current_user.generate_referral_code
+    @referral_code = current_user.referral_code
     @referrals = current_user.referrals_as_referrer.where(status: "completed")
     @referral_count = @referrals.count
   end

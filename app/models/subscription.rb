@@ -131,8 +131,8 @@ class Subscription < ApplicationRecord
     expected = (days_since / 7.0).floor
     actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
 
-    if actual >= expected
-      last_end + 1.day
+    if actual >= (expected/2)
+      last_end + 7.day
     else
       payment_date
     end
