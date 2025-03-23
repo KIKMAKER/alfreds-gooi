@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   # admin
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
 
