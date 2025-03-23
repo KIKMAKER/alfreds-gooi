@@ -102,14 +102,14 @@ class User < ApplicationRecord
     end
   end
 
+  def generate_referral_code
+    self.referral_code ||= SecureRandom.hex(3).upcase
+  end
   private
 
   # Callbacks
 
   # before create
-  def generate_referral_code
-    self.referral_code ||= SecureRandom.hex(3).upcase
-  end
 
   # after create
   def set_customer_id
