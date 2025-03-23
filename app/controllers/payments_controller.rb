@@ -18,6 +18,8 @@ class PaymentsController < ApplicationController
 
     begin
       request_body = request.body.read
+      request.body.rewind
+      Rails.logger.debug "Request Body: #{request_body}"
 
       # Rails.logger.debug "Request Body: #{request_body}"
       Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
