@@ -47,6 +47,7 @@ class User < ApplicationRecord
   # Custom validation
   validate :valid_international_phone_number
   validates :customer_id, uniqueness: true
+  validates :referral_code, uniqueness: true
   # custom methods
 
   def whatsapp_notification_link
@@ -100,13 +101,7 @@ class User < ApplicationRecord
     end
   end
 
-  def referral_code
-    if super.blank?
-      generate_referral_code
-    else
-      super
-    end
-  end
+
 
   private
 
