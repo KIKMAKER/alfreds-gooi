@@ -16,7 +16,7 @@ class Subscription < ApplicationRecord
 
 
   # accepts_nested_attributes_for :contacts
-  accepts_nested_attributes_for :user
+  # accepts_nested_attributes_for :user
 
   # scopes
   scope :pending, -> { where(status: :pending) }
