@@ -8,6 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def new
     @plan = params[:plan]
     @duration = params[:duration]
+  
     super
   end
 
@@ -99,12 +100,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
       begin
         @subscription = Subscription.create!(
           user_id: resource.id,
-          plan: params[:user][:subscription][:plan],
-          duration: params[:user][:subscription][:duration],
-          street_address: params[:user][:subscription][:street_address],
-          suburb: params[:user][:subscription][:suburb],
+          plan: subscriptions.first.plan,
+          duration: subscriptions.first.duration,
+          street_address: subscriptions.first.street_address,
+          suburb: subscriptions.first.suburb,
           is_new_customer: true,
-          referral_code: params[:user][:subscription][:referral_code]
+          referral_code: subscriptions.first.referral_code
         )
         if subscription_params[:discount_code].present?
           code = DiscountCode.find_by(code: subscription_params[:discount_code].to_s.strip.upcase)
@@ -123,10 +124,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error "Failed to create subscription: #{e.message}"
         redirect_to new_user_registration_path(
-          plan: params[:user][:subscription][:plan],
-          duration: params[:user][:subscription][:duration],
-          street_address: params[:user][:subscription][:street_address],
-          suburb: params[:user][:subscription][:suburb]
+          plan: subscriptions.first.plan,
+          duration: subscriptions.first.duration,
+          street_address: subscriptions.first.street_address,
+          suburb: subscriptions.first.suburb
         )
       end
     end

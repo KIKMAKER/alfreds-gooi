@@ -105,11 +105,11 @@ class Subscription < ApplicationRecord
 
   def set_collection_day
     if TUESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Tuesday")
+      self.collection_day= "Tuesday"
     elsif WEDNESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Wednesday")
+      self.collection_day= "Wednesday"
     elsif THURSDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Thursday")
+      self.collection_day= "Thursday"
     else
       puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
     end
