@@ -40,7 +40,7 @@ class InvoicesController < ApplicationController
     # @invoice = Invoice.find(params[:id])
     @subscription = @invoice.subscription
     @referrer_discount = Product.find_by(title: "Referred a friend discount")
-    @code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
+    @code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
 
   end
 
