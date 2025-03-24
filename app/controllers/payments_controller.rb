@@ -4,47 +4,46 @@ class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
-    def index
-      @payments = Payment.all.order(date: :desc)
 
-      # Sync SnapScan payments
-      api_key = ENV['SNAPSCAN_API_KEY']
-      service = SnapscanService.new(api_key)
-      snapscan_payments = service.fetch_payments || []
+    @payments = Payment.all.order(date: :desc)
 
-      snapscan_payments.each do |snapscan_data|
-        next if Payment.exists?(snapscan_id: snapscan_data["id"])
+    # Sync SnapScan payments
+    api_key = ENV['SNAPSCAN_API_KEY']
+    service = SnapscanService.new(api_key)
+    snapscan_payments = service.fetch_payments || []
 
-        user = User.find_by(customer_id: snapscan_data["merchantReference"])
-        next unless user # Couldn’t match — skip or log
+    snapscan_payments.each do |snapscan_data|
+      next if Payment.exists?(snapscan_id: snapscan_data["id"])
 
-        invoice_id = snapscan_data.dig("extra", "invoiceId")&.to_i
-        invoice = Invoice.find_by(id: invoice_id)
+      user = User.find_by(customer_id: snapscan_data["merchantReference"])
+      next unless user # Couldn’t match — skip or log
 
-        payment = Payment.create!(
-          snapscan_id: snapscan_data["id"],
-          status: snapscan_data["status"],
-          total_amount: snapscan_data["totalAmount"],
-          tip_amount: snapscan_data["tipAmount"],
-          fee_amount: snapscan_data["feeAmount"],
-          settle_amount: snapscan_data["settleAmount"],
-          date: snapscan_data["date"],
-          user_reference: snapscan_data["userReference"],
-          merchant_reference: snapscan_data["merchantReference"],
-          user_id: user.id,
-          invoice_id: invoice&.id
-        )
+      invoice_id = snapscan_data.dig("extra", "invoiceId")&.to_i
+      invoice = Invoice.find_by(id: invoice_id)
 
-        if snapscan_data["status"] == "completed" && invoice.present?
-          invoice.update!(paid: true)
-          subscription = invoice.subscription
-          subscription&.update!(status: "active", start_date: subscription.suggested_start_date)
-          CreateFirstCollectionJob.perform_later(subscription)
-        end
+      payment = Payment.create!(
+        snapscan_id: snapscan_data["id"],
+        status: snapscan_data["status"],
+        total_amount: snapscan_data["totalAmount"],
+        tip_amount: snapscan_data["tipAmount"],
+        fee_amount: snapscan_data["feeAmount"],
+        settle_amount: snapscan_data["settleAmount"],
+        date: snapscan_data["date"],
+        user_reference: snapscan_data["userReference"],
+        merchant_reference: snapscan_data["merchantReference"],
+        user_id: user.id,
+        invoice_id: invoice&.id
+      )
+
+      if snapscan_data["status"] == "completed" && invoice.present?
+        invoice.update!(paid: true)
+        subscription = invoice.subscription
+        subscription&.update!(status: "active", start_date: subscription.suggested_start_date)
+        CreateFirstCollectionJob.perform_later(subscription)
       end
-
-      @payments = Payment.all.order(date: :desc) # Refresh list with newly added ones
     end
+
+    @payments = Payment.all.order(date: :desc) # Refresh list with newly added ones
 
   end
 
