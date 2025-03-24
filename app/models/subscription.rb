@@ -54,8 +54,8 @@ class Subscription < ApplicationRecord
 
   def remaining_collections
     return nil if duration.nil?
-    total = duration * 4.4
-    remaining = total - self.total_collections
+    total = duration * 4.2
+    remaining = total.ceil - self.total_collections
     return remaining
   end
 
@@ -133,7 +133,7 @@ class Subscription < ApplicationRecord
     actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
 
     if actual >= (expected/2)
-      last_end + 7.day
+      last_end + 7
     else
       payment_date
     end

@@ -3,7 +3,8 @@
     <div>
       <div class="d-flex justify-content-around mb-3">
         <%= link_to "Pending", pending_subscriptions_path, class: "btn-today-green" %>
-        <%= link_to "Active", active_subscriptions_path, class: "btn-today-green" %>
+        <%= link_to "Active", subscriptions_path, class: "btn-today-green" %>
+        <%= link_to "All", all_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Completed", completed_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Paused", paused_subscriptions_path, class: "btn-today-green" %>
         <%= link_to "Legacy", legacy_subscriptions_path, class: "btn-today-green" %>
@@ -60,9 +61,10 @@
                 <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -2 %>
+                    <% if subscription.remaining_collections <= -1 %>
+                    <p><%= subscription.remaining_collections %></p>
                      <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
-                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", "#" %>
+                      <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", "#" %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>

@@ -3,8 +3,9 @@ class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.includes(:user, :invoices)  # Preloads users to avoid N+1 queries
-      .order_by_user_name
+      @subscriptions = Subscription.active
+                                    .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
+                                    .order_by_user_name
 
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
@@ -22,7 +23,7 @@ class SubscriptionsController < ApplicationController
     end
   end
 
-  def active
+  def all
     if current_user.admin? || current_user.driver?
       @subscriptions = Subscription.active
                              .includes(:user, :invoices)  # Preloads users to avoid N+1 queries

@@ -57,7 +57,7 @@ Rails.application.routes.draw do
       get :update_end_date
       post :import_csv
       get :pending
-      get :active
+      get :all
       get :paused
       get :completed
       get :legacy
