@@ -18,9 +18,12 @@ class InvoiceBuilder
 
     add_starter_kit(invoice) if @is_new
     add_subscription_product(invoice)
-    apply_discounts(invoice)
 
+    apply_referrals(invoice)
     invoice.calculate_total
+
+    apply_discount_code(invoice) if @subscription.discount_code
+
     invoice
   end
 
@@ -44,7 +47,7 @@ class InvoiceBuilder
     invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
   end
 
-  def apply_discounts(invoice)
+  def apply_referrals(invoice)
     if @referred_friends&.positive?
       discount = Product.find_by(title: "Referred a friend discount")
       invoice.invoice_items.create!(
@@ -65,7 +68,24 @@ class InvoiceBuilder
         status: :pending
       )
     end
+
   end
+
+  def apply_discount_code(invoice)
+
+    code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
+
+    if code&.available?
+      invoice.total_amount -= (code.discount_cents/100)
+      invoice.total_amount = 0 if invoice.total_amount.negative?
+      invoice.save!
+
+      code.increment!(:used_count)
+    end
+
+
+  end
+
 
   def mark_referrals_used
     @subscription.user.referrals_as_referrer.completed.each(&:used!)

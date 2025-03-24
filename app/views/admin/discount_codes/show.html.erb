@@ -1,0 +1,16 @@
+<div class="user-wrapper">
+  <h2 class="my-5">Discount Code: <%= @discount_code.code %></h2>
+  <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Discount:</strong> R<%= @discount_code.discount_cents / 100.0 %></li>
+    <li class="list-group-item"><strong>Used:</strong> <%= @discount_code.used_count %> of <%= @discount_code.usage_limit || "∞" %></li>
+    <li class="list-group-item"><strong>Expires At:</strong> <%= @discount_code.expires_at ? @discount_code.expires_at : "Never" %></li>
+    <li class="list-group-item"><strong>Status:</strong> <%= @discount_code.available? ? "Active" : "Expired or Used Up" %></li>
+  </ul>
+  <div>
+    <p>🔒 This code can be used at signup.</p>
+    <br>
+    <p>📎 Coming soon: QR code with signup link</p>
+    <br>
+  </div>
+  <%= link_to "Back to all codes", admin_discount_codes_path, class: "small-yellow-btn my-3" %>
+</div>

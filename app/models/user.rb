@@ -41,12 +41,12 @@ class User < ApplicationRecord
 
   before_validation :make_international
   before_create :generate_referral_code
-  after_create :set_customer_id
+  before_create :set_customer_id
   before_destroy :nullify_subscriptions
 
   # Custom validation
   validate :valid_international_phone_number
-  validates :customer_id, uniqueness: true
+  # validates :customer_id, uniqueness: true
   validates :referral_code, uniqueness: true
   # custom methods
 
@@ -118,7 +118,7 @@ class User < ApplicationRecord
     customers = User.where(role: 'customer').where.not(customer_id: nil)
     last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
     next_customer_id = "GFWC" + (last_id + 1).to_s
-    update(customer_id: next_customer_id)
+    self.customer_id = next_customer_id
   end
 
  # before destroy
