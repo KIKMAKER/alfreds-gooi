@@ -20,25 +20,28 @@
 }
 
 .collections-carousel {
+  text-align: center;
   padding-bottom: 2vh;
   margin-top: 4vw;
 }
 
 .collections-card {
   // padding: 4vw;
+  text-align: center;
   margin-top: 4vw;
   width: 50vw;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-radius: 8px;
   color: rgba(15, 74, 58, 0.78);
+  position: relative;
 
   // width: 500px;
-    // height: 100px;
-    white-space: nowrap;
-    position: relative;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+  // height: 100px;
+  white-space: nowrap;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 
   ul {
     overflow-x: scroll;
@@ -55,6 +58,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .bucket-height {
       height: 2rem;
       display: flex;
@@ -64,6 +68,17 @@
     p {
       line-height: 1;
     }
+  }
+
+  #arrow-icon {
+    position: fixed;
+    top: 0rem;
+    left: 70vw;
+  }
+
+
+  i {
+    font-size: 1.2rem;
   }
 }
 
