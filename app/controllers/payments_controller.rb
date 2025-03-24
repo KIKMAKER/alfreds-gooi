@@ -4,7 +4,48 @@ class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
-    @payments = Payment.all.order(date: :desc)
+    def index
+      @payments = Payment.all.order(date: :desc)
+
+      # Sync SnapScan payments
+      api_key = ENV['SNAPSCAN_API_KEY']
+      service = SnapscanService.new(api_key)
+      snapscan_payments = service.fetch_payments || []
+
+      snapscan_payments.each do |snapscan_data|
+        next if Payment.exists?(snapscan_id: snapscan_data["id"])
+
+        user = User.find_by(customer_id: snapscan_data["merchantReference"])
+        next unless user # Couldn’t match — skip or log
+
+        invoice_id = snapscan_data.dig("extra", "invoiceId")&.to_i
+        invoice = Invoice.find_by(id: invoice_id)
+
+        payment = Payment.create!(
+          snapscan_id: snapscan_data["id"],
+          status: snapscan_data["status"],
+          total_amount: snapscan_data["totalAmount"],
+          tip_amount: snapscan_data["tipAmount"],
+          fee_amount: snapscan_data["feeAmount"],
+          settle_amount: snapscan_data["settleAmount"],
+          date: snapscan_data["date"],
+          user_reference: snapscan_data["userReference"],
+          merchant_reference: snapscan_data["merchantReference"],
+          user_id: user.id,
+          invoice_id: invoice&.id
+        )
+
+        if snapscan_data["status"] == "completed" && invoice.present?
+          invoice.update!(paid: true)
+          subscription = invoice.subscription
+          subscription&.update!(status: "active", start_date: subscription.suggested_start_date)
+          CreateFirstCollectionJob.perform_later(subscription)
+        end
+      end
+
+      @payments = Payment.all.order(date: :desc) # Refresh list with newly added ones
+    end
+
   end
 
   def show
@@ -25,7 +66,7 @@ class PaymentsController < ApplicationController
       Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
 
       # Verify signature
-      verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
+      verify_signature(params[:payload], ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
       payload = JSON.parse(params[:payload])
@@ -168,7 +209,7 @@ class PaymentsController < ApplicationController
     referral&.completed!
   end
 
-  def verify_signature(request_body, webhook_auth_key)
+  def verify_signature(payload_string, webhook_auth_key)
     return true if Rails.env.test?
     # Extract the Authorization header and received signature
     received_auth_header = request.headers['Authorization'].to_s
@@ -176,7 +217,7 @@ class PaymentsController < ApplicationController
 
     Rails.logger.debug "Received Signature: #{received_signature.inspect}"
     Rails.logger.debug "Webhook Auth Key: #{webhook_auth_key.inspect}"
-    Rails.logger.debug "Request Body: #{request_body.inspect}"
+    Rails.logger.debug "Request Body: #{payload_string.inspect}"
 
     # Compute the expected signature
     computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
