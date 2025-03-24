@@ -1,18 +1,40 @@
-<p>Dear <%= @subscription.user.first_name %></p>
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <p style="font-size: 1.1rem;">Hi <%= @subscription.user.first_name %>,</p>
 
-<p>We are thrilled to have you on board with gooi - the organic waste collection service that helps you achieve your zero-waste goals and make a positive impact on the planet. Thank you for signing up with us and taking a step towards a more sustainable future.</p>
+  <p style="font-size: 1.1rem;">
+    Welcome to <strong>gooi</strong> 🌱 We're excited to have you on board and thrilled that you're joining us in reducing waste and building a cleaner planet.
+  </p>
 
-<p>Your invoice for the Gooi starter kit has been generated and is ready for payment. Your starter kit includes a compost bin, compostable bags, and a guide to help you get started with our service. To ensure that you receive your starter kit on time, kindly settle the invoice as soon as possible.</p>
+  <p style="font-size: 1.1rem;">
+    Your <strong>starter kit invoice</strong> has been generated. It includes your compost bin, compostable bags, and a helpful guide to get you going.
+  </p>
 
-<p>You can pay by direct bank transfer or make use of the snapscan payment portal (card, eft or snapscan) by clicking <%= link_to "here", welcome_invoice_subscription_url(@subscription, new: true) %></p>
+  <p style="font-size: 1.1rem;">
+    To get everything delivered on time, please settle your invoice using SnapScan or EFT:
+  </p>
 
-<p>We will be in your neighbourhood on <%= @subscription.collection_day %> between 8:30 and 10 o'clock. On week one we will deliver your starter kit, once you have some compost for us to collect, you can be ready with your full bag, or stash it outside before that time, so we can collect it on our way past.</p>
+  <p style="margin: 1.5rem 0;">
+    <a href="<%= welcome_invoice_subscription_url(@subscription, new: true) %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View & Pay Invoice
+    </a>
+  </p>
 
-<p>At gooi, we value our customers' contributions to the environment and we want to help you every step of the way. Our team is always available to answer any questions you may have regarding our service or your zero-waste journey.</p>
+  <p style="font-size: 1.1rem;">
+    We’ll be in your neighbourhood on <strong><%= @subscription.collection_day %></strong>. Your starter kit will arrive in week one, and from then on, just have your full bag ready for collection.
+  </p>
 
-<p>Once again, we are excited to have you on board and look forward to being your go-to organic waste collection service. Let's work together to create a cleaner, healthier planet for us all.</p>
+  <p style="font-size: 1.1rem;">
+    If you need a reminder or want to revisit the onboarding details, you can always return to your <a href="<%= welcome_subscription_url(@subscription) %>" style="color: #1f4632; font-weight: bold; text-decoration: underline;">welcome page</a>.
+  </p>
 
-<p>Thanks!</p>
+  <p style="font-size: 1.1rem;">
+    Thanks again for joining — we're so happy to have you with us!
+  </p>
 
-<p>Regards</p>
-<%= image_tag 'email-signature.png', alt: "kristen kennedy email signature" %>
+  <p style="font-size: 1.1rem;">Warm regards,</p>
+
+  <p>
+    <%= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+  </p>
+</div>
