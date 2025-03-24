@@ -118,7 +118,7 @@ class Subscription < ApplicationRecord
 
   def set_customer_id
     return if self.customer_id.present?
-    update!(customer_id: user.customer_id)
+    self.customer_id  user.customer_id
   end
 
   def suggested_start_date(payment_date: Time.zone.today)
