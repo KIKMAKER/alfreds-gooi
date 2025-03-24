@@ -40,7 +40,7 @@ class User < ApplicationRecord
   # Callbacks
 
   before_validation :make_international
-  before_create :generate_referral_code
+  after_create :generate_referral_code
   before_create :set_customer_id
   before_destroy :nullify_subscriptions
 
