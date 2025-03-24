@@ -40,14 +40,15 @@ class User < ApplicationRecord
   # Callbacks
 
   before_validation :make_international
-  after_create :generate_referral_code
+  before_validation :generate_referral_code, on: :create
   before_create :set_customer_id
   before_destroy :nullify_subscriptions
+
 
   # Custom validation
   validate :valid_international_phone_number
   validates :customer_id, uniqueness: true
-  validates :referral_code, uniqueness: true
+  validates :referral_code, uniqueness: true, allow_nil: true
   # custom methods
 
   def whatsapp_notification_link
@@ -106,15 +107,18 @@ class User < ApplicationRecord
   private
 
   def generate_referral_code
-    update!(referral_code: generate_unique_code)
-  end
-
-  def generate_unique_code
-    loop do
+    self.referral_code ||= loop do
       code = SecureRandom.hex(3).upcase
       break code unless User.exists?(referral_code: code)
     end
   end
+
+  # def generate_unique_code
+  #   loop do
+  #     code = SecureRandom.hex(3).upcase
+  #     break code unless User.exists?(referral_code: code)
+  #   end
+  # end
 
   # Callbacks
 
