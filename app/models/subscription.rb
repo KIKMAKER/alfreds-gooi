@@ -5,14 +5,15 @@ class Subscription < ApplicationRecord
   has_many :invoice_items, through: :invoices
   has_many :referrals, dependent: :nullify
 
+  before_create do
+    self.set_customer_id unless self.customer_id
+    # self.set_suburb
+  end
+  before_validation :set_collection_day, if: -> { will_save_change_to_street_address? || will_save_change_to_suburb? }
+
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
-  after_create do
-    self.set_customer_id unless self.customer_id
-    # self.set_suburb
-    self.set_collection_day
-  end
 
   # accepts_nested_attributes_for :contacts
   accepts_nested_attributes_for :user
@@ -32,7 +33,7 @@ class Subscription < ApplicationRecord
   enum :plan, %i[once_off Standard XL]
   enum :collection_day, Date::DAYNAMES
 
-  SUBURBS = ["Bakoven", "Bantry Bay", "Cape Town", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
+  SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "Devil's Peak Estate", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kenwyn", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "SouthField", "Steenberg", "Tokai", "Wynberg", "Capri Village", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap (Malay Quarter)", "De Waterkant", "Foreshore", "Schotsche Kloof", "Woodstock (including Upper Woodstock)", "Zonnebloem (District Six)", "Constantia", "Witteboomen"].sort!.freeze
   THURSDAY_SUBURBS = ["Devil's Peak Estate", "Gardens", "Higgovale", "Lower Vrede (District Six)", "Oranjezicht", "Ndabeni", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Walmer Estate (District Six)", "Observatory", ].sort!.freeze
@@ -105,11 +106,11 @@ class Subscription < ApplicationRecord
 
   def set_collection_day
     if TUESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Tuesday")
+      self.collection_day = "Tuesday"
     elsif WEDNESDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Wednesday")
+      self.collection_day = "Wednesday"
     elsif THURSDAY_SUBURBS.include?(suburb)
-      update(collection_day: "Thursday")
+      self.collection_day = "Thursday"
     else
       puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
     end
@@ -201,13 +202,13 @@ class Subscription < ApplicationRecord
     nil
   end
 
-  def set_customer_id
-    return if self.customer_id.present?
-    customers = User.where(role: 'customer').where.not(customer_id: nil)
-    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
-    new_customer_id = "GFWC" + (last_id + 1).to_s
-    self.update!(customer_id: new_customer_id)
-    self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
-  end
+  # def set_customer_id
+  #   return if self.customer_id.present?
+  #   customers = User.where(role: 'customer').where.not(customer_id: nil)
+  #   last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
+  #   new_customer_id = "GFWC" + (last_id + 1).to_s
+  #   self.update!(customer_id: new_customer_id)
+  #   self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
+  # end
 
 end

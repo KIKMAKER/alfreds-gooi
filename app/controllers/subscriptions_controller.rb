@@ -199,6 +199,7 @@ class SubscriptionsController < ApplicationController
     # find the referee by the referral code
     referee = User.find_by(referral_code: referral_code)
 
+    
     if @subscription.invoices.empty?
       @invoice = InvoiceBuilder.new(
         subscription: @subscription,
@@ -354,7 +355,7 @@ class SubscriptionsController < ApplicationController
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
-                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code,
+                  :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
                   user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 

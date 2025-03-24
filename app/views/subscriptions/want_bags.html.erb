@@ -10,7 +10,7 @@
         <%= f.fields_for :invoice_items, invoice_item do |invoice_item_form| %>
           <%= invoice_item_form.hidden_field :id %>
           <%= invoice_item_form.hidden_field :product_id, value: product.id %>
-          <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: invoice_item&.quantity || 1 } %>
+          <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: invoice_item&.quantity || 0 } %>
         <% end %>
       <% end %>
     </div>

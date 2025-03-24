@@ -1,0 +1,15 @@
+<div class="user-wrapper">
+  <h1 class="my-4">Create Discount Code</h1>
+  <%= simple_form_for [:admin, @discount_code] do |f| %>
+    <%= f.input :code, placeholder: "e.g. EARTHWEEK25" %>
+    <%= f.input :discount_cents, label: "Discount (in cents)", hint: "6600 = R66 off" %>
+    <%= f.input :usage_limit, label: "Usage limit (optional)" %>
+    <%= f.input :expires_at,
+              as: :date,
+              as: :string,
+              input_html: { data: { controller: "datepicker" } },
+              label: "Expires at (optional)" %>
+    <%= f.button :submit, "Create Code", class: "small-yellow-btn" %>
+  <% end %>
+  <%= link_to "Back to all codes", admin_discount_codes_path, class: "mt-3" %>
+</div>

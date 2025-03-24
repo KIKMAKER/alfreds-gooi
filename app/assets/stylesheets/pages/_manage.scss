@@ -20,12 +20,14 @@
 }
 
 .collections-carousel {
+  text-align: center;
   padding-bottom: 2vh;
   margin-top: 4vw;
 }
 
 .collections-card {
   // padding: 4vw;
+  text-align: center;
   margin-top: 4vw;
   width: 50vw;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -36,7 +38,7 @@
   // width: 500px;
   // height: 100px;
   white-space: nowrap;
-  position: relative;
+
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -66,17 +68,22 @@
     p {
       line-height: 1;
     }
-  }
 
-  #arrow-icon {
-    position: relative;
-    top: 0rem;
-    left: 70vw;
   }
 
 
   i {
     font-size: 1.2rem;
+  }
+  #right-arrow-icon {
+    position: absolute;
+    bottom: 0.3rem;
+    right: 40%;
+  }
+  #left-arrow-icon {
+    position: absolute;
+    bottom: 0.3rem;
+    right: 60%;
   }
 }
 

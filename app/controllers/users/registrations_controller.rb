@@ -8,12 +8,44 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def new
     @plan = params[:plan]
     @duration = params[:duration]
-    super
+
+    # Always build a fresh resource, Devise might hang onto state between requests
+    self.resource = build_resource({})
+    resource.subscriptions.clear
+
+    resource.subscriptions.new(
+      plan: @plan,
+      duration: @duration,
+      is_paused: true
+    )
+
+    respond_with resource
   end
+
+
 
   # POST /resource
   def create
-    super
+
+    build_resource(sign_up_params)
+
+    if resource.save
+      if resource.active_for_authentication?
+        sign_up(resource_name, resource)
+        respond_with resource, location: after_sign_up_path_for(resource)
+      else
+        expire_data_after_sign_in!
+        respond_with resource, location: after_inactive_sign_up_path_for(resource)
+      end
+    else
+      clean_up_passwords resource
+      set_minimum_password_length
+      respond_with resource
+    end
+
+Rails.logger.debug "🧪 Subscriptions count: #{resource.subscriptions.size}"
+
+
   end
 
   # GET /resource/edit
@@ -65,7 +97,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [subscriptions_attributes: [:plan, :duration, :street_address, :suburb, :referral_code]])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [
+      :first_name, :last_name, :email, :phone_number, :password, :password_confirmation,
+      subscriptions_attributes: [
+        :plan, :duration, :street_address, :suburb, :referral_code,
+        :discount_code, :apartment_unit_number, :is_paused
+      ]
+    ])
   end
 
 
@@ -95,33 +133,29 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   def after_sign_up_path_for(resource)
-    if resource.persisted?
-      begin
-        @subscription = Subscription.create!(
-          user_id: resource.id,
-          plan: params[:user][:subscription][:plan],
-          duration: params[:user][:subscription][:duration],
-          street_address: params[:user][:subscription][:street_address],
-          suburb: params[:user][:subscription][:suburb],
-          is_new_customer: true,
-          referral_code: params[:user][:subscription][:referral_code]
-        )
-        UserMailer.with(subscription: @subscription).welcome.deliver_now
-        UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
-        welcome_subscription_path(@subscription)
+    subscription = resource.subscriptions.first
 
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "Failed to create subscription: #{e.message}"
-        redirect_to new_user_registration_path(
-          plan: params[:user][:subscription][:plan],
-          duration: params[:user][:subscription][:duration],
-          street_address: params[:user][:subscription][:street_address],
-          suburb: params[:user][:subscription][:suburb]
-        )
-      end
+    if subscription.present?
+      # Apply valid discount code
+      # if subscription.discount_code.present?
+      #   code = DiscountCode.find_by(code: subscription.discount_code.to_s.strip.upcase)
+
+      #   if code&.available?
+      #     subscription.update!(discount_code: code)
+      #   end
+      # end
+
+      # Send emails
+      UserMailer.with(subscription: subscription).welcome.deliver_now
+      UserMailer.with(subscription: subscription).sign_up_alert.deliver_now
+
+      welcome_subscription_path(subscription)
+    else
+      Rails.logger.error "No subscription found for user #{resource.id} after signup"
+      root_path
     end
-
   end
+
 
 
 end
