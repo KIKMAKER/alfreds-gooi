@@ -12,7 +12,7 @@ class PaymentsController < ApplicationController
   end
 
   def snapscan_webhook
-    # Rails.logger.info "INFO: Testing logging in production."
+    Rails.logger.info "INFO: WE HIT THE SNAPSCAN WEBHOOK."
     # Rails.logger.debug "DEBUG: Testing detailed logging in production."
     # Rails.logger.error "ERROR: Testing error logging in production."
 
