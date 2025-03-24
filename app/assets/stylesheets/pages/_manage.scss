@@ -68,17 +68,22 @@
     p {
       line-height: 1;
     }
-  }
 
-  #arrow-icon {
-    position: fixed;
-    top: 0rem;
-    left: 70vw;
   }
 
 
   i {
     font-size: 1.2rem;
+  }
+  #right-arrow-icon {
+    position: absolute;
+    bottom: 0.3rem;
+    right: 40%;
+  }
+  #left-arrow-icon {
+    position: absolute;
+    bottom: 0.3rem;
+    right: 60%;
   }
 }
 
