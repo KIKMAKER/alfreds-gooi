@@ -193,13 +193,15 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
+    current_user.generate_referral_code
+    Rails.logger.info "Set users referral code to: #{current_user.generate_referral_code}"
     is_new = params[:new] == "true"
     # referal code of the referrer (so you kInnow who referred them)
     referral_code = @subscription.referral_code
     # find the referee by the referral code
     referee = User.find_by(referral_code: referral_code)
 
-    
+
     if @subscription.invoices.empty?
       @invoice = InvoiceBuilder.new(
         subscription: @subscription,
