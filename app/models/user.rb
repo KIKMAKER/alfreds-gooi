@@ -46,7 +46,7 @@ class User < ApplicationRecord
 
   # Custom validation
   validate :valid_international_phone_number
-  # validates :customer_id, uniqueness: true
+  validates :customer_id, uniqueness: true
   validates :referral_code, uniqueness: true
   # custom methods
 
@@ -106,8 +106,16 @@ class User < ApplicationRecord
   private
 
   def generate_referral_code
-    self.referral_code ||= SecureRandom.hex(3).upcase
+    update!(referral_code: generate_unique_code)
   end
+
+  def generate_unique_code
+    loop do
+      code = SecureRandom.hex(3).upcase
+      break code unless User.exists?(referral_code: code)
+    end
+  end
+
   # Callbacks
 
   # before create
