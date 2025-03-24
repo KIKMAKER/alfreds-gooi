@@ -193,8 +193,8 @@ class SubscriptionsController < ApplicationController
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
-    
-    Rails.logger.info "Set users referral code to: #{current_user.generate_referral_code}"
+
+    # Rails.logger.info "Set users referral code to: #{current_user.generate_referral_code}"
     is_new = params[:new] == "true"
     # referal code of the referrer (so you kInnow who referred them)
     referral_code = @subscription.referral_code
