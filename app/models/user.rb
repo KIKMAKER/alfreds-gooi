@@ -40,7 +40,7 @@ class User < ApplicationRecord
   # Callbacks
 
   before_validation :make_international
-  # before_validation :generate_referral_code, on: :create
+  before_validation :generate_referral_code, on: :create
   before_validation :set_customer_id, on: :create
   before_destroy :nullify_subscriptions
 
@@ -112,6 +112,7 @@ class User < ApplicationRecord
       break code unless User.exists?(referral_code: code)
     end
   end
+
 
   # def generate_unique_code
   #   loop do
