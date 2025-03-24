@@ -46,7 +46,7 @@ class User < ApplicationRecord
 
   # Custom validation
   validate :valid_international_phone_number
-  validates :customer_id, uniqueness: true
+  # validates :customer_id, uniqueness: true
   validates :referral_code, uniqueness: true
   # custom methods
 
