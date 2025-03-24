@@ -33,6 +33,17 @@
             <p>R<%= item.product == @referrer_discount ? (item.product.price * item.quantity).truncate : item.product.price.truncate %></p>
           </div>
         <% end %>
+        <% if @code  %>
+          <div class="invoice-item">
+            <div class="quantity-description">
+              <div class="quantity">
+                <p>-</p>
+              </div>
+              <p><%= @code.code %> Discount code applied</p>
+            </div>
+            <p>-R<%= @code.discount_cents/100 %></p>
+          </div>
+        <% end %>
       </div>
       <div class="invoice-total">
         <p>Total: R<%= @invoice.total_amount.truncate %></p>

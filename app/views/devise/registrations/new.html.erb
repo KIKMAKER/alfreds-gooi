@@ -1,7 +1,18 @@
 <!--<div class="gooi-container">-->
 <div class="user-wrapper">
   <h2>Sign up</h2>
+
   <div class="user-form">
+    <% if resource.errors.any? %>
+      <div class="alert alert-danger">
+        <h4>There were problems with your sign up:</h4>
+        <ul>
+          <% resource.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= f.error_notification %>
       <%= f.input :first_name, required: true, autofocus: true, input_html: { autocomplete: "given-name" } %>
@@ -18,14 +29,15 @@
           <%= subscription_fields.input :suburb, label: false,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
           <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
-          <%= subscription_fields.hidden_field :plan, value: @plan %>
-          <%= subscription_fields.hidden_field :duration, value: @duration %>
-          <%= subscription_fields.hidden_field :is_paused, value: true %>
-        <% end %>
-      </div>
-      <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
-      <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
-
+          <%#= f.fields_for :subscriptions do |subscription_form| %>
+            <%= subscription_fields.hidden_field :plan, value: @plan %>
+            <%= subscription_fields.hidden_field :duration, value: @duration %>
+            <%= subscription_fields.hidden_field :is_paused, value: true %>
+            <%# end %>
+          <% end %>
+        </div>
+        <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
+        <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
         <div class="form-actions">
           <%= f.button :submit, "Sign up", class: 'submit-btn' %>
         </div>

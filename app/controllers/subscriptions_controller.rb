@@ -199,7 +199,7 @@ class SubscriptionsController < ApplicationController
     # find the referee by the referral code
     referee = User.find_by(referral_code: referral_code)
 
-
+    
     if @subscription.invoices.empty?
       @invoice = InvoiceBuilder.new(
         subscription: @subscription,
