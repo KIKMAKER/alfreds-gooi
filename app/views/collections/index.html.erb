@@ -1,11 +1,11 @@
 <div class="driver-wrapper">
+<h1><%= @drivers_day.user.first_name %>'s collections for <%= @drivers_day.date.strftime('%A %d %b %Y') %></h1>
   <div class="collection-header">
     <p>Name</p>
     <p>Collect</p>
     <p>Address</p>
   </div>
   <div class="collections"  >
-    <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
     <ul data-controller="sortable">
       <% @collections.each do |collection| %>
         <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"

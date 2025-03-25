@@ -15,7 +15,6 @@ Rails.application.routes.draw do
 
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
-  post "perform_create_tomorrow_collections", to: "collections#perform_create_tomorrow_collections"
   post "perform_create_next_week_collections", to: "collections#perform_create_next_week_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route
   resources :collections, only: [:edit, :update, :destroy] do
@@ -34,9 +33,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # get 'subscriptions/update_sub_end_date', to: 'subscriptions#update_sub_end_date'
-  # post 'subscriptions/import_csv', to: 'subscriptions#import_csv'
-
   resources :invoices do
     member do
       get :paid
@@ -51,8 +47,6 @@ Rails.application.routes.draw do
     # - here I am creating /subscriptions/today
     collection do
       get :today
-      get :tomorrow
-      get :yesterday
       get :export
       get :update_end_date
       post :import_csv
@@ -111,7 +105,6 @@ Rails.application.routes.draw do
   get "vamos", to: "pages#vamos"
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"
-  get "today", to: "pages#today"
   get "story", to: "pages#story"
 
 
