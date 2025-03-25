@@ -219,7 +219,7 @@ class PaymentsController < ApplicationController
     Rails.logger.debug "Request Body: #{payload_string.inspect}"
 
     # Compute the expected signature
-    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, request_body)
+    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, payload_string)
     expected_auth_header = "SnapScan signature=#{computed_signature}"
 
     Rails.logger.debug "Computed Signature: #{computed_signature}"
