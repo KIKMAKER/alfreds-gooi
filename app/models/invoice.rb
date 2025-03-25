@@ -3,6 +3,7 @@ class Invoice < ApplicationRecord
   has_one :user, through: :subscription
   has_many :invoice_items, dependent: :destroy
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
+  has_many :payments, dependent: :nullify
 
   # validates :issued_date, :due_date, :total_amount, presence: true
   after_commit :set_number, on: :create
