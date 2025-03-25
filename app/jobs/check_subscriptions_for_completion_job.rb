@@ -13,6 +13,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
         # Optional: Notify the customer
         SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_later
+        SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_later
         Rails.logger.info "Marked sub ##{subscription.id} as complete"
       end
     end
