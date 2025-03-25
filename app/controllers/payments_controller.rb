@@ -61,11 +61,10 @@ class PaymentsController < ApplicationController
       request.body.rewind
       Rails.logger.debug "Request Body: #{request_body}"
 
-      # Rails.logger.debug "Request Body: #{request_body}"
       Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
 
       # Verify signature
-      verify_signature(params[:payload], ENV['WEBHOOK_AUTH_KEY'])
+      verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
       payload = JSON.parse(params[:payload])
