@@ -57,14 +57,15 @@ class PaymentsController < ApplicationController
     # Rails.logger.error "ERROR: Testing error logging in production."
 
     begin
-      request_body = request.body.read
-      request.body.rewind
-      Rails.logger.debug "Request Body: #{request_body}"
-
       Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
+      # request_body = request.body.read
+      # request.body.rewind
+      payload = params[:payload]
+      Rails.logger.debug "Request Body: #{payload}"
+
 
       # Verify signature
-      verify_signature(request_body, ENV['WEBHOOK_AUTH_KEY'])
+      verify_signature(payload, ENV['WEBHOOK_AUTH_KEY'])
 
       # Parse payload from URL-encoded parameters
       payload = JSON.parse(params[:payload])
