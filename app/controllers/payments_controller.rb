@@ -52,23 +52,22 @@ class PaymentsController < ApplicationController
   end
 
   def snapscan_webhook
-    Rails.logger.info "INFO: WE HIT THE SNAPSCAN WEBHOOK."
-    # Rails.logger.debug "DEBUG: Testing detailed logging in production."
-    # Rails.logger.error "ERROR: Testing error logging in production."
+    Rails.logger.info "✅ SnapScan Webhook Received"
 
     begin
-      Rails.logger.debug "Received SnapScan Webhook: #{params.inspect}"
-      # request_body = request.body.read
-      # request.body.rewind
-      payload = params[:payload]
-      Rails.logger.debug "Request Body: #{payload}"
+      raw_body = request.raw_post
+      Rails.logger.debug "🔍 Raw Request Body: #{raw_body.inspect}"
 
+      # Verify signature using raw request body
+      verify_signature(raw_body, ENV['WEBHOOK_AUTH_KEY'])
 
-      # Verify signature
-      verify_signature(payload, ENV['WEBHOOK_AUTH_KEY'])
+      # Extract and parse the payload (form param `payload` contains the JSON string)
+      json = Rack::Utils.parse_nested_query(raw_body)["payload"]
+      payload = JSON.parse(json)
 
-      # Parse payload from URL-encoded parameters
-      payload = JSON.parse(params[:payload])
+    # Rails.logger.debug "📦 Parsed Payload: #{payload.inspect}"
+    #   # Parse payload from URL-encoded parameters
+    #   payload = JSON.parse(params[:payload])
 
       Rails.logger.debug "Received payload: #{payload.inspect}"
       customer_id = payload["merchantReference"]
@@ -208,25 +207,20 @@ class PaymentsController < ApplicationController
     referral&.completed!
   end
 
-  def verify_signature(payload_string, webhook_auth_key)
+  def verify_signature(raw_body, webhook_auth_key)
     return true if Rails.env.test?
-    # Extract the Authorization header and received signature
+    Rails.logger.debug "🔐 Raw body: #{raw_body}"
+
     received_auth_header = request.headers['Authorization'].to_s
     received_signature = received_auth_header.split('=').last
 
-    Rails.logger.debug "Received Signature: #{received_signature.inspect}"
-    Rails.logger.debug "Webhook Auth Key: #{webhook_auth_key.inspect}"
-    Rails.logger.debug "Request Body: #{payload_string.inspect}"
+    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, raw_body)
 
-    # Compute the expected signature
-    computed_signature = OpenSSL::HMAC.hexdigest('sha256', webhook_auth_key, payload_string)
-    expected_auth_header = "SnapScan signature=#{computed_signature}"
+    Rails.logger.debug "🔐 Received Signature: #{received_signature}"
+    Rails.logger.debug "🧮 Computed Signature: #{computed_signature}"
 
-    Rails.logger.debug "Computed Signature: #{computed_signature}"
-
-    # Verify the signature
-    unless Rack::Utils.secure_compare(expected_auth_header, received_auth_header)
-      raise "Unauthorized webhook received"
+    unless Rack::Utils.secure_compare(received_signature, computed_signature)
+      raise "Unauthorized webhook received – signature mismatch"
     end
   end
 end
