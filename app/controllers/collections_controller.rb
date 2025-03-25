@@ -56,6 +56,11 @@ class CollectionsController < ApplicationController
 
   # Regular CRUD stuff
 
+  def index
+    @drivers_day = DriversDay.find(params[:drivers_day_id])
+    @collections = @drivers_day.collections.order(updated_at: :desc)
+  end
+
   def show
   end
 
