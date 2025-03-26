@@ -104,7 +104,7 @@ class PagesController < ApplicationController
     # Update subscription and mark the last invoice as paid
     if last_invoice && last_invoice.total_amount.to_i == successful_payment["totalAmount"].to_i
       last_invoice.update!(paid: true)
-      subscription.update!(status: 'active', start_date: subscription.calculate_next_collection_day)
+      subscription.update!(status: 'active', start_date: subscription.suggested_start_date)
     end
   end
 

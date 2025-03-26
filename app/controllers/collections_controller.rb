@@ -56,6 +56,11 @@ class CollectionsController < ApplicationController
 
   # Regular CRUD stuff
 
+  def index
+    @drivers_day = DriversDay.find(params[:drivers_day_id])
+    @collections = @drivers_day.collections.order(updated_at: :desc)
+  end
+
   def show
   end
 
@@ -85,8 +90,9 @@ class CollectionsController < ApplicationController
   def update
 
     @collection.subscription.update(is_new_customer: false)
+    @collection.new_customer = false
     if @collection.update!(collection_params)
-      redirect_to today_subscriptions_path
+      redirect_to today_subscriptions_path, notice: 'updated'
     else
       render :edit, status: :unprocessable_entity
     end

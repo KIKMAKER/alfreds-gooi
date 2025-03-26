@@ -12,23 +12,14 @@
     <br>
     <div class="grid-container">
       <div class="grid-item"><strong>Name</strong></div>
-      <div class="grid-item"><strong>Note</strong></div>
       <div class="grid-item"><strong>Collect</strong></div>
+      <div class="grid-item"><strong>Note</strong></div>
       <% @collections.each do |collection| %>
         <div class="grid-item">
           <% if collection&.skip %>
             <p>SKIP!</p>
           <% end %>
           <%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %>
-        </div>
-        <div class="grid-item">
-          <% if collection.alfred_message %>
-            <%= collection.alfred_message %>
-          <% elsif collection.skip %>
-            <p>Skipped</p>
-          <% else %>
-            <p>No message from Alfred yet</p>
-          <% end %>
         </div>
         <div class="grid-item gooi-collect-button">
           <% if collection.nil? %>
@@ -51,11 +42,19 @@
             <% end %>
           <% end %>
         </div>
+        <div class="grid-item">
+          <% if collection.alfred_message %>
+            <%= collection.alfred_message %>
+          <% elsif collection.skip %>
+            <p>Skipped</p>
+          <% else %>
+            <p>No message from Alfred yet</p>
+          <% end %>
+        </div>
       <% end %>
     </div>
     <br>
     <br>
-      <%= link_to "ALL DAYS", drivers_days_path, class: "gooi-button" %>
-
+    <%= link_to "ALL DAYS", drivers_days_path, class: "gooi-button" %>
   </div>
 </div>
