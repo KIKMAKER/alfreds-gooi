@@ -298,19 +298,6 @@ class SubscriptionsController < ApplicationController
                 end
   end
 
-  def tomorrow
-     # in production today will be the current day,
-    # today = "Wednesday"
-    # PRODUCTION
-    tomorrow = Date.today + 1
-    # but in testing I want to be able to test the view for a given day
-    # DEVELOPMENT
-    # today = Date.today  + 2
-    @tomorrow = tomorrow.strftime("%A")
-    @drivers_day = DriversDay.find_or_create_by(date: tomorrow)
-    # Fetch subscriptions for the day and eager load related collections (thanks chat)
-    @subscriptions = Subscription.active_subs_for(@tomorrow)
-  end
 
   # a special view that will load all of the collections for a given day
   def today_notes

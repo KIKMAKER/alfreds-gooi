@@ -66,6 +66,12 @@ class User < ApplicationRecord
     "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
   end
 
+  def generate_whatsapp_link(message)
+    "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
+  end
+
+
+
   def current_sub
     subscriptions.order(start_date: :desc).first
   end

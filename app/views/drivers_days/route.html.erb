@@ -1,8 +1,8 @@
 <div class="driver-wrapper">
   <div class="collection-header">
     <p>Name</p>
-    <p>Address</p>
     <p>Collect</p>
+    <p>Address</p>
   </div>
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
@@ -18,7 +18,6 @@
               <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             <% end %>
           </div>
-          <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
           <div class="bag">
             <% if collection.skip %>
               <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
@@ -36,6 +35,7 @@
               <% end %>
             <% end %>
           </div>
+          <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
         </li>
       <% end %>
     </ul>

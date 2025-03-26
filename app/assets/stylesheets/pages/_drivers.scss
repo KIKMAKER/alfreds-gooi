@@ -70,7 +70,7 @@
     font-size: 0.6rem;
   }
 
-  .car-emoji {
+  .emoji {
     font-size: 1rem;
   }
   .small-yellow-btn {
@@ -96,6 +96,26 @@
     margin: 0;
   }
 
+  .name {
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+  }
+  .bag {
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .address {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
 }
 
 .collections {
@@ -114,7 +134,7 @@
     text-decoration: none;
   }
 
-  .car {
+  .emojies {
     width: 20%;
     display: flex;
     justify-content: space-between;
@@ -126,6 +146,32 @@
       }
 
     }
+  }
+
+  .name {
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .emoji {
+      a {
+        font-size: 1.5rem;
+      }
+
+    }
+  }
+  .bag {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .address {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
