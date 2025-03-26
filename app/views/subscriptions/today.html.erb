@@ -47,9 +47,9 @@
             <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
           </div>
           <div class="emojies">
-            <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
+            <p class="emoji"><%= link_to "🚗", collection.subscription.user.generate_whatsapp_link("Hellow #{collection.user.first_name}. I am on my way!"), target: :_blank %></p>
             <p class="emoji"><%= link_to "🏠", collection.subscription.user.generate_whatsapp_link("I am at your house."), target: :_blank %></p>
-            <p class="emoji"><%= link_to "🪴", collection.subscription.user.generate_whatsapp_link("Thank you #{collection.user.first_name}, I have got your bag"), target: :_blank %></p>
+            <p class="emoji"><%= link_to "🪴", collection.subscription.user.generate_whatsapp_link("Thank you #{collection.user.first_name}, I have got your bag. Hope you have a wonderful weekend."), target: :_blank %></p>
           </div>
         </li>
       <% end %>
