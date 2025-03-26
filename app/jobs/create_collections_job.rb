@@ -38,6 +38,5 @@ class CreateCollectionsJob < ApplicationJob
       Rails.logger.info "Created collection for #{subscription.customer_id} on #{collection_date}"
     end
 
-    return collection
   end
 end
