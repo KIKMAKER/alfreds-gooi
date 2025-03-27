@@ -14,9 +14,9 @@
   <h2>Collections</h2>
   <%= button_to 'Create for Next Week', perform_create_next_week_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   <div class="d-flex mt-3">
-    <%= link_to 'Import from CSV', load_csv_collections_path, class: 'small-yellow-btn' %>
+    <%#= link_to 'Import from CSV', load_csv_collections_path, class: 'small-yellow-btn' %>
     <%= button_to 'Create for Today', perform_create_today_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
-    <%= button_to 'Create for Tomorrow', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
+    <%#= button_to 'Create for Tomorrow', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   </div>
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>
