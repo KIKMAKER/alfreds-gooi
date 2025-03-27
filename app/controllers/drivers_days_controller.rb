@@ -27,10 +27,9 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.find_or_create_by(date: today)
     @drivers_day.start_time = Time.now
     @drivers_day.save!
-    @subscriptions = Subscription.where(collection_day: @today).order(:collection_order)
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active').order(:collection_order)
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
-    @wants_veggies = @subscriptions.select { |subscription| subscription.collections.last&.wants_veggies}
     @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     if request.patch?

@@ -12,9 +12,9 @@
       <% @skip_subscriptions.each do |sub| %>
         <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
       <% end %>
-      <br>
-      <%= link_to "sort the route", optimise_route_path, data: {turbo_method: :patch}, class: "small-yellow-btn" %>
-      <br>
+      <!--<br>-->
+      <%#= link_to "sort the route", optimise_route_path, data: {turbo_method: :patch}, class: "small-yellow-btn" %>
+<!--      <br>-->
       <h3><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</strong></h3>
       <% @bags_needed.each do |sub| %>
         <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
