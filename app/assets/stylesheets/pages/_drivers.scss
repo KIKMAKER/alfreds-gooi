@@ -78,6 +78,25 @@
   }
 }
 
+@media screen and (max-width: 780px) {
+  a {
+    font-size: 0.4rem;
+  }
+
+  p {
+
+    font-size: 0.4rem;
+  }
+
+  .emoji {
+    font-size: 1rem;
+  }
+  .small-yellow-btn {
+    padding: 2px 4px;
+  }
+}
+
+
 
 .collection-header {
   font-family: "Inter";
@@ -104,7 +123,7 @@
 
   }
   .bag {
-    width: 10%;
+    width: 20%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -162,7 +181,7 @@
     }
   }
   .bag {
-    width: 10%;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;

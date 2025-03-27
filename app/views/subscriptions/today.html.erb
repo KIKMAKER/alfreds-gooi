@@ -44,7 +44,7 @@
             <% end %>
           </div>
           <div class="address">
-            <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
+            <%= link_to collection.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
           </div>
           <div class="emojies">
             <p class="emoji"><%= link_to "🚗", collection.subscription.user.generate_whatsapp_link("Hellow #{collection.user.first_name}. I am on my way!"), target: :_blank %></p>
