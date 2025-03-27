@@ -79,8 +79,22 @@ namespace :data do
 
           # user = User.find_by(first_name: "Lulu")
           # subscription = user.subscriptions.where(status: "active").first
-          # subscription.update(start_date: Date.new(2025, 01, 15))
+          # last_sub = user.subscriptions.completed.order(end_date: :desc).first
+          # return payment_date unless last_sub
 
+          # last_end = last_sub.end_date
+          # return payment_date unless last_end
+
+          # days_since = (payment_date - last_end).to_i
+          # expected = (days_since / 7.0).floor
+          # actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
+
+          # subscription.update(start_date: Date.new(2025, 01, 15))
+          # if actual >= (expected/2)
+          #   last_end + 7
+          # else
+          #   payment_date
+          # end
           # user.collections.where("date > ?", subscription.start_date).count
           # user.collections.where("date > ?", subscription.start_date).update_all(subscription_id: subscription.id)
 

@@ -70,7 +70,7 @@ class DriversDaysController < ApplicationController
     return unless request.patch?
 
     if update_drivers_day(drivers_day_params, next_path: vamos_path)
-      CreateCollectionsJob.perform_now(day_name)
+      CreateCollectionsJob.perform_now
       CheckSubscriptionsForCompletionJob.perform_now
       puts "Driver's Day ended at: #{@drivers_day.end_time}"
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
@@ -87,7 +87,7 @@ class DriversDaysController < ApplicationController
 
   def index
     # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.all.order(date: :asc)
+    @drivers_days = DriversDay.all.order(date: :desc)
   end
 
   def show
