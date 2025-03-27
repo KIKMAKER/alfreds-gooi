@@ -1,8 +1,14 @@
 <div class="driver-wrapper">
   <div class="collection-header">
-    <p>Name</p>
-    <p>Collect</p>
-    <p>Address</p>
+    <div class="name">
+      <p>Name</p>
+    </div>
+    <div class="bag">
+      <p>Collect</p>
+    </div>
+    <div class="address">
+      <p>Address</p>
+    </div>
   </div>
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
@@ -11,8 +17,7 @@
         <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
         data-sortable-handle
         class="sortable-item">
-          <div class="car">
-            <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
+          <div class="name">
             <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
             <% if current_user.admin? %>
               <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
@@ -35,7 +40,9 @@
               <% end %>
             <% end %>
           </div>
-          <%= link_to collection.subscription.street_address&.truncate(30), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
+          <div class="address">
+            <%= link_to collection.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
+          </div>
         </li>
       <% end %>
     </ul>
