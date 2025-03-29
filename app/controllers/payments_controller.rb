@@ -147,7 +147,7 @@ class PaymentsController < ApplicationController
 
     if payments
       # Process payments
-      puts "Payments: #{payments.inspect}"
+      # puts "Payments: #{payments.inspect}"
       render json: payments, status: :ok
     else
       render json: { error: 'Failed to fetch payments' }, status: :unprocessable_entity
