@@ -143,7 +143,7 @@ class Subscription < ApplicationRecord
 
   # infer starter kit based on sub plan
 
-  def determine_starter_kit_title(plan)
+  def determine_starter_kit_title
     case plan
     when "Standard"
       "Standard Starter Kit"
