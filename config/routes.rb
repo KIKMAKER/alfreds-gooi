@@ -114,5 +114,8 @@ Rails.application.routes.draw do
   match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
   match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
 
+  # Render dynamic PWA files from app/views/pwa/*
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
 end
