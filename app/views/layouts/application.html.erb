@@ -15,7 +15,7 @@
     <%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
     <%#= render 'shared/ios_pwa_links' %>
     <link rel="apple-touch-icon" href="<%= image_path 'icons/ios/180.png' %>">
-    <link rel="apple-touch-startup-image" href="<%= image_path 'icons/ios/1024.png' %>">
+    <link rel="apple-touch-startup-image" href="<%= image_path '/icons/ios/1024.png' %>">
   </head>
   <body class="background">
     <% if user_signed_in? %>
