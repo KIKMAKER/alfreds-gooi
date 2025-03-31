@@ -2,7 +2,7 @@ class CreateNextWeekCollectionsJob < ApplicationJob
   queue_as :default
 
   def perform
-    today = Date.today
+    today = Date.today + 7
     puts "Today is #{today}"
 
     # Define the days of the week to process (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
