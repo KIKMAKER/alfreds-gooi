@@ -97,7 +97,7 @@ class DriversDaysController < ApplicationController
     @total_buckets_collected = @collections&.sum(:buckets).floor || 0
     return unless request.patch?
 
-    if update_drivers_day(drivers_day_params, next_path: vamos_drivers_day_path)
+    if update_drivers_day(drivers_day_params, next_path: vamos_drivers_day_path(@drivers_day))
       CreateCollectionsJob.perform_now
       CheckSubscriptionsForCompletionJob.perform_now
       puts "Driver's Day ended at: #{@drivers_day.end_time}"

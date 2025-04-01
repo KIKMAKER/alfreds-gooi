@@ -12,7 +12,7 @@
           <% drivers_day = DriversDay.find_by(date: Date.today) %>
           <% if current_user.driver? %>
             <li class="nav-item active">
-              <%= link_to "Welcome", drivers_day.present? ? vamos_drivers_day_path : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
+              <%= link_to "Welcome", drivers_day.present? ? vamos_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
             </li>
             <li class="nav-item active">
               <%= link_to "Start the Day", drivers_day.present? ? start_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
