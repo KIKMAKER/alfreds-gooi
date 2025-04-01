@@ -86,6 +86,7 @@ Rails.application.routes.draw do
       end
     end
     member do
+      get :vamos
       get :start
       patch :start
       get :drop_off
@@ -102,7 +103,7 @@ Rails.application.routes.draw do
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
-  get "vamos", to: "pages#vamos"
+
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"

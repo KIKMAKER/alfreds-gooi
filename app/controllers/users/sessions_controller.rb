@@ -12,7 +12,7 @@ class Users::SessionsController < Devise::SessionsController
   def create
     super do |resource|
       stored_location = session[:user_return_to] # Get stored location
-      
+
       if stored_location
         session.delete(:user_return_to) # Clear after using
         return redirect_to stored_location
@@ -21,7 +21,7 @@ class Users::SessionsController < Devise::SessionsController
         return redirect_to manage_path
       elsif resource.driver?
         # CreateCollectionsJob.perform_now
-        return redirect_to vamos_path
+        return redirect_to vamos_drivers_day_path
       elsif resource.admin?
         return redirect_to this_week_collections_path
       else
