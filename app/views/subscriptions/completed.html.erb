@@ -42,7 +42,8 @@
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
                     <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                      <%= link_to "whatsapp them", send_whatsapp_notification %>
+                      <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
                   <% end %>
