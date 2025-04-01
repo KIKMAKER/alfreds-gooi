@@ -41,8 +41,8 @@
                 <td><%= subscription.total_collections || "unpaid" %></td>
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "whatsapp them", send_whatsapp_notification %>
+                    <% if subscription.remaining_collections < 2 %>
+                      <%= link_to "whatsapp them", subscription.user.whatsapp_notification_link %>
                       <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
