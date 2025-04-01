@@ -2,9 +2,13 @@
 <h2><%= @subscription.user.first_name %> was sent this:</h2>
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
   <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Hi <%= @subscription.user.first_name %>! 👋</h1>
-
   <p style="font-size: 1.1rem; margin-top: 1rem;">
     Your subscription (which started on <strong><%= @subscription.start_date.strftime('%e %b %Y') %></strong>) has run its course.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Over this time, we’ve collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
+    and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
   </p>
 
   <p style="font-size: 1.1rem;">
@@ -14,20 +18,19 @@
   <p style="font-size: 1.1rem;">
     You're welcome to rejoin the movement anytime.
   </p>
-
   <p style="margin: 2rem 0;">
     <a href="<%= new_subscription_url %>"
        style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
       Resubscribe Now
     </a>
   </p>
-
+  <p style="font-size: 1.1rem;">
+    If you haven't logged into the website before, we have an account waiting for you! Just use this email address and the default password: 'password', which you can change at any time.
+  </p>
   <p style="font-size: 1.1rem;">
     We hope to see you (and your kitchen scraps) again soon 👀🍌🥬
   </p>
-
   <p style="font-size: 1.1rem;">Thanks again,</p>
-
   <p>
     <%= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
   </p>
