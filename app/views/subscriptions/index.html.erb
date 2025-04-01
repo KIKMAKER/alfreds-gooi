@@ -42,7 +42,7 @@
                 <td>
                   <% unless subscription.remaining_collections.nil? %>
                     <% if subscription.remaining_collections < -1 %>
-                      <%#= link_to "whatsapp them", send_whatsapp_notification %>
+                      <%= link_to "whatsapp them", subscription.user.whatsapp_notification_link %>
                     <% else %>
                       <%= subscription.remaining_collections&.to_i.truncate || "unknown" %></td>
                   <% end %>
