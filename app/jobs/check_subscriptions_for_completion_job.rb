@@ -2,7 +2,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
   queue_as :default
 
   def perform
-    Subscription.active.find_each do |subscription|
+    Subscription.active.where(collection_day: Date.today.strftime("%A")).find_each do |subscription|
       next if subscription.start_date.blank?
 
       required_collections = (4.2 * subscription.duration).ceil
@@ -12,8 +12,8 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
         subscription.completed!
 
         # Optional: Notify the customer
-        SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_later
-        SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_later
+        SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_now
+        SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_now
         Rails.logger.info "Marked sub ##{subscription.id} as complete"
       end
     end
