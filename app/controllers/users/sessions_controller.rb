@@ -21,7 +21,7 @@ class Users::SessionsController < Devise::SessionsController
         return redirect_to manage_path
       elsif resource.driver?
         # CreateCollectionsJob.perform_now
-        return redirect_to vamos_drivers_day_path
+        return redirect_to vamos_drivers_day_path(resource.drivers_day.last)
       elsif resource.admin?
         return redirect_to this_week_collections_path
       else
