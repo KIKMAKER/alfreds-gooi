@@ -156,16 +156,16 @@
       </div>
     </div>
   </div>
-      <%# if user_signed_in? %>
-        <%#= link_to "share yours", "#", class: "btn-gooi" %>
-      <%# end %>
+  <%# if user_signed_in? %>
+  <%#= link_to "share yours", "#", class: "btn-gooi" %>
+  <%# end %>
 </section>
 <!-- What is compostable -->
 <section class="compostable-section">
   <h1>What is compostable</h1>
   <div class="content-wrapper">
     <div class="compostable-container">
-    <i class="fa-solid fa-chevron-right arrow-right"></i>
+      <i class="fa-solid fa-chevron-right arrow-right"></i>
       <div class="compostable-card">
         <div class="overlay"></div>
         <%= image_tag('fruit-veg.svg') %>
@@ -214,7 +214,7 @@
   </div>
 </section>
 <!-- Pricing -->
-<% unless user_signed_in? %>
+<%# unless user_signed_in? %>
   <section data-controller="pricing" class="pricing-section"  id="pricing">
     <h1>How it works</h1>
     <div class="pricing-content-wrapper">
@@ -222,7 +222,8 @@
         <p>We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
         </p>
       </div>
-      <div class="toggle-subscription">
+
+      <div class="toggle-subscriptio-->n">
         <h2>Subscription rates</h2>
         <div class="toggle">
           <!--<p>Standard</p>-->
@@ -289,5 +290,5 @@
       </div>
     </div>
   </section>
-<% end %>
+<%# end %>
 </div>
