@@ -91,7 +91,18 @@ class CollectionsController < ApplicationController
 
     @collection.subscription.update(is_new_customer: false)
     @collection.new_customer = false
-    if @collection.update!(collection_params)
+    previous_date = @collection.date # capture the old date before update
+
+    if @collection.update(collection_params)
+      if previous_date != @collection.date
+        driver = User.find_by(role: 'driver')
+        drivers_day = DriversDay.find_or_create_by!(
+          date: @collection.date,
+          user: driver
+        )
+        @collection.update!(drivers_day_id: drivers_day.id)
+      end
+
       redirect_to today_subscriptions_path, notice: 'updated'
     else
       render :edit, status: :unprocessable_entity
