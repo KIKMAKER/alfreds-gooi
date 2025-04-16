@@ -8,6 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def new
     @plan = params[:plan]
     @duration = params[:duration]
+    @discount_code = params[:discount] if params[:discount].present?
 
     # Always build a fresh resource, Devise might hang onto state between requests
     self.resource = build_resource({})
@@ -16,6 +17,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resource.subscriptions.new(
       plan: @plan,
       duration: @duration,
+      discount_code: @discount_code,
       is_paused: true
     )
 
