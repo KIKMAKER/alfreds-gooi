@@ -241,7 +241,7 @@
           <p class="pricing-text"><strong>R260</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R260</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
         <div class="month-card">
@@ -249,7 +249,7 @@
           <p class="pricing-text"><strong>R220</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R660</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
         <div class="month-card popular">
@@ -258,7 +258,7 @@
           <p class="pricing-text"><strong>R180</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R1080</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
       </div>
@@ -268,7 +268,7 @@
           <p class="pricing-text"><strong>R300</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R300</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
         <div class="month-card">
@@ -276,7 +276,7 @@
           <p class="pricing-text"><strong>R270</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R810</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
         <div class="month-card">
@@ -284,7 +284,7 @@
           <p class="pricing-text"><strong>R240</strong> per month</p>
           <p class="pricing-text"><strong>Total:</strong> R1440</p>
           <div class="sign-up-btn">
-            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6'), class:"link-title-light" %>
+            <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code), class:"link-title-light" %>
           </div>
         </div>
       </div>

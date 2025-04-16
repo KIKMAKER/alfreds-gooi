@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :home, :story ]
 
   def home
+    @discount_code = params[:discount]
   end
   def today
     today = Date.today

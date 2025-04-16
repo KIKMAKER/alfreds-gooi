@@ -548,11 +548,17 @@ input[type="checkbox"].toggle:checked+label::before {
   flex-direction: column;
   align-items: center;
 
+  p {
+    margin-bottom: 0.5rem;
+  }
+
   h3 {
     font-family: 'Libre Baskerville', serif;
     font-weight: 700;
     font-size: 24px;
     color: #023F3A;
+    margin-bottom: 0.6rem;
+
 
   }
 
