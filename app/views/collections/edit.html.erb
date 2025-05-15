@@ -49,6 +49,10 @@
         <% else %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% end %>
+        <% if current_user.admin? %>
+          <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
+          <%= f.input :date %>
+        <% end %>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>

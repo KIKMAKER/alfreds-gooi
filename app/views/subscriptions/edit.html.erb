@@ -20,6 +20,9 @@
       <%= f.button :submit, "Update", class: "sign-up-btn" %>
     </div>
   <% end %>
-  <p class="my-3">Click <%= link_to 'here', edit_user_registration_path  %> to edit your name, email, or phone number</p>
-
+  <% if current_user.admin? %>
+    <p class="my-3">Click <%= link_to 'here', edit_admin_user_path(@subscription.user)  %> to edit the users name, email, or phone number</p>
+  <% else %>
+    <p class="my-3">Click <%= link_to 'here', edit_user_registration_path  %> to edit your name, email, or phone number</p>
+  <% end %>
 </div>

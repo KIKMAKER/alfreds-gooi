@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :users, only: [:index, :edit, :update]
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
