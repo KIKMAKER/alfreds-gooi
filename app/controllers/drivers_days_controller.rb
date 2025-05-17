@@ -108,6 +108,49 @@ class DriversDaysController < ApplicationController
     end
   end
 
+  def missing_customers
+    @drivers_day = DriversDay.find(params[:id])
+    @today = @drivers_day.date
+    # Get all subscriptions for today that do not already have a collection
+    existing_ids = @drivers_day.collections.pluck(:subscription_id)
+
+    @missing_subs = Subscription
+                      .where(collection_day: @today.wday)
+                      .where.not(id: existing_ids)
+                      .includes(:user)
+  end
+
+  def create_missing_collection
+    @drivers_day = DriversDay.find(params[:id])
+    subscription = Subscription.find(params[:subscription_id])
+
+    collection = Collection.create!(
+      subscription: subscription,
+      drivers_day: @drivers_day,
+      date: @drivers_day.date,
+      bags: 0,
+      skip: false,
+      new_customer: false,
+      buckets: 0.0
+    )
+
+    redirect_to whatsapp_message_drivers_day_path(@drivers_day, user_id: subscription.user_id)
+  end
+
+  def whatsapp_message
+    @drivers_day = DriversDay.find(params[:id])
+    @user = User.find(params[:user_id])
+    @subscription = @user.subscriptions.order(created_at: :desc).first
+
+    @message = <<~MSG.strip
+      Hello #{@user.first_name}! You weren't on my list today because you haven't renewed your subscription yet, but I am collecting your gooi bag anyway!
+      Please resubscribe before next week so that you will be on my list then :)
+      You can log in to alfred.gooi.me/manage with email #{@user.email} and your password should be 'password' unless you have changed it.
+    MSG
+
+    @whatsapp_url = @user.generate_whatsapp_link(@message)
+  end
+
   def collections
     date = @drivers_day.date
     @collections = @drivers_day.collections.includes(:subscription).where(date: date).order(date: :desc)
