@@ -95,6 +95,8 @@ Rails.application.routes.draw do
       get :end
       patch :end
       get :collections
+      get :missing_customers
+      post 'create_missing_collection/:subscription_id', to: 'drivers_days#create_missing_collection', as: :create_missing_collection
     end
 
   end
