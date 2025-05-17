@@ -1,0 +1,11 @@
+<div class="driver-wrapper">
+  <h2>Send WhatsApp Message</h2>
+  <p><%= simple_format(@message) %></p>
+
+<strong><p class="mt-4">Open whatsapp</p></strong>
+  <%= link_to @whatsapp_url, target: "_blank", class: "mt-4" do %>
+          <i class="fa-brands fa-whatsapp" style="font-size: 60px"></i>
+        <% end %>
+  <!--<p><%#= link_to "Open WhatsApp", @whatsapp_url, target: "_blank", class: "btn btn-success mt-4" %></p>-->
+  <%= link_to "Back to today's list", today_subscriptions_path, class: "small-yellow-btn mt-3" %>
+</div>
