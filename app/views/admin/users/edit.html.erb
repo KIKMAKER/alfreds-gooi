@@ -1,0 +1,28 @@
+<div class="user-wrapper">
+  <h1 class="mb-3">Edit your details</h1>
+  <%= simple_form_for [:admin, @user] do |f| %>
+    <div class="form-inputs">
+
+      <%= f.input :first_name,
+                required: true,
+                autofocus: true,
+                input_html: { autocomplete: "email" }%>
+      <%= f.input :last_name,
+                required: true,
+                autofocus: true,
+                input_html: { autocomplete: "email" }%>
+      <%= f.input :phone_number,
+                required: true,
+                autofocus: true,
+                input_html: { autocomplete: "email" }%>
+      <%= f.input :email,
+                required: true,
+                autofocus: true,
+                input_html: { autocomplete: "email" }%>
+    </div>
+    <div class="form-actions">
+      <%= f.button :submit, "Update", class: "sign-up-btn" %>
+    </div>
+  <% end %>
+
+</div>

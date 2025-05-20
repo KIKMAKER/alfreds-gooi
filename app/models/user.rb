@@ -70,6 +70,9 @@ class User < ApplicationRecord
     "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
   end
 
+  def full_name
+    return first_name + " " + last_name
+  end
 
 
   def current_sub

@@ -1,6 +1,8 @@
 <!--ALFREDS PAGE-->
 <div class="driver-wrapper">
+  <%= link_to "Someone missing from the list?", missing_customers_drivers_day_path(@drivers_day), class: "btn btn-info mb-3" %>
   <div class="collection-header">
+
     <div class="name">
       <p>Name</p>
     </div>
@@ -35,7 +37,7 @@
               <% elsif collection.subscription.Standard? %>
                 <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
               <% elsif collection.subscription.XL? %>
-                <%= link_to "#{pluralize(collection.buckets.floor, 'bucket')}", edit_collection_path(collection), class: "small-yellow-btn"  %>
+                <%= link_to "#{pluralize(collection.buckets&.floor, 'bucket')}", edit_collection_path(collection), class: "small-yellow-btn"  %>
               <% elsif collection.subscription.user.drop_off? %>
                 <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
               <% else %>
