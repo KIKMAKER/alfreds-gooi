@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :users, only: [:index, :edit, :update]
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
@@ -94,6 +95,10 @@ Rails.application.routes.draw do
       get :end
       patch :end
       get :collections
+      get :missing_customers
+      post 'create_missing_collection/:subscription_id', to: 'drivers_days#create_missing_collection', as: :create_missing_collection
+      get 'whatsapp_message', to: 'drivers_days#whatsapp_message'
+
     end
 
   end

@@ -1,0 +1,14 @@
+<div class="driver-wrapper">
+  <h2>Customers missing from today's list</h2>
+  <% if @missing_subs.any? %>
+    <ul>
+      <% @missing_subs.each do |sub| %>
+        <li>
+          <%= link_to sub.user.full_name || sub.user.first_name, create_missing_collection_drivers_day_path(@drivers_day, subscription_id: sub.id), data: {turbo_method: :post } %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No missing subscriptions for today 🎉</p>
+  <% end %>
+</div>
