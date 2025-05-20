@@ -115,9 +115,10 @@ class DriversDaysController < ApplicationController
     existing_ids = @drivers_day.collections.pluck(:subscription_id)
 
     @missing_subs = Subscription
-                      .where(collection_day: @today.wday)
-                      .where.not(id: existing_ids)
-                      .includes(:user)
+                    .where(collection_day: @today.wday)
+                    .where.not(id: existing_ids)
+                    .where(end_date: 1.month.ago.to_date..@today) # <-- this line
+                    .includes(:user)
   end
 
   def create_missing_collection
