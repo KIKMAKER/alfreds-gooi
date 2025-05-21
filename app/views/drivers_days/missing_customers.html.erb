@@ -4,7 +4,7 @@
     <ul>
       <% @missing_subs.each do |sub| %>
         <li>
-          <%= link_to "#{sub.user.full_name} - #{sub.user.suburb}" || "#{sub.user.first_name} - #{sub.user.suburb}", create_missing_collection_drivers_day_path(@drivers_day, subscription_id: sub.id), data: {turbo_method: :post } %>
+          <%= link_to "#{sub.user.full_name} - #{sub.suburb}" || "#{sub.user.first_name} - #{sub.suburb}", create_missing_collection_drivers_day_path(@drivers_day, subscription_id: sub.id), data: {turbo_method: :post } %>
         </li>
       <% end %>
     </ul>
