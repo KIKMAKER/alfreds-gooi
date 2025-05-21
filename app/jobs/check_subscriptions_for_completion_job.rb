@@ -10,6 +10,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
       if completed_collections >= required_collections
         subscription.completed!
+        subscription.end_date!
 
         # Optional: Notify the customer
         SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_now
