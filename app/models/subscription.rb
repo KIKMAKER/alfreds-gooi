@@ -100,8 +100,8 @@ class Subscription < ApplicationRecord
     is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
   end
 
-  def end_date
-    (start_date + duration.months).to_date if start_date
+  def end_date!
+    self.update!(end_date: (start_date + duration.months).to_date) if start_date
   end
 
   def set_collection_day
