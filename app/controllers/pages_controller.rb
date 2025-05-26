@@ -3,6 +3,9 @@ class PagesController < ApplicationController
 
   def home
     @discount_code = params[:discount]
+    @discount_code_value = DiscountCode.find_by(code: @discount_code.upcase).discount_cents / 100 if @discount_code
+
+    @referral_code = params[:referral]
   end
   def today
     today = Date.today
@@ -63,6 +66,12 @@ class PagesController < ApplicationController
     @referral_code = current_user.referral_code
     @referrals = current_user.referrals_as_referrer.where(status: "completed")
     @referral_count = @referrals.count
+    collection_day = current_user.current_sub.collection_day
+    share_url = "alfred.gooi.me/?referral=#{@referral_code}"
+    message = "Hey! I've been using this super easy service to stop my food scraps from going to landfill — they turn it into compost instead. It's a small change with a big impact on the planet. Prices start at R260/month, or as low as R180 if you sign up for longer. They collect here on #{collection_day}, and they're hoping to grow in the neighbourhood to make collections more efficient. If you're keen to join, use my referral link for 15% off: #{share_url}"
+    "Hey! I've been using this super easy service to stop my food scraps from going to a landfill, and sending them to become compost instead. It's such a simple change to make with such a huge impact on the planet. The team is trying to grow in this neighbourhood to make collections more efficient, and I have a referral code that will get you 15% off – just sign up using this link: #{@share_url}"
+    encoded_message = URI.encode_www_form_component(message)
+    @whatsapp_link = "https://wa.me/?text=#{encoded_message}"
   end
 
   def story
