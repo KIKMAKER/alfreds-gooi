@@ -60,7 +60,7 @@
             <% if @next_collection && @subscription.collections&.last.needs_bags.to_i > 0 %>
               <p class="mt-2">generate an invoice and <%= link_to 'pay now', bag_invoices_path(@subscription.collections&.last.needs_bags) %> via snapscan</p>
             <% end %>
-            <div class="container-flex mt-3">
+            <div class="d-flex justify-content-evenly mt-3">
               <button class="submit-btn align-self-start" data-action="toggle#fire" data-toggle-target="button">Add Note</button>
               <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start", data: {turbo: false} %>
             </div>
