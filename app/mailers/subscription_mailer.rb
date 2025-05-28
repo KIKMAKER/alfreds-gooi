@@ -15,4 +15,20 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def subscription_ending_soon
+    @subscription = params[:subscription]
+    mail(to: @subscription.user.email, subject: "Your gooi subscription is almost up!")
+  end
+
+  def subscription_ending_soon_alert
+    @subscription = params[:subscription]
+
+    mail(
+      to: 'howzit@gooi.me',
+      subject: "Mail sent to #{@subscription.user.first_name}!",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
+
 end

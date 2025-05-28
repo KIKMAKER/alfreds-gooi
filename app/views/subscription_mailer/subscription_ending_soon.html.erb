@@ -1,20 +1,16 @@
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
   <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Hi <%= @subscription.user.first_name %>! 👋</h1>
   <p style="font-size: 1.1rem; margin-top: 1rem;">
-    Your subscription (which started on <strong><%= @subscription.start_date.strftime('%e %b %Y') %></strong>) has run its course.
+    Your subscription (which started on <strong><%= @subscription.start_date.strftime('%e %b %Y') %></strong>) has got less than two collections remaining.
   </p>
 
   <p style="font-size: 1.1rem;">
-    Over this time, we’ve collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
+    We've collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
     and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
   </p>
 
   <p style="font-size: 1.1rem;">
-    We’ve loved collecting your <strong>gooi-goodies</strong> — every bit of organic waste you diverted helped feed the soil and reduce landfill pressure 🌱
-  </p>
-
-  <p style="font-size: 1.1rem;">
-    You're welcome to rejoin the movement anytime.
+    Don't miss a week of gooiing! Click below to continue your subscription.
   </p>
   <p style="margin: 2rem 0;">
     <a href="<%= new_subscription_url %>"
@@ -26,9 +22,10 @@
     If you haven't logged into the website before, we have an account waiting for you! Just use this email address and the default password: 'password', which you can change at any time.
   </p>
   <p style="font-size: 1.1rem;">
-    We hope to see you (and your kitchen scraps) again soon 👀🍌🥬
+    See you next week! 👀🍌🥬
   </p>
   <p style="font-size: 1.1rem;">Thanks again,</p>
+  <p>
   <p>
     Kristen
     <%#= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
