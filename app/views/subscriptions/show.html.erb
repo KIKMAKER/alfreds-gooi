@@ -3,15 +3,19 @@
     <div>
       <div>
         <h1><%= @subscription.user.first_name %>'s <%= @subscription.completed? ? 'Completed' : "" %> Subscription</h1>
-        <h3>start: <%= @subscription.start_date&.strftime('%b %d') %></h3>
+        <!--<h3>start: <%#= @subscription.start_date&.strftime('%b %d') %></h3>-->
       </div>
       <div>
         <p>Plan: <%= @subscription.plan %></p>
-        <!--<p>Start date: <%#= @subscription.start_date.strftime('%d %b, %Y') %></p>-->
+        <p>Start date: <%= @subscription.start_date.strftime('%d %b, %Y') %></p>
+        <p>End date: <%= @subscription.end_date.strftime('%d %b, %Y') %></p>
         <p>Collection day: <%= @subscription.collection_day %></p>
         <p>Address: <%= @subscription.street_address %></p>
         <p>Collection Order: <%= @subscription.collection_order %></p>
         <p>Phone number: <%= @subscription.user.phone_number %></p>
+
+        <p>Holiday: <%= @subscription.holiday_start.strftime('%d %b') %> - <%= @subscription.holiday_end.strftime('%d %b') %></p>
+
       </div>
       <div>
         <br>
@@ -20,7 +24,7 @@
           <%= link_to "id. #{invoice.id} - R#{invoice.total_amount}", invoice_path(invoice)  %>
         <% end %>
         <br>
-        <h2>Summary</h2>
+        <h2 class="mt-2">Summary</h2>
         <p>Total collections: <%= @total_collections %></p>
         <p>Skipped collections: <%= @skipped_collections %></p>
         <% if @subscription.XL? %>
