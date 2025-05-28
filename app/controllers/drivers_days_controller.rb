@@ -118,6 +118,7 @@ class DriversDaysController < ApplicationController
                     .where(collection_day: @today.wday)
                     .where.not(id: existing_ids)
                     .where(end_date: 1.month.ago.to_date..@today) # <-- this line
+                    .where.not(status: "legacy")
                     .includes(:user)
   end
 
