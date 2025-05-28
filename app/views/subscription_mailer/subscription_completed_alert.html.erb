@@ -5,16 +5,13 @@
   <p style="font-size: 1.1rem; margin-top: 1rem;">
     Your subscription (which started on <strong><%= @subscription.start_date.strftime('%e %b %Y') %></strong>) has run its course.
   </p>
-
   <p style="font-size: 1.1rem;">
     Over this time, we’ve collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
     and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
   </p>
-
   <p style="font-size: 1.1rem;">
     We’ve loved collecting your <strong>gooi-goodies</strong> — every bit of organic waste you diverted helped feed the soil and reduce landfill pressure 🌱
   </p>
-
   <p style="font-size: 1.1rem;">
     You're welcome to rejoin the movement anytime.
   </p>
@@ -32,7 +29,8 @@
   </p>
   <p style="font-size: 1.1rem;">Thanks again,</p>
   <p>
-    <%= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+    Kristen
+    <%#= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
   </p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
 </div>
-
