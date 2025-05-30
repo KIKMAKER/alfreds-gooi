@@ -8,7 +8,7 @@
       <div>
         <p>Plan: <%= @subscription.plan %></p>
         <p>Start date: <%= @subscription.start_date&.strftime('%d %b, %Y') || "still pending" %></p>
-        <p>End date: <%= @subscription.end_date&.strftime('%d %b, %Y') %></p>
+        <p>End date: <%= @subscription.end_date&.strftime('%d %b, %Y') || "still pending"  %></p>
         <p>Collection day: <%= @subscription.collection_day %></p>
         <p>Address: <%= @subscription.street_address %></p>
         <p>Collection Order: <%= @subscription.collection_order %></p>
