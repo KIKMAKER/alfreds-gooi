@@ -15,6 +15,7 @@
         <p>Phone number: <%= @subscription.user.phone_number %></p>
 
         <p>Holiday: <%= @subscription.holiday_start.strftime('%d %b') %> - <%= @subscription.holiday_end.strftime('%d %b') %></p>
+        <strong><p class="mt-3">Referral code: <%= @subscription.user.referral_code %></p></strong>
 
       </div>
       <div>

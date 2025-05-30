@@ -68,7 +68,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def show
-    @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.joins(:user).find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
     @collections = @subscription.collections
     @total_collections = @subscription.total_collections
