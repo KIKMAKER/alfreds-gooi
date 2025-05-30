@@ -274,7 +274,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_22_171653) do
     t.datetime "end_date"
     t.string "referral_code"
     t.string "discount_code"
-    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+    t.index ["user_id"], name: "index_
+    scriptions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
