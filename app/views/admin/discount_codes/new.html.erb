@@ -3,6 +3,7 @@
   <%= simple_form_for [:admin, @discount_code] do |f| %>
     <%= f.input :code, placeholder: "e.g. EARTHWEEK25" %>
     <%= f.input :discount_cents, label: "Discount (in cents)", hint: "6600 = R66 off" %>
+    <%= f.input :discount_percent, label: "Discount (%)" %>
     <%= f.input :usage_limit, label: "Usage limit (optional)" %>
     <%= f.input :expires_at,
               as: :date,

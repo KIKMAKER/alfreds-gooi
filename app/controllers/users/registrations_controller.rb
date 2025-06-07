@@ -48,8 +48,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       respond_with resource
     end
 
-Rails.logger.debug "🧪 Subscriptions count: #{resource.subscriptions.size}"
-
+    Rails.logger.debug "🧪 Subscriptions count: #{resource.subscriptions.size}"
 
   end
 
