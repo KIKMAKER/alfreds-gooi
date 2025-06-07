@@ -1,13 +1,26 @@
 <div class="user-wrapper">
   <h2 class="my-5">Discount Code: <%= @discount_code.code %></h2>
   <ul class="list-group mb-4">
-    <li class="list-group-item"><strong>Discount:</strong> R<%= @discount_code.discount_cents / 100.0 %></li>
+    <li class="list-group-item">
+      <strong>Discount:</strong>
+      <% if @discount_code.discount_percent.present? %>
+        <%= @discount_code.discount_percent %>% off
+      <% elsif @discount_code.discount_cents.present? %>
+        R<%= @discount_code.discount_cents / 100.0 %>
+      <% else %>
+        N/A
+      <% end %>
+    </li>
     <li class="list-group-item"><strong>Used:</strong> <%= @discount_code.used_count %> of <%= @discount_code.usage_limit || "∞" %></li>
     <li class="list-group-item"><strong>Expires At:</strong> <%= @discount_code.expires_at ? @discount_code.expires_at : "Never" %></li>
     <li class="list-group-item"><strong>Status:</strong> <%= @discount_code.available? ? "Active" : "Expired or Used Up" %></li>
   </ul>
   <div>
     <p>🔒 This code can be used at signup.</p>
+    <% url = "https://www.gooi.me/?discount_code=#{CGI.escape(@discount_code.code)}" %>
+    <p class="text-break">
+      <%= link_to url, url, target: "_blank", rel: "noopener" %>
+    </p>
     <br>
     <p>📎 Coming soon: QR code with signup link</p>
     <br>
