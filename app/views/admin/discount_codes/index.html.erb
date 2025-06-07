@@ -16,7 +16,15 @@
       <% @discount_codes.each do |code| %>
         <tr>
           <td><%= link_to code.code, admin_discount_code_path(code) %></td>
-          <td><%= number_to_currency(code.discount_cents / 100.0, unit: "R") %></td>
+          <td>
+            <% if code.discount_percent.present? %>
+              <%= code.discount_percent %>% off
+            <% elsif code.discount_cents.present? %>
+              <%= number_to_currency(code.discount_cents / 100.0, unit: "R") %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
           <td><%= code.used_count %></td>
           <td><%= code.usage_limit || "∞" %></td>
           <td><%= code.expires_at ? l(code.expires_at) : "Never" %></td>

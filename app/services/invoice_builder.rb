@@ -76,14 +76,18 @@ class InvoiceBuilder
     code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
 
     if code&.available?
-      invoice.total_amount -= (code.discount_cents/100)
+      if code.percentage_based?
+        percent_off = code.discount_percent.clamp(0, 100)
+        discount = (invoice.total_amount * percent_off / 100.0).round
+        invoice.total_amount -= discount
+      elsif code.fixed_amount?
+        invoice.total_amount -= (code.discount_cents / 100)
+      end
+
       invoice.total_amount = 0 if invoice.total_amount.negative?
       invoice.save!
-
       code.increment!(:used_count)
     end
-
-
   end
 
 

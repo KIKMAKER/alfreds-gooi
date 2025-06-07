@@ -5,47 +5,64 @@
       <p><strong>For:</strong> <%= @subscription.user.first_name %></p>
       <p><strong>Email:</strong> <%= @subscription.user.email %></p>
       <p><strong>Address:</strong> <%= @subscription.street_address %>, <%= @subscription.suburb %></p>
-      <p><strong>Customer ID:</strong> <%= @subscription.customer_id %>
-        <p><strong>Due Date:</strong> <%= @invoice.due_date.strftime('%A, %b %d') %></p>
+      <p><strong>Customer ID:</strong> <%= @subscription.customer_id %></p>
+      <p><strong>Due Date:</strong> <%= @invoice.due_date.strftime('%A, %b %d') %></p>
+    </div>
+    <div class="invoice-table">
+      <!--<p><%#= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>-->
+      <div class="header">
+        <div class="quantity-description">
+          <div class="quantity">
+            <h1>Quantity</h1>
+          </div>
+          <h1>Item</h1>
+        </div>
+        <h1>Amount</h1>
       </div>
-      <div class="invoice-table">
-        <!--<p><%#= @subscription.duration %> month <%= @subscription.plan %> gooi subscription </p>-->
-        <div class="header">
+      <% @invoice.invoice_items.each do |item| %>
+        <div class="invoice-item">
           <div class="quantity-description">
             <div class="quantity">
-              <h1>Quantity</h1>
+              <p><%= item.quantity.to_i %></p>
             </div>
-            <h1>Item</h1>
+            <p><%= item.product.title %></p>
           </div>
-          <h1>Amount</h1>
+          <p>R<%= (item.amount * item.quantity).round(2) %></p>
         </div>
-        <% @invoice.invoice_items.each do |item| %>
-          <div class="invoice-item">
-            <div class="quantity-description">
-              <div class="quantity">
-                <p><%= item.quantity.to_i %></p>
+          <% if @discount_code.present? %>
+            <div class="invoice-item">
+              <div class="quantity-description">
+                <div class="quantity">
+                  <p>1</p>
+                </div>
+                <p><%= @discount_code.code %> Discount</p>
               </div>
-              <p><%= item.product.title %></p>
-            </div>
-            <p>R<%= item.product.price.truncate %></p>
-          </div>
-        <% end %>
-      </div>
-      <div class="invoice-total">
-        <p>Total: R<%= @invoice.total_amount.truncate %></p>
-      </div>
-      <div class="payment-container">
-        <h2>Make a Payment</h2>
-        <div class="payment-options">
-          <!--<h3>BANK CARD</h3>-->
-          <p>To kick off your subscription, please make a payment via our secure SnapScan portal. SnapScan accepts bank cards, EFTs, as well as payments through the SnapScan app.</p>
-          <%= link_to "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "pay-btn" do  %>
-            <div>
-              <p>Pay now</p>
+              <p class="text-success">
+                <% if @discount_code.discount_percent.present? %>
+                  -<%= @discount_code.discount_percent %>% off
+                <% elsif @discount_code.discount_cents.present? %>
+                  -R<%= '%.2f' % (@discount_code.discount_cents / 100.0) %>
+                <% end %>
+              </p>
             </div>
           <% end %>
-          <%#= link_to welcome_path, class: "pay-btn" do  %>
-<!--            <div>
+      <% end %>
+    </div>
+    <div class="invoice-total">
+      <p><strong>Total:</strong> R<%= '%.2f' % @invoice.total_amount %></p>
+    </div>
+    <div class="payment-container">
+      <h2>Make a Payment</h2>
+      <div class="payment-options">
+        <!--<h3>BANK CARD</h3>-->
+        <p>To kick off your subscription, please make a payment via our secure SnapScan portal. SnapScan accepts bank cards, EFTs, as well as payments through the SnapScan app.</p>
+        <%= link_to "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "pay-btn" do  %>
+          <div>
+            <p>Pay now</p>
+          </div>
+        <% end %>
+        <%#= link_to welcome_path, class: "pay-btn" do  %>
+          <!--            <div>
               <p>I've paid</p>
             </div>
           <%# end %>-->

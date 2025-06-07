@@ -5,4 +5,12 @@ class DiscountCode < ApplicationRecord
     under_limit = usage_limit.nil? || used_count < usage_limit
     not_expired && under_limit
   end
+
+  def percentage_based?
+    discount_percent.present?
+  end
+
+  def fixed_amount?
+    discount_cents.present?
+  end
 end

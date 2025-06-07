@@ -28,7 +28,7 @@ class Admin::DiscountCodesController < ApplicationController
   private
 
   def discount_code_params
-    params.require(:discount_code).permit(:code, :discount_cents, :expires_at, :usage_limit)
+    params.require(:discount_code).permit(:code, :discount_cents, :discount_percent, :expires_at, :usage_limit)
   end
 
   def authenticate_admin!

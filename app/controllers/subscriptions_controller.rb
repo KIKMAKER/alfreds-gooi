@@ -187,10 +187,27 @@ class SubscriptionsController < ApplicationController
 
   def welcome
     @subscription = Subscription.find(params[:id])
+    @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
+
+    if @discount_code.present?
+      discount_amount = nil
+      if @discount_code.discount_cents.present?
+        @discount_amount = @discount_code.discount_cents / 100.0
+      elsif @discount_code.discount_percent.present?
+
+        title = "#{@subscription.plan} #{@subscription.duration} month subscription"
+        product = Product.find_by(title: title)
+        if product
+          @discount_amount = (product.price * @discount_code.discount_percent / 100.0).round(2)
+        end
+      end
+    end
   end
 
   def welcome_invoice
     @subscription = Subscription.find(params[:id])
+    @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
+
 
     # Rails.logger.info "Set users referral code to: #{current_user.generate_referral_code}"
     is_new = params[:new] == "true"
