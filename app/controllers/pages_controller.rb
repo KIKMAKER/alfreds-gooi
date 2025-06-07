@@ -3,8 +3,15 @@ class PagesController < ApplicationController
 
   def home
     @discount_code = params[:discount]
-    @discount_code_value = DiscountCode.find_by(code: @discount_code.upcase).discount_cents / 100 if @discount_code
 
+    if @discount_code.present?
+      found_code = DiscountCode.find_by(code: @discount_code.upcase)
+      if found_code&.discount_cents
+        @discount_code_value = found_code.discount_cents / 100.0
+      elsif found_code&.discount_percent
+        @discount_code_value = "#{found_code.discount_percent}%"
+      end
+    end
     @referral_code = params[:referral]
   end
   def today
