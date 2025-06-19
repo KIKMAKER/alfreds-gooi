@@ -125,7 +125,7 @@ class Subscription < ApplicationRecord
     last_sub = user.subscriptions.completed.order(end_date: :desc).first
     return payment_date unless last_sub
 
-    last_end = last_sub.end_date
+    last_end = last_sub.end_date.to_date
     return payment_date unless last_end
 
     days_since = (payment_date - last_end).to_i
