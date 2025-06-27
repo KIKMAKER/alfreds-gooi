@@ -104,6 +104,13 @@ Rails.application.routes.draw do
   end
 
   resources :products, only: [:index, :new, :create]
+  resources :collections, only: [] do
+    member do
+      get :issue_bags
+      post :issued_bags
+
+
+    end
 
   # static pages
   root "pages#home"
