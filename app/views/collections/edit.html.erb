@@ -41,6 +41,12 @@
         </strong>
       <% end %>
     </div>
+    <%# issue a roll of bags %>
+    <div class="container-flex justify-content-center">
+      <%= button_to "-", remove_bags_collection_path(@subscription.collections&.last), class: "submit-btn-circle", data: {turbo: false} %>
+      <p class="text-center mx-3"><%= @subscription.collections&.last&.needs_bags %></p>
+      <%= button_to "+", add_bags_collection_path(@collectiont), class: "submit-btn-circle", data: {turbo: false} %>
+    </div>
     <!--div containing forms-->
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
@@ -77,7 +83,7 @@
     <% else %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
-        <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
+        <%# <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %> %>
         <% if @subscription.Standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% elsif @subscription.XL? %>
