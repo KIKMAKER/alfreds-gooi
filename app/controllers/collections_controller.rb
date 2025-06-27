@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position, :issue_bags, :issued_bags]
 
   def perform_create_today_collections
     CreateTodayCollectionsJob.perform_now
@@ -139,20 +139,12 @@ class CollectionsController < ApplicationController
 
   def add_bags
 
-    if @collection.needs_bags == 4
-      if current_user.driver?
-        redirect_to subscriptions_today_path, notice: "Maximum bags reached"
-      else
-        redirect_to manage_path, notice: "Maximum bags reached"
-      end
+    if @collection.needs_bags == 3
+      redirect_to manage_path, notice: "Maximum bags reached"
     else
       @collection.needs_bags += 1
       if @collection.save!
-        if current_user.driver?
-          redirect_to subscriptions_today_path, notice: "Maximum bags reached"
-        else
-          redirect_to manage_path, notice: "Added bags"
-        end
+        redirect_to manage_path, notice: "Added bags"
       end
 
     end
@@ -169,6 +161,18 @@ class CollectionsController < ApplicationController
 
     end
   end
+
+  def issue_bags
+    @subscription = @collection.subscription
+    @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
+    @compost_bags = Product.find_by(title: "Compost bin bags")
+  end
+
+  def issued_bags
+     @subscription = @collection.subscription
+    #  @invoice = 
+  end
+
 
   def add_customer_note
     if @collection.update(customer_note: params[:collection][:customer_note])

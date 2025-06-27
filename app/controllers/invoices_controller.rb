@@ -41,7 +41,7 @@ class InvoicesController < ApplicationController
     @subscription = @invoice.subscription
     @referrer_discount = Product.find_by(title: "Referred a friend discount")
     @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
- 
+
   end
 
   def destroy
