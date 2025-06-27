@@ -139,12 +139,20 @@ class CollectionsController < ApplicationController
 
   def add_bags
 
-    if @collection.needs_bags == 3
-      redirect_to manage_path, notice: "Maximum bags reached"
+    if @collection.needs_bags == 4
+      if current_user.driver?
+        redirect_to subscriptions_today_path, notice: "Maximum bags reached"
+      else
+        redirect_to manage_path, notice: "Maximum bags reached"
+      end
     else
       @collection.needs_bags += 1
       if @collection.save!
-        redirect_to manage_path, notice: "Added bags"
+        if current_user.driver?
+          redirect_to subscriptions_today_path, notice: "Maximum bags reached"
+        else
+          redirect_to manage_path, notice: "Added bags"
+        end
       end
 
     end
