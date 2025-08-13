@@ -3,6 +3,7 @@
     <h1>All invoices</h1>
     <% if current_user.admin? %>
       <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
+      <%= link_to 'view payments', payments_path, class:"link-title"  %>
     <% end %>
   </div>
   <% @invoices.each do |invoice| %>
