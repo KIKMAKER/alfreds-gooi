@@ -1,0 +1,10 @@
+Your invoice is ready
+
+Invoice: #<%= @invoice.number || @invoice.id %>
+Total:   R <%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
+Due:     <%= @invoice.due_date&.strftime('%e %b %Y') %>
+
+View: <%= invoice_url(@invoice) %>
+
+With appreciation,
+Gooi
