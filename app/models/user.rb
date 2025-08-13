@@ -74,7 +74,10 @@ class User < ApplicationRecord
     return first_name + " " + last_name
   end
 
-
+  def og?
+    og
+  end
+  
   def current_sub
     subscriptions.order(start_date: :desc).first
   end
