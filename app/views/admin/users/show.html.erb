@@ -1,0 +1,100 @@
+<!-- app/views/admin/users/show.html.erb -->
+<div class="gooi-container">
+  <div class="outline">
+    <div>
+      <br>
+      <h1>User</h1>
+
+      <p><strong>Name:</strong>
+        <% name = ( @user.respond_to?(:full_name) && @user.full_name.present?) ? @user.full_name : [@user.first_name, @user.last_name].compact.join(" ") %>
+        <%= name.presence || @user.email %>
+      </p>
+      <p><strong>Email:</strong> <%= @user.email %></p>
+      <% if @user.respond_to?(:phone_number) && @user.phone_number.present? %>
+        <p><strong>Phone:</strong> <%= @user.phone_number %></p>
+      <% end %>
+      <% if @user.respond_to?(:customer_id) && @user.customer_id.present? %>
+        <p><strong>Customer ID:</strong> <%= @user.customer_id %></p>
+      <% end %>
+      <% if @user.respond_to?(:role) %>
+        <p><strong>Role:</strong> <%= @user.role %></p>
+      <% end %>
+
+      <hr>
+
+      <h2>Subscriptions (<%= @subscriptions.size %>)</h2>
+
+      <% if @subscriptions.any? %>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+
+              <th scope="col">Status</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Total Collections</th>
+              <th scope="col">Remaining Collections</th>
+              <th scope="col">Holiday Start</th>
+              <th scope="col">Holiday End</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @subscriptions.each do |subscription| %>
+              <% completed = subscription.respond_to?(:completed?) && subscription.completed? %>
+              <tr>
+                
+
+                <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
+
+                <td>
+                  <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
+                  <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
+                </td>
+
+                <td>
+                  <% dur = subscription.duration || "unpaid" %>
+                  <% if completed %><s><%= dur %></s><% else %><%= dur %><% end %>
+                </td>
+
+                <td>
+                  <% total = (subscription.respond_to?(:total_collections) ? subscription.total_collections : subscription.collections.count) || "unpaid" %>
+                  <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
+                </td>
+
+                <td>
+                  <% rem = (subscription.respond_to?(:remaining_collections) ? subscription.remaining_collections : nil) %>
+                  <% if rem.present? %>
+                    <% if rem < -1 %>
+                      <%= link_to "reassign #{rem.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                    <% else %>
+                      <%= rem.to_i.truncate %>
+                    <% end %>
+                  <% else %>
+                    unpaid
+                  <% end %>
+                </td>
+
+                <td>
+                  <% hs = subscription.holiday_start&.strftime('%e %B %Y') %>
+                  <% if completed && hs.present? %><s><%= hs %></s><% else %><%= hs || "unpaid" %><% end %>
+                </td>
+
+                <td>
+                  <% he = subscription.holiday_end&.strftime('%e %B %Y') %>
+                  <% if completed && he.present? %><s><%= he %></s><% else %><%= he || "unpaid" %><% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No subscriptions.</p>
+      <% end %>
+
+      <p style="margin-top:1rem;">
+        <%= link_to "Back to Users", admin_users_path, class: "btn-today-green" %>
+        <%= link_to "Edit User", edit_admin_user_path(@user), class: "btn-today-green", style: "margin-left: .5rem" %>
+      </p>
+    </div>
+  </div>
+</div>
