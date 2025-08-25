@@ -102,8 +102,12 @@ class CollectionsController < ApplicationController
         )
         @collection.update!(drivers_day_id: drivers_day.id)
       end
+      if current_user.admin?
+        redirect_to admin_users_path, notice: 'updated'
+      else
 
-      redirect_to today_subscriptions_path, notice: 'updated'
+        redirect_to today_subscriptions_path, notice: 'updated'
+      end
     else
       render :edit, status: :unprocessable_entity
     end
