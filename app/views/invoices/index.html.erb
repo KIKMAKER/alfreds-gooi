@@ -12,7 +12,7 @@
         <div class="payment-card">
           <p><%= invoice.issued_date.strftime('%b %d') %></p>
           <div class="payment-card-user">
-            <%= invoice.user.first_name || '?' %>
+            <%= invoice.user&.first_name || '?' %>
           </div>
           <div class="payment-card-amount">
             <h2>R<%= invoice.total_amount.truncate %></h2>
