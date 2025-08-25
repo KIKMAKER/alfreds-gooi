@@ -139,6 +139,11 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def delete_invoices
+    invoices.each { |inv| inv.invoice_items.delete_all }
+    invoices.delete_all
+  end
+
   private
 
   # infer starter kit based on sub plan
