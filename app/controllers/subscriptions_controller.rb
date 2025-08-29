@@ -143,9 +143,11 @@ class SubscriptionsController < ApplicationController
       if @subscription.user == current_user
         if subscription_params[:street_address].present?
           @subscription.set_collection_day
+          redirect_to manage_path, notice: "Updated, your collection day is now #{@subscription.collection_day}"
+        else
+          redirect_to manage_path, notice: "Subscription updated."
         end
 
-        redirect_to manage_path, notice: "Updated, your collection day is now #{@subscription.collection_day}"
       else
         redirect_to subscription_path(@subscription)
       end
@@ -273,6 +275,11 @@ class SubscriptionsController < ApplicationController
   def holiday_dates
     @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
+      if @subscription.holiday_start && @subscription.holiday_end
+        @subscription.collections
+                     .where(date: @subscription.holiday_start..@subscription.holiday_end)
+                     .update_all(skip: true)
+      end
       redirect_to manage_path, notice: "Holiday set!"
     else
       redirect_to manage_path, status: :unprocessable_entity
@@ -283,6 +290,9 @@ class SubscriptionsController < ApplicationController
   def clear_holiday
     @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
+      @subscription.collections
+             .where('date >= ?', Date.current)
+             .update_all(skip: false)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else
       redirect_to manage_path, status: :unprocessable_entity
