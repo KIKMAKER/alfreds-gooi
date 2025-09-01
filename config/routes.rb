@@ -110,7 +110,7 @@ Rails.application.routes.draw do
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
-
+  get "skipme", to: "collections#skipme"
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"
