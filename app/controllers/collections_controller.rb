@@ -141,7 +141,7 @@ class CollectionsController < ApplicationController
 
   def skipme
     target_dates = [Date.current, Date.current.tomorrow]
-    @subscription = current_user.subscriptions.where(is_paused: false).order(:created_at).first
+    @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).first
     unless @subscription
       return redirect_to confirm_skip_collections_path, notice: "No active subscription found."
     end
