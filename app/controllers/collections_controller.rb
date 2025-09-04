@@ -88,7 +88,6 @@ class CollectionsController < ApplicationController
   end
 
   def update
-
     @collection.subscription.update(is_new_customer: false)
     @collection.new_customer = false
     previous_date = @collection.date # capture the old date before update
@@ -102,8 +101,12 @@ class CollectionsController < ApplicationController
         )
         @collection.update!(drivers_day_id: drivers_day.id)
       end
+      if current_user.admin?
+        redirect_to admin_users_path, notice: 'updated'
+      else
 
-      redirect_to today_subscriptions_path, notice: 'updated'
+        redirect_to today_subscriptions_path, notice: 'updated'
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -118,7 +121,7 @@ class CollectionsController < ApplicationController
       if collection_params == "1" && collection.update!(skip: collection_params)
         skipped += 1
       else
-         flash[:notice] = "Failed to skip collection #{collection.id}"
+        flash[:notice] = "Failed to skip collection #{collection.id}"
       end
     end
     flash[:notice] = "Collections updated successfully!" if skipped_params == skipped
@@ -129,7 +132,6 @@ class CollectionsController < ApplicationController
     @day = Date.today.strftime("%A")
     @unskipped_collections = Collection.where(date: Date.today , skip: false)
     @skipped_collections = Collection.where(date: Date.today , skip: true)
-
   end
 
   def destroy
@@ -137,8 +139,22 @@ class CollectionsController < ApplicationController
     redirect_to request.referer || collections_path, notice: "Collection was successfully deleted."
   end
 
-  def add_bags
+  def skipme
+    target_dates = [Date.current, Date.current.tomorrow]
+    @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).first
+    unless @subscription
+      return redirect_to confirm_skip_collections_path, notice: "No active subscription found."
+    end
+    collection = @subscription.collections.where(date: target_dates).order(:date).first
+    date = collection.date == Date.current ? 'today' : 'tomorrow'
+    if collection.update(skip: true)
+      @note = "Success!\n We'll skip you #{date}"
+    else
+      @note = "Something went wrong, please manually skip, or whatsapp Alfred"
+    end
+  end
 
+  def add_bags
     if @collection.needs_bags == 3
       redirect_to manage_path, notice: "Maximum bags reached"
     else
@@ -272,7 +288,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id)
     # buckets
   end
 end

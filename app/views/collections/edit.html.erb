@@ -53,7 +53,13 @@
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
+          <p>Users subs:</p>
+          <% @collection.subscription.user.subscriptions.each do |sub| %>
+          <%= sub.id %>
+          <% end %>
+          <%= f.input :subscription_id %>
         <% end %>
+        <hr>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
@@ -67,7 +73,14 @@
         <%= f.input :dropped_off_buckets, placeholder: "0" %>
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
+          <%= f.input :date %>
+          <p>Users subs:</p>
+          <% @collection.subscription.user.subscriptions.each do |sub| %>
+          <%= sub.id %>
+          <% end %>
+          <%= f.input :subscription_id %>
         <% end %>
+        <hr>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
@@ -87,7 +100,13 @@
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
+          <p>Users subs:</p>
+          <% @collection.subscription.user.subscriptions.each do |sub| %>
+          <%= sub.id %>
+          <% end %>
+          <%= f.input :subscription_id %>
         <% end %>
+        <hr>
         <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
         <!-- Hidden field for start_time -->
         <%= f.hidden_field :time, value: Time.current %>
@@ -97,4 +116,5 @@
       <% end %>
     <% end %>
   </div>
+
 </div>

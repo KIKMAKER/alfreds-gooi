@@ -2,11 +2,16 @@ class DriversDay < ApplicationRecord
   belongs_to :user
   has_many :collections, dependent: :nullify
 
+
   # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   # Set a default if total_buckets is nil
   before_validation :set_default_buckets
+
+  # create weekly stats report if its' thursday
+  after_commit :send_weekly_stats_if_thursday_finished,
+               if: -> { saved_change_to_end_time? && end_time.present? }
 
   # custom methods
 
@@ -25,6 +30,21 @@ class DriversDay < ApplicationRecord
   # end
 
   private
+  
+  def send_weekly_stats_if_thursday_finished
+    # Ruby wday: 0=Sun ... 4=Thu
+    return unless date&.wday == 4
+
+    # Send synchronously so it lands as soon as Alfred finalises Thursday
+    WeeklyStatsMailer.report(
+      to: ENV.fetch("GOOI_STATS_EMAIL_TO", "kristen.c.kennedy@gmail.com"),
+      anchor_date: date,
+      mode: :route_week
+    ).deliver_now
+
+    # If you prefer a background hop (still immediate), swap to:
+    # SendWeeklyStatsJob.perform_later(anchor_date: date)
+  end
 
   def set_default_buckets
     self.total_buckets ||= 0

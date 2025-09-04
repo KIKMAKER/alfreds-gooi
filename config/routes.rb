@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :discount_codes, only: [:index, :new, :create, :show]
-    resources :users, only: [:index, :edit, :update]
+    resources :users, only: [:index, :show, :edit, :update] do
+      post :renew_last_subscription, on: :member
+    end
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
@@ -115,7 +117,7 @@ Rails.application.routes.draw do
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
-
+  get "skipme", to: "collections#skipme"
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"
