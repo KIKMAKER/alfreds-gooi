@@ -8,7 +8,7 @@
     <%= simple_form_for [@invoice] do |f| %>
       <div class="form-group">
         <%= f.input :subscription_id, label: "Select Subscription",
-                collection: Subscription.all.map { |s| ["#{s.user.first_name} #{s.user.last_name} (#{s.street_address})", s.id] }.sort,
+                collection: Subscription.active.map { |s| ["#{s.user.first_name} #{s.user.last_name} (#{s.street_address})", s.id] }.sort,
                 selected: Subscription.order(created_at: :desc).first.id,
                 include_blank: false,
                 class: "form-control" %>
