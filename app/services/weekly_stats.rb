@@ -47,7 +47,8 @@ class WeeklyStats
     Result.new(
       period_label, start_date, end_date,
       customers_served, buckets_diverted, litres_diverted,
-      skips, new_customers, soil_bags, route_kms
+      skips, new_customers, route_kms
     )
+    # soil_bags,
   end
 end
