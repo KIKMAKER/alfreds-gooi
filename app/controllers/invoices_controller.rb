@@ -24,7 +24,7 @@ class InvoicesController < ApplicationController
       @invoice.calculate_total
       redirect_to invoice_path(@invoice), notice: 'Invoice was successfully created.'
     else
-      @products = Product.all  # Re-fetch products in case of validation errors
+      @products = Product.all # Re-fetch products in case of validation errors
       render :new, status: :unprocessable_entity
     end
   end
@@ -88,7 +88,7 @@ class InvoicesController < ApplicationController
   end
 
   def create_invoice_items(invoice)
-    invoice_items_params[:invoice_items_attributes].each do |index, product_hash|
+    invoice_items_params[:invoice_items_attributes].each do |product_hash|
       product = Product.find(product_hash[:product_id])
       quantity = product_hash[:quantity].to_f
       next if quantity.blank? || quantity <= 0
@@ -101,18 +101,5 @@ class InvoicesController < ApplicationController
     end
     invoice.calculate_total
 
-    # [:product_id]
-    # quantities = invoice_items_params[:invoice_items_attributes][:quantity]
-
-    # product_ids.each_with_index do |product_id, index|
-    # product = Product.find(product_id)
-    # quantity = quantities[index].to_f
-    #   unless quantity == 0
-    #     invoice.invoice_items.create!(
-    #       product_id: product.id,
-    #       quantity: quantity,
-    #       amount: product.price * quantity
-    #     )
-    #   end
   end
 end
