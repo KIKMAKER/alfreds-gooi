@@ -32,7 +32,7 @@ class WeeklyStats
 
     served_ids       = cols.where(skip: false).distinct.pluck(:subscription_id)
     customers_served = served_ids.count
-    buckets_diverted = cols.where(skip: false).sum(:buckets).to_f
+    buckets_diverted = days.sum(:total_buckets).to_f
     litres_diverted  = (buckets_diverted * LITRES_PER_BUCKET).round(0)
 
     skips         = cols.where(skip: true).count
