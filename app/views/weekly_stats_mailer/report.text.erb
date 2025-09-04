@@ -1,0 +1,20 @@
+♻️ Gooi Weekly Report — <%= @stats.period_label %>
+
+Customers served: <%= @stats.customers_served %>
+Buckets diverted: <%= @stats.buckets_diverted.round(1) %>  (~<%= @stats.litres_diverted %> L)
+Skips recorded: <%= @stats.skips %>
+New customers: <%= @stats.new_customers %>
+Soil bags delivered: <%= @stats.soil_bags %>
+Route distance: <%= @stats.route_kms %> km
+
+Caption (copy/paste to Instagram):
+
+"This week with Gooi (<%= @stats.period_label %>) —
+• Customers served: <%= @stats.customers_served %>
+• Buckets diverted: <%= @stats.buckets_diverted.round(1) %> (~<%= @stats.litres_diverted %> L)
+• Skips: <%= @stats.skips %>
+• New customers: <%= @stats.new_customers %>
+• Soil bags delivered: <%= @stats.soil_bags %>
+• Route kms: <%= @stats.route_kms %>
+
+Thanks for keeping food scraps in the loop. Tag a neighbour who should join @gooi — local buckets → local soil."

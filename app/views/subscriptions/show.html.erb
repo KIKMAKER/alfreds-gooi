@@ -56,6 +56,8 @@
       <br>
     </div>
     <div class="outline">
+      <%= link_to "#{@subscription.user.first_name}'s subs", admin_user_path(@subscription.user) %>
+      <br>
       <%= link_to "All Subscriptions", subscriptions_path %>
     </div>
   </div>
