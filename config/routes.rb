@@ -107,8 +107,7 @@ Rails.application.routes.draw do
   resources :collections, only: [] do
     member do
       get :issue_bags
-      post :issued_bags
-
+      patch :issued_bags
     end
   end
 
