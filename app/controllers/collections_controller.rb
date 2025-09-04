@@ -159,22 +159,16 @@ class CollectionsController < ApplicationController
       redirect_to manage_path, notice: "Maximum bags reached"
     else
       @collection.needs_bags += 1
-      if @collection.save!
-        redirect_to manage_path, notice: "Added bags"
-      end
-
+      redirect_to manage_path, notice: "Added bags" if @collection.save!
     end
   end
 
   def remove_bags
-    if @collection.needs_bags == 0
+    if @collection.needs_bags.zero?
       redirect_to manage_path, notice: "Minimum bags reached"
     else
       @collection.needs_bags -= 1
-      if @collection.save!
-        redirect_to manage_path, notice: "Removed bags"
-      end
-
+      redirect_to manage_path, notice: "Removed bags" if @collection.save!
     end
   end
 
@@ -185,10 +179,8 @@ class CollectionsController < ApplicationController
   end
 
   def issued_bags
-     @subscription = @collection.subscription
-    #  @invoice = 
+    @subscription = @collection.subscription
   end
-
 
   def add_customer_note
     if @collection.update(customer_note: params[:collection][:customer_note])
