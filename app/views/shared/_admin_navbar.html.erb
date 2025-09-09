@@ -35,7 +35,7 @@
             <%#= link_to 'drivers day', drivers_days_path, class:"dropdown-item" %>
             <%= link_to 'collections', this_week_collections_path, class:"dropdown-item" %>
             <% if user_signed_in? %>
-              <%= link_to "log out", destroy_user_session_path, class: "dropdown-item" %>
+              <%= button_to "log out", destroy_user_session_path, class: "dropdown-item" %>
             <% else %>
               <%= link_to 'Log in', new_user_session_path, class: "dropdown-item" %>
             <% end %>
