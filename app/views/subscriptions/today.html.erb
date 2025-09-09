@@ -24,6 +24,9 @@
         class="sortable-item">
           <div class="name">
             <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
+            <% if collection.is_done %>
+              <i class="fa-solid fa-gift"></i><i class="fa-solid fa-check"></i>
+            <% end %>
             <% if current_user.admin? %>
               <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             <% end %>
