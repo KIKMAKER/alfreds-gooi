@@ -37,9 +37,12 @@ Rails.application.routes.draw do
   resources :invoices do
     member do
       get :paid
+      patch :issued_bags, to: "invoices#issued_bags"
+      get :send, to: "invoices#send"
     end
     collection do
       get "bags/:bags", to: "invoices#bags", as: :bag
+
     end
   end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
@@ -104,12 +107,12 @@ Rails.application.routes.draw do
   end
 
   resources :products, only: [:index, :new, :create]
-  resources :collections, only: [] do
+  resources :collections do
     member do
       get :issue_bags
-      patch :issued_bags
     end
   end
+
 
   # static pages
   root "pages#home"

@@ -175,16 +175,10 @@ class CollectionsController < ApplicationController
   def issue_bags
     @subscription = @collection.subscription
     @compost_bags = Product.find_by(title: "Compost bin bags")
-  end
-
-  def issued_bags
-    @subscription = @collection.subscription
     @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
-
-    @invoice.assign_attributes(invoice_params)
-    @invoice.save!
-    redirect_to invoice_path(@invoice)
   end
+
+
 
   def add_customer_note
     if @collection.update(customer_note: params[:collection][:customer_note])
@@ -284,7 +278,11 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :invoice_items_attributes)
     # buckets
+  end
+
+  def bags_invoice_params
+    params.require(:invoice).permit(:invoice_items_attributes)
   end
 end
