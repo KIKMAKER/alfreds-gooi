@@ -1,0 +1,22 @@
+<div class="user-wrapper">
+  <h1 class="mb-4">Issuing Rolls</h1>
+  <h2>Invoice for: <%= @invoice.invoice_items.first.quantity %> rolls</h2>
+  <h2>Price: R<%= @invoice.total_amount %></h2>
+  <br>
+  <h2>Send invoice and payment link to</h2>
+  <br>
+  <h1><%= @invoice.user.first_name %></h1>
+  <br>
+  <div class="whatsapp">
+
+    <%= link_to @invoice.user.generate_whatsapp_link("Here is your invoice for your bags: www.gooi.me/invoices/#{@invoice.id}. Pay with snapscan: https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@invoice.subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}"), target:"_blank" do %>
+      <i class="fa-brands fa-whatsapp" style="font-size: 64px"></i>
+    <% end %>
+  </div>
+  <br>
+  <%= link_to 'VIEW INVOICE', invoice_path(@invoice) %>
+  <br><br>
+  <p>Back to today's list</p>
+  <%= link_to "LIST", today_subscriptions_path, class: "sign-up-btn" %>
+
+</div>

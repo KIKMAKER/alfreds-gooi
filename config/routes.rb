@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :discount_codes, only: [:index, :new, :create, :show]
-    resources :users, only: [:index, :show, :edit, :update] do
-      post :renew_last_subscription, on: :member
-    end
+    resources :users, only: [:index, :edit, :update]
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
@@ -39,9 +37,12 @@ Rails.application.routes.draw do
   resources :invoices do
     member do
       get :paid
+      patch :issued_bags, to: "invoices#issued_bags"
+      get :send, to: "invoices#send"
     end
     collection do
       get "bags/:bags", to: "invoices#bags", as: :bag
+
     end
   end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
@@ -106,11 +107,17 @@ Rails.application.routes.draw do
   end
 
   resources :products, only: [:index, :new, :create]
+  resources :collections do
+    member do
+      get :issue_bags
+    end
+  end
+
 
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
-  get "skipme", to: "collections#skipme"
+
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"

@@ -87,6 +87,7 @@ class InvoiceBuilder
       end
 
       invoice.total_amount = 0 if invoice.total_amount.negative?
+      invoice.used_discount_code = true
       invoice.save!
       code.increment!(:used_count)
     end
