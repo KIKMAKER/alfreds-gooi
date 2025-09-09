@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :discount_codes, only: [:index, :new, :create, :show]
-    resources :users, only: [:index, :edit, :update, :show]
+    resources :users, only: [:index, :edit, :update, :show] do
+      post :renew_last_subscription, on: :member
+    end
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
