@@ -3,10 +3,10 @@
   <section class="gooi-header">
     <div class="inner-header-container">
       <h1>Organic waste recycling made easy</h1>
-      <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
-        Gooi offers weekly collection of food scraps from your doorstep.
-        Ready to join the food waste revolution?</p>
+      <p>Gooi makes composting your food waste as easy as throwing it in the bin.</p>
+      <p>Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.</p>
+      <p>Gooi offers weekly collection of food scraps from your doorstep.</p>
+      <h2>Ready to join the food waste revolution?</h2>
       <!--<button class="btn-gooi">sign up</button>-->
       <%#= link_to '#pricing', class: "btn-gooi" do %>
         <!--    <div>
@@ -52,6 +52,99 @@
     </div>
   </div>
 </section>
+<!-- Pricing -->
+<section data-controller="pricing" class="pricing-section"  id="pricing">
+  <h1>How it works</h1>
+  <div class="pricing-content-wrapper">
+    <div class="description-container">
+    <p>Sign up and receive a gooi bucket.</p>
+    <p>Collect all your compostable scraps</p>
+      <p>We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package.
+      </p>
+      <br>
+      <% if @referral_code %>
+        <strong>
+          <p>You have a referral code!</p>
+          <p>Get 15% off any of the below options.</p>
+        </strong>
+      <% elsif @discount_code %>
+       <strong>
+          <p>You have a discount code!</p>
+          <p>Get R<%= @discount_code_value %> off any of the below options.</p>
+        </strong>
+      <% end %>
+    </div>
+    <div class="toggle-subscription">
+      <h2>Subscription rates</h2>
+      <div class="toggle">
+        <!--<p>Standard</p>-->
+        <h5 data-pricing-target="title">Standard</h5>
+        <div class="toggle-container">
+          <input type="checkbox" id="check" class="toggle d-none" data-action="click->pricing#toggle">
+          <label for="check" class="toggle-label"></label>
+        </div>
+        <h5>XL</h5>
+      </div>
+    </div>
+    <div class="standard-months-container" data-pricing-target="standard">
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R260</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R260</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R220</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R660</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card popular">
+        <h4>Most popular</h4>
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R180</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1080</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+    </div>
+    <div class="standard-months-container hide" data-pricing-target="extra">
+     <div class="container">
+        <p style="color:black">With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop. When it's full, gooi it in the 25L bucket kept in a cool place. When Alfred comes around he will replace your big bucket with an empty clean one.</p>
+      </div>
+      <div class="month-card">
+        <h3>1 month</h3>
+        <p class="pricing-text"><strong>R300</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R300</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>3 months</h3>
+        <p class="pricing-text"><strong>R270</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R810</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+      <div class="month-card">
+        <h3>6 months</h3>
+        <p class="pricing-text"><strong>R240</strong> per month</p>
+        <p class="pricing-text"><strong>Total:</strong> R1440</p>
+        <div class="sign-up-btn">
+          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 <!--mission section-->
 <section class="mission-section">
   <div class="content-wrapper">
@@ -91,6 +184,41 @@
   </div>
 </section>
 <!--compost section -->
+
+<!--testimonial section-->
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <div class="content-wrapper mb-4">
+    <div class="testimonials-container">
+      <div class="testimonial-card">
+        <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>-->
+        <!-- <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+      <div class="testimonial-card">
+        <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+        <!--          <div class="testimonial-image">-->
+        <%#= image_tag('gooi_logo_CR.png') %>
+        <!--          </div>
+          <h4>name</h4>-->
+      </div>
+    </div>
+  </div>
+  <%# if user_signed_in? %>
+  <%#= link_to "share yours", "#", class: "btn-gooi" %>
+  <%# end %>
+</section>
+
+
 <section class="compost-section">
   <h1>Why we compost</h1>
   <div class="content-wrapper">
@@ -127,38 +255,6 @@
       </div>
     </div>
   </div>
-</section>
-<!--testimonial section-->
-<section class="testimonial-section">
-  <h1>Testimonials</h1>
-  <div class="content-wrapper mb-4">
-    <div class="testimonials-container">
-      <div class="testimonial-card">
-        <p>"We love composting our waste, and Alfred is the sweetest man."</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>-->
-        <!-- <h4>name</h4>-->
-      </div>
-      <div class="testimonial-card">
-        <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>
-          <h4>name</h4>-->
-      </div>
-      <div class="testimonial-card">
-        <p>"Alfred is always on time and always so kind and with a happy smile."</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>
-          <h4>name</h4>-->
-      </div>
-    </div>
-  </div>
-  <%# if user_signed_in? %>
-  <%#= link_to "share yours", "#", class: "btn-gooi" %>
-  <%# end %>
 </section>
 <!-- What is compostable -->
 <section class="compostable-section">
@@ -213,93 +309,4 @@
     </div>
   </div>
 </section>
-<!-- Pricing -->
-<%# unless user_signed_in? %>
-<section data-controller="pricing" class="pricing-section"  id="pricing">
-  <h1>How it works</h1>
-  <div class="pricing-content-wrapper">
-    <div class="description-container">
-      <p>We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
-      </p>
-      <br>
-      <% if @referral_code %>
-        <strong>
-          <p>You have a referral code!</p>
-          <p>Get 15% off any of the below options.</p>
-        </strong>
-      <% elsif @discount_code %>
-       <strong>
-          <p>You have a discount code!</p>
-          <p>Get R<%= @discount_code_value %> off any of the below options.</p>
-        </strong>
-      <% end %>
-    </div>
-    <div class="toggle-subscriptio-->n">
-      <h2>Subscription rates</h2>
-      <div class="toggle">
-        <!--<p>Standard</p>-->
-        <h5 data-pricing-target="title">Standard</h5>
-        <div class="toggle-container">
-          <input type="checkbox" id="check" class="toggle d-none" data-action="click->pricing#toggle">
-          <label for="check" class="toggle-label"></label>
-        </div>
-        <h5>XL</h5>
-      </div>
-    </div>
-    <div class="standard-months-container" data-pricing-target="standard">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R260</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R260</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R220</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R660</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card popular">
-        <h4>Most popular</h4>
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R180</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1080</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-    <div class="standard-months-container hide" data-pricing-target="extra">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R300</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R300</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R270</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R810</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R240</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1440</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<%# end %>
 </div>
