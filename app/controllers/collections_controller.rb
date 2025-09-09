@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position, :issue_bags, :issued_bags]
 
   def perform_create_today_collections
     CreateTodayCollectionsJob.perform_now
@@ -141,7 +141,7 @@ class CollectionsController < ApplicationController
 
   def skipme
     target_dates = [Date.current, Date.current.tomorrow]
-    @subscription = current_user.subscriptions.where(is_paused: false).order(:created_at).first
+    @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).first
     unless @subscription
       return redirect_to confirm_skip_collections_path, notice: "No active subscription found."
     end
@@ -159,24 +159,26 @@ class CollectionsController < ApplicationController
       redirect_to manage_path, notice: "Maximum bags reached"
     else
       @collection.needs_bags += 1
-      if @collection.save!
-        redirect_to manage_path, notice: "Added bags"
-      end
-
+      redirect_to manage_path, notice: "Added bags" if @collection.save!
     end
   end
 
   def remove_bags
-    if @collection.needs_bags == 0
+    if @collection.needs_bags.zero?
       redirect_to manage_path, notice: "Minimum bags reached"
     else
       @collection.needs_bags -= 1
-      if @collection.save!
-        redirect_to manage_path, notice: "Removed bags"
-      end
-
+      redirect_to manage_path, notice: "Removed bags" if @collection.save!
     end
   end
+
+  def issue_bags
+    @subscription = @collection.subscription
+    @compost_bags = Product.find_by(title: "Compost bin bags")
+    @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
+  end
+
+
 
   def add_customer_note
     if @collection.update(customer_note: params[:collection][:customer_note])
@@ -276,7 +278,11 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :invoice_items_attributes)
     # buckets
+  end
+
+  def bags_invoice_params
+    params.require(:invoice).permit(:invoice_items_attributes)
   end
 end

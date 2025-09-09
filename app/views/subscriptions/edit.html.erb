@@ -12,6 +12,10 @@
       <%= f.input :duration %>
       <%= f.input :start_date %>
       <%= f.input :collection_order %>
+      <%= f.input :holiday_start, start_year: Date.today.year, end_year: Date.today.year + 5 %>
+      <%= f.input :holiday_end, start_year: Date.today.year, end_year: Date.today.year + 5 %>
+
+
       <%= f.input :status, collection: Subscription.statuses.keys, include_blank: false %>
       <%= f.input :is_paused %>
       <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>

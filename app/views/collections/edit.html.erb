@@ -16,6 +16,10 @@
     <div class="collection-notes">
       <strong>
         <p class = "collection-notes"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
+        <p>Issue bags:</p>
+        <%= link_to issue_bags_collection_path(@collection) do %>
+          <%= image_tag 'bucket.jpg', alt: "bucket", class:"bucket-img" %>
+        <% end %>
       </strong>
       <% if @collection.soil_bag&. > 0 %>
         <strong>
@@ -41,6 +45,7 @@
         </strong>
       <% end %>
     </div>
+
     <!--div containing forms-->
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
@@ -89,8 +94,9 @@
       <% end %>
     <% else %>
       <%= simple_form_for [@collection] do |f| %>
+        <%= f.input :is_done, label: "Given gift" %>
         <%= f.input :skip %>
-        <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
+        <%# <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %> %>
         <% if @subscription.Standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% elsif @subscription.XL? %>
