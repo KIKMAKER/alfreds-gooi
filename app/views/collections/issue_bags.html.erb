@@ -1,17 +1,19 @@
 <div class="user-wrapper">
+<h1>Issue Rolls</h1>
+<br>
 <%= simple_form_for @invoice, url:  issued_bags_invoice_path(@invoice) do |f| %>
   <div class="form-group">
     <% invoice_item = @invoice.invoice_items.find { |item| item.product_id == @compost_bags.id } || @invoice.invoice_items.build(product: @compost_bags) %>
 
     <p><%= @compost_bags.title %> (R<%= @compost_bags.price %>)</p>
-
+    <br>
     <%= f.fields_for :invoice_items, invoice_item do |invoice_item_form| %>
       <%= invoice_item_form.hidden_field :product_id, value: @compost_bags.id %>
-      <%= invoice_item_form.input :quantity, label: "How many? (or 0)", input_html: { min: 0, value: invoice_item&.quantity || 0 } %>
+      <%= invoice_item_form.input :quantity, label: "How many?", input_html: { min: 0, value: invoice_item&.quantity || 0 } %>
     <% end %>
   </div>
-
-  <%= f.submit "Send invoice", class: "submit-btn" %>
+<br>
+  <%= f.submit "Create invoice", class: "submit-btn" %>
 <% end %>
 
 </div>
