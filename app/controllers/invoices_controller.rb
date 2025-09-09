@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show update destroy paid]
+  before_action :set_invoice, only: %i[show update destroy paid issued_bags send]
 
   def index
     if current_user.admin?
@@ -8,6 +8,7 @@ class InvoicesController < ApplicationController
       @invoices = current_user.invoices.includes(subscription: :user).order(issued_date: :desc)
     end
   end
+
   def new
     @invoice = Invoice.new
     @products = Product.all
@@ -75,6 +76,14 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def issued_bags
+    @subscription = @invoice.subscription
+    create_invoice_items(@invoice)
+    @invoice.save!
+    redirect_to send_invoice_path(@invoice)
+  end
+
+
   private
 
   def invoice_items_params
@@ -88,8 +97,13 @@ class InvoicesController < ApplicationController
 
   def create_invoice_items(invoice)
     invoice_items_params[:invoice_items_attributes].each do |product_hash|
-      product = Product.find(product_hash[:product_id])
-      quantity = product_hash[:quantity].to_f
+      if product_hash.class == Array
+        product = Product.find(product_hash[1]["product_id"].to_i)
+        quantity = product_hash[1]["quantity"].to_f
+      else
+        product = Product.find(product_hash[:product_id].to_i)
+        quantity = product_hash[:quantity].to_f
+      end
       next if quantity.blank? || quantity <= 0
 
       invoice.invoice_items.create!(

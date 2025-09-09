@@ -1,6 +1,5 @@
 <div class="user-wrapper">
-<% raise %>
-<%= simple_form_for @invoice, url: issued_bags_collection_path(@collection) do |f| %>
+<%= simple_form_for @invoice, url:  issued_bags_invoice_path(@invoice) do |f| %>
   <div class="form-group">
     <% invoice_item = @invoice.invoice_items.find { |item| item.product_id == @compost_bags.id } || @invoice.invoice_items.build(product: @compost_bags) %>
 
