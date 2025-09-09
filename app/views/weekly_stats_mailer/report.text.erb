@@ -2,19 +2,28 @@
 
 Customers served: <%= @stats.customers_served %>
 Buckets diverted: <%= @stats.buckets_diverted.round(1) %>  (~<%= @stats.litres_diverted %> L)
-Skips recorded: <%= @stats.skips %>
+Kgs collected: <%= input_kg = (@stats.litres_diverted || (@stats.buckets_diverted * 25)).to_f * 0.6 %>
+Kgs compost: <%= compost_kg = (input_kg * 0.35).round(0) %>
+Emissions avoided: <%= co2e_kg   = (input_kg * 1.96).round(0) %>
 New customers: <%= @stats.new_customers %>
-Soil bags delivered: <%= @stats.soil_bags %>
-Route distance: <%= @stats.route_kms %> km
+<!--Skips recorded: <%#= @stats.skips %>-->
+<!--Soil bags delivered: <%#= @stats.soil_bags %>
+Route distance: <%#= @stats.route_kms %> km-->
 
-Caption (copy/paste to Instagram):
+**This week with Gooi**
+Thanks to **<%= @stats.customers_served %>** neighbours, we kept **<%= (@stats.litres_diverted || (@stats.buckets_diverted * 25)).round(0) %> L** of kitchen scraps out of landfill. That makes about:
+• **<%= compost_kg %> kg** of finished compost for local soil
+• **<%= co2e_kg %> kg CO₂e** emissions avoided
+<% if @stats.new_customers.to_i > 0 %>
+  We also welcomed <%= pluralize(@stats.new_customers, "new household", "new households") %> to the Gooi loop — welcome!
+<% end %>
 
-"This week with Gooi (<%= @stats.period_label %>) —
-• Customers served: <%= @stats.customers_served %>
-• Buckets diverted: <%= @stats.buckets_diverted.round(1) %> (~<%= @stats.litres_diverted %> L)
-• Skips: <%= @stats.skips %>
-• New customers: <%= @stats.new_customers %>
-• Soil bags delivered: <%= @stats.soil_bags %>
-• Route kms: <%= @stats.route_kms %>
+<!--Caption (copy/paste to Instagram):
 
-Thanks for keeping food scraps in the loop. Tag a neighbour who should join @gooi — local buckets → local soil."
+"This week with Gooi (<%#= @stats.period_label %>) —
+• Customers served: <%#= @stats.customers_served %>
+• Buckets diverted: <%#= @stats.buckets_diverted.round(1) %> (~<%= @stats.litres_diverted %> L)
+• Skips: <%#= @stats.skips %>
+• New customers: <%#= @stats.new_customers %>
+• Soil bags delivered: <%#= @stats.soil_bags %>
+• Route kms: <%#= @stats.route_kms %>-->

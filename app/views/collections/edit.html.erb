@@ -94,6 +94,7 @@
       <% end %>
     <% else %>
       <%= simple_form_for [@collection] do |f| %>
+        <%= f.input :is_done, label: "Given gift" %>
         <%= f.input :skip %>
         <%# <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %> %>
         <% if @subscription.Standard? %>
