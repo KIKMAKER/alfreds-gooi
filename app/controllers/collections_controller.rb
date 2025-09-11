@@ -143,7 +143,7 @@ class CollectionsController < ApplicationController
     target_dates = [Date.current, Date.current.tomorrow]
     @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).first
     unless @subscription
-      return redirect_to confirm_skip_collections_path, notice: "No active subscription found."
+      return redirect_to manage_path, notice: "No active subscription found."
     end
     collection = @subscription.collections.where(date: target_dates).order(:date).first
     date = collection.date == Date.current ? 'today' : 'tomorrow'
