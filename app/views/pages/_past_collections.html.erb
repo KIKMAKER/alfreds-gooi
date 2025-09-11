@@ -12,7 +12,7 @@
                 <p class="bucket-height">skipped</p>
               <% else %>
                 <div class="d-flex align-items-center">
-                  <p><%= collection.bags %> x </p>
+                  <p><%= collection.subscription.XL? ? collection.buckets.truncate : collection.bags %> x </p>
                   <%= image_tag 'bucket.jpg', alt: "bucket", class:"bucket-img" %>
                 </div>
               <% end %>

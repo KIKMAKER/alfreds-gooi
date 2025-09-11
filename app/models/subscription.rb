@@ -100,6 +100,10 @@ class Subscription < ApplicationRecord
     is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
   end
 
+  def complete?
+    status == "completed"
+  end
+
   def end_date!
     self.update!(end_date: (start_date + duration.months).to_date) if start_date
   end
@@ -137,6 +141,12 @@ class Subscription < ApplicationRecord
     else
       payment_date
     end
+  end
+
+  def has_future_subscription?(from: Date.today, within_days: 30)
+    subscriptions.where(status: [:pending, :active])
+                 .where("start_date >= ? AND start_date <= ?", from, from + within_days)
+                 .exists?
   end
 
   def delete_invoices

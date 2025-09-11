@@ -32,7 +32,9 @@ class CreateCollectionsJob < ApplicationJob
         subscription: subscription,
         date: collection_date
       )
-
+      if subscription.holiday_start && subscription.holiday_end && collection.date.between?(subscription.holiday_start, subscription.holiday_end)
+        collection.update(skip: true)
+      end
       collection.update!(skip: subscription.is_paused?)
       collection.update!(new_customer: true) if subscription.is_new_customer
 
