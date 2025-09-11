@@ -140,6 +140,9 @@ class SubscriptionsController < ApplicationController
     # subscription = Subscription.find(params[:id])
     # user = subscription.user
     if @subscription.update(subscription_params)
+      if @subscription.completed? && @subscription.end_date.nil?
+        @subscription.end_date!
+      end
       if @subscription.user == current_user
         if subscription_params[:street_address].present?
           @subscription.set_collection_day
