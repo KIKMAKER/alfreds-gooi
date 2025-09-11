@@ -9,6 +9,10 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
       completed_collections = subscription.collections.where(skip: false).count
       remaining_collections = required_collections - completed_collections
 
+      if subscription.user.has_future_subscription?(from: Date.today - 3, within_days: 60)
+        Rails.logger.info "Skip notices for sub ##{subscription.id} (user already has future sub)"
+        next
+      end
 
       if completed_collections >= required_collections
         subscription.completed!
