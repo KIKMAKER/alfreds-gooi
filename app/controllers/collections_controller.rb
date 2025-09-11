@@ -142,11 +142,12 @@ class CollectionsController < ApplicationController
   def skipme
     target_dates = [Date.current, Date.current.tomorrow]
     @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).first
-    unless @subscription
-      return redirect_to manage_path, notice: "No active subscription found."
-    end
     collection = @subscription.collections.where(date: target_dates).order(:date).first
+
+    return redirect_to manage_path, notice: "No active subscription found." unless @subscription && collection
+
     date = collection.date == Date.current ? 'today' : 'tomorrow'
+
     if collection.update(skip: true)
       @note = "Success!\n We'll skip you #{date}"
     else
