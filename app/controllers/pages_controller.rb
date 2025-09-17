@@ -76,8 +76,8 @@ class PagesController < ApplicationController
     collection_day = current_user.current_sub.collection_day
     share_url = "alfred.gooi.me/?referral=#{@referral_code}"
     # "Hey! I've been using this super easy service to stop my food scraps from going to landfill — they turn it into compost instead. It's a small change with a big impact on the planet. Prices start at R260/month, or as low as R180 if you sign up for longer. They collect here on #{collection_day}, and they're hoping to grow in the neighbourhood to make collections more efficient. If you're keen to join, use my referral link for 15% off: #{share_url}"
-    message = "Hey! I've been using this super easy service to stop my food scraps from going to a landfill, and sending them to become compost instead. It's such a simple change with such a huge impact on the planet. The team is trying to grow in this neighbourhood (they collect every #{collection_day}), and I have a referral code that will get you 15% off - just sign up using this link: #{share_url}"
-    encoded_message = URI.encode_www_form_component(message)
+    @message = "Hey! I've been using a service called gooi to send my food scraps to a farm instead of to the landfill. It's such a simple change with a huge impact on the planet. The team is trying to grow in this neighbourhood (they collect every #{collection_day}), and I have a referral code that will get you 15% off - just sign up using this link: #{share_url}"
+    encoded_message = URI.encode_www_form_component(@message)
     @whatsapp_link = "https://wa.me/?text=#{encoded_message}"
   end
 
