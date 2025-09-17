@@ -3,17 +3,19 @@ class PagesController < ApplicationController
 
   def home
     @discount_code = params[:discount]
-
     if @discount_code.present?
       found_code = DiscountCode.find_by(code: @discount_code.upcase)
-      if found_code&.discount_cents
-        @discount_code_value = found_code.discount_cents / 100.0
-      elsif found_code&.discount_percent
-        @discount_code_value = "#{found_code.discount_percent}%"
+      if found_code.discount_cents.present?
+        @discount_amount = (found_code.discount_cents / 100.0)
+      elsif found_code.discount_percent.present?
+        @discount_percent = found_code.discount_percent.to_f / 100.0
       end
     end
+    @pct = (@discount_percent || 0.0).to_f
+    @amt = (@discount_amount || 0.0).to_f
     @referral_code = params[:referral]
   end
+
   def today
     today = Date.today
     # but in testing I want to be able to test the view for a given day
