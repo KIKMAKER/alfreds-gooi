@@ -76,6 +76,51 @@ section {
   background: #f4f4f4;
 }
 
+.map-section {
+
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  display: flex;
+  margin: 24px 5%;
+
+   p {
+    font-family: 'Montserrat', sans-serif;
+    color: #525560;
+    font-size: 1rem;
+  }
+}
+
+.service-map-square {
+  position: relative;
+}
+
+.service-map-key {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 13%;
+  width: 80%;
+  margin-left: 10%;
+
+  .day-key {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    background-color: #ffffff82;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+}
+
+.map-controls .btn-gooi-outline {
+  font-size: 12px;     /* text size */
+  line-height: 1.2;    /* tighter height */
+  padding: 4px 8px;    /* smaller pill */
+  border-radius: 6px;  /* a bit tighter corners */
+}
+
 
 // WAVES STYLE
 .waves {
