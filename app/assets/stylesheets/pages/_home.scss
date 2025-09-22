@@ -49,6 +49,34 @@ section {
   margin: 0 10%;
 }
 
+// MAP STYLE
+.legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #999;
+}
+
+.btn-gooi-outline {
+  border: 1px solid #333;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.btn-gooi-outline:hover {
+  background: #f4f4f4;
+}
+
+
 // WAVES STYLE
 .waves {
   position: absolute;
@@ -243,9 +271,11 @@ section {
   position: relative;
   margin: 8px;
   text-align: left;
+
   h3 {
     font-size: 1.3rem
   }
+
   p {
     font-size: 1.2rem
   }
@@ -383,6 +413,7 @@ section {
 
 
 }
+
 .arrow-right {
   position: absolute;
   top: 25%;
@@ -645,6 +676,7 @@ button {
     h3 {
       font-size: 1rem
     }
+
     p {
       font-size: 0.8rem
     }
@@ -721,6 +753,7 @@ button {
 
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
@@ -777,6 +810,7 @@ button {
 
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
@@ -801,6 +835,7 @@ button {
 
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
@@ -880,8 +915,10 @@ button {
     }
 
   }
+
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }

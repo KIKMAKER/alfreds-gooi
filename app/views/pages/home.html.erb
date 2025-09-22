@@ -118,6 +118,31 @@
       </div>
     </div>
   </section>
+  <!--where we collect section-->
+  <section class="service-area">
+    <h2>Where We Collect</h2>
+
+    <div
+    data-controller="service-map"
+    data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_PUBLIC_TOKEN'] %>"
+    data-service-map-geo-url-value="<%= asset_path('suburbs.geojson') %>"
+    data-service-map-tuesday-value="<%= raw Subscription::TUESDAY_SUBURBS.to_json %>"
+    data-service-map-wednesday-value="<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>"
+    data-service-map-thursday-value="<%= raw Subscription::THURSDAY_SUBURBS.to_json %>"
+  >
+      <div id="service-map" style="width:100%;height:420px;border-radius:12px;overflow:hidden;"></div>
+
+      <div class="map-controls" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
+        <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
+        <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
+        <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>
+
+        <div id="service-map-legend" style="margin-left:auto;display:flex;gap:12px;align-items:center;"></div>
+      </div>
+    </div>
+  </section>
+
   <!--testimonial section-->
   <section class="testimonial-section">
     <h1>Testimonials</h1>
