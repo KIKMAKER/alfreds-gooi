@@ -1,0 +1,76 @@
+<!-- app/views/admin/logistics/index.html.erb -->
+<div class="container my-4">
+  <h1>Logistics Dashboard</h1>
+  <p class="text-muted">Buckets = 25L units Alfred recorded at end of day. Households = completed stops (skip: false & updated).</p>
+
+  <div class="row g-3 my-3">
+    <div class="col-6 col-md-3">
+      <div class="card p-3" style="border-radius:1em">
+        <div class="text-muted">Avg BPH (overall)</div>
+        <div class="fs-3 fw-bold"><%= @overall_bph %></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-3" style="border-radius:1em">
+        <div class="text-muted">Avg BPH (last 3 months)</div>
+        <div class="fs-3 fw-bold"><%= @recent_bph %></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-3" style="border-radius:1em">
+        <div class="text-muted">Capacity (buckets)</div>
+        <div class="fs-3 fw-bold"><%= @capacity %></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="mt-4">By Route Day</h3>
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th class="text-center">Avg BPH</th>
+        <th class="text-center">Avg buckets/day</th>
+        <th class="text-center">Avg households/day</th
+      ></tr>
+    </thead>
+    <tbody>
+      <% ["Tuesday","Wednesday","Thursday"].each do |day| %>
+        <% row = @by_dow[day] || {} %>
+        <tr>
+          <td><%= day %></td>
+          <td class="text-center"><%= row[:avg_bph] || 0 %></td>
+          <td class="text-center"><%= row[:avg_buckets] || 0 %></td>
+          <td class="text-center"><%= row[:avg_hh] || 0 %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h3 class="mt-4">Recent Days</h3>
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Date</th><th>Day</th>
+        <th class="text-center">Buckets</th>
+        <th class="text-center">Households</th>
+        <th class="text-center">BPH</th>
+        <th class="text-center">Capacity %</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recent_rows.each do |r| %>
+        <tr>
+          <td><%= r[:date].strftime('%m/%d/%Y') %></td>
+          <td><%= r[:dow] %></td>
+          <td class="text-center"><%= r[:buckets] %></td>
+          <td class="text-center"><%= r[:households] %></td>
+          <td class="text-center"><%= (r[:bph]  || 0).round(2) %></td>
+          <td class="text-center"><%= r[:cap_used] ? (r[:cap_used] * 100).round : 0 %>%</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br>
+  <br>
+</div>
