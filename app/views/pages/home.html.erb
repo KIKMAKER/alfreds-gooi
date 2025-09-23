@@ -120,11 +120,15 @@
   </section>
   <!--where we collect section-->
   <section class="map-section">
-    <h1>Where We Collect</h1>
-    <p class="my-2">The gooi bakkie makes it's way around Cape Town's Table Mountain once a week. The day your kitchen scraps are collected is based on your location. We try to start the day at the same time and ensure we are consistent with our collection times, however given the nature of the Cape Town roads and our very chatty collections manager, Alfred, collection time may vary.</p>
+    <div class="container">
 
-    <div class="service-map-square container">
-      <div
+      <h1 class="text-center">Where We Collect</h1>
+
+      <div class="row align-items-start g-4">
+        <!-- Left: map -->
+        <div class="col-12 col-lg-7">
+          <div class="service-map-square container">
+            <div
         data-controller="service-map"
         data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
         data-service-map-geo-url-value="<%= asset_path('suburbs.geojson') %>"
@@ -133,20 +137,28 @@
         data-service-map-wednesday-value='<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>'
         data-service-map-thursday-value='<%= raw Subscription::THURSDAY_SUBURBS.to_json %>'
   >
-        <div id="service-map" style="width:100%;height:420px;border-radius:12px;overflow:hidden;"></div>
-        <div class="container service-map-key">
-          <div class="map-controls">
-            <div class="day-key" id="service-map-legend" style="margin-left:auto;display:flex;gap:12px;align-items:center;"></div>
-            <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
-            <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
-            <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
-            <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>
+              <div id="service-map" style="width:100%;height:420px;border-radius:12px;overflow:hidden;"></div>
+              <div class="container service-map-key">
+                <div class="map-controls">
+                  <div class="day-key" id="service-map-legend" style="margin-left:auto;display:flex;gap:12px;align-items:center;"></div>
+                  <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
+                  <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
+                  <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
+                  <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>
 
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Right: text -->
+        <div class="col-12 col-lg-5">
+          <p class="my-2">The gooi bakkie makes it's way around Cape Town's Table Mountain once a week. Your kitchen scrap collection day is based on your location. We try to start the day at the same time and ensure we are consistent with our collection times, however given the nature of the Cape Town roads and our very chatty collections manager, Alfred, collection time may vary.</p>
+          <p class="my-2">Our love for putting your organic waste where it should be (in the soil and not a landfill) extends to our love for putting your home in the right position on our route. As we grow, striving for efficiency at every turn, our routes will vary. This map will always be up to date, and changes will always be communicated to our family of gooiers.</p>
         </div>
       </div>
     </div>
-    <p class="my-2">Our love for putting your organic waste where it should be (in the soil and not a landfill) extends to our love for putting your home in the right position on our route. As we grow, striving for efficiency at every turn, our routes will vary over time. This map will always be up to date, and changes will always be communicated to our family of gooiers.</p>
+
     <hr class="my-6">
     <div class="interest-card popular">
       <h3 class="mt-4">Think we should gooi in your 'hood?</h3>

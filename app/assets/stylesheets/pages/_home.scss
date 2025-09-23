@@ -50,6 +50,27 @@ section {
 }
 
 // MAP STYLE
+.map-section {
+
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  display: flex;
+  margin: 24px 5%;
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    color: #023F3A;
+    font-size: 48px;
+    margin: 44px 0px;
+  }
+
+   p {
+    font-family: 'Montserrat', sans-serif;
+    color: #525560;
+    font-size: 1rem;
+  }
+}
 .legend-row {
   display: inline-flex;
   align-items: center;
@@ -76,20 +97,6 @@ section {
   background: #f4f4f4;
 }
 
-.map-section {
-
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  display: flex;
-  margin: 24px 5%;
-
-   p {
-    font-family: 'Montserrat', sans-serif;
-    color: #525560;
-    font-size: 1rem;
-  }
-}
 
 .service-map-square {
   position: relative;
