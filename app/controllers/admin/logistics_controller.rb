@@ -1,54 +1,64 @@
-# app/controllers/admin/logistics_controller.rb
 class Admin::LogisticsController < ApplicationController
-  # before_action :authenticate_user! # keep if you use Devise
-
-  CAPACITY_BUCKETS = 17 # your bakkie capacity
+  CAPACITY_BUCKETS = 17
+  RECENT_LIMIT     = 30
 
   def index
-    # All driver days with a bucket total recorded
-    days = DriversDay.where.not(date: nil, total_buckets: nil)
+    days    = DriversDay.where.not(date: nil).where.not(total_buckets: nil)
+    day_ids = days.pluck(:id)
 
-    # Households (stops) that actually happened for each day:
-    #   skip: false AND updated_at present
-    hh_counts = Collection.where(skip: false).where.not(updated_at: nil)
-                          .group(:drivers_day_id).count
-    # Build rows
+    # counts per day
+    planned_counts   = Collection.where(drivers_day_id: day_ids).group(:drivers_day_id).count
+    completed_counts = Collection.where(drivers_day_id: day_ids, skip: false)
+                                 .where.not(updated_at: nil)
+                                 .group(:drivers_day_id).count
+
     @rows = days.map do |d|
-      hh = hh_counts[d.id].to_i
-      b = d.total_buckets.to_i
-      ratio = hh.positive? ? (b.to_f / hh) : nil
+      planned   = planned_counts[d.id].to_i
+      hh        = completed_counts[d.id].to_i
+      buckets   = d.total_buckets.to_i
+      skipped   = [planned - hh, 0].max
+
+      bph = hh.positive?      ? (buckets.to_f / hh) : nil           # buckets per household
+      hpb = buckets.positive? ? (hh.to_f / buckets) : nil           # households per bucket
+      cap = CAPACITY_BUCKETS.positive? ? (buckets.to_f / CAPACITY_BUCKETS) : nil
+      rate = planned.positive? ? (skipped.to_f / planned) : nil     # skipped %
+
       {
         id: d.id,
         date: d.date,
         dow: d.date.strftime("%A"),
-        buckets: b,
+        buckets: buckets,
         households: hh,
-        bph: ratio,                                    # buckets per household
-        cap_used: CAPACITY_BUCKETS.positive? ? (b.to_f / CAPACITY_BUCKETS) : nil,
-        kms: d.start_kms && d.end_kms ? (d.end_kms - d.start_kms) : nil,
+        planned: planned,
+        skipped: skipped,
+        skip_rate: rate,
+        bph: bph,
+        hpb: hpb,
+        cap_used: cap,
+        kms: (d.start_kms && d.end_kms) ? (d.end_kms - d.start_kms) : nil,
         hours: (d.start_time && d.end_time) ? ((d.end_time - d.start_time) / 3600.0) : nil
       }
     end
 
-    valid = @rows.select { |r| r[:bph] }
+    valid_rows     = @rows.select { |r| r[:bph] }
+    @overall_bph   = avg(valid_rows.map { |r| r[:bph] })
+    @overall_hpb   = avg(valid_rows.map { |r| r[:hpb] })
 
-    # Overall + last 3 months
-    @overall_bph = avg(valid.map { |r| r[:bph] })
-    cutoff = 3.months.ago.to_date
-    recent = valid.select { |r| r[:date] && r[:date] >= cutoff }
-    @recent_bph  = avg(recent.map { |r| r[:bph] })
+    cutoff         = 3.months.ago.to_date
+    recent_valid   = valid_rows.select { |r| r[:date] && r[:date] >= cutoff }
+    @recent_bph    = avg(recent_valid.map { |r| r[:bph] })
 
-    # By day of week (Tue–Thu)
-    @by_dow = valid.group_by { |r| r[:dow] }.transform_values do |arr|
+    @by_dow = @rows.group_by { |r| r[:dow] }.transform_values do |arr|
       {
         avg_bph:      avg(arr.map { |r| r[:bph] }),
+        avg_hpb:      avg(arr.map { |r| r[:hpb] }),
         avg_buckets:  avg(arr.map { |r| r[:buckets] }),
         avg_hh:       avg(arr.map { |r| r[:households] })
       }
     end
 
-    # Recent list (latest 12 days)
-    @recent_rows = @rows.sort_by { |r| r[:date] || Date.new(1900) }.last(12).reverse
+    @recent_rows = @rows.sort_by { |r| r[:date] || Date.new(1900) }
+                        .last(RECENT_LIMIT).reverse
     @capacity = CAPACITY_BUCKETS
   end
 
