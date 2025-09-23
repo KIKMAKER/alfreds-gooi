@@ -7,11 +7,13 @@
       </div>
       <div>
         <p>Plan: <%= @subscription.plan %></p>
-        <p>Start date: <%= @subscription.start_date&.strftime('%d %b, %Y') || "still pending" %></p>
-        <p>End date: <%= @subscription.end_date&.strftime('%d %b, %Y') || "still pending"  %></p>
-        <p>Collection day: <%= @subscription.collection_day %></p>
+        <p>Start Date: <%= @subscription.start_date&.strftime('%d %b, %Y') || "still pending" %></p>
+        <p>End Date: <%= @subscription.end_date&.strftime('%d %b, %Y') || "still pending"  %></p>
+        <p>Collection Day: <%= @subscription.collection_day %></p>
         <p>Address: <%= @subscription.street_address %></p>
         <p>Collection Order: <%= @subscription.collection_order %></p>
+        <p>Ave Collection Time: <%= @avg_collection_time %></p>
+
         <p>Phone number: <%= @subscription.user.phone_number %></p>
 
         <p>Holiday: <%= @subscription.holiday_start&.strftime('%d %b') %> - <%= @subscription.holiday_end&.strftime('%d %b') %></p>
