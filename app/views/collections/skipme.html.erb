@@ -1,28 +1,28 @@
 <div class="user-wrapper">
   <h1><%= @note %></h1>
   <div class="user-holiday-container" data-controller="toggle">
-        <% if @subscription.holiday_end < Date.current %>
-          <h2>Need to skip more than one week?</h2>
-          <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
-          <div class="card-white d-none" data-toggle-target="form">
-            <h2>Plan a holiday</h2>
-            <%= simple_form_for @subscription do |f| %>
-              <%= f.input :holiday_start,
+    <% if @subscription.holiday_end < Date.current %>
+      <h2>Need to skip more than one week?</h2>
+      <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
+      <div class="card-white d-none" data-toggle-target="form">
+        <h2>Plan a holiday</h2>
+        <%= simple_form_for @subscription do |f| %>
+          <%= f.input :holiday_start,
                           as: :string,
                           input_html: { data: { controller: "datepicker" } }, label: "start:" %>
-              <%= f.input :holiday_end,
+          <%= f.input :holiday_end,
                           as: :string,
                           input_html: { data: { controller: "datepicker" } }, label: "end:" %>
-              <%= f.submit "save", class: "submit-btn" %>
-            <% end %>
-          </div>
-        <% else %>
-          <h2>Upcoming Holiday</h2>
-          <div class="mt-4 container-flex flex-column">
-            <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
-            <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
-          </div>
+          <%= f.submit "save", class: "submit-btn" %>
         <% end %>
+      </div>
+    <% else %>
+      <h2>Upcoming Holiday</h2>
+      <div class="mt-4 container-flex flex-column">
+        <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
+        <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
+      </div>
+    <% end %>
 
   </div>
 </div>
