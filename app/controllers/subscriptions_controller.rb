@@ -85,13 +85,14 @@ class SubscriptionsController < ApplicationController
     scope = @subscription.collections
                        .where(skip: false)
                        .where.not(updated_at: nil, time: nil)
+                       # average seconds past local midnight in Africa/Johannesburg
+    avg_secs = scope.where.not(time: nil)
+                    .average(Arel.sql(
+                      "EXTRACT(EPOCH FROM ((time AT TIME ZONE 'Africa/Johannesburg') - DATE_TRUNC('day', (time AT TIME ZONE 'Africa/Johannesburg'))))"
+                    )).to_f
 
-  @avg_time_sample = scope.count
-  @avg_collection_time =
-    if @avg_time_sample.positive?
-      seconds = scope.pluck(:time).sum { |t| t.in_time_zone.seconds_since_midnight } / @avg_time_sample.to_f
-      (Time.zone.now.beginning_of_day + seconds).strftime("%H:%M")
-    end
+    @avg_time_sample     = scope.where.not(time: nil).count
+    @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
   end
 
   def new
