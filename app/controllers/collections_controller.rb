@@ -57,8 +57,7 @@ class CollectionsController < ApplicationController
   # Regular CRUD stuff
 
   def index
-    @drivers_day = DriversDay.find(params[:drivers_day_id])
-    @collections = @drivers_day.collections.order(updated_at: :desc)
+    redirect_to admin_collections_path
   end
 
   def show
@@ -136,7 +135,7 @@ class CollectionsController < ApplicationController
 
   def destroy
     @collection.destroy
-    redirect_to request.referer || collections_path, notice: "Collection was successfully deleted."
+    redirect_to request.referer || amin_collections_path, notice: "Collection was successfully deleted."
   end
 
   def skipme
