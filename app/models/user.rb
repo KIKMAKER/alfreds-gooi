@@ -77,7 +77,13 @@ class User < ApplicationRecord
   def og?
     og
   end
-  
+
+  def has_future_subscription?(from: Date.today, within_days: 30)
+    subscriptions.where(status: [:pending, :active])
+                 .where("start_date >= ? AND start_date <= ?", from, from + within_days)
+                 .exists?
+  end
+
   def current_sub
     subscriptions.order(start_date: :desc).first
   end

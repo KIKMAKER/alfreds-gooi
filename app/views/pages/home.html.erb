@@ -7,299 +7,527 @@
         Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
         Gooi offers weekly collection of food scraps from your doorstep.
         Ready to join the food waste revolution?</p>
-      <!--<button class="btn-gooi">sign up</button>-->
-      <%#= link_to '#pricing', class: "btn-gooi" do %>
-        <!--    <div>
-      <p>Sign Up</p>
+      <div class="mt-5 mb-3">
+        <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+      </div>
     </div>
-    <%# end %>-->
-        <div class="mt-5 mb-3">
-          <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+    <!--video-->
+    <div class="video-container">
+      <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
+    </div>
+    <!--code to create the wave in the header section-->
+    <%= raw %(
+              <div class="wave-container">
+                <svg
+                  class="waves"
+                  viewBox="0 24 150 28"
+                  preserveAspectRatio="none"
+                  shape-rendering="auto"
+                >
+                <defs>
+                  <path
+                  id="gentle-wave"
+                  d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+                  />
+                </defs>
+                  <g class="parallax">
+                    <use
+                      href="#gentle-wave"
+                      x="0"
+                      y="0"
+                      fill="rgba(255,255,255)"
+                    />
+                  </g>
+                </svg>
+                </div>
+                ) %>
+  </section>
+  <!--mission section-->
+  <section class="mission-section">
+    <div class="content-wrapper">
+      <!--left-->
+      <div class="info-container">
+        <h1>Our Mission<span class="yellow-txt">.</span></h1>
+        <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br>
+          <br>
+          Join us in turning waste into a valuable resource</p>
+        <div class="icons-container">
+          <div class="icon-container">
+            <%= image_tag('plant.png' , class: 'icon' ) %>
+            <h3>Promote Growth</h3>
+          </div>
+          <div class="icon-container">
+            <%= image_tag('bag.png' , class: 'icon' ) %>
+            <h3>Enrich Soil</h3>
+          </div>
+          <div class="icon-container">
+            <%= image_tag('mower.png' , class: 'icon' ) %>
+            <h3>Support Farmers</h3>
+          </div>
         </div>
       </div>
-      <!--video-->
-      <div class="video-container">
-        <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
-        <!--    <div class="play-btn-container">
-      >
-    </div>-->
+      <!--right-->
+      <div class="images-container">
+        <div class="img-1">
+          <%= image_tag('kobus.jpg', class: 'mission-image') %>
+        </div>
+        <div class="img-2">
+          <%= image_tag('compost-01.jpg', class: 'mission-image') %>
+        </div>
+        <div class="img-3">
+          <%= image_tag('compost-02.jpg', class: 'mission-image') %>
+        </div>
       </div>
-      <!--code to create the wave in the header section-->
-      <%= raw %(
-  <div class="wave-container">
-    <svg
-      class="waves"
-      viewBox="0 24 150 28"
-      preserveAspectRatio="none"
-      shape-rendering="auto"
-    >
-    <defs>
-      <path
-      id="gentle-wave"
-      d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
-      />
-    </defs>
-      <g class="parallax">
-        <use
-          href="#gentle-wave"
-          x="0"
-          y="0"
-          fill="rgba(255,255,255)"
-        />
-      </g>
-    </svg>
-    ) %>
     </div>
-  </div>
-</section>
-<!--mission section-->
-<section class="mission-section">
-  <div class="content-wrapper">
-    <!--left-->
-    <div class="info-container">
-      <h1>Our Mission<span class="yellow-txt">.</span></h1>
-      <p>At Gooi, we're committed to making composting an easy and practical <strong class="yellow-txt">solution for everyone.</strong> We aim to reduce landfill waste, support local farmers, and enhance soil quality. By simply putting your food scraps in your gooi bucket, you're contributing to a greener, more sustainable future. <br>
+  </section>
+  <!--compost section -->
+  <section class="compost-section">
+    <h1>Why we compost</h1>
+    <div class="content-wrapper">
+      <div class="info-card-container">
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-1.png', class: 'compost-image') %>
+          </div>
+          <div class="text-container-compost">
+            <h3>Reduce landfill waste</h3>
+            <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-2.png', class: 'compost-image') %>
+          </div>
+          <div class="text-container-compost">
+            <h3>Enhance Soil Health</h3>
+            <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="image-container">
+            <div class="overlay"></div>
+            <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+          </div>
+          <div class="text-container-compost">
+            <h3>Support Local Agriculture</h3>
+            <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--testimonial section-->
+  <section class="testimonial-section">
+    <h1>Testimonials</h1>
+    <div class="content-wrapper mb-4">
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+          <!--          <div class="testimonial-image">-->
+          <%#= image_tag('gooi_logo_CR.png') %>
+          <!--          </div>-->
+          <!-- <h4>name</h4>-->
+        </div>
+        <div class="testimonial-card">
+          <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+          <!--          <div class="testimonial-image">-->
+          <%#= image_tag('gooi_logo_CR.png') %>
+          <!--          </div>
+          <h4>name</h4>-->
+        </div>
+        <div class="testimonial-card">
+          <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+          <!--          <div class="testimonial-image">-->
+          <%#= image_tag('gooi_logo_CR.png') %>
+          <!--          </div>
+          <h4>name</h4>-->
+        </div>
+      </div>
+    </div>
+    <%# if user_signed_in? %>
+    <%#= link_to "share yours", "#", class: "btn-gooi" %>
+    <%# end %>
+  </section>
+  <!-- What is compostable -->
+  <section class="compostable-section">
+    <h1>What is compostable</h1>
+    <div class="content-wrapper">
+      <div class="compostable-container">
+        <i class="fa-solid fa-chevron-right arrow-right"></i>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('fruit-veg.svg') %>
+          <div>
+            <p class="compost-title">Fruit and Vegetable Scraps</p>
+            <p>All fresh fruit and vegetable scraps are compostable.</p>
+          </div>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('coffee-tea.svg') %>
+          <p class="compost-title">Tea and Coffee</p>
+          <p>Used coffee grounds and paper tea bags are great for composting and add valuable nitrogen.</p>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('garden-waste.svg') %>
+          <p class="compost-title">Garden Waste</p>
+          <p>Green garden waste is ideal for composting, but avoid large branches or diseased plants.</p>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('paper-products.svg') %>
+          <p class="compost-title">Paper Products</p>
+          <p>Only uncoated paper and cardboard should be composted. Avoid glossy or colored paper.</p>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('food-scraps.svg') %>
+          <p class="compost-title">Food Scraps (No meat or dairy)</p>
+          <p>These items are compostable but avoid oily or spiced foods as they attract pests and decompose slowly.</p>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('yard-trimmings.svg') %>
+          <p class="compost-title">Yard Trimmings</p>
+          <p>These items are compostable but may take longer to break down. Shredding them first helps.</p>
+        </div>
+        <div class="compostable-card">
+          <div class="overlay"></div>
+          <%= image_tag('natural-fibres.svg') %>
+          <p class="compost-title">Natural Fibers</p>
+          <p>Natural fibers like cotton and wool can be composted. Ensure they are not dyed or treated with chemicals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Pricing -->
+  <section data-controller="pricing" class="pricing-section"  id="pricing">
+    <h1>How it works</h1>
+    <div class="pricing-content-wrapper">
+      <div class="description-container">
+        <p>We offer weekly collection of your Gooi waste with two subscription models.</p>
+        <p>Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week.</p>
+        <p>Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week!</p>
+        <!--<p>Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
+        </p>-->
         <br>
-        Join us in turning waste into a valuable resource</p>
-      <div class="icons-container">
-        <div class="icon-container">
-          <%= image_tag('plant.png' , class: 'icon' ) %>
-          <h3>Promote Growth</h3>
-        </div>
-        <div class="icon-container">
-          <%= image_tag('bag.png' , class: 'icon' ) %>
-          <h3>Enrich Soil</h3>
-        </div>
-        <div class="icon-container">
-          <%= image_tag('mower.png' , class: 'icon' ) %>
-          <h3>Support Farmers</h3>
-        </div>
-      </div>§
-    </div>
-    <!--right-->
-    <div class="images-container">
-      <div class="img-1">
-        <%= image_tag('kobus.jpg', class: 'mission-image') %>
+        <% if @referral_code %>
+          <div class="yellow-block">
+            <h2>You have a referral code!</h2>
+            <h2>Get 15% off any of the below options.</h2>
+          </div>
+        <% elsif @discount_code %>
+          <% if @discount_percent.present? %>
+            <div class="yellow-block">
+              <h2>You have a discount code!</h2>
+              <h2>Get <strong> <%= number_to_percentage(@discount_percent * 100, precision: 0) %> </strong>off any of the below options.</h2>
+            </div>
+          <% else %>
+            <div class="yellow-block">
+              <h2>You have a discount code!</h2>
+              <h2>Get <strong> R<%= number_with_precision(@discount_amount || @discount_code_value, precision: 2) %></strong> off any of the below options.</h2>
+            </div>
+          <% end %>
+        <% end %>
       </div>
-      <div class="img-2">
-        <%= image_tag('compost-01.jpg', class: 'mission-image') %>
-      </div>
-      <div class="img-3">
-        <%= image_tag('compost-02.jpg', class: 'mission-image') %>
-      </div>
-    </div>
-  </div>
-</section>
-<!--compost section -->
-<section class="compost-section">
-  <h1>Why we compost</h1>
-  <div class="content-wrapper">
-    <div class="info-card-container">
-      <div class="info-card">
-        <div class="image-container">
-          <div class="overlay"></div>
-          <%= image_tag('compost-s-1.png', class: 'compost-image') %>
-        </div>
-        <div class="text-container-compost">
-          <h3>Reduce landfill waste</h3>
-          <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
+      <div class="toggle-subscription">
+        <h2>Subscription rates</h2>
+        <div class="toggle">
+          <h5 data-pricing-target="title">Standard</h5>
+          <div class="toggle-container">
+            <input type="checkbox" id="check" class="toggle d-none" data-action="click->pricing#toggle">
+            <label for="check" class="toggle-label"></label>
+          </div>
+          <h5>XL</h5>
         </div>
       </div>
-      <div class="info-card">
-        <div class="image-container">
-          <div class="overlay"></div>
-          <%= image_tag('compost-s-2.png', class: 'compost-image') %>
-        </div>
-        <div class="text-container-compost">
-          <h3>Enhance Soil Health</h3>
-          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
-        </div>
-      </div>
-      <div class="info-card">
-        <div class="image-container">
-          <div class="overlay"></div>
-          <%= image_tag('compost-s-3.png', class: 'compost-image') %>
-        </div>
-        <div class="text-container-compost">
-          <h3>Support Local Agriculture</h3>
-          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!--testimonial section-->
-<section class="testimonial-section">
-  <h1>Testimonials</h1>
-  <div class="content-wrapper mb-4">
-    <div class="testimonials-container">
-      <div class="testimonial-card">
-        <p>"We love composting our waste, and Alfred is the sweetest man."</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>-->
-        <!-- <h4>name</h4>-->
-      </div>
-      <div class="testimonial-card">
-        <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>
-          <h4>name</h4>-->
-      </div>
-      <div class="testimonial-card">
-        <p>"Alfred is always on time and always so kind and with a happy smile."</p>
-        <!--          <div class="testimonial-image">-->
-        <%#= image_tag('gooi_logo_CR.png') %>
-        <!--          </div>
-          <h4>name</h4>-->
-      </div>
-    </div>
-  </div>
-  <%# if user_signed_in? %>
-  <%#= link_to "share yours", "#", class: "btn-gooi" %>
-  <%# end %>
-</section>
-<!-- What is compostable -->
-<section class="compostable-section">
-  <h1>What is compostable</h1>
-  <div class="content-wrapper">
-    <div class="compostable-container">
-      <i class="fa-solid fa-chevron-right arrow-right"></i>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('fruit-veg.svg') %>
-        <div>
-          <p class="compost-title">Fruit and Vegetable Scraps</p>
-          <p>All fresh fruit and vegetable scraps are compostable.</p>
-        </div>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('coffee-tea.svg') %>
-        <p class="compost-title">Tea and Coffee</p>
-        <p>Used coffee grounds and paper tea bags are great for composting and add valuable nitrogen.</p>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('garden-waste.svg') %>
-        <p class="compost-title">Garden Waste</p>
-        <p>Green garden waste is ideal for composting, but avoid large branches or diseased plants.</p>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('paper-products.svg') %>
-        <p class="compost-title">Paper Products</p>
-        <p>Only uncoated paper and cardboard should be composted. Avoid glossy or colored paper.</p>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('food-scraps.svg') %>
-        <p class="compost-title">Food Scraps (No meat or dairy)</p>
-        <p>These items are compostable but avoid oily or spiced foods as they attract pests and decompose slowly.</p>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('yard-trimmings.svg') %>
-        <p class="compost-title">Yard Trimmings</p>
-        <p>These items are compostable but may take longer to break down. Shredding them first helps.</p>
-      </div>
-      <div class="compostable-card">
-        <div class="overlay"></div>
-        <%= image_tag('natural-fibres.svg') %>
-        <p class="compost-title">Natural Fibers</p>
-        <p>Natural fibers like cotton and wool can be composted. Ensure they are not dyed or treated with chemicals.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Pricing -->
-<%# unless user_signed_in? %>
-<section data-controller="pricing" class="pricing-section"  id="pricing">
-  <h1>How it works</h1>
-  <div class="pricing-content-wrapper">
-    <div class="description-container">
-      <p>We offer weekly collection of your Gooi waste with two subscription models. Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week. Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week! Keep the 5L bucket on your countertop, and when it's full gooi it in the 25L bucket kept in a cool place. When Alfred comes passed he will replace your big bucket with an empty clean one.
-      </p>
-      <br>
       <% if @referral_code %>
-        <strong>
-          <p>You have a referral code!</p>
-          <p>Get 15% off any of the below options.</p>
-        </strong>
+        <div class="standard-months-container" data-pricing-target="standard">
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text">
+              <s>R260</s>
+              <strong> R<%= number_with_precision(260 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R260</s>
+              <strong> R<%= number_with_precision(260 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text">
+              <s>R220</s>
+              <strong> R<%= number_with_precision(220 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R660</s>
+              <strong> R<%= number_with_precision(660 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <div class="month-card popular">
+            <h4>Most popular</h4>
+            <h3>6 months</h3>
+            <p class="pricing-text">
+              <s>R180</s>
+              <strong> R<%= number_with_precision(180 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R1080</s>
+              <strong> R<%= number_with_precision(1080 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="standard-months-container hide" data-pricing-target="extra">
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text">
+              <s>R300</s>
+              <strong> R<%= number_with_precision(300 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R300</s>
+              <strong> R<%= number_with_precision(300 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text">
+              <s>R270</s>
+              <strong> R<%= number_with_precision(270 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R810</s>
+              <strong> R<%= number_with_precision(810 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <div class="month-card">
+            <h3>6 months</h3>
+            <p class="pricing-text">
+              <s>R240</s>
+              <strong> R<%= number_with_precision(240 * 0.85, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R1440</s>
+              <strong> R<%= number_with_precision(1440 * 0.85, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
+
       <% elsif @discount_code %>
-       <strong>
-          <p>You have a discount code!</p>
-          <p>Get R<%= @discount_code_value %> off any of the below options.</p>
-        </strong>
+        <div class="standard-months-container" data-pricing-target="standard">
+          <%# 1 month (260) %>
+          <% orig = 260.0; dur = 1.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <%# 3 months (220 * 3 = 660) %>
+          <% orig = 220.0; dur = 3.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <%# 6 months (180 * 6 = 1080) %>
+          <% orig = 180.0; dur = 6.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card popular">
+            <h4>Most popular</h4>
+            <h3>6 months</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="standard-months-container hide" data-pricing-target="extra">
+          <%# XL 1 month (300) %>
+          <% orig = 300.0; dur = 1.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <%# XL 3 months (270 * 3 = 810) %>
+          <% orig = 270.0; dur = 3.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+
+          <%# XL 6 months (240 * 6 = 1440) %>
+          <% orig = 240.0; dur = 6.0
+          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
+          per   = total / dur %>
+          <div class="month-card">
+            <h3>6 months</h3>
+            <p class="pricing-text">
+              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
+            </p>
+            <p class="pricing-text">
+              <strong>Total:</strong>
+              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <strong> R<%= number_with_precision(total, precision: 2) %></strong>
+            </p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="standard-months-container" data-pricing-target="standard">
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text"><strong>R260</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R260</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text"><strong>R220</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R660</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+          <div class="month-card popular">
+            <h4>Most popular</h4>
+            <h3>6 months</h3>
+            <p class="pricing-text"><strong>R180</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R1080</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
+        <div class="standard-months-container hide" data-pricing-target="extra">
+          <div class="month-card">
+            <h3>1 month</h3>
+            <p class="pricing-text"><strong>R300</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R300</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+          <div class="month-card">
+            <h3>3 months</h3>
+            <p class="pricing-text"><strong>R270</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R810</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+          <div class="month-card">
+            <h3>6 months</h3>
+            <p class="pricing-text"><strong>R240</strong> per month</p>
+            <p class="pricing-text"><strong>Total:</strong> R1440</p>
+            <div class="sign-up-btn">
+              <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
+            </div>
+          </div>
+        </div>
       <% end %>
     </div>
-    <div class="toggle-subscriptio-->n">
-      <h2>Subscription rates</h2>
-      <div class="toggle">
-        <!--<p>Standard</p>-->
-        <h5 data-pricing-target="title">Standard</h5>
-        <div class="toggle-container">
-          <input type="checkbox" id="check" class="toggle d-none" data-action="click->pricing#toggle">
-          <label for="check" class="toggle-label"></label>
-        </div>
-        <h5>XL</h5>
-      </div>
-    </div>
-    <div class="standard-months-container" data-pricing-target="standard">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R260</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R260</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R220</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R660</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card popular">
-        <h4>Most popular</h4>
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R180</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1080</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'Standard', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-    <div class="standard-months-container hide" data-pricing-target="extra">
-      <div class="month-card">
-        <h3>1 month</h3>
-        <p class="pricing-text"><strong>R300</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R300</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '1', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>3 months</h3>
-        <p class="pricing-text"><strong>R270</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R810</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '3', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-      <div class="month-card">
-        <h3>6 months</h3>
-        <p class="pricing-text"><strong>R240</strong> per month</p>
-        <p class="pricing-text"><strong>Total:</strong> R1440</p>
-        <div class="sign-up-btn">
-          <%= link_to 'Select', new_user_registration_path(plan: 'XL', duration: '6', discount: @discount_code, referral: @referral_code), class:"link-title-light" %>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<%# end %>
+    <br>
+    <br>
+  </section>
+
 </div>
