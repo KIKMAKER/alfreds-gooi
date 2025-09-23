@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :logistics, only: :index
+    resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]
     resources :users, only: [:index, :edit, :update, :show] do
       post :renew_last_subscription, on: :member

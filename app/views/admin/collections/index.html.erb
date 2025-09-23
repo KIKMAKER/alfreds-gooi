@@ -1,0 +1,79 @@
+<div class="container my-4">
+  <h1>Collections</h1>
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="text-muted">
+      Showing <%= @collections.size %> of <%= @total %> collections.
+    </div>
+    <div>
+      <% if @page > 1 %>
+        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-outline-secondary btn-sm me-2" %>
+      <% end %>
+      <% if @page < @pages %>
+        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-outline-secondary btn-sm" %>
+      <% end %>
+    </div>
+  </div>
+
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>User</th>
+        <th>Time</th>
+        <th class="text-end">Bags</th>
+        <th class="text-center">Skipped</th>
+        <th>Alfred message</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @collections.each do |c| %>
+        <% sub  = c.subscription
+           user = sub&.user
+           name = [user&.first_name, user&.last_name].compact.join(" ").presence || user&.email || "—"
+        %>
+        <tr>
+          <td><%= c.date || c.time&.to_date %></td>
+          <td><%= name %></td>
+          <td><%= c.time&.strftime("%H:%M") %></td>
+          <td class="text-end"><%= c.bags %></td>
+          <td class="text-center">
+            <% if c.skip? %>
+              <span class="badge bg-secondary">Yes</span>
+            <% else %>
+              <span class="badge bg-success">No</span>
+            <% end %>
+          </td>
+          <td><%= c.alfred_message.presence || "—" %></td>
+          <td class="text-end">
+            <%= link_to edit_collection_path(c), class: "text-decoration-none me-2", title: "Edit", aria: { label: "Edit" } do %>
+              <i class="fa-solid fa-pen-to-square"></i>
+            <% end %>
+            <%= link_to collection_path(c),
+                        data: { turbo_method: :delete, turbo_confirm: "Delete this collection?" },
+                        class: "text-danger text-decoration-none", title: "Delete", aria: { label: "Delete" } do %>
+              <i class="fa-solid fa-trash"></i>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <div class="text-muted">
+      Page <%= @page %> / <%= @pages %>
+    </div>
+    <div>
+      <% if @page > 1 %>
+        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-outline-secondary btn-sm me-2", style:"border-radius:1em" %>
+      <% end %>
+      <% if @page < @pages %>
+        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-outline-secondary btn-sm", style:"border-radius:1em" %>
+      <% end %>
+    </div>
+  </div>
+  <br>
+  <br>
+</div>
