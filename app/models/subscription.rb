@@ -143,12 +143,6 @@ class Subscription < ApplicationRecord
     end
   end
 
-  def has_future_subscription?(from: Date.today, within_days: 30)
-    subscriptions.where(status: [:pending, :active])
-                 .where("start_date >= ? AND start_date <= ?", from, from + within_days)
-                 .exists?
-  end
-
   def delete_invoices
     invoices.each { |inv| inv.invoice_items.delete_all }
     invoices.delete_all
