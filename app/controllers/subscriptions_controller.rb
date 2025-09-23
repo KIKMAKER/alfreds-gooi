@@ -82,6 +82,16 @@ class SubscriptionsController < ApplicationController
     @buckets_last_month = @subscription.total_buckets_last_n_months(1).to_i
     @buckets_last_three_months = @subscription.total_buckets_last_n_months(3).to_i
     @buckets_last_six_months = @subscription.total_buckets_last_n_months(6).to_i
+    scope = @subscription.collections
+                       .where(skip: false)
+                       .where.not(updated_at: nil, time: nil)
+
+  @avg_time_sample = scope.count
+  @avg_collection_time =
+    if @avg_time_sample.positive?
+      seconds = scope.pluck(:time).sum { |t| t.in_time_zone.seconds_since_midnight } / @avg_time_sample.to_f
+      (Time.zone.now.beginning_of_day + seconds).strftime("%H:%M")
+    end
   end
 
   def new
