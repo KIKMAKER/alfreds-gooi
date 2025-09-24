@@ -24,17 +24,18 @@ export default class extends Controller {
     this.thursdaySet  = new Set((this.thursdayValue  || []).map(n => this.standardize(n)))
 
     mapboxgl.accessToken = this.tokenValue
+    const CONSTANTIA = [18.36, -34.00];
     this.map = new mapboxgl.Map({
-        container: this.element.querySelector("#service-map"),
-        style: "mapbox://styles/mapbox/light-v11",
-        center: [17.911, -33.9249],
-        zoom: 10.5,
-        maxBounds: [[17.8,-34.5],[19.0,-33.4]], // ← lock to CT core
-        minZoom: 9,
-        maxZoom: 16,
-        dragRotate: false,
-        touchZoomRotate: { rotate: false }
-    })
+      container: this.element.querySelector("#service-map"),
+      style: "mapbox://styles/mapbox/light-v11",
+      center: CONSTANTIA,
+      zoom: 18.9,                        // a tad closer
+      maxBounds: [[17.8,-34.5],[19.0,-33.4]],
+      minZoom: 9,
+      maxZoom: 22,
+      dragRotate: false,
+      touchZoomRotate: { rotate: false }
+    });
     this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right")
 
     this.map.on("load", async () => {
@@ -50,7 +51,10 @@ export default class extends Controller {
         const serviced = geo.features.filter(f => f.properties?.day)
           this.fitToData({ features: serviced }) // not the whole dataset
       }
-
+      this.fitToData(geo, {
+        padding: { top: 40, right: 24, bottom: 40, left: 160 },
+        maxZoom: 11.2,
+      });
       this.map.addSource("service-areas", { type: "geojson", data: geo })
 
       this.map.addLayer({

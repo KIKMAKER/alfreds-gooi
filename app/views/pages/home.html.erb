@@ -120,49 +120,96 @@
   </section>
   <!--where we collect section-->
   <section class="map-section">
-    <div class="container">
+    <section class="map-section">
+      <div class="container">
+        <h1 class="text-center">Where We Collect</h1>
+        <h5 class="lead text-center mb-4">
+          Weekly doorstep pickups around Table Mountain. Check your neighbourhood's day and start gooiing.
+        </h5>
 
-      <h1 class="text-center">Where We Collect</h1>
-
-      <div class="row align-items-start g-4">
-        <!-- Left: map -->
-        <div class="col-12 col-lg-7">
-          <div class="service-map-square container">
+        <div class="row g-4 align-items-start">
+          <!-- MAP: left on desktop, first on mobile -->
+          <div class="col-12 col-lg-7">
             <div
-        data-controller="service-map"
-        data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
-        data-service-map-geo-url-value="<%= asset_path('suburbs.geojson') %>"
+          data-controller="service-map"
+          data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
+          data-service-map-geo-url-value="<%= asset_path('suburbs.geojson') %>"
+          data-service-map-tuesday-value='<%= raw Subscription::TUESDAY_SUBURBS.to_json %>'
+          data-service-map-wednesday-value='<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>'
+          data-service-map-thursday-value='<%= raw Subscription::THURSDAY_SUBURBS.to_json %>'>
 
-        data-service-map-tuesday-value='<%= raw Subscription::TUESDAY_SUBURBS.to_json %>'
-        data-service-map-wednesday-value='<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>'
-        data-service-map-thursday-value='<%= raw Subscription::THURSDAY_SUBURBS.to_json %>'
-  >
               <div id="service-map" style="width:100%;height:420px;border-radius:12px;overflow:hidden;"></div>
-              <div class="container service-map-key">
-                <div class="map-controls">
-                  <div class="day-key" id="service-map-legend" style="margin-left:auto;display:flex;gap:12px;align-items:center;"></div>
-                  <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
-                  <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
-                  <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
-                  <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>
 
+              <div class="service-map-key mt-2">
+                <div class="map-controls d-flex flex-wrap gap-2 align-items-center">
+                  <div class="day-key d-flex gap-3 align-items-center" id="service-map-legend"></div>
+                  <div class="ms-auto d-flex gap-2">
+                    <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
+                    <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
+                    <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
+                    <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- CARDS: right on desktop, below on mobile -->
+          <div class="col-12 col-lg-5">
+            <div class="row row-cols-2 g-3">
+              <div class="col">
+                <div class="small-icon-card h-100">
+                  <div class="icon-card-header">
+                    <i class="fa-solid fa-route fs-4"></i>
+                    <span class="icon-title">Weekly collection</span>
+                  </div>
+                  <p>The gooi bakkie loops Cape Town once a week.</p>
+                </div>
+              </div>
+              <div class="col">
+                <div class="small-icon-card h-100">
+                  <div class="icon-card-header">
+                    <i class="fa-regular fa-clock fs-4"></i>
+                    <span class="icon-title">Consistent-ish timing</span>
+                  </div>
+                  <p>Traffic & Alfred's chats can nudge times a bit.</p>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="small-icon-card h-100">
+                  <div class="icon-card-header">
+                    <i class="fa-regular fa-calendar-days fs-4"></i>
+                    <span class="icon-title">Your day = your 'hood</span>
+                  </div>
+                  <p>See Tuesday-Thursday zones on the map.</p>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="small-icon-card h-100">
+                  <div class="icon-card-header">
+                    <i class="fa-regular fa-circle-check fs-4"></i>
+                    <span class="icon-title">Always current</span>
+                  </div>
+                  <p>Routes evolve as we grow, this map stays up to date.</p>
+                </div>
+              </div>
+            </div>
+        <p class="fs-6 text-muted mt-3 mb-0">
+          <strong>Heads-up:</strong> boundaries are indicative; if you're on the edge we'll confirm your day.
+          <br>Can't find your suburb? Let us know below.
+        </p>
+          </div>
         </div>
-        <!-- Right: text -->
-        <div class="col-12 col-lg-5">
-          <p class="my-2">The gooi bakkie makes it's way around Cape Town's Table Mountain once a week. Your kitchen scrap collection day is based on your location. We try to start the day at the same time and ensure we are consistent with our collection times, however given the nature of the Cape Town roads and our very chatty collections manager, Alfred, collection time may vary.</p>
-          <p class="my-2">Our love for putting your organic waste where it should be (in the soil and not a landfill) extends to our love for putting your home in the right position on our route. As we grow, striving for efficiency at every turn, our routes will vary. This map will always be up to date, and changes will always be communicated to our family of gooiers.</p>
-        </div>
+
       </div>
-    </div>
+    </section>
 
     <hr class="my-6">
     <div class="interest-card popular">
-      <h3 class="mt-4">Think we should gooi in your 'hood?</h3>
-      <p class="my-2">Leave your details and spread the word to your neighbours.</p>
+      <h3 class="mt-4" id="interest">Think we should gooi in your 'hood?</h3>
+      <p class="my-2">If your address isn't on our route yet, please leave your details so we can get to you soon! You can also spread the word to your neighbours to help the compost movement grow.</p>
 
       <%= simple_form_for @interest do |f| %>
         <%= f.input :name %>
