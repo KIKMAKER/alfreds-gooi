@@ -1,11 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
-// data-controller="service-map"
-// data-service-map-token-value="..."
-// data-service-map-geo-url-value="/assets/suburbs.geojson"
-// data-service-map-tuesday-value='["Suburb A", "Suburb B"]' etc.
-
 export default class extends Controller {
   static values = {
     token: String,
@@ -24,39 +19,44 @@ export default class extends Controller {
     this.thursdaySet  = new Set((this.thursdayValue  || []).map(n => this.standardize(n)))
 
     mapboxgl.accessToken = this.tokenValue
-    const CONSTANTIA = [18.36, -34.00];
+
+    // ——— Camera defaults (Constantia-ish) ———
+    const CONSTANTIA = [18.36, -34.00]
+
     this.map = new mapboxgl.Map({
       container: this.element.querySelector("#service-map"),
       style: "mapbox://styles/mapbox/light-v11",
       center: CONSTANTIA,
-      zoom: 18.9,                        // a tad closer
-      maxBounds: [[17.8,-34.5],[19.0,-33.4]],
+      zoom: 20.9,
+      maxBounds: [[17.8, -34.5], [19.0, -33.4]],
       minZoom: 9,
-      maxZoom: 22,
+      maxZoom: 100,
       dragRotate: false,
       touchZoomRotate: { rotate: false }
-    });
+    })
     this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right")
 
     this.map.on("load", async () => {
       const res = await fetch(this.geoUrlValue, { cache: "reload" })
       const geo = await res.json()
 
-      // Tag each feature with its service day
-      for (const f of geo.features || []) {
+      // Tag each feature with day (do this once)
+      for (const f of (geo.features || [])) {
         const label = this.nameFromProps(f.properties)
         f.properties = f.properties || {}
         f.properties._label = label
         f.properties.day = this.dayFor(label)
-        const serviced = geo.features.filter(f => f.properties?.day)
-          this.fitToData({ features: serviced }) // not the whole dataset
       }
-      this.fitToData(geo, {
-        padding: { top: 40, right: 24, bottom: 40, left: 160 },
-        maxZoom: 11.2,
-      });
+
+      // Only the areas you service
+      const serviced = {
+        type: "FeatureCollection",
+        features: geo.features.filter(f => !!f.properties?.day)
+      }
+
       this.map.addSource("service-areas", { type: "geojson", data: geo })
 
+      // Fills
       this.map.addLayer({
         id: "areas-fill",
         type: "fill",
@@ -74,6 +74,7 @@ export default class extends Controller {
         }
       })
 
+      // Outlines
       this.map.addLayer({
         id: "areas-outline",
         type: "line",
@@ -81,6 +82,7 @@ export default class extends Controller {
         paint: { "line-color": "#333", "line-width": 1 }
       })
 
+      // Click popup
       this.map.on("click", "areas-fill", (e) => {
         const f = e.features?.[0]
         if (!f) return
@@ -91,17 +93,27 @@ export default class extends Controller {
           .setHTML(`<strong>${name}</strong><br/>${day}`)
           .addTo(this.map)
       })
-
       this.map.on("mouseenter", "areas-fill", () => this.map.getCanvas().style.cursor = "pointer")
       this.map.on("mouseleave", "areas-fill", () => this.map.getCanvas().style.cursor = "")
 
-      this.fitToData(geo)
+      // —— Choose ONE of these framings ——
+
+      // A) Fit to serviced data, biased west (recommended)
+      this.fitToData(serviced, {
+        padding: { top: 40, right: 24, bottom: 40, left: 160 },
+        maxZoom: 11.4
+      })
+
+      // B) Or fit to a fixed Atlantic-seaboard rectangle (comment A out if you use this)
+      // const ATLANTIC_VIEW_BOUNDS = [[18.28, -34.18], [18.66, -33.87]]
+      // this.map.fitBounds(ATLANTIC_VIEW_BOUNDS, { padding: 40, maxZoom: 12, duration: 0 })
+
       this.buildLegend()
       this.enableDayFilters()
     })
   }
 
-  // --- name helpers ---
+  // ---------- name helpers ----------
   nameFromProps(props) {
     if (!props) return ""
     const keys = ["OFC_SBRB_NAME","OS Name","OS_NAME","NAME","Name","name"]
@@ -111,15 +123,14 @@ export default class extends Controller {
   normalize(n) {
     return (n || "")
       .toUpperCase()
-      .replace(/[’']/g, "")           // Devil’s → DEVILS
-      .replace(/\s*\(.*?\)\s*/g, " ") // strip (District Six)
+      .replace(/[’']/g, "")
+      .replace(/\s*\(.*?\)\s*/g, " ")
       .replace(/\bUPPER\s+|\bLOWER\s+/g, "")
       .replace(/[\/\-_]/g, " ")
-      .replace(/\s+/g, "")            // remove spaces for robust matching
+      .replace(/\s+/g, "")
       .trim()
   }
   alias(norm) {
-    // Map dataset quirks to your canonical suburb names (normalized form)
     const A = {
       "SCHOTSCHEKLOOF": "BOKAAP",
       "DEWATERKANT": "GREENPOINT",
@@ -140,24 +151,37 @@ export default class extends Controller {
     return null
   }
 
-  // --- view helpers ---
-  fitToData(geo) {
+  // ---------- view helpers ----------
+  fitToData(geo, opts = {}) {
     const bounds = new mapboxgl.LngLatBounds()
-    for (const f of geo.features || []) {
-      const c = this._featureBounds(f)
-      if (c) bounds.extend(c[0]).extend(c[1])
+    for (const f of (geo.features || [])) {
+      const b = this._featureBounds(f)
+      if (b) bounds.extend(b[0]).extend(b[1])
     }
-    if (!bounds.isEmpty()) this.map.fitBounds(bounds, { padding: 40, maxZoom: 12, duration: 0 })
+    if (!bounds.isEmpty()) {
+      this.map.fitBounds(bounds, {
+        padding: opts.padding ?? 40,
+        maxZoom: opts.maxZoom ?? 12,
+        duration: 0
+      })
+    }
   }
+
   _featureBounds(f) {
     const coords = (f.geometry?.type === "Polygon")
       ? f.geometry.coordinates.flat(1)
       : (f.geometry?.type === "MultiPolygon" ? f.geometry.coordinates.flat(2) : null)
     if (!coords || !coords.length) return null
     let minX = 180, minY = 90, maxX = -180, maxY = -90
-    for (const [x, y] of coords) { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y }
+    for (const [x, y] of coords) {
+      if (x < minX) minX = x
+      if (x > maxX) maxX = x
+      if (y < minY) minY = y
+      if (y > maxY) maxY = y
+    }
     return [[minX, minY], [maxX, maxY]]
   }
+
   buildLegend() {
     const el = this.element.querySelector("#service-map-legend")
     if (!el) return
@@ -168,6 +192,7 @@ export default class extends Controller {
       <div class="legend-row"><span class="swatch" style="background:#BDC3C7"></span> Not currently serviced</div>
     `
   }
+
   enableDayFilters() {
     const buttons = this.element.querySelectorAll("[data-day-filter]")
     buttons.forEach(btn => {

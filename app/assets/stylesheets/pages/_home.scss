@@ -62,13 +62,13 @@ section {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
     font-size: 48px;
-    margin: 44px 0px;
+    margin: 24px 0px;
   }
 
    p {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 1rem;
+    font-size: 2vh;
   }
 }
 .legend-row {
@@ -121,11 +121,15 @@ section {
 
 }
 
-.map-controls .btn-gooi-outline {
-  font-size: 12px;     /* text size */
-  line-height: 1.2;    /* tighter height */
-  padding: 4px 8px;    /* smaller pill */
-  border-radius: 6px;  /* a bit tighter corners */
+.map-controls {
+  padding: 0.7rem;
+  background-color: #ffffffc2;
+  .btn-gooi-outline {
+    font-size: 12px;     /* text size */
+    line-height: 1.2;    /* tighter height */
+    padding: 4px 8px;    /* smaller pill */
+    border-radius: 6px;  /* a bit tighter corners */
+  }
 }
 
 
@@ -287,9 +291,9 @@ section {
 }
 
 .mission-image {
-  max-height: 300px;
+  max-height: 192px;
   object-fit: cover;
-  object-position: top;
+  object-position: middle;
   border-radius: 14px;
   width: 100%;
 }
@@ -760,7 +764,7 @@ button {
   }
 
   .mission-section {
-    margin-top: 30vh;
+    margin-top: 20vh;
   }
 
 }
