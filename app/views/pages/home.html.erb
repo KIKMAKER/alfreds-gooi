@@ -136,7 +136,7 @@
           <div
           data-controller="service-map"
           data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
-          data-service-map-geo-url-value="<%= asset_path('suburbs.geojson') %>"
+          data-service-map-geo-url-value="<%= asset_path('Suburbs.geojson') %>"
           data-service-map-tuesday-value='<%= raw Subscription::TUESDAY_SUBURBS.to_json %>'
           data-service-map-wednesday-value='<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>'
           data-service-map-thursday-value='<%= raw Subscription::THURSDAY_SUBURBS.to_json %>'>

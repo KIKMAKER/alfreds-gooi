@@ -4,7 +4,7 @@ namespace :geo do
   task check: :environment do
     require "json"
 
-    path = Rails.root.join("app/assets/geo/suburbs.geojson")
+    path = Rails.root.join("app/assets/geo/Suburbs.geojson")
     data = JSON.parse(File.read(path))
     feats = data["features"] || []
 
