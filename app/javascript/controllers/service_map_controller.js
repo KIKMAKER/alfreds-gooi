@@ -87,7 +87,7 @@ export default class extends Controller {
         const f = e.features?.[0]
         if (!f) return
         const name = f.properties?._label || this.nameFromProps(f.properties) || "Area"
-        const day  = f.properties?.day || "Not currently serviced"
+        const day  = f.properties?.day || "Not yet serviced"
         new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML(`<strong>${name}</strong><br/>${day}`)
@@ -189,7 +189,7 @@ export default class extends Controller {
       <div class="legend-row"><span class="swatch" style="background:#5DADE2"></span> Tuesday</div>
       <div class="legend-row"><span class="swatch" style="background:#58D68D"></span> Wednesday</div>
       <div class="legend-row"><span class="swatch" style="background:#F5B041"></span> Thursday</div>
-      <div class="legend-row"><span class="swatch" style="background:#BDC3C7"></span> Not currently serviced</div>
+      <div class="legend-row"><span class="swatch" style="background:#BDC3C7"></span> Not yet serviced</div>
     `
   }
 

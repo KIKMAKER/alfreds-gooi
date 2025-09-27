@@ -65,17 +65,18 @@ section {
     margin: 24px 0px;
   }
 
-   p {
+  p {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
     font-size: 2vh;
   }
 }
+
 .legend-row {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 4px;
+  font-size: 1.5vh;
 }
 
 .swatch {
@@ -104,19 +105,23 @@ section {
 
 .service-map-key {
   position: absolute;
-  top: 10px;
+  top: 2px;
   left: 10px;
-  height: 13%;
-  width: 80%;
+  right: 10px;
+  z-index: 5;
+  width: 75%;
   margin-left: 10%;
 
   .day-key {
     display: flex;
     flex-wrap: wrap;
     margin: 0 auto;
-    background-color: #ffffff82;
-    padding: 1rem;
+    padding: 0.5rem;
     border-radius: 12px;
+    flex: 1 1 320px;
+    /* grow, but allow wrap */
+    min-width: 220px;
+    font-size: 1vh;
   }
 
 }
@@ -124,11 +129,25 @@ section {
 .map-controls {
   padding: 0.7rem;
   background-color: #ffffffc2;
+
+  .filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex: 1 1 220px;
+    justify-content: flex-start;
+    min-width: 200px;
+  }
+
   .btn-gooi-outline {
-    font-size: 12px;     /* text size */
-    line-height: 1.2;    /* tighter height */
-    padding: 4px 8px;    /* smaller pill */
-    border-radius: 6px;  /* a bit tighter corners */
+    font-size: 12px;
+    /* text size */
+    line-height: 1.2;
+    /* tighter height */
+    padding: 4px 8px;
+    /* smaller pill */
+    border-radius: 6px;
+    /* a bit tighter corners */
+    margin: 0px
   }
 }
 
@@ -845,34 +864,58 @@ button {
 
 @media screen and (max-width: 768px) {
 
-  .gooi-header {
-    height: 100vh;
-
-    h1 {
-      font-size: 2rem;
-      padding-top: 4rem;
-      padding-bottom: 1rem;
-    }
-
+  .service-map-key {
+    left: 8px;
+    right: 8px;
   }
 
-  .mission-section {
-    margin-top: 6vh;
+  .map-controls .day-key {
+    flex-basis: 100%;
+    order: 2;
+    flex-wrap: wrap;
   }
 
-  .compost-section {
-    margin-top: 3rem;
+  .map-controls .filter-buttons {
+    flex-basis: 100%;
+    order: 1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
-  .info-container {
-    width: 100%;
+  .map-controls .btn-gooi-outline {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
 
-    h1 {
-      margin-top: 0.2vh;
-    }
+.gooi-header {
+  height: 100vh;
+
+  h1 {
+    font-size: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 1rem;
   }
 
 }
+
+.mission-section {
+  margin-top: 6vh;
+}
+
+.compost-section {
+  margin-top: 3rem;
+}
+
+.info-container {
+  width: 100%;
+
+  h1 {
+    margin-top: 0.2vh;
+  }
+}
+
+
 
 @media screen and (max-width:430px) {
   .gooi-header {
