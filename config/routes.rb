@@ -116,6 +116,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :interests, only: :create
 
   # static pages
   root "pages#home"

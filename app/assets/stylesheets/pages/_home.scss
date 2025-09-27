@@ -49,6 +49,109 @@ section {
   margin: 0 10%;
 }
 
+// MAP STYLE
+.map-section {
+
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  display: flex;
+  margin: 24px 5%;
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    color: #023F3A;
+    font-size: 48px;
+    margin: 24px 0px;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    color: #525560;
+    font-size: 2vh;
+  }
+}
+
+.legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.5vh;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #999;
+}
+
+.btn-gooi-outline {
+  border: 1px solid #333;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.btn-gooi-outline:hover {
+  background: #f4f4f4;
+}
+
+
+.service-map-square {
+  position: relative;
+}
+
+.service-map-key {
+  position: absolute;
+  top: 2px;
+  left: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 75%;
+  margin-left: 10%;
+
+  .day-key {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border-radius: 12px;
+    flex: 1 1 320px;
+    /* grow, but allow wrap */
+    min-width: 220px;
+    font-size: 1vh;
+  }
+
+}
+
+.map-controls {
+  padding: 0.7rem;
+  background-color: #ffffffc2;
+
+  .filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex: 1 1 220px;
+    justify-content: flex-start;
+    min-width: 200px;
+  }
+
+  .btn-gooi-outline {
+    font-size: 12px;
+    /* text size */
+    line-height: 1.2;
+    /* tighter height */
+    padding: 4px 8px;
+    /* smaller pill */
+    border-radius: 6px;
+    /* a bit tighter corners */
+    margin: 0px
+  }
+}
+
+
 // WAVES STYLE
 .waves {
   position: absolute;
@@ -207,9 +310,9 @@ section {
 }
 
 .mission-image {
-  max-height: 300px;
+  max-height: 192px;
   object-fit: cover;
-  object-position: top;
+  object-position: middle;
   border-radius: 14px;
   width: 100%;
 }
@@ -243,9 +346,11 @@ section {
   position: relative;
   margin: 8px;
   text-align: left;
+
   h3 {
     font-size: 1.3rem
   }
+
   p {
     font-size: 1.2rem
   }
@@ -383,6 +488,7 @@ section {
 
 
 }
+
 .arrow-right {
   position: absolute;
   top: 25%;
@@ -645,6 +751,7 @@ button {
     h3 {
       font-size: 1rem
     }
+
     p {
       font-size: 0.8rem
     }
@@ -676,7 +783,7 @@ button {
   }
 
   .mission-section {
-    margin-top: 30vh;
+    margin-top: 20vh;
   }
 
 }
@@ -721,6 +828,7 @@ button {
 
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
@@ -756,33 +864,58 @@ button {
 
 @media screen and (max-width: 768px) {
 
-  .gooi-header {
-    height: 100vh;
-
-    h1 {
-      font-size: 2rem;
-      padding-top: 4rem;
-      padding-bottom: 1rem;
-    }
-
+  .service-map-key {
+    left: 8px;
+    right: 8px;
   }
 
-  .mission-section {
-    margin-top: 6vh;
+  .map-controls .day-key {
+    flex-basis: 100%;
+    order: 2;
+    flex-wrap: wrap;
   }
 
-  .compost-section {
-    margin-top: 3rem;
+  .map-controls .filter-buttons {
+    flex-basis: 100%;
+    order: 1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
-  .info-container {
-    width: 100%;
-    h1 {
-      margin-top: 0.2vh;
-    }
+  .map-controls .btn-gooi-outline {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+.gooi-header {
+  height: 100vh;
+
+  h1 {
+    font-size: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 1rem;
   }
 
 }
+
+.mission-section {
+  margin-top: 6vh;
+}
+
+.compost-section {
+  margin-top: 3rem;
+}
+
+.info-container {
+  width: 100%;
+
+  h1 {
+    margin-top: 0.2vh;
+  }
+}
+
+
 
 @media screen and (max-width:430px) {
   .gooi-header {
@@ -801,6 +934,7 @@ button {
 
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
@@ -880,8 +1014,10 @@ button {
     }
 
   }
+
   .info-container {
     width: 100%;
+
     h1 {
       margin-top: 0.2vh;
     }
