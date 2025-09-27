@@ -438,7 +438,7 @@ section {
 
   p {
     font-family: 'Montserrat', 'sans-serif';
-    font-size: 18px;
+    font-size: 2vh;
   }
 
   h4 {
@@ -984,24 +984,34 @@ button {
   }
 
   .compostable-container {
-    margin-left: 16px;
+    margin: 0; // remove the margin that caused overflow
+    padding-left: 16px; // keep your visual inset
+    box-sizing: border-box; // padding won’t add to width
+    overflow-x: auto; // keep the horizontal carousel
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
   }
 
-  .compostable-section {
-    h1 {
-      font-size: 32px;
-      margin-bottom: 32px;
-    }
-
+  .compostable-container::-webkit-scrollbar {
+    display: none;
   }
 
-  .standard-months-container {
-    flex-direction: column;
+.compostable-section {
+  h1 {
+    font-size: 32px;
+    margin-bottom: 32px;
   }
 
-  .month-card {
-    width: 85%;
-  }
+}
+
+.standard-months-container {
+  flex-direction: column;
+}
+
+.month-card {
+  width: 85%;
+}
 }
 
 @media screen and (max-width: 391px) {
