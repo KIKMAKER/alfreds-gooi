@@ -1,0 +1,8 @@
+New signup interest for Gooi
+
+Name:   <%= @interest.name %>
+Email:  <%= @interest.email %>
+Suburb: <%= @interest.suburb %>
+
+Note:
+<%= @interest.note.to_s.strip.presence || "(none)" %>
