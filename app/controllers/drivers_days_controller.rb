@@ -90,11 +90,44 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.includes(:collections).find(params[:id])
     @drivers_day.end_time = Time.now
     @drivers_day.save!
-    @collections = @drivers_day.collections
-    @total_bags_collected = @collections&.sum(:bags) || 0
-    @total_bags_collected = @total_bags_collected.floor
-    day_name = Date.today.strftime("%A")
-    @total_buckets_collected = @collections&.sum(:buckets).floor || 0
+    buckets       = @drivers_day.buckets
+    net_kg        = buckets.sum(:weight_kg).to_f
+    bucket_count  = buckets.count
+    half_count    = buckets.where(half: true).count
+    full_count    = bucket_count - half_count
+    full_equiv    = full_count + (half_count * 0.5)
+
+    households    = @drivers_day.collections.where(skip: false).where.not(updated_at: nil).count
+    bags_sum      = @drivers_day.collections.where(skip: false).sum(:bags)
+
+    route_hours   = if @drivers_day.start_time && @drivers_day.end_time
+                      ((@drivers_day.end_time - @drivers_day.start_time) / 3600.0)
+                    end
+    stops_per_hr  = route_hours&.positive? ? (households / route_hours) : nil
+    kg_per_hr     = route_hours&.positive? ? (net_kg / route_hours) : nil
+
+    kms           = if @drivers_day.start_kms && @drivers_day.end_kms
+                      @drivers_day.end_kms - @drivers_day.start_kms
+                    end
+    kg_per_km     = (kms && kms > 0) ? (net_kg / kms) : nil
+
+    @stats = {
+      net_kg:          net_kg,
+      bucket_count:    bucket_count,
+      full_count:      full_count,
+      half_count:      half_count,
+      full_equiv:      full_equiv,
+      avg_kg_bucket:   bucket_count.positive? ? (net_kg / bucket_count) : 0.0,
+      avg_kg_full:     full_equiv.positive? ? (net_kg / full_equiv) : 0.0,
+      households:      households,
+      bags_sum:        bags_sum,
+      route_hours:     route_hours,
+      stops_per_hr:    stops_per_hr,
+      kg_per_hr:       kg_per_hr,
+      kms:             kms,
+      kg_per_km:       kg_per_km
+    }
+
     return unless request.patch?
 
     if update_drivers_day(drivers_day_params, next_path: vamos_drivers_day_path(@drivers_day))

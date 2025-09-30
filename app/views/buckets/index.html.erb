@@ -1,7 +1,7 @@
 <div class="container driver-wrapper my-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Weigh buckets</h1>
-    <%= link_to "finish day", end_drivers_day_path(@drivers_day), class: "gooi-collect-button" %>
+    <%= link_to "Finish day", end_drivers_day_path(@drivers_day), class: "submit-btn" %>
   </div>
 
   <div class="row g-3">
@@ -22,7 +22,7 @@
                 label: "Half-full bucket" %>
 
           <div class="mt-2">
-            <%= f.button :submit, "Save & add next", class: "small-yellow-btn" %>
+            <%= f.button :submit, "Save & add next", class: "submit-btn" %>
           </div>
         <% end %>
       </div>

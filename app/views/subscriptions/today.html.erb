@@ -1,6 +1,6 @@
 <!--ALFREDS PAGE-->
 <div class="driver-wrapper">
-  <%= link_to "Weigh buckets", drivers_day_buckets_path(@drivers_day), class: "btn btn-info mb-3" %>
+  <%= link_to "Weigh buckets", drivers_day_buckets_path(@drivers_day), class: "sign-up-btn mb-3" %>
   <div class="collection-header">
 
     <div class="name">
@@ -61,14 +61,5 @@
     </ul>
     <!--</ul>-->
   </div>
-  <div class="drivers-form">
-    <% if current_user.admin? %>
-      <%= link_to "NOTES", today_notes_path, class: "sign-up-btn mb-3" %>
-      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
-    <% elsif current_user.driver? && @drivers_day.nil? %>
-      <p><em>No collections without a driver</em></p>
-    <% elsif current_user.driver? %>
-      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
-    <% end %>
-  </div>
+
 </div>
