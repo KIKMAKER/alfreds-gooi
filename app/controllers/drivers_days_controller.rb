@@ -128,6 +128,30 @@ class DriversDaysController < ApplicationController
       kg_per_km:       kg_per_km
     }
 
+    waste_kg   = @stats[:net_kg].to_f
+    kms        = @stats[:kms].to_f
+
+    avoided    = waste_kg * IMPACT[:co2e_per_kg_diverted]
+
+    litres     = (IMPACT[:l_per_100km] / 100.0) * kms
+    driving    = litres * IMPACT[:diesel_co2e_per_litre]
+
+    net_co2e   = avoided - driving
+
+    trees_gross = avoided / IMPACT[:tree_co2e_per_year]
+    trees_to_offset_drive = driving / IMPACT[:tree_co2e_per_year]
+    trees_net  = net_co2e / IMPACT[:tree_co2e_per_year]
+
+    @impact = {
+      avoided_kg: avoided,
+      driving_kg: driving,
+      net_kg:     net_co2e,
+      trees_gross:            trees_gross,
+      trees_to_offset_drive:  trees_to_offset_drive,
+      trees_net:              trees_net
+    }
+
+
     return unless request.patch?
 
     if update_drivers_day(drivers_day_params, next_path: vamos_drivers_day_path(@drivers_day))
