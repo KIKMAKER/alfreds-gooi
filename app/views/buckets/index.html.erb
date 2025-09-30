@@ -1,0 +1,95 @@
+<div class="container driver-wrapper my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Weigh buckets</h1>
+    <%= link_to "finish day", end_drivers_day_path(@drivers_day), class: "gooi-collect-button" %>
+  </div>
+
+  <div class="row g-3">
+    <!-- Left: Entry form -->
+    <div class="col-12 col-lg-6">
+      <div class="card p-3" style="border-radius:1em">
+        <h5 class="mb-3">Add a bucket</h5>
+
+        <%= simple_form_for [@drivers_day, @bucket] do |f| %>
+
+          <%= f.input :gross_kg,
+                label: "Scale reading (kg, incl. bucket/tare)",
+                input_html: { step: 0.01, min: 0, autofocus: true },
+                hint: "We'll subtract #{Bucket::TARE_KG} kg automatically." %>
+
+          <%= f.input :half,
+                as: :boolean,
+                label: "Half-full bucket" %>
+
+          <div class="mt-2">
+            <%= f.button :submit, "Save & add next", class: "small-yellow-btn" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Right: Summary -->
+    <div class="col-12 col-lg-6">
+      <div class="card p-3" style="border-radius:1em">
+        <h5 class="mb-3">Today's totals</h5>
+        <div class="row text-center">
+          <div class="col-6 col-md-3 mb-2">
+            <div class="text-muted">Buckets</div>
+            <div class="fs-4 fw-bold"><%= @totals[:total_buckets] %></div>
+          </div>
+          <div class="col-6 col-md-3 mb-2">
+            <div class="text-muted">Net kg</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@totals[:total_net_kg], precision: 2) %></div>
+          </div>
+          <div class="col-6 col-md-3 mb-2">
+            <div class="text-muted">Full-equiv</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@totals[:full_equiv], precision: 2) %></div>
+          </div>
+          <div class="col-6 col-md-3 mb-2">
+            <div class="text-muted">Avg kg / bucket</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@totals[:avg_per_bucket], precision: 2) %></div>
+          </div>
+        </div>
+        <div class="text-center mt-2">
+          <small class="text-muted">Avg kg / full-equivalent: <%= number_with_precision(@totals[:avg_per_full], precision: 2) %></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table of buckets -->
+  <div class="card p-3 mt-3" style="border-radius:1em">
+    <h5 class="mb-2">Entered buckets</h5>
+    <table class="table table-sm align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Net kg</th>
+          <th>Half?</th>
+          <th>Added</th>
+          <th class="text-end"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @buckets.each_with_index do |b, i| %>
+          <tr class="align-middle">
+            <td><%= i + 1 %></td>
+            <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
+            <td><%= b.half? ? "Yes" : "No" %></td>
+            <td><%= l b.created_at, format: :short %></td>
+            <td class="text-end">
+              <%= link_to drivers_day_bucket_path(@drivers_day, b),
+                          data: { turbo_method: :delete, turbo_confirm: "Delete this entry?" },
+                          class: "text-danger text-decoration-none", title: "Delete", aria: { label: "Delete" } do %>
+                <i class="fa-solid fa-trash" style="font-size=1rem"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @buckets.empty? %>
+          <tr><td colspan="5" class="text-center text-muted">No buckets recorded yet.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

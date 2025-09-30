@@ -42,12 +42,14 @@ class DriversDay < ApplicationRecord
   # Averages you may want to display
   def avg_net_kg_per_bucket
     return 0.0 if total_buckets.to_i.zero?
+
     (total_net_kg || 0).to_f / total_buckets.to_f
   end
 
   def avg_net_kg_per_full_equiv
     denom = full_equivalent_count.to_f
     return 0.0 if denom <= 0
+
     (total_net_kg || 0).to_f / denom
   end
   # def todays_driver
