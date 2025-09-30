@@ -1,9 +1,18 @@
 <div class="driver-wrapper">
-      <h1>Well done!</h1>
-    <p>You are almost done</p>
-    <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
-  </div>
-  <div class="drivers-form">
+  <h1>Well done!</h1>
+  <p>We planted <%= number_with_precision(@impact[:trees_net], precision: 2) %> tress</p>
+
+  <small class="text-muted d-block">
+    From waste: <%= number_with_precision(@impact[:trees_gross], precision: 2) %>
+  </small>
+  <small class="text-muted d-block">
+    To offset driving: <%= number_with_precision(@impact[:trees_to_offset_drive], precision: 2) %>
+  </small>
+
+  <h3 class="mt-3">You are almost done</h3>
+  <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
+
+  <div class="drivers-form w-25">
     <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
       <%= f.input :total_buckets, label: "Total buckets", required: true, input_html: { min: 0 } %>
       <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
@@ -12,82 +21,7 @@
       <%= f.hidden_field :end_time, value: Time.current %>
       <%= f.submit "Thank you!", class: "small-yellow-btn"  %>
     <% end %>
-    <h3>Check for any unread messages and send the gooi message for tomorrow if needed.</h3>
   </div>
-  <h1>Todays Stats</h1>
-  <div class="text-center">
-    <div class="row g-3 my-3 text-center">
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Net kg</div>
-          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:net_kg], precision: 2) %></div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Buckets (F / H)</div>
-          <div class="fs-6 fw-bold">
-            <%= @stats[:bucket_count] %>
-            <small class="text-muted">(<%= @stats[:full_count] %> / <%= @stats[:half_count] %>)</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Full-equiv</div>
-          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:full_equiv], precision: 2) %></div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">per full-equiv:</div>
-          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:avg_kg_full], precision: 2) %></div>
-          <small class="text-muted">Avg kg / bucket <%= number_with_precision(@stats[:avg_kg_bucket], precision: 2) %></small>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Households</div>
-          <div class="fs-4 fw-bold"><%= @stats[:households] %></div>
-          <small class="text-muted">Bags: <%= @stats[:bags_sum] %></small>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Route time</div>
-          <div class="fs-4 fw-bold">
-            <% if @stats[:route_hours] %>
-              <%= number_with_precision(@stats[:route_hours], precision: 2) %> h
-            <% else %>—<% end %>
-          </div>
-          <small class="text-muted">
-            <% if @stats[:stops_per_hr] %>
-              <%= number_with_precision(@stats[:stops_per_hr], precision: 2) %> stops/h ·
-              <%= number_with_precision(@stats[:kg_per_hr], precision: 2) %> kg/h
-            <% else %>—<% end %>
-          </small>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="card p-3" style="border-radius:1em">
-          <div class="text-muted">Distance</div>
-          <div class="fs-4 fw-bold">
-            <% if @stats[:kms] %>
-              <%= @stats[:kms] %> km
-            <% else %>—<% end %>
-          </div>
-          <small class="text-muted">
-            <% if @stats[:kg_per_km] %>
-              <%= number_with_precision(@stats[:kg_per_km], precision: 2) %> kg/km
-            <% else %>—<% end %>
-          </small>
-        </div>
-      </div>
-    </div>
+    <h3>Check for any unread messages and send the gooi message for tomorrow if needed.</h3>
+  
 </div>
