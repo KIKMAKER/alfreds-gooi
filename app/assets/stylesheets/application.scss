@@ -21,15 +21,16 @@
 
 h1 {
   font-family: 'Libre Baskerville', serif;
-    font-weight: 700;
-    font-size: 36px;
-    color: #023F3A;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #023F3A;
 }
+
 h3 {
   font-family: 'Libre Baskerville', serif;
-    font-weight: 700;
-    font-size: 24px;
-    color: #023F3A;
+  font-weight: 700;
+  font-size: 24px;
+  color: #023F3A;
 }
 
 ul {
@@ -47,6 +48,7 @@ ul {
   border-radius: 16px;
   border: 1px solid black;
 }
+
 .form-select {
   border-radius: 16px;
   border: 1px solid black;
@@ -55,6 +57,7 @@ ul {
 .gooi-container {
   margin: 10px auto;
   width: 100vw;
+
   // height: 100vh;
   p {
     color: black
@@ -207,16 +210,15 @@ ul {
 
 .radio_buttons {
   display: grid; // Use a grid layout for better control
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(60px, 1fr)
-  ); // Create as many columns as possible with a minimum size of 60px
+  grid-template-columns: repeat(auto-fit,
+      minmax(60px, 1fr)); // Create as many columns as possible with a minimum size of 60px
   gap: 4px; // Space between grid items
   width: 90%; // Ensure the wrapper takes the full width
   margin-left: 1vh;
 }
 
 .radio-buttons {
+
   // No underscore, to match the HTML
   input[type="radio"] {
     margin-left: 24px;
