@@ -68,7 +68,7 @@
     <div>
       <br>
       <br>
-      <%= link_to "View all todays collections", collections_drivers_day_path(@drivers_day), class: "small-yellow-btn" %>
+      <%= link_to "View all todays collections", today_subscriptions_path, class: "small-yellow-btn" %>
     </div>
   <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
     <h1>Seems something went wrong when the collections were loaded</h1>
