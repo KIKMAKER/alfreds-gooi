@@ -49,6 +49,12 @@ class PagesController < ApplicationController
 
   end
 
+  def account
+    @subscription = current_user.current_sub
+  end
+
+
+
   def welcome
     @subscription = current_user.current_sub
     merchant_reference = params[:merchantReference]
