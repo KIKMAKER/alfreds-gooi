@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_22_143416) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "buckets", force: :cascade do |t|
+    t.bigint "drivers_day_id", null: false
+    t.float "weight_kg", default: 0.0
+    t.boolean "half", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
+  end
 
   create_table "collections", force: :cascade do |t|
     t.datetime "time"
@@ -64,6 +73,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_143416) do
     t.integer "start_kms"
     t.integer "end_kms"
     t.string "message_from_alfred"
+    t.float "total_net_kg"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 
@@ -310,6 +320,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_143416) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "buckets", "drivers_days"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "drivers_days", "users"
