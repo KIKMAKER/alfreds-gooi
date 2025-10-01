@@ -20,6 +20,9 @@
             <li class="nav-item active">
               <%= link_to "Today's List", today_subscriptions_path, class: "nav-link" %>
             </li>
+            <li class="nav-item active">
+              <%= link_to "Weigh Buckets", drivers_day_buckets_path(drivers_day), class: "nav-link" %>
+            </li>
             <!-- <li class="nav-item active">-->
             <%#= link_to "Drop Off Page", drivers_day.present? ? drop_off_drivers_day_path(drivers_day) : "#", class: "nav-link #{'disabled' unless drivers_day}" %>
             <!--              </li>-->
@@ -55,6 +58,7 @@
                 <%= link_to "Today's List", today_subscriptions_path, class: "dropdown-item" %>
                 <%#= link_to "Drop Off Page", drop_off_drivers_day_path(drivers_day), class: "dropdown-item" %>
                 <% if drivers_day %>
+                <%= link_to "Weigh Buckets", drivers_day_bucket_path(drivers_day), class: "dropdown-item" %>
                   <%= link_to "End the Day", end_drivers_day_path(drivers_day), class: "dropdown-item" %>
                 </div>
               </li>

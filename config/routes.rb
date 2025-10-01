@@ -88,11 +88,6 @@ Rails.application.routes.draw do
     collection do
       get :route
     end
-    resources :collections, only: [:index] do
-      collection do
-        post :reset_order
-      end
-    end
     member do
       get :vamos
       get :start
@@ -107,7 +102,12 @@ Rails.application.routes.draw do
       get 'whatsapp_message', to: 'drivers_days#whatsapp_message'
 
     end
-
+    resources :collections, only: [:index] do
+      collection do
+        post :reset_order
+      end
+    end
+    resources :buckets, only: [:index, :create, :destroy]
   end
 
   resources :products, only: [:index, :new, :create]
@@ -122,6 +122,7 @@ Rails.application.routes.draw do
   # static pages
   root "pages#home"
   get "manage", to: "pages#manage"
+  get "account", to: "pages#account"
   get "skipme", to: "collections#skipme"
   get "welcome", to: "pages#welcome"
   get "referrals", to: "pages#referrals"

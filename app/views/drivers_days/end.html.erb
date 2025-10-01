@@ -1,13 +1,10 @@
 <div class="driver-wrapper">
-  <div class="text-center">
-    <h1>Well done!</h1>
-    <p>You collected <%= @total_bags_collected %> bags and <%= @total_buckets_collected %> buckets today</p>
-    <p>You took <%= @drivers_day.collections.sum(:dropped_off_buckets) %> buckets to become soil</p>
-    <p><strong>Because of you, at least <%= (@drivers_day.total_buckets + @drivers_day.collections.sum(:dropped_off_buckets)) * 25 %>L of organic waste went to the earth instead of a landfill.</strong></p>
-    <p>You are almost done</p>
-    <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
-  </div>
-  <div class="drivers-form">
+  <h1>Well done!</h1>
+  
+  <h3 class="mt-3">You are almost done</h3>
+  <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
+
+  <div class="drivers-form w-25">
     <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
       <%= f.input :total_buckets, label: "Total buckets", required: true, input_html: { min: 0 } %>
       <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
@@ -16,6 +13,7 @@
       <%= f.hidden_field :end_time, value: Time.current %>
       <%= f.submit "Thank you!", class: "small-yellow-btn"  %>
     <% end %>
-    <h3>Check for any unread messages and send the gooi message for tomorrow if needed.</h3>
   </div>
+    <h3>Check for any unread messages and send the gooi message for tomorrow if needed.</h3>
+
 </div>
