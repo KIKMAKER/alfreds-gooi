@@ -7,8 +7,8 @@ class ErrorsController < ApplicationController
     code = 500 unless [403, 404, 422, 500].include?(code)
 
     @code = code
+    raise
     @title, @message, @cta = content_for(code)
-
     render template: "errors/#{code}", status: code
   rescue => _
     @code = 500
@@ -26,19 +26,19 @@ class ErrorsController < ApplicationController
        { primary: ["Back home", :root_path],
          secondary: ["Where we collect", :root_path] }]
     when 422
-      ["We couldn’t process that",
+      ["We couldn't process that",
        "Please try again. If the issue persists, refresh and resubmit.",
        { primary: ["Back home", :root_path],
-         secondary: ["Contact us", "mailto:hello@gooi.me"] }]
+         secondary: ["Contact us", "mailto:howzit@gooi.me"] }]
     when 403
       ["Access denied",
-       "You don’t have permission to view this page.",
+       "You don't have permission to view this page.",
        { primary: ["Back home", :root_path] }]
     else # 500
       ["Something went wrong",
-       "Our bad. We’re on it. Try again in a moment.",
+       "Our bad. We're on it. Try again in a moment.",
        { primary: ["Back home", :root_path],
-         secondary: ["Contact us", "mailto:hello@gooi.me"] }]
+         secondary: ["Contact us", "mailto:howzit@gooi.me"] }]
     end
   end
 end

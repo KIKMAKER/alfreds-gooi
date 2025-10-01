@@ -1,0 +1,25 @@
+<!-- app/views/errors/404.html.erb -->
+<section class="gooi-header d-flex flex-column justify-content-center" style="min-height:70vh">
+  <div class="inner-header-container">
+    <h1><%= @title %></h1>
+    <p><%= @message %></p>
+
+    <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+      <% if @cta&.dig(:primary) %>
+        <% label, path = @cta[:primary] %>
+        <%= link_to label, (path.is_a?(Symbol) ? send(path) : path), class: "btn-gooi" %>
+      <% end %>
+
+      <% if @cta&.dig(:secondary) %>
+        <% label, path = @cta[:secondary] %>
+        <%= link_to label, (path.is_a?(Symbol) ? send(path) : path), class: "btn-gooi", style: "background:#ffffffcc;color:#023F3A" %>
+      <% end %>
+    </div>
+
+    <div class="mt-3">
+      <p class="text-white-50" style="font-size:0.9rem">
+        Error <%= @code %> • Need help? <a href="mailto:howzit@gooi.me" style="color:#FBB718;text-decoration:underline">howzit@gooi.me</a>
+      </p>
+    </div>
+  </div>
+</section>
