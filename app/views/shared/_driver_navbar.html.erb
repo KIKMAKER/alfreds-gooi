@@ -1,8 +1,10 @@
-<div class="navbar navbar-expand-sm navbar-light navbar-lewagon pt-4">
+<div class="navbar navbar-expand-sm pt-4">
   <div class="container-fluid">
     <%= link_to root_path, class: "navbar-brand" do %>
       <%= image_tag('gooi_logo_CR.png', alt: 'Your Logo', class: 'alt-logo') %>
     <% end %>
+
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -34,7 +36,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Collections
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">-
                 <%= link_to "Load CSV", load_csv_collections_path, class: "dropdown-item" %>
                 <%= link_to "Export CSV", export_csv_collections_path, class: "dropdown-item" %>
                 <%= link_to "Today", today_subscriptions_path, class: "dropdown-item" %>
