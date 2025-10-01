@@ -22,7 +22,7 @@ class DriversDaysController < ApplicationController
     # today = Date.today  + 1
     @today = today.strftime("%A")
     @drivers_day = DriversDay.find_by(date: today)
-     buckets       = @drivers_day.buckets
+    buckets       = @drivers_day.buckets
     net_kg        = buckets.sum(:weight_kg).to_f
     bucket_count  = buckets.count
     half_count    = buckets.where(half: true).count
