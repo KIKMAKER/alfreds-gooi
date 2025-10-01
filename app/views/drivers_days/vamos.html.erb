@@ -16,10 +16,10 @@
         <h5 class="mt-3">They are:</h5>
         <% @new_customers.each do |collection| %>
           <p><%= collection.subscription.user.first_name %> at <%= collection.subscription.street_address %> </p>
-        <p>Let them know you are coming past:</p>
-        <%= link_to collection.subscription.user.generate_whatsapp_link("Hello from gooi! I will be coming past today to drop off your starter kit. Please add this number to your contacts so that you can recieve our weekly reminders about collection day. Welcome to gooi! It's a joy to have you onboard."), target: :_blank do %>
-          <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
-        <% end %>
+          <p>Let them know you are coming past:</p>
+          <%= link_to collection.subscription.user.generate_whatsapp_link("Hello from gooi! I will be coming past today to drop off your starter kit. Please add this number to your contacts so that you can recieve our weekly reminders about collection day. Welcome to gooi! It's a joy to have you onboard."), target: :_blank do %>
+            <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
+          <% end %>
         <% end %>
         <strong>
           <p class="mt-3">Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p>
@@ -50,7 +50,16 @@
         <%= f.submit "Save kms", class: "gooi-button" %>
       <% end %>
     <% else %>
-      <p>You drove <%= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>
+      <!--<p>You drove <%#= @drivers_day.end_kms - @drivers_day.start_kms %>kms today</p>-->
+      <p>We planted the equivalent of <%= number_with_precision(@impact[:trees_net], precision: 2) %> tress</p>
+
+      <small class="text-muted d-block">
+        From waste: <%= number_with_precision(@impact[:trees_gross], precision: 2) %>
+      </small>
+      <small class="text-muted d-block">
+        To offset driving: <%= number_with_precision(@impact[:trees_to_offset_drive], precision: 2) %>
+      </small>
+
     <% end %>
     <% unless @drivers_day.start_time && @drivers_day.end_time%>
       <p>Seems the start/end time of your day wasn't saved</p>
@@ -61,15 +70,90 @@
         <%= f.submit "Save times", class: "gooi-button" %>
       <% end %>
     <% else %>
-      <p>And worked for <%= @hours_worked %></p>
-      <p>We composted <%= @drivers_day.total_buckets %> buckets today</p>
+      <!--<p>And worked for <%#= @hours_worked %></p>-->
+
     <% end %>
     <p>Travel safe, see you next time</p>
     <div>
       <br>
+      <div class="row g-3 my-3 text-center">
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Net kg</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:net_kg], precision: 2) %></div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Buckets (F / H)</div>
+            <div class="fs-6 fw-bold">
+              <%= @stats[:bucket_count] %>
+              <small class="text-muted">(<%= @stats[:full_count] %> / <%= @stats[:half_count] %>)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Full-equiv</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:full_equiv], precision: 2) %></div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Avg kg / bucket</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:avg_kg_bucket], precision: 2) %></div>
+            <small class="text-muted">per full-equiv: <%= number_with_precision(@stats[:avg_kg_full], precision: 2) %></small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Households</div>
+            <div class="fs-4 fw-bold"><%= @stats[:households] %></div>
+            <small class="text-muted">Bags: <%= @stats[:bags_sum] %></small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Route time</div>
+            <div class="fs-4 fw-bold">
+              <% if @stats[:route_hours] %>
+                <%= number_with_precision(@stats[:route_hours], precision: 2) %> h
+              <% else %>—<% end %>
+            </div>
+            <small class="text-muted">
+              <% if @stats[:stops_per_hr] %>
+                <%= number_with_precision(@stats[:stops_per_hr], precision: 2) %> stops/h ·
+                <%= number_with_precision(@stats[:kg_per_hr], precision: 2) %> kg/h
+              <% else %>—<% end %>
+            </small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Distance</div>
+            <div class="fs-4 fw-bold">
+              <% if @stats[:kms] %>
+                <%= @stats[:kms] %> km
+              <% else %>—<% end %>
+            </div>
+            <small class="text-muted">
+              <% if @stats[:kg_per_km] %>
+                <%= number_with_precision(@stats[:kg_per_km], precision: 2) %> kg/km
+              <% else %>—<% end %>
+            </small>
+          </div>
+        </div>
+      </div>
+
       <br>
-      <%= link_to "View all todays collections", today_subscriptions_path, class: "small-yellow-btn" %>
     </div>
+    <%= link_to "View all todays collections", today_subscriptions_path, class: "small-yellow-btn" %>
   <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
     <h1>Seems something went wrong when the collections were loaded</h1>
     <p>Please ask Kiki to update collections</p>
