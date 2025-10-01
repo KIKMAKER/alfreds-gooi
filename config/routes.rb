@@ -139,4 +139,9 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  # Error routes
+  %w[404 422 500 403].each do |code|
+    match code, to: "errors#show", via: :all, defaults: { code: code }
+  end
+
 end

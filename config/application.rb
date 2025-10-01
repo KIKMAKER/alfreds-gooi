@@ -30,5 +30,7 @@ module AlfredsGooi
     # config.eager_load_paths << Rails.root.join("extras")
     # config.hosts << "alfred.gooi.me"
     # config.hosts << "www.gooi.me"
+    # use the router to configure error messages
+    config.exceptions_app = self.routes
   end
 end
