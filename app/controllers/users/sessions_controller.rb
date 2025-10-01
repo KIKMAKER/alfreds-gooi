@@ -10,24 +10,26 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    super do |resource|
-      stored_location = session[:user_return_to] # Get stored location
+    super
+    # do |resource|
+    #   stored_location = session[:user_return_to] # Get stored location
+    #   raise
 
-      if stored_location
-        session.delete(:user_return_to) # Clear after using
-        return redirect_to stored_location
-      end
-      if resource.customer?
-        return redirect_to manage_path
-      elsif resource.driver?
-        # CreateCollectionsJob.perform_now
-        return redirect_to vamos_drivers_day_path(resource.drivers_day.last)
-      elsif resource.admin?
-        return redirect_to this_week_collections_path
-      else
-        return redirect_to root_path
-      end
-    end
+    #   if stored_location
+    #     session.delete(:user_return_to) # Clear after using
+    #     return redirect_to stored_location
+    #   end
+    #   if resource.customer?
+    #     return redirect_to manage_path
+    #   elsif resource.driver?
+    #     # CreateCollectionsJob.perform_now
+    #     return redirect_to vamos_drivers_day_path(resource.drivers_day.last)
+    #   elsif resource.admin?
+    #     return redirect_to this_week_collections_path
+    #   else
+    #     return redirect_to root_path
+    #   end
+    # end
   end
 
   # DELETE /resource/sign_out
@@ -37,18 +39,35 @@ class Users::SessionsController < Devise::SessionsController
 
   protected
 
-  # def after_sign_in_path_for(resource)
-  #   if resource.customer?
-  #     return manage_path
-  #   elsif resource.driver?
-  #     CreateCollectionsJob.perform_now
-  #     vamos_path
-  #   elsif resource.admin?
-  #     this_week_collections_path
-  #   else
-  #     root_path # Fallback in case none of the conditions match
-  #   end
-  # end
+  def after_sign_in_path_for(resource)
+    # PRIORITY: role-based
+    return this_week_collections_path if resource.admin?
+
+    if resource.driver?
+      # guard against nil if no day exists yet
+      last_day = resource.respond_to?(:drivers_days) ? resource.drivers_days.order(:date).last : nil
+      return last_day ? vamos_drivers_day_path(last_day) : this_week_collections_path
+    end
+
+    return manage_path if resource.customer?
+
+    # FALLBACK: use Devise helper (fetches & clears) if you still want “return to”
+    stored = stored_location_for(resource)
+    if stored.present? && safe_redirect_path?(stored)
+      return stored
+    end
+
+    root_path
+  end
+
+  private
+
+  # simple safety: only allow relative, non-auth paths
+  def safe_redirect_path?(path)
+    uri = URI.parse(path) rescue nil
+    uri && uri.host.nil? && !path.start_with?("/users/")
+  end
+
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_in_params
