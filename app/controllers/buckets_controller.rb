@@ -13,6 +13,9 @@ class BucketsController < ApplicationController
       avg_per_bucket: @drivers_day.avg_net_kg_per_bucket,
       avg_per_full:   @drivers_day.avg_net_kg_per_full_equiv
     }
+    @completed_counts = @drivers_day.collections.where(skip: false)
+                                 .where.not(updated_at: nil)
+                                 .group(:drivers_day_id).count
   end
 
   def create
