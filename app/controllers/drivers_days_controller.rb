@@ -17,11 +17,12 @@ class DriversDaysController < ApplicationController
 
   def vamos
     # in production today will be the current day,
-    today = Date.today
+    # today = Date.today
     # but in testing I want to be able to test the view for a given day
     # today = Date.today  + 1
     @today = today.strftime("%A")
-    @drivers_day = DriversDay.find_by(date: today)
+
+    @drivers_day = DriversDay.find(params[:id])
      buckets       = @drivers_day.buckets
     net_kg        = buckets.sum(:weight_kg).to_f
     bucket_count  = buckets.count
