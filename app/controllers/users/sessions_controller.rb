@@ -52,7 +52,7 @@ class Users::SessionsController < Devise::SessionsController
         return vamos_drivers_day_path(dd)
       else
         # Fallback (pick what makes sense for you)
-        return today_subscriptions_path, alert: "No Driver’s Day found for today yet."
+        return today_subscriptions_path
         # or: redirect_to new_drivers_day_path(date: today) if you allow manual creation
         # or: DriversDay.create!(user: resource, date: today); redirect_to ...
       end
@@ -62,6 +62,7 @@ class Users::SessionsController < Devise::SessionsController
 
     # FALLBACK: use Devise helper (fetches & clears) if you still want “return to”
     stored = stored_location_for(resource)
+
     if stored.present? && safe_redirect_path?(stored)
       return stored
     end
