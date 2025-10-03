@@ -44,9 +44,18 @@ class Users::SessionsController < Devise::SessionsController
     return this_week_collections_path if resource.admin?
 
     if resource.driver?
-      # guard against nil if no day exists yet
-      last_day = resource.respond_to?(:drivers_days) ? resource.drivers_days.order(:date).last : nil
-      return last_day ? vamos_drivers_day_path(last_day) : this_week_collections_path
+      today = Time.zone.today
+      dd = DriversDay.find_by(user_id: resource.id, date: today)
+
+      # If you *always* expect a DD to exist by login time:
+      if dd
+        return vamos_drivers_day_path(dd)
+      else
+        # Fallback (pick what makes sense for you)
+        return today_subscriptions_path, alert: "No Driver’s Day found for today yet."
+        # or: redirect_to new_drivers_day_path(date: today) if you allow manual creation
+        # or: DriversDay.create!(user: resource, date: today); redirect_to ...
+      end
     end
 
     return manage_path if resource.customer?
