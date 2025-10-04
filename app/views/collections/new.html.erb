@@ -22,7 +22,9 @@
       <% end %>
       <% if current_user.admin? %>
         <%= f.input :kiki_note %>
-        <%= f.input :date, as: :date %>
+        <%= f.input :date,
+              as: :string,
+              input_html: { data: { controller: "datepicker" } }, label: "Date:" %>
         <div class="d-flex">
           <%= f.input :is_done, as: :boolean, checked_value: 'positive', unchecked_value: 'negative' %>
           <%= f.input :new_customer, as: :boolean, label: "New Customer" %>
