@@ -151,6 +151,9 @@ class SubscriptionsController < ApplicationController
     # subscription = Subscription.find(params[:id])
     # user = subscription.user
     if @subscription.update(subscription_params)
+      @subscription.collections
+                     .where(date: @subscription.holiday_start..@subscription.holiday_end)
+                     .update_all(skip: true)
       if @subscription.completed? && @subscription.end_date.nil?
         @subscription.end_date!
       end
