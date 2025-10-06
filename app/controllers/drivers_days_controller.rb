@@ -23,7 +23,7 @@ class DriversDaysController < ApplicationController
     @today = today.strftime("%A")
 
     @drivers_day = DriversDay.find(params[:id])
-     buckets       = @drivers_day.buckets
+    buckets       = @drivers_day.buckets
     net_kg        = buckets.sum(:weight_kg).to_f
     bucket_count  = buckets.count
     half_count    = buckets.where(half: true).count
@@ -284,6 +284,67 @@ class DriversDaysController < ApplicationController
   def show
     @drivers_day = DriversDay.find(params[:id])
     @collections = @drivers_day.collections
+
+    buckets       = @drivers_day.buckets
+    net_kg        = buckets.sum(:weight_kg).to_f
+    bucket_count  = buckets.count
+    half_count    = buckets.where(half: true).count
+    full_count    = bucket_count - half_count
+    full_equiv    = full_count + (half_count * 0.5)
+
+    households    = @drivers_day.collections.where(skip: false).where.not(updated_at: nil).count
+    bags_sum      = @drivers_day.collections.where(skip: false).sum(:bags)
+
+    route_hours   = if @drivers_day.start_time && @drivers_day.end_time
+                      ((@drivers_day.end_time - @drivers_day.start_time) / 3600.0)
+                    end
+    stops_per_hr  = route_hours&.positive? ? (households / route_hours) : nil
+    kg_per_hr     = route_hours&.positive? ? (net_kg / route_hours) : nil
+
+    kms           = if @drivers_day.start_kms && @drivers_day.end_kms
+                      @drivers_day.end_kms - @drivers_day.start_kms
+                    end
+    kg_per_km     = (kms && kms > 0) ? (net_kg / kms) : nil
+
+    @stats = {
+      net_kg:          net_kg,
+      bucket_count:    bucket_count,
+      full_count:      full_count,
+      half_count:      half_count,
+      full_equiv:      full_equiv,
+      avg_kg_bucket:   bucket_count.positive? ? (net_kg / bucket_count) : 0.0,
+      avg_kg_full:     full_equiv.positive? ? (net_kg / full_equiv) : 0.0,
+      households:      households,
+      bags_sum:        bags_sum,
+      route_hours:     route_hours,
+      stops_per_hr:    stops_per_hr,
+      kg_per_hr:       kg_per_hr,
+      kms:             kms,
+      kg_per_km:       kg_per_km
+    }
+
+    waste_kg   = @stats[:net_kg].to_f
+    kms        = @stats[:kms].to_f
+
+    avoided    = waste_kg * IMPACT[:co2e_per_kg_diverted]
+
+    litres     = (IMPACT[:l_per_100km] / 100.0) * kms
+    driving    = litres * IMPACT[:diesel_co2e_per_litre]
+
+    net_co2e   = avoided - driving
+
+    trees_gross = avoided / IMPACT[:tree_co2e_per_year]
+    trees_to_offset_drive = driving / IMPACT[:tree_co2e_per_year]
+    trees_net  = net_co2e / IMPACT[:tree_co2e_per_year]
+
+    @impact = {
+      avoided_kg: avoided,
+      driving_kg: driving,
+      net_kg:     net_co2e,
+      trees_gross:            trees_gross,
+      trees_to_offset_drive:  trees_to_offset_drive,
+      trees_net:              trees_net
+    }
   end
 
   def edit; end
