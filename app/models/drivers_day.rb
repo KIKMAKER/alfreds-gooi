@@ -15,6 +15,10 @@ class DriversDay < ApplicationRecord
 
   # custom methods
 
+  def day_of_the_week
+    date.strftime("%A")
+  end
+
   def hours_worked
     difference_in_seconds = end_time - start_time
     difference_in_hours = difference_in_seconds / 3600.0 # There are 3600 seconds in an hour

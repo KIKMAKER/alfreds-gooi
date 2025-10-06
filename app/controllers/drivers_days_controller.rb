@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  before_action :set_drivers_day, only: %i[drop_off edit update destroy collections]
+  before_action :set_drivers_day, only: %i[edit update destroy collections]
 
   def route
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
@@ -132,20 +132,6 @@ class DriversDaysController < ApplicationController
     end
   end
 
-  # def drop_off
-  #   @collections = @drivers_day.collections
-  #   @total_bags_collected = @collections.sum(:bags)
-  #   @total_buckets_collected = @collections.sum(:buckets)
-  #   if request.patch?
-  #     if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
-  #       puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
-  #       flash[:notice] = "Drop off updated successfully with #{@drivers_day.total_buckets} buckets."
-  #     else
-  #       flash.now[:alert] = "Failed to update Driver's Day"
-  #       render :drop_off
-  #     end
-  #   end
-  # end
 
   def end
     @drivers_day = DriversDay.includes(:collections).find(params[:id])
