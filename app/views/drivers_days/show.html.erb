@@ -1,60 +1,91 @@
-<div class="gooi-container">
-  <div class="today-outline">
-    <h1><%= @drivers_day.date.strftime('%b %d') %></h1>
-    <strong>
-      <p>Time: <%= @drivers_day.start_time&.strftime('%I:%M') %> - <%= @drivers_day.end_time&.strftime('%I:%M') %></p>
-    </strong>
-    <strong>
-      <p>kms: <%= @drivers_day.start_kms %> -  <%= @drivers_day.end_kms %></p>
-    </strong>
-    <strong>TOTAL BUCKETS</strong>: <%= @drivers_day.collections.sum(:dropped_off_buckets) || @drivers_day.total_buckets  %>
+<div class="driver-wrapper">
+  <h1><%= @drivers_day.date.strftime('%b %d') %></h1>
+  <strong>
+    <p>Time: <%= @drivers_day.start_time&.strftime('%I:%M') %> - <%= @drivers_day.end_time&.strftime('%I:%M') %></p>
+  </strong>
+  <strong>
+    <p>kms: <%= @drivers_day.start_kms %> -  <%= @drivers_day.end_kms %></p>
+  </strong>
+  <div>
     <br>
-    <br>
-    <div class="grid-container">
-      <div class="grid-item"><strong>Name</strong></div>
-      <div class="grid-item"><strong>Collect</strong></div>
-      <div class="grid-item"><strong>Note</strong></div>
-      <% @collections.each do |collection| %>
-        <div class="grid-item">
-          <% if collection&.skip %>
-            <p>SKIP!</p>
-          <% end %>
-          <%= link_to collection.subscription.user.first_name, subscription_path(collection.subscription) %>
+    <div class="row g-3 my-3 text-center">
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Net kg</div>
+          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:net_kg], precision: 2) %></div>
         </div>
-        <div class="grid-item gooi-collect-button">
-          <% if collection.nil? %>
-            <%#= link_to "Collect! from #{collection.subscription.user.first_name}", new_subscription_collection_path(subscription) %>
-          <% else %>
-            <% if collection.skip %>
-              <%= link_to "No Collection!", edit_collection_path(collection) %>
-            <% elsif collection.bags.present? && collection.updated_at < Time.now %>
-              <%= link_to "Got #{pluralize(collection.bags, 'bags')}. Collect more?", edit_collection_path(collection) %>
-            <% elsif collection.buckets.present? && collection.updated_at < Time.now %>
-              <%= link_to "Got #{pluralize(collection.buckets, 'buckets')}. Collect more?", edit_collection_path(collection) %>
-            <% elsif collection.new_customer %>
-              <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) %>
-            <% elsif collection.dropped_off_buckets.present? && collection.updated_at < Time.now %>
-              <%= link_to "Dropped off #{pluralize(collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(collection) %>
-            <% elsif collection.subscription.user.drop_off? %>
-              <%= link_to "Drop off", edit_collection_path(collection) %>
-            <% else %>
-              <%= link_to "Collect!", edit_collection_path(collection) %>
-            <% end %>
-          <% end %>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Buckets (F / H)</div>
+          <div class="fs-6 fw-bold">
+            <%= @stats[:bucket_count] %>
+            <small class="text-muted">(<%= @stats[:full_count] %> / <%= @stats[:half_count] %>)</small>
+          </div>
         </div>
-        <div class="grid-item">
-          <% if collection.alfred_message %>
-            <%= collection.alfred_message %>
-          <% elsif collection.skip %>
-            <p>Skipped</p>
-          <% else %>
-            <p>No message from Alfred yet</p>
-          <% end %>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Full-equiv</div>
+          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:full_equiv], precision: 2) %></div>
         </div>
-      <% end %>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Avg kg / bucket</div>
+          <div class="fs-4 fw-bold"><%= number_with_precision(@stats[:avg_kg_bucket], precision: 2) %></div>
+          <small class="text-muted">per full-equiv: <%= number_with_precision(@stats[:avg_kg_full], precision: 2) %></small>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Households</div>
+          <div class="fs-4 fw-bold"><%= @stats[:households] %></div>
+          <small class="text-muted">Bags: <%= @stats[:bags_sum] %></small>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Route time</div>
+          <div class="fs-4 fw-bold">
+            <% if @stats[:route_hours] %>
+              <%= number_with_precision(@stats[:route_hours], precision: 2) %> h
+            <% else %>—<% end %>
+          </div>
+          <small class="text-muted">
+            <% if @stats[:stops_per_hr] %>
+              <%= number_with_precision(@stats[:stops_per_hr], precision: 2) %> stops/h ·
+              <%= number_with_precision(@stats[:kg_per_hr], precision: 2) %> kg/h
+            <% else %>—<% end %>
+          </small>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="card p-3" style="border-radius:1em">
+          <div class="text-muted">Distance</div>
+          <div class="fs-4 fw-bold">
+            <% if @stats[:kms] %>
+              <%= @stats[:kms] %> km
+            <% else %>—<% end %>
+          </div>
+          <small class="text-muted">
+            <% if @stats[:kg_per_km] %>
+              <%= number_with_precision(@stats[:kg_per_km], precision: 2) %> kg/km
+            <% else %>—<% end %>
+          </small>
+        </div>
+      </div>
     </div>
+
     <br>
-    <br>
-    <%= link_to "ALL DAYS", drivers_days_path, class: "gooi-button" %>
   </div>
+  <br>
+  <br>
+  <%= link_to "ALL DAYS", drivers_days_path, class: "gooi-button" %>
 </div>
