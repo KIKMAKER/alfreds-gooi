@@ -3,9 +3,8 @@
   <div class="outline">
     <div>
       <br>
-        <% name = ( @user.respond_to?(:full_name) && @user.full_name.present?) ? @user.full_name : [@user.first_name, @user.last_name].compact.join(" ") %>
+      <% name = ( @user.respond_to?(:full_name) && @user.full_name.present?) ? @user.full_name : [@user.first_name, @user.last_name].compact.join(" ") %>
       <h1><%= name.presence || @user.email %></h1>
-
 
       <p><strong>Email:</strong> <%= @user.email %></p>
       <% if @user.respond_to?(:phone_number) && @user.phone_number.present? %>
@@ -20,8 +19,6 @@
               method: :post,
               class: "btn-today-green my-2",
               form: { data: { turbo_confirm: "Create a new subscription from the user's last one and generate an invoice?" } } %>
-
-
 
       <hr>
 
@@ -44,35 +41,39 @@
           <tbody>
             <% @subscriptions.each do |subscription| %>
 
+              <% completed = subscription.respond_to?(:completed?) && subscription.completed? %>
+              <tr>
 
-                <% completed = subscription.respond_to?(:completed?) && subscription.completed? %>
-                <tr>
+                <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
 
+                <td>
+                  <%= link_to subscription_path(subscription) do %>
+                    <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
+                    <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
+                  <% end %>
+                </td>
+                <td>
+                  <% dur = subscription.duration || "unpaid" %>
+                  <% if completed %><s><%= dur %></s><% else %><%= dur %><% end %>
+                </td>
 
-                  <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
+                <td>
+                  <% total = (subscription.respond_to?(:total_collections) ? subscription.total_collections : subscription.collections.count) || "unpaid" %>
+                  <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
+                </td>
 
-                  <td>
-                    <%= link_to subscription_path(subscription) do %>
-                      <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
-                      <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
-                    <% end %>
-                  </td>
-                  <td>
-                    <% dur = subscription.duration || "unpaid" %>
-                    <% if completed %><s><%= dur %></s><% else %><%= dur %><% end %>
-                  </td>
-
-                  <td>
-                    <% total = (subscription.respond_to?(:total_collections) ? subscription.total_collections : subscription.collections.count) || "unpaid" %>
-                    <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
-                  </td>
-
-                  <td>
-                    <% rem = (subscription.respond_to?(:remaining_collections) ? subscription.remaining_collections : nil) %>
-                    <% if rem.present? %>
+                <td>
+                  <% rem = (subscription.respond_to?(:remaining_collections) ? subscription.remaining_collections : nil) %>
+                  <% if rem.present? %>
+                    <% if rem < -1 %>
                       <% if rem < -1 %>
-                        <%= link_to 'reassign preview', reassign_collections_subscription_path(@subscription, dry_run: 1) %>
-                        <%= link_to "reassign #{rem.truncate} collections", reassign_collections_subscription_path(@subscription) %>
+                        <%= button_to 'reassign preview',
+                reassign_collections_subscription_path(subscription, dry_run: 1),
+                method: :post, form: { data: { turbo: false } } %>
+
+                        <%= button_to "reassign #{rem.truncate} collections",
+                reassign_collections_subscription_path(subscription),
+                method: :post, form: { data: { turbo: false } } %>
                       <% else %>
                         <%= rem.to_i.truncate %>
                       <% end %>
@@ -91,17 +92,17 @@
                     <% if completed && he.present? %><s><%= he %></s><% else %><%= he || "unpaid" %><% end %>
                   </td>
                 </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p>No subscriptions.</p>
-      <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p>No subscriptions.</p>
+        <% end %>
 
-      <p style="margin-top:1rem;">
-        <%= link_to "Back to Users", admin_users_path, class: "btn-today-green" %>
-        <%= link_to "Edit User", edit_admin_user_path(@user), class: "btn-today-green", style: "margin-left: .5rem" %>
-      </p>
+        <p style="margin-top:1rem;">
+          <%= link_to "Back to Users", admin_users_path, class: "btn-today-green" %>
+          <%= link_to "Edit User", edit_admin_user_path(@user), class: "btn-today-green", style: "margin-left: .5rem" %>
+        </p>
+      </div>
     </div>
   </div>
-</div>
