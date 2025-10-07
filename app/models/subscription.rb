@@ -133,22 +133,71 @@ class Subscription < ApplicationRecord
     self.customer_id = user.customer_id
   end
 
-  def suggested_start_date(payment_date: Time.zone.today)
-    last_sub = user.subscriptions.completed.order(end_date: :desc).first
-    return payment_date unless last_sub
+  GRACE_BACK_DAYS = 28
 
-    last_end = last_sub.end_date.to_date
-    return payment_date unless last_end
+  # Suggest a start date for THIS subscription.
+  #
+  # Rules:
+  # - If there's no previous completed sub → start on payment date.
+  # - If they paid before the last sub ended → day after last_end.
+  # - If they paid within GRACE_BACK_DAYS after last_end → day after last_end.
+  # - FAILSAFE: if any non-skipped collections happened in the gap → day after last_end.
+  # - Otherwise (long gap, no pickups) → payment date.
+  # - Then (optionally) align to this sub's collection weekday for clean routing.
+  #
+  # Returns a Date.
+  def suggested_start_date(payment_date: Date.current, align_to_collection_day: true)
+    paid_on  = payment_date.to_date
+    last_sub = user.subscriptions.completed.where.not(id: id).order(end_date: :desc).first
 
-    days_since = (payment_date - last_end).to_i
-    expected = (days_since / 7.0).floor
-    actual = user.collections.where(date: (last_end + 1.day)..payment_date).count
+    base =
+      if last_sub&.end_date.present?
+        last_end = last_sub.end_date.to_date
 
-    if actual >= (expected/2)
-      last_end + 7
+        # FAILSAFE: if you actually collected in the gap, force continuity
+        had_pickups_in_gap = user.collections
+                                .where(skip: false)
+                                .where(date: (last_end + 1.day)..paid_on)
+                                .exists?
+
+        if had_pickups_in_gap || paid_on <= last_end || paid_on <= (last_end + GRACE_BACK_DAYS)
+          last_end + 1.day
+        else
+          paid_on
+        end
+      else
+        paid_on
+      end
+
+    return base unless align_to_collection_day
+
+    ruby_wday = normalize_to_ruby_wday(collection_day)
+    ruby_wday ? align_to_wday(base, ruby_wday) : base
+  end
+
+  # Map your collection_day to Ruby's Date#wday (0=Sun..6=Sat).
+  # Adjust this if your enum differs.
+  def normalize_to_ruby_wday(val)
+    case val
+    when Integer
+      # If your enum already uses Ruby's 0..6, return as-is.
+      # If it's 1..7 (Mon..Sun), change to: (val % 7)
+      val
+    when String
+      # Accept "Monday", "tuesday", etc.
+      idx = Date::DAYNAMES.index(val.to_s.capitalize)
+      idx.nil? ? nil : idx
     else
-      payment_date
+      nil
     end
+  end
+
+  # Align to the same or next occurrence of ruby_wday (0..6).
+  # If you want *always next week* when it's the same day, replace last line with:
+  #   delta = 7 if delta.zero?
+  def align_to_wday(date, ruby_wday)
+    delta = (ruby_wday - date.wday) % 7
+    date + delta
   end
 
   def delete_invoices

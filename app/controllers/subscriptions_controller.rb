@@ -116,10 +116,12 @@ class SubscriptionsController < ApplicationController
     # find any friends this user has refered who have actually signed up
     referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
     # get og from the params as boolean
-    og = params[:og] == "true"
+    og = params[:og] == "true" || current_user.og
     is_new = params[:new] == "true"
     # save the sub
-    if @subscription.save!
+    if @subscription.save
+      start_date = @subscription.suggested_start_date(payment_date: Date.current)
+      @subscription.update!(start_date: start_date)
       # create an invoice
       # @invoice = create_invoice_for_subscription(@subscription, og, is_new, nil, referred_friends)
       @invoice = InvoiceBuilder.new(
