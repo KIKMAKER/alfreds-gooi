@@ -204,11 +204,21 @@ class SubscriptionsController < ApplicationController
 
   def reassign_collections
     subscription = Subscription.find(params[:id])
-    user = subscription.user
-    additional_collections = subscription.remaining_collections&.to_i.truncate * -1
-    new_sub = user.duplicate_subscription_with_collections(additional_collections)
-    redirect_to subscriptions_path, notice: "collections reassigned"
+    dry_run = params[:dry_run].to_s == "1"
+
+    result = subscription.reassign_user_collections!(dry_run: dry_run)
+
+    msg = +"Reassigned #{dry_run ? '(dry-run) ' : ''}#{result[:updated_total]} collections."
+    if result[:unmatched].any?
+      sample = result[:unmatched].first(10).map { |h| "##{h[:id]}(#{h[:date]})" }.join(", ")
+      msg << " Unmatched: #{result[:unmatched].size} [#{sample}#{'…' if result[:unmatched].size > 10}]"
+    end
+
+    redirect_to subscriptions_path, notice: msg
+  rescue => e
+    redirect_to subscriptions_path, alert: "Reassign error: #{e.class} #{e.message}"
   end
+
 
   def welcome
     @subscription = Subscription.find(params[:id])

@@ -188,6 +188,85 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Reassign this user's "out-of-window" collections to the correct subscription.
+  # Returns a result hash with counts and unmatched items.
+  #
+  # Window rules (inclusive):
+  # - start = sub.start_date.to_date
+  # - finish = sub.end_date.to_date, else (start + duration.months).to_date, else nil (open-ended)
+  #
+  # Options:
+  #   dry_run: true  -> don't update DB, just report
+  #
+  def reassign_user_collections!(dry_run: false)
+    raise "Subscription must have a user" unless user
+
+    # Build windows for all of the user's subs that have a start_date
+    subs = user.subscriptions.where.not(start_date: nil).to_a
+    windows = subs.index_by(&:id).transform_values do |s|
+      start  = s.start_date&.to_date
+      finish =
+        if s.end_date.present?
+          s.end_date.to_date
+        elsif s.duration.present?
+          (s.start_date + s.duration.months).to_date
+        else
+          nil # open-ended from start
+        end
+      { sub: s, start: start, finish: finish }
+    end
+
+    inside = ->(d, w) { w[:start] && d >= w[:start] && (w[:finish].nil? || d <= w[:finish]) }
+
+    # Find collections that are outside their current sub's window (or have no sub)
+    colls = user.collections.includes(:subscription).to_a
+    out_of_range = colls.select do |c|
+      cd  = c.date.to_date
+      sid = c.subscription_id
+      w   = sid && windows[sid]
+      w ? !inside.call(cd, w) : true
+    end
+
+    # Decide a target sub for each out-of-range collection
+    by_target = Hash.new { |h, k| h[k] = [] } # sub_id => [collection_ids]
+    unmatched = []
+
+    out_of_range.each do |c|
+      cd = c.date.to_date
+      target = windows.values.find { |w| inside.call(cd, w) }
+      if target
+        by_target[target[:sub].id] << c.id
+      else
+        unmatched << { id: c.id, date: cd }
+      end
+    end
+
+    # Apply updates (unless dry-run)
+    updated_total = 0
+    per_target = {}
+
+    unless dry_run
+      self.class.transaction do
+        by_target.each do |target_id, ids|
+          count = Collection.where(id: ids).update_all(subscription_id: target_id)
+          updated_total += count
+          per_target[target_id] = count
+        end
+      end
+    else
+      by_target.each { |target_id, ids| per_target[target_id] = ids.size }
+    end
+
+    {
+      dry_run: dry_run,
+      scanned_collections: colls.size,
+      out_of_range: out_of_range.size,
+      updated_total: updated_total,
+      per_target: per_target,        # { sub_id => count }
+      unmatched: unmatched           # [ { id:, date: }, ... ]
+    }
+  end
+
   # Map collection_day to Ruby's Date#wday (0=Sun..6=Sat).
   # Adjust this if your enum differs.
   def normalize_to_ruby_wday(val)
