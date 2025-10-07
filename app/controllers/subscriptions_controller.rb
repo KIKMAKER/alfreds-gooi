@@ -120,8 +120,12 @@ class SubscriptionsController < ApplicationController
     is_new = params[:new] == "true"
     # save the sub
     if @subscription.save
+      # check for sub overlap
       start_date = @subscription.suggested_start_date(payment_date: Date.current)
+      # assign start date
       @subscription.update!(start_date: start_date)
+      # check if future collections exist and move them to this sub
+      @subscription.adopt_future_collections!
       # create an invoice
       # @invoice = create_invoice_for_subscription(@subscription, og, is_new, nil, referred_friends)
       @invoice = InvoiceBuilder.new(
