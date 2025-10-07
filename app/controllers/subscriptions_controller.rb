@@ -208,16 +208,23 @@ class SubscriptionsController < ApplicationController
 
     result = subscription.reassign_user_collections!(dry_run: dry_run)
 
-    msg = +"Reassigned #{dry_run ? '(dry-run) ' : ''}#{result[:updated_total]} collections."
-    if result[:unmatched].any?
-      sample = result[:unmatched].first(10).map { |h| "##{h[:id]}(#{h[:date]})" }.join(", ")
-      msg << " Unmatched: #{result[:unmatched].size} [#{sample}#{'…' if result[:unmatched].size > 10}]"
+    if result[:next_sub_id].nil?
+      redirect_to admin_user_path(subscription.user), alert: "No next subscription found after this one; nothing to reassign."
+      return
     end
 
-    redirect_to subscriptions_path, notice: msg
+    msg =
+      if dry_run
+        "Dry-run: would move #{result[:to_move_ids].size} collections to sub ##{result[:next_sub_id]} from #{result[:boundary]} onward."
+      else
+        "Reassigned #{result[:updated_total]} collections to sub ##{result[:next_sub_id]} from #{result[:boundary]} onward."
+      end
+
+    redirect_to admin_user_path(subscription.user), notice: msg
   rescue => e
-    redirect_to subscriptions_path, alert: "Reassign error: #{e.class} #{e.message}"
+    redirect_to admin_user_path(subscription.user), alert: "Reassign error: #{e.class} #{e.message}"
   end
+
 
 
   def welcome

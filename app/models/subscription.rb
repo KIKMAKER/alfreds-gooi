@@ -188,84 +188,67 @@ class Subscription < ApplicationRecord
     end
   end
 
-  # Reassign this user's "out-of-window" collections to the correct subscription.
-  # Returns a result hash with counts and unmatched items.
+  # Move this sub's future collections to the next sub in line.
+  # Next sub = same user, earliest start_date strictly AFTER *this sub's end*.
+  # If this sub has no end_date, we use (start_date + duration.months), else fallback to start_date.
   #
-  # Window rules (inclusive):
-  # - start = sub.start_date.to_date
-  # - finish = sub.end_date.to_date, else (start + duration.months).to_date, else nil (open-ended)
-  #
-  # Options:
-  #   dry_run: true  -> don't update DB, just report
-  #
+  # Returns a hash compatible with your controller messaging.
   def reassign_user_collections!(dry_run: false)
     raise "Subscription must have a user" unless user
+    raise "Subscription must have a start_date" unless start_date
 
-    # Build windows for all of the user's subs that have a start_date
-    subs = user.subscriptions.where.not(start_date: nil).to_a
-    windows = subs.index_by(&:id).transform_values do |s|
-      start  = s.start_date&.to_date
-      finish =
-        if s.end_date.present?
-          s.end_date.to_date
-        elsif s.duration.present?
-          (s.start_date + s.duration.months).to_date
-        else
-          nil # open-ended from start
-        end
-      { sub: s, start: start, finish: finish }
-    end
-
-    inside = ->(d, w) { w[:start] && d >= w[:start] && (w[:finish].nil? || d <= w[:finish]) }
-
-    # Find collections that are outside their current sub's window (or have no sub)
-    colls = user.collections.includes(:subscription).to_a
-    out_of_range = colls.select do |c|
-      cd  = c.date.to_date
-      sid = c.subscription_id
-      w   = sid && windows[sid]
-      w ? !inside.call(cd, w) : true
-    end
-
-    # Decide a target sub for each out-of-range collection
-    by_target = Hash.new { |h, k| h[k] = [] } # sub_id => [collection_ids]
-    unmatched = []
-
-    out_of_range.each do |c|
-      cd = c.date.to_date
-      target = windows.values.find { |w| inside.call(cd, w) }
-      if target
-        by_target[target[:sub].id] << c.id
+    # Determine this sub's "end" for the purpose of finding the *next* sub
+    this_end =
+      if end_date.present?
+        end_date.to_date
+      elsif duration.present?
+        (start_date + duration.months).to_date
       else
-        unmatched << { id: c.id, date: cd }
+        start_date.to_date
       end
-    end
 
-    # Apply updates (unless dry-run)
-    updated_total = 0
-    per_target = {}
+    # Find the next sub strictly after "this_end"
+    next_sub = user.subscriptions
+                   .where("start_date > ?", this_end)
+                   .order(:start_date)
+                   .first
 
-    unless dry_run
-      self.class.transaction do
-        by_target.each do |target_id, ids|
-          count = Collection.where(id: ids).update_all(subscription_id: target_id)
-          updated_total += count
-          per_target[target_id] = count
-        end
-      end
-    else
-      by_target.each { |target_id, ids| per_target[target_id] = ids.size }
-    end
-
-    {
+    return {
       dry_run: dry_run,
-      scanned_collections: colls.size,
-      out_of_range: out_of_range.size,
-      updated_total: updated_total,
-      per_target: per_target,        # { sub_id => count }
-      unmatched: unmatched           # [ { id:, date: }, ... ]
-    }
+      updated_total: 0,
+      next_sub_id: nil,
+      boundary: nil,
+      unmatched: [],      # kept for API compat
+      to_move_ids: []     # present in dry runs
+    } unless next_sub&.start_date
+
+    boundary = next_sub.start_date.to_date
+
+    # Only move collections that currently belong to THIS sub
+    scope = collections.where("date >= ?", boundary)
+    ids_to_move = scope.pluck(:id)
+
+    if dry_run
+      {
+        dry_run: true,
+        updated_total: 0,
+        next_sub_id: next_sub.id,
+        boundary: boundary,
+        unmatched: [],
+        to_move_ids: ids_to_move
+      }
+    else
+      moved = Collection.where(id: ids_to_move).update_all(subscription_id: next_sub.id)
+      {
+        dry_run: false,
+        updated_total: moved,
+        next_sub_id: next_sub.id,
+        boundary: boundary,
+        unmatched: []
+      }
+    end
   end
+
 
   # Map collection_day to Ruby's Date#wday (0=Sun..6=Sat).
   # Adjust this if your enum differs.
