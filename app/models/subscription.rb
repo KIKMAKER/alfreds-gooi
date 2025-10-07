@@ -175,7 +175,20 @@ class Subscription < ApplicationRecord
     ruby_wday ? align_to_wday(base, ruby_wday) : base
   end
 
-  # Map your collection_day to Ruby's Date#wday (0=Sun..6=Sat).
+  # Reattach any future collections to this subscription once it has a start_date.
+  # Safe to run multiple times.
+  def adopt_future_collections!
+    raise ArgumentError, "start_date required" unless start_date
+
+    self.class.transaction do
+      user.collections
+          .where("date >= ?", start_date.to_date)
+          .where.not(subscription_id: id)
+          .update_all(subscription_id: id)
+    end
+  end
+
+  # Map collection_day to Ruby's Date#wday (0=Sun..6=Sat).
   # Adjust this if your enum differs.
   def normalize_to_ruby_wday(val)
     case val
