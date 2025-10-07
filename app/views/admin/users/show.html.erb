@@ -71,7 +71,8 @@
                     <% rem = (subscription.respond_to?(:remaining_collections) ? subscription.remaining_collections : nil) %>
                     <% if rem.present? %>
                       <% if rem < -1 %>
-                        <%= link_to "reassign #{rem.truncate} collections", reassign_collections_subscription_path(subscription) %>
+                        <%= link_to 'reassign preview', reassign_collections_subscription_path(@subscription, dry_run: 1) %>
+                        <%= link_to "reassign #{rem.truncate} collections", rreassign_collections_subscription_path(@subscription) %>
                       <% else %>
                         <%= rem.to_i.truncate %>
                       <% end %>
