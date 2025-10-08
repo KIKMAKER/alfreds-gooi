@@ -1,0 +1,9 @@
+<p><strong>Collection marked as SKIPPED</strong></p>
+<ul>
+  <li><strong>When:</strong> <%= @occurred_at %></li>
+  <li><strong>By:</strong> <%= @actor ? "#{@actor.first_name} (##{@actor.id})" : "system" %></li>
+  <li><strong>Reason:</strong> <%= @reason %></li>
+  <li><strong>Collection:</strong> #<%= @collection.id %> on <%= @collection.date %></li>
+  <li><strong>Customer:</strong> <%= @customer&.first_name %></li>
+  <li><strong>Address:</strong> <%= @subscription&.street_address %></li>
+</ul>

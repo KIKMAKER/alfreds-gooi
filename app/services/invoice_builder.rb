@@ -23,7 +23,7 @@ class InvoiceBuilder
     invoice.calculate_total
 
     apply_discount_code(invoice) if @subscription.discount_code
-    InvoiceMailer.with(invoice: invoice).invoice_created.deliver_later
+    InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
 
 
     invoice

@@ -4,11 +4,26 @@ class Collection < ApplicationRecord
   has_one :user, through: :subscription
   acts_as_list scope: :drivers_day
 
-
   # Scopes
   scope :recent, -> { order(date: :desc) }
 
   # Custom methods
+  # One-shot helper to mark skip + email (use this everywhere instead of bare update)
+  def mark_skipped!(by: nil, reason: "unspecified", at: Time.zone.now)
+    return false if skip? # avoid double-emails
+
+    transaction do
+      update!(skip: true)
+      CollectionMailer.skipped(
+        collection_id: id,
+        actor_id: by&.id,
+        reason: reason,
+        occurred_at: at
+      ).deliver_now
+    end
+    true
+  end
+
   def done?
     is_done
   end
@@ -37,6 +52,17 @@ class Collection < ApplicationRecord
         csv << attributes.map { |attr| collection.send(attr) }
       end
     end
+  end
+
+  private
+
+  def notify_skip_marked(user)
+    CollectionMailer.skipped(
+      collection_id: id,
+      actor_id: user.id,  # optional: if you use Current attributes
+      reason: "model_update",
+      occurred_at: Time.zone.now
+    ).deliver_now
   end
 
 end

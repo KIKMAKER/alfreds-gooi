@@ -26,11 +26,11 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
         if has_next
           # only alert admins
-          SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_later
+          SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_now
         else
           # customer + alert
-          SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_later
-          SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_later
+          SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_now
+          SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_now
         end
         Rails.logger.info "Marked sub ##{subscription.id} as complete (future_sub=#{has_next})"
 

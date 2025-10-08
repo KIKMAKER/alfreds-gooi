@@ -158,8 +158,9 @@ class SubscriptionsController < ApplicationController
     # user = subscription.user
     if @subscription.update(subscription_params)
       @subscription.collections
-                     .where(date: @subscription.holiday_start..@subscription.holiday_end)
-                     .update_all(skip: true)
+                 .where(date: @subscription.holiday_start..@subscription.holiday_end)
+                 .find_each { |c| c.mark_skipped!(by: current_user, reason: "holiday_range") }
+
       if @subscription.completed? && @subscription.end_date.nil?
         @subscription.end_date!
       end
