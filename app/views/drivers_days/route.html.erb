@@ -19,17 +19,16 @@
         <% if item.is_a?(DropOffEvent) %>
           <li class="collection">
             <div class="name">
-              <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
-                <i class="fa-solid fa-check"></i>
-              <% end %>
+              <p><%= link_to "#{item.drop_off_site.name.split.first}", drivers_day_drop_off_event_path(@drivers_day, item)%></p>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
             </div>
-             <div class="address">
+            <div class="address">
               <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
           </li>
+
         <% else %>
           <li class="collection" data-sortable-url="<%= update_position_collection_path(item) %>"
           data-sortable-handle
