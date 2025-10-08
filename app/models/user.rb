@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :collections, through: :subscriptions
   has_many :drivers_days
   has_many :payments, dependent: :destroy
+  has_many :drop_off_sites, dependent: :nullify
 
   # Referrer: The user who referred others
   has_many :referrals_as_referrer,

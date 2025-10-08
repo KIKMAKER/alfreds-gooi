@@ -358,13 +358,17 @@ class SubscriptionsController < ApplicationController
     # @subscriptions = Subscription.active_subs_for(@today)
     # @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
 
-    @collections = @drivers_day.collections
+    collections = @drivers_day.collections
                 .includes(:subscription, :user)
                 .joins(:subscription)
                 .order('subscriptions.collection_order')
                 .each_with_index do |collection, index|
                   collection.update(position: index + 1) # Set position starting from 1
                 end
+    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
+
+    # Combine collections and drop-off events, sorted by position
+    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
   end
 
 

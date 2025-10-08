@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_08_193503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "buckets", force: :cascade do |t|
     t.bigint "drivers_day_id", null: false
@@ -20,7 +48,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
     t.boolean "half", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "drop_off_event_id"
     t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
+    t.index ["drop_off_event_id"], name: "index_buckets_on_drop_off_event_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -75,6 +105,40 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
     t.string "message_from_alfred"
     t.float "total_net_kg"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
+  end
+
+  create_table "drop_off_events", force: :cascade do |t|
+    t.bigint "drop_off_site_id", null: false
+    t.bigint "drivers_day_id", null: false
+    t.date "date"
+    t.datetime "time"
+    t.boolean "is_done", default: false, null: false
+    t.integer "buckets_dropped", default: 0
+    t.float "weight_kg", default: 0.0
+    t.string "driver_note"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
+    t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"
+  end
+
+  create_table "drop_off_sites", force: :cascade do |t|
+    t.string "name"
+    t.string "street_address"
+    t.string "suburb"
+    t.string "contact_name"
+    t.string "phone_number"
+    t.text "notes"
+    t.float "latitude"
+    t.float "longitude"
+    t.float "total_weight_kg", default: 0.0
+    t.integer "total_dropoffs_count", default: 0
+    t.integer "collection_day"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
   end
 
   create_table "interests", force: :cascade do |t|
@@ -320,10 +384,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "buckets", "drivers_days"
+  add_foreign_key "buckets", "drop_off_events"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "drivers_days", "users"
+  add_foreign_key "drop_off_events", "drivers_days"
+  add_foreign_key "drop_off_events", "drop_off_sites"
+  add_foreign_key "drop_off_sites", "users"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"

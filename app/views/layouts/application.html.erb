@@ -26,6 +26,8 @@
         <%= render "shared/driver_navbar" %>
       <% elsif current_user.admin? %>
         <%= render "shared/admin_navbar" %>
+      <% elsif current_user.drop_off? %>
+        <%= render "shared/drop_off_navbar" %>
       <% else %>
         <%= render "shared/user_navbar" %>
       <%  end %>
