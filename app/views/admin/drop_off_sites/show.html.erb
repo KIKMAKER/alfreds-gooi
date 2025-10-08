@@ -1,0 +1,101 @@
+<div class="user-wrapper">
+  <h2 class="my-5">Drop-Off Site: <%= @drop_off_site.name %></h2>
+
+  <ul class="list-group mb-4">
+    <li class="list-group-item">
+      <strong>Collection Day:</strong>
+      <span class="badge bg-info"><%= @drop_off_site.collection_day %></span>
+    </li>
+    <li class="list-group-item">
+      <strong>Address:</strong>
+      <%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb %>
+      <%= link_to "Open in Maps", "https://maps.google.com/?q=#{@drop_off_site.street_address}, #{@drop_off_site.suburb}",
+          target: :_blank, class: "btn btn-sm btn-outline-primary ms-2" %>
+    </li>
+    <li class="list-group-item">
+      <strong>Contact:</strong>
+      <%= @drop_off_site.contact_name %>
+    </li>
+    <li class="list-group-item">
+      <strong>Phone:</strong>
+      <%= @drop_off_site.phone_number %>
+      <% if @drop_off_site.phone_number.present? %>
+        <%= link_to "WhatsApp", "https://wa.me/#{@drop_off_site.phone_number.gsub(/\D/, '')}",
+            target: :_blank, class: "btn btn-sm btn-success ms-2" %>
+      <% end %>
+    </li>
+    <% if @drop_off_site.notes.present? %>
+      <li class="list-group-item">
+        <strong>Notes:</strong>
+        <%= simple_format(@drop_off_site.notes) %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Cumulative Stats</h5>
+      <div class="row text-center">
+        <div class="col-md-6">
+          <div class="text-muted">Total Weight Collected</div>
+          <div class="fs-3 fw-bold text-success"><%= number_with_precision(@drop_off_site.total_weight_kg, precision: 1) %> kg</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted">Total Drop-offs Completed</div>
+          <div class="fs-3 fw-bold text-primary"><%= @drop_off_site.total_dropoffs_count %></div>
+        </div>
+      </div>
+      <% if @drop_off_site.total_dropoffs_count > 0 %>
+        <div class="text-center mt-3">
+          <small class="text-muted">
+            Average per drop-off: <%= number_with_precision(@drop_off_site.total_weight_kg / @drop_off_site.total_dropoffs_count, precision: 1) %> kg
+          </small>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <h5>Recent Drop-Off Events</h5>
+    <% recent_events = @drop_off_site.drop_off_events.order(date: :desc).limit(10) %>
+    <% if recent_events.any? %>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Weight</th>
+            <th>Buckets</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recent_events.each do |event| %>
+            <tr>
+              <td><%= event.date.strftime("%a, %b %e, %Y") %></td>
+              <td><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</td>
+              <td><%= event.buckets.count %></td>
+              <td>
+                <% if event.is_done %>
+                  <span class="badge bg-success">Complete</span>
+                <% else %>
+                  <span class="badge bg-warning">Pending</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted">No drop-off events yet.</p>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to "Edit", edit_admin_drop_off_site_path(@drop_off_site), class: "small-yellow-btn me-2" %>
+    <%= link_to "Delete", admin_drop_off_site_path(@drop_off_site),
+        data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete #{@drop_off_site.name}? This will also remove all associated drop-off events." },
+        class: "btn btn-danger" %>
+  </div>
+
+  <%= link_to "← Back to all sites", admin_drop_off_sites_path, class: "d-block mt-3" %>
+</div>

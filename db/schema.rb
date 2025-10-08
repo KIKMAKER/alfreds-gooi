@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_08_103755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +20,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
     t.boolean "half", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "drop_off_event_id"
     t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
+    t.index ["drop_off_event_id"], name: "index_buckets_on_drop_off_event_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -75,6 +77,38 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
     t.string "message_from_alfred"
     t.float "total_net_kg"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
+  end
+
+  create_table "drop_off_events", force: :cascade do |t|
+    t.bigint "drop_off_site_id", null: false
+    t.bigint "drivers_day_id", null: false
+    t.date "date"
+    t.datetime "time"
+    t.boolean "is_done", default: false, null: false
+    t.integer "buckets_dropped", default: 0
+    t.float "weight_kg", default: 0.0
+    t.string "driver_note"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
+    t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"
+  end
+
+  create_table "drop_off_sites", force: :cascade do |t|
+    t.string "name"
+    t.string "street_address"
+    t.string "suburb"
+    t.string "contact_name"
+    t.string "phone_number"
+    t.text "notes"
+    t.float "latitude"
+    t.float "longitude"
+    t.float "total_weight_kg", default: 0.0
+    t.integer "total_dropoffs_count", default: 0
+    t.integer "collection_day"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "interests", force: :cascade do |t|
@@ -321,9 +355,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_133026) do
   end
 
   add_foreign_key "buckets", "drivers_days"
+  add_foreign_key "buckets", "drop_off_events"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "drivers_days", "users"
+  add_foreign_key "drop_off_events", "drivers_days"
+  add_foreign_key "drop_off_events", "drop_off_sites"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"

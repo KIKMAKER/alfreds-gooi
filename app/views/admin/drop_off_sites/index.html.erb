@@ -1,0 +1,42 @@
+<div class="user-wrapper">
+  <h1>Drop-Off Sites</h1>
+  <%= link_to "New Drop-Off Site", new_admin_drop_off_site_path, class: "small-yellow-btn my-5" %>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Collection Day</th>
+        <th>Suburb</th>
+        <th>Contact</th>
+        <th>Total Weight</th>
+        <th>Total Drop-offs</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @drop_off_sites.each do |site| %>
+        <tr>
+          <td><%= link_to site.name, admin_drop_off_site_path(site) %></td>
+          <td><span class="badge bg-info"><%= site.collection_day %></span></td>
+          <td><%= site.suburb %></td>
+          <td><%= site.contact_name %></td>
+          <td><%= number_with_precision(site.total_weight_kg, precision: 1) %> kg</td>
+          <td><%= site.total_dropoffs_count %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_drop_off_site_path(site), class: "btn btn-sm btn-outline-primary" %>
+            <%= link_to "Delete", admin_drop_off_site_path(site),
+                data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete #{site.name}?" },
+                class: "btn btn-sm btn-outline-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @drop_off_sites.empty? %>
+    <div class="alert alert-info">
+      <p>No drop-off sites yet. Create one to get started!</p>
+    </div>
+  <% end %>
+</div>

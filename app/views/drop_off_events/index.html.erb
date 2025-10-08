@@ -1,0 +1,48 @@
+<div class="container driver-wrapper my-4">
+  <h1>Drop-Off Sites for <%= @drivers_day.date.strftime("%A, %B %e") %></h1>
+
+  <div class="card p-3 mt-3" style="border-radius:1em">
+    <% if @drop_off_events.any? %>
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Site</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Buckets</th>
+            <th>Weight</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @drop_off_events.each do |event| %>
+            <tr>
+              <td><%= event.position || "-" %></td>
+              <td><strong><%= event.drop_off_site.name %></strong></td>
+              <td><%= event.drop_off_site.street_address %>, <%= event.drop_off_site.suburb %></td>
+              <td>
+                <% if event.is_done %>
+                  <span class="badge bg-success">Complete</span>
+                <% else %>
+                  <span class="badge bg-warning">Pending</span>
+                <% end %>
+              </td>
+              <td><%= event.buckets.count %></td>
+              <td><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</td>
+              <td class="text-end">
+                <%= link_to "Weigh & Complete", drivers_day_drop_off_event_path(@drivers_day, event), class: "btn btn-sm btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-center text-muted my-4">No drop-off sites scheduled for today.</p>
+    <% end %>
+  </div>
+
+  <div class="mt-3">
+    <%= link_to "← Back to Today's List", today_subscriptions_path, class: "btn btn-outline-secondary" %>
+  </div>
+</div>
