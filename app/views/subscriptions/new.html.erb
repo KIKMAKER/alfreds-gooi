@@ -1,4 +1,4 @@
-w<div class="user-wrapper">
+<div class="user-wrapper">
   <div class="collection-body">
     <h1 class="mt-4 mb-4">Pick a subscription option:</h1>
     <% if current_user.admin? %>
@@ -16,9 +16,9 @@ w<div class="user-wrapper">
     <% else %>
       <section>
         <div class="subscription-rates-update">
-          <h2 >Standard Subscriptions</h2>
+          <h2>Standard Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
-          <% if current_user.total_collections > 35 %>
+          <% if current_user.og %>
             <p>As an Original Gooier you get our special price if you sign up for six month</p>
             <div class="standard-months-container justify-content-center mt-3">
               <div class="month-card">
