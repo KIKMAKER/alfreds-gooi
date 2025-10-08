@@ -1,0 +1,32 @@
+<div class="driver-wrapper">
+  <h1>Your Drop-Off Sites</h1>
+  <p class="lh-lg">Select a site to view details and statistics.</p>
+
+  <div class="collection-header">
+    <div class="name"><p>Site Name</p></div>
+    <div class="day"><p>Collection Day</p></div>
+    <div class="address"><p>Location</p></div>
+    <div class="stats"><p>Total Weight</p></div>
+  </div>
+
+  <div class="collections">
+    <ul>
+      <% @drop_off_sites.each do |site| %>
+        <li class="collection">
+          <div class="name">
+            <p><%= link_to site.name, drop_off_site_manager_path(site) %></p>
+          </div>
+          <div class="day">
+            <span class="small-yellow-btn"><%= site.collection_day %></span>
+          </div>
+          <div class="address">
+            <p><%= site.suburb %></p>
+          </div>
+          <div class="stats">
+            <p><%= number_with_precision(site.total_weight_kg, precision: 1) %> kg</p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

@@ -65,6 +65,7 @@ gem 'faker'
 gem "acts_as_list"
 gem "postmark-rails"
 gem "rack-cors"
+gem "cloudinary"
 
 
 
