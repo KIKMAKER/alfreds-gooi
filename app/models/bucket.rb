@@ -1,5 +1,6 @@
 class Bucket < ApplicationRecord
   belongs_to :drivers_day
+  belongs_to :drop_off_event, optional: true
 
   # Driver puts a bucket (with compost) on the scale. We record the gross,
   # and auto-subtract tare before save so weight_kg is NET.

@@ -1,0 +1,92 @@
+<div class="driver-wrapper">
+  <% if @show_index_link %>
+    <%= link_to "← View all your sites", drop_off_site_managers_path, class: "link-title d-block mb-3" %>
+  <% end %>
+
+  <h1>Welcome, <%= @drop_off_site.contact_name || current_user.first_name %>!</h1>
+  <p class="lh-lg">Thank you for partnering with Alfred's Gooi to divert organic waste from landfill and support local composting initiatives.</p>
+
+  <% if @drop_off_site.photo.attached? %>
+    <div class="my-3">
+      <%= image_tag @drop_off_site.photo, class: "img-fluid rounded", style: "max-height: 400px; width: 100%; object-fit: cover;" %>
+    </div>
+  <% end %>
+
+  <div class="outline m-0">
+    <h3><%= @drop_off_site.name %></h3>
+    <p class="lh-lg"><strong>Drop Off Day:</strong> <%= @drop_off_site.collection_day %></p>
+    <p class="lh-lg"><strong>Address:</strong> <%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb %></p>
+    <p class="lh-lg"><strong>Contact:</strong> <%= @drop_off_site.contact_name %></p>
+    <p class="lh-lg"><strong>Phone:</strong> <%= @drop_off_site.phone_number %></p>
+    <% if @drop_off_site.notes.present? %>
+      <p class="lh-lg"><strong>Notes:</strong> <%= @drop_off_site.notes %></p>
+    <% end %>
+  </div>
+  <div class="mb-3">
+    <%= link_to "Edit Contact Details", edit_drop_off_site_manager_path(@drop_off_site), class: "small-yellow-btn me-2" %>
+    <% whatsapp_message = "Hello, it is #{@drop_off_site.contact_name}. Please contact me about #{@drop_off_site.name}." %>
+    <%= link_to "Contact Alfred's Gooi", "https://wa.me/27785325513?text=#{ERB::Util.url_encode(whatsapp_message)}",
+        target: :_blank, class: "small-yellow-btn" %>
+  </div>
+  <div class="skip-collections mb-1">
+    <div class="skipped text-center p-4">
+      <h3>Total Weight Collected</h3>
+      <p class="display-4 text-success text-center"><%= number_with_precision(@drop_off_site.total_weight_kg, precision: 1) %> kg</p>
+    </div>
+    <div class="skip-form text-center p-4">
+      <h3>Total Drop-offs</h3>
+      <p class="display-4 text-primary text-center"><%= @drop_off_site.total_dropoffs_count %></p>
+      <% if @drop_off_site.total_dropoffs_count > 0 %>
+        <small class="text-muted">
+          Avg: <%= number_with_precision(@drop_off_site.total_weight_kg / @drop_off_site.total_dropoffs_count, precision: 1) %> kg per drop-off
+        </small>
+      <% end %>
+    </div>
+  </div>
+
+  <h3 class="my-4">Recent Drop-Off Events</h3>
+  <% if @recent_events.any? %>
+    <div class="collection-header">
+      <div class="name justify-content-center">
+        <p class="lh-lg">Date</p>
+      </div>
+      <div class="bag justify-content-center">
+        <p class="lh-lg">Weight</p>
+      </div>
+      <div class="address justify-content-center">
+        <p class="lh-lg">Buckets</p>
+      </div>
+      <div class="status justify-content-center">
+        <p class="lh-lg">Status</p>
+      </div>
+    </div>
+    <div class="collections">
+      <ul>
+        <% @recent_events.each do |event| %>
+          <li class="collection justify-content-between">
+            <div class="name justify-content-center">
+              <p class="lh-lg"><%= event.date.strftime("%d/%m") %></p>
+            </div>
+            <div class="bag justify-content-center">
+              <p class="lh-lg"><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</p>
+            </div>
+            <div class="address justify-content-center">
+              <p class="lh-lg"><%= event.buckets.count %></p>
+            </div>
+            <div class="status justify-content-center">
+              <% if event.is_done %>
+                <i class="fa-solid fa-check justify-content-success"></i>
+              <% else %>
+                <span class="small-yellow-btn">Pending</span>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% else %>
+    <div class="outline">
+      <p class="lh-lg">No drop-off events yet.</p>
+    </div>
+  <% end %>
+</div>
