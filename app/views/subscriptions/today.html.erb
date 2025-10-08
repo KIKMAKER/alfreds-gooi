@@ -22,7 +22,7 @@
         <% if item.is_a?(DropOffEvent) %>
           <li class="collection">
             <div class="name">
-              <p>📍 <%= link_to item.drop_off_site.name, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
+              <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
               <% if item.is_done %>
                 <i class="fa-solid fa-check"></i>
               <% end %>
@@ -31,9 +31,13 @@
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
             </div>
             <div class="address">
-              <%= link_to item.drop_off_site.suburb, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
+              <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
             <div class="emojies">
+              <% omy_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>
+              <p class="emoji"><%= link_to "🚗", "https://wa.me/27785325513?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
+              <% here_message = "Hello #{item.drop_off_site.contact_name}. I am here!" %>
+              <p class="emoji"><%= link_to "🏠",  "https://wa.me/27785325513?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
             </div>
           </li>
         <% else %>
@@ -43,42 +47,40 @@
             <div class="name">
               <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
               <% if item.is_done %>
-                </i><i class="fa-solid fa-check"></i>
-              <% end %>
-              <% if current_user.admin? %>
-                <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
-              <% end %>
-            </div>
-            <div class="bag">
-              <% if item.skip %>
-                <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
+              </i><i class="fa-solid fa-check"></i>
+            <% end %>
+            <% if current_user.admin? %>
+              <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
+            <% end %>
+          </div>
+          <div class="bag">
+            <% if item.skip %>
+              <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
+            <% else %>
+              <% if item.new_customer %>
+                <%= link_to "Meet", edit_collection_path(item) , class: "small-yellow-btn"%>
+              <% elsif item.subscription.Standard? %>
+                <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif item.subscription.XL? %>
+                <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
               <% else %>
-                <% if item.new_customer %>
-                  <%= link_to "Meet", edit_collection_path(item) , class: "small-yellow-btn"%>
-                <% elsif item.subscription.Standard? %>
-                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% elsif item.subscription.XL? %>
-                  <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
-                <% elsif item.subscription.user.drop_off? %>
-                  <%= link_to "Drop off", edit_collection_path(item) , class: "small-yellow-btn"%>
-                <% else %>
-                  <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% end %>
+                <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
               <% end %>
-            </div>
-            <div class="address">
-              <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
-            </div>
-            <div class="emojies">
-              <p class="emoji"><%= link_to "🚗", item.subscription.user.generate_whatsapp_link("Hello #{item.user.first_name}. I am on my way!"), target: :_blank %></p>
-              <p class="emoji"><%= link_to "🏠", item.subscription.user.generate_whatsapp_link("I am at your house."), target: :_blank %></p>
-              <p class="emoji"><%= link_to "🪴", item.subscription.user.generate_whatsapp_link("Thank you #{item.user.first_name}, I have got your bag. Hope you have a wonderful weekend."), target: :_blank %></p>
-            </div>
-          </li>
-        <% end %>
+            <% end %>
+          </div>
+          <div class="address">
+            <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
+          </div>
+          <div class="emojies">
+            <p class="emoji"><%= link_to "🚗", item.subscription.user.generate_whatsapp_link("Hello #{item.user.first_name}. I am on my way!"), target: :_blank %></p>
+            <p class="emoji"><%= link_to "🏠", item.subscription.user.generate_whatsapp_link("I am at your house."), target: :_blank %></p>
+            <p class="emoji"><%= link_to "🪴", item.subscription.user.generate_whatsapp_link("Thank you #{item.user.first_name}, I have got your bag. Hope you have a wonderful weekend."), target: :_blank %></p>
+          </div>
+        </li>
       <% end %>
-    </ul>
-    <!--</ul>-->
-  </div>
+    <% end %>
+  </ul>
+  <!--</ul>-->
+</div>
 
 </div>
