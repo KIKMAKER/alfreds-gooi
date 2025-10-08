@@ -22,10 +22,7 @@
         <% if item.is_a?(DropOffEvent) %>
           <li class="collection">
             <div class="name">
-              <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
-              <% if item.is_done %>
-                <i class="fa-solid fa-check"></i>
-              <% end %>
+              <p><%= link_to "#{item.drop_off_site.name.split.first}", drivers_day_drop_off_event_path(@drivers_day, item)%></p>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
