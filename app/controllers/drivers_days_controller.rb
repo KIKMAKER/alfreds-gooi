@@ -5,14 +5,17 @@ class DriversDaysController < ApplicationController
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
 
     @drivers_day = DriversDay.find_or_create_by!(date: selected_date, user_id: User.find_by(first_name: "Alfred").id)
-    @collections = @drivers_day.collections
+    collections = @drivers_day.collections
                                 .includes(:subscription, :user)
                                 .joins(:subscription)
                                 .order('subscriptions.collection_order')
                                 .each_with_index do |collection, index|
                                   collection.update(position: index + 1) # Set position starting from 1
                                 end
-    @drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
+    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
+
+    # Combine collections and drop-off events, sorted by position
+    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
   end
 
 

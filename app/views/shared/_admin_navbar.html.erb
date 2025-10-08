@@ -8,6 +8,7 @@
       <%= link_to 'invoices', invoices_path, class:"link-title" %>
       <%= link_to 'users', admin_users_path, class:"link-title" %>
       <%= link_to 'discounts', admin_discount_codes_path, class:"link-title" %>
+      <%= link_to 'drop-offs', admin_drop_off_sites_path, class:"link-title" %>
       <%# <%= link_to 'drivers days', drivers_days_path, class:"link-title" %>
       <%= link_to 'collections', this_week_collections_path, class:"link-title" %>
 
@@ -33,6 +34,7 @@
             <%#= link_to 'payments', payments_path, class:"dropdown-item" %>
             <%= link_to 'users', admin_users_path, class:"dropdown-item" %>
             <%= link_to 'discounts', admin_discount_codes_path, class:"dropdown-item" %>
+            <%= link_to 'drop-offs', admin_drop_off_sites_path, class:"dropdown-item" %>
             <%#= link_to 'drivers day', drivers_days_path, class:"dropdown-item" %>
             <%= link_to 'collections', this_week_collections_path, class:"dropdown-item" %>
             <% if user_signed_in? %>

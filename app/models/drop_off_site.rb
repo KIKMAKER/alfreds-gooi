@@ -1,5 +1,6 @@
 class DropOffSite < ApplicationRecord
   has_many :drop_off_events, dependent: :nullify
+  belongs_to :user, optional: true
 
   # Geocoding
   geocoded_by :street_address

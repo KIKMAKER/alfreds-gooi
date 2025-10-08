@@ -39,6 +39,36 @@ class Admin::DropOffSitesController < ApplicationController
     redirect_to admin_drop_off_sites_path, notice: "Drop-off site deleted successfully!"
   end
 
+  def create_event
+    @drop_off_site = DropOffSite.find(params[:id])
+
+    unless params[:date].present?
+      redirect_to admin_drop_off_site_path(@drop_off_site), alert: "Please select a date for the drop-off event."
+      return
+    end
+
+    date = Date.parse(params[:date])
+
+    # Find or create the drivers_day
+    driver = User.find_by(role: 'driver')
+    drivers_day = DriversDay.find_or_create_by!(date: date, user: driver)
+
+    # Create the drop-off event
+    drop_off_event = DropOffEvent.create!(
+      drop_off_site: @drop_off_site,
+      drivers_day: drivers_day,
+      date: date
+    )
+
+    redirect_to admin_drop_off_site_path(@drop_off_site),
+                notice: "Drop-off event created for #{date.strftime('%A, %B %e')}!"
+  end
+
+  def create_next_week_events
+    CreateNextWeekDropOffEventsJob.perform_now
+    redirect_to admin_drop_off_sites_path, notice: "Next week's drop-off events created!"
+  end
+
   private
 
   def set_drop_off_site
