@@ -3,6 +3,7 @@ puts "Welcome to the gooi seed file"
 puts "Enter 'y' to seed the whole database"
 puts "Enter 'products' to seed only products"
 puts "Enter 'p' to seed only payments"
+puts "Enter 'dropoffs' to seed only drop-off sites"
 
 proceed = STDIN.gets.chomp.downcase
 
@@ -156,6 +157,60 @@ elsif proceed == "products"
   puts "Additional stock created"
 
   puts "A total of #{Product.count} products have been seeded to the DB."
+
+elsif proceed == "dropoffs"
+  ## DROP-OFF SITES
+  puts "Seeding drop-off sites..."
+
+  def seed_drop_off_sites(sites)
+    sites.each do |site|
+      DropOffSite.find_or_create_by!(name: site[:name]) do |s|
+        s.street_address = site[:street_address]
+        s.suburb = site[:suburb]
+        s.contact_name = site[:contact_name]
+        s.phone_number = site[:phone_number]
+        s.notes = site[:notes]
+        s.collection_day = site[:collection_day]
+      end
+    end
+  end
+
+  drop_off_sites_data = [
+    {
+      name: "Neighbourhood Farm",
+      street_address: "Paris Road, Fish Hoek",
+      suburb: "Fish Hoek",
+      contact_name: "Sibusiso",
+      phone_number: "+27 82 555 1234",
+      notes: "Last stop on Tuesday route. Enter through main gate.",
+      collection_day: "Tuesday"
+    },
+    {
+      name: "Soil For Life",
+      street_address: "Brounger Road, Sillery",
+      suburb: "Constantia",
+      contact_name: "Sarah Green",
+      phone_number: "+27 21 794 4982",
+      notes: "Last stop on Wednesday route. Drop-off area at back of property.",
+      collection_day: "Wednesday"
+    },
+    {
+      name: "Streetscapes Farm",
+      street_address: "Upper Orange Street",
+      suburb: "Vredehoek",
+      contact_name: "Richard",
+      phone_number: "+27 83 456 7890",
+      notes: "Last stop on Thursday route. Ring bell at entrance.",
+      collection_day: "Thursday"
+    }
+  ]
+
+  seed_drop_off_sites(drop_off_sites_data)
+
+  puts "✓ #{DropOffSite.count} drop-off sites have been seeded to the DB."
+  DropOffSite.all.each do |site|
+    puts "  - #{site.name} (#{site.collection_day}s) - Contact: #{site.contact_name}"
+  end
 
 elsif proceed == "y"
   ## PRODUCTS

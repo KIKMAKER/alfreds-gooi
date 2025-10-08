@@ -13,6 +13,19 @@
   </div>
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
+
+    <% if @drop_off_events.any? %>
+      <div class="alert alert-info my-3">
+        <strong>Drop-Off Sites Today:</strong>
+        <% @drop_off_events.each do |event| %>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span>📍 <%= event.drop_off_site.name %> - <%= event.drop_off_site.suburb %></span>
+            <%= link_to "Weigh Buckets", drivers_day_drop_off_event_path(@drivers_day, event), class: "btn btn-sm btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
     <ul data-controller="sortable">
       <% @collections.each do |collection| %>
         <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"

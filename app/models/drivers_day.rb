@@ -1,6 +1,7 @@
 class DriversDay < ApplicationRecord
   belongs_to :user
   has_many :collections, dependent: :nullify
+  has_many :drop_off_events, dependent: :nullify
   has_many :buckets, dependent: :destroy
 
     # validations

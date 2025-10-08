@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :logistics, only: :index
     resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :drop_off_sites
     resources :users, only: [:index, :edit, :update, :show] do
       post :renew_last_subscription, on: :member
     end
@@ -108,6 +109,12 @@ Rails.application.routes.draw do
       end
     end
     resources :buckets, only: [:index, :create, :destroy]
+    resources :drop_off_events, only: [:index, :show, :edit, :update] do
+      member do
+        post :complete
+      end
+      resources :buckets, only: [:create, :destroy], controller: 'drop_off_events/buckets'
+    end
   end
 
   resources :products, only: [:index, :new, :create]

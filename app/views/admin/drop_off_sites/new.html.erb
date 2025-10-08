@@ -1,0 +1,35 @@
+<div class="user-wrapper">
+  <h1 class="my-4">Create Drop-Off Site</h1>
+
+  <%= simple_form_for [:admin, @drop_off_site] do |f| %>
+    <%= f.input :name, placeholder: "e.g. Neighbourhood Farm" %>
+
+    <%= f.input :street_address, placeholder: "e.g. Paris Road, Fish Hoek" %>
+
+    <%= f.input :suburb,
+          as: :select,
+          collection: Subscription::SUBURBS,
+          prompt: "Select a suburb" %>
+
+    <%= f.input :collection_day,
+          as: :select,
+          collection: Date::DAYNAMES.map { |day| [day, day] },
+          prompt: "Select collection day" %>
+
+    <%= f.input :contact_name, placeholder: "e.g. Sibusiso" %>
+
+    <%= f.input :phone_number,
+          placeholder: "+27 82 555 1234",
+          hint: "International format preferred (e.g. +27 82 555 1234)" %>
+
+    <%= f.input :notes,
+          as: :text,
+          input_html: { rows: 4 },
+          placeholder: "e.g. Last stop on route. Enter through main gate.",
+          hint: "Any special instructions for the driver" %>
+
+    <%= f.button :submit, "Create Drop-Off Site", class: "small-yellow-btn" %>
+  <% end %>
+
+  <%= link_to "← Back to all sites", admin_drop_off_sites_path, class: "mt-3 d-block" %>
+</div>
