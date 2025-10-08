@@ -83,7 +83,8 @@ class Admin::DropOffSitesController < ApplicationController
       :contact_name,
       :phone_number,
       :notes,
-      :collection_day
+      :collection_day,
+      :photo
     )
   end
 

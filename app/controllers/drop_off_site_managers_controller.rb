@@ -31,11 +31,12 @@ class DropOffSiteManagersController < ApplicationController
   end
 
   def authorize_manager!
-    unless current_user.drop_off?
+    unless current_user.drop_off? || current_user.admin?
       redirect_to root_path, alert: "Access denied."
+      return
     end
 
-    if current_user.drop_off_sites.empty?
+    if current_user.drop_off? && current_user.drop_off_sites.empty?
       redirect_to root_path, alert: "You are not associated with any drop-off sites."
     end
   end

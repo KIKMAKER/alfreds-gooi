@@ -34,4 +34,17 @@ class ApplicationController < ActionController::Base
       stored_location_for(resource) || root_path
     end
   end
+
+  # Redirect drop_off users to their site manager page after sign up
+  def after_sign_up_path_for(resource)
+    if resource.drop_off? && resource.drop_off_sites.any?
+      if resource.drop_off_sites.count == 1
+        drop_off_site_manager_path(resource.drop_off_sites.first)
+      else
+        drop_off_site_managers_path
+      end
+    else
+      stored_location_for(resource) || root_path
+    end
+  end
 end
