@@ -27,7 +27,7 @@
           </li>
 
           <li class="nav-item active">
-            <%= link_to "Weigh Buckets", (dd ? drivers_day_buckets_path(dd) : "#"),
+            <%= link_to "Drop-Offs", (dd ? drivers_day_drop_off_events_path(dd) : "#"),
         class: "nav-link #{'disabled' unless dd}", aria: { disabled: (!dd).to_s } %>
           </li>
 

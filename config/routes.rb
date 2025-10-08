@@ -3,6 +3,14 @@ Rails.application.routes.draw do
     resources :logistics, only: :index
     resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :drop_off_sites do
+      member do
+        post :create_event
+      end
+      collection do
+        post :create_next_week_events
+      end
+    end
     resources :users, only: [:index, :edit, :update, :show] do
       post :renew_last_subscription, on: :member
     end
@@ -17,6 +25,9 @@ Rails.application.routes.draw do
 
   # users
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+
+  # drop-off site managers
+  resources :drop_off_site_managers, only: [:index, :show, :edit, :update]
 
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
@@ -108,6 +119,12 @@ Rails.application.routes.draw do
       end
     end
     resources :buckets, only: [:index, :create, :destroy]
+    resources :drop_off_events, only: [:index, :show, :edit, :update] do
+      member do
+        post :complete
+      end
+      resources :buckets, only: [:create, :destroy], controller: 'drop_off_events/buckets'
+    end
   end
 
   resources :products, only: [:index, :new, :create]
