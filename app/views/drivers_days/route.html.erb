@@ -19,16 +19,15 @@
         <% if item.is_a?(DropOffEvent) %>
           <li class="collection">
             <div class="name">
-              <p>📍 <%= link_to item.drop_off_site.name, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
-              <% if item.is_done %>
+              <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
                 <i class="fa-solid fa-check"></i>
               <% end %>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
             </div>
-            <div class="address">
-              <%= link_to item.drop_off_site.suburb, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
+             <div class="address">
+              <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
           </li>
         <% else %>
