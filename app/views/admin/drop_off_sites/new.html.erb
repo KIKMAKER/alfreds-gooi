@@ -16,6 +16,12 @@
           collection: Date::DAYNAMES.map { |day| [day, day] },
           prompt: "Select collection day" %>
 
+    <%= f.association :user,
+          collection: User.where(role: 'drop_off').order(:first_name),
+          label_method: lambda { |u| "#{u.first_name} (#{u.email})" },
+          prompt: "Select manager (optional)",
+          hint: "Assign a drop-off manager to this site" %>
+
     <%= f.input :contact_name, placeholder: "e.g. Sibusiso" %>
 
     <%= f.input :phone_number,

@@ -60,6 +60,8 @@ class Users::SessionsController < Devise::SessionsController
 
     return manage_path if resource.customer?
 
+    return drop_off_site_manager_path(resource.drop_off_sites.first) if resource.drop_off?
+
     # FALLBACK: use Devise helper (fetches & clears) if you still want “return to”
     stored = stored_location_for(resource)
 
