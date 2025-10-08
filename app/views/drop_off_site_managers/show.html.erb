@@ -6,7 +6,13 @@
   <h1>Welcome, <%= @drop_off_site.contact_name || current_user.first_name %>!</h1>
   <p class="lh-lg">Thank you for partnering with Alfred's Gooi to divert organic waste from landfill and support local composting initiatives.</p>
 
-  <div class="outline">
+  <% if @drop_off_site.photo.attached? %>
+    <div class="my-3">
+      <%= image_tag @drop_off_site.photo, class: "img-fluid rounded", style: "max-height: 400px; width: 100%; object-fit: cover;" %>
+    </div>
+  <% end %>
+
+  <div class="outline m-0">
     <h3><%= @drop_off_site.name %></h3>
     <p class="lh-lg"><strong>Drop Off Day:</strong> <%= @drop_off_site.collection_day %></p>
     <p class="lh-lg"><strong>Address:</strong> <%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb %></p>
@@ -23,11 +29,11 @@
         target: :_blank, class: "small-yellow-btn" %>
   </div>
   <div class="skip-collections mb-1">
-    <div class="skipped p-4">
+    <div class="skipped text-center p-4">
       <h3>Total Weight Collected</h3>
       <p class="display-4 text-success text-center"><%= number_with_precision(@drop_off_site.total_weight_kg, precision: 1) %> kg</p>
     </div>
-    <div class="skip-form p-4">
+    <div class="skip-form text-center p-4">
       <h3>Total Drop-offs</h3>
       <p class="display-4 text-primary text-center"><%= @drop_off_site.total_dropoffs_count %></p>
       <% if @drop_off_site.total_dropoffs_count > 0 %>

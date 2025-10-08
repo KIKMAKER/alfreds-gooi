@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .stats-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+      .stat-box {
+        text-align: center;
+        padding: 20px;
+        background-color: #fff3cd;
+        border-radius: 8px;
+        flex: 1;
+        margin: 0 10px;
+      }
+      .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #856404;
+        margin: 10px 0;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+      }
+      .total-box {
+        background-color: #d4edda;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .total-value {
+        font-size: 36px;
+        font-weight: bold;
+        color: #155724;
+      }
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Drop-off Completed!</h1>
+      <p><strong><%= @drop_off_site.name %></strong></p>
+      <p><%= @drop_off_event.date.strftime('%A, %B %e, %Y') %></p>
+    </div>
+
+    <p>Hello <%= @drop_off_site.contact_name %>,</p>
+
+    <p>Alfred has just completed the drop-off at <%= @drop_off_site.name %>. Here's a snapshot of this week's collection:</p>
+
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-label">This Week</div>
+        <div class="stat-value"><%= @weekly_buckets %></div>
+        <div class="stat-label">Buckets</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">This Week</div>
+        <div class="stat-value"><%= number_with_precision(@weekly_weight, precision: 1) %> kg</div>
+        <div class="stat-label">Total Weight</div>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <div class="stat-label">All-Time Total</div>
+      <div class="total-value"><%= number_with_precision(@drop_off_site.total_weight_kg, precision: 1) %> kg</div>
+      <div class="stat-label">Diverted from landfill</div>
+    </div>
+
+    <p style="text-align: center; font-size: 18px; margin-top: 30px;">
+      <strong>Thank you for being part of the solution!</strong>
+    </p>
+
+    <p style="text-align: center;">
+      Every kilogram of organic waste you help divert makes a real difference in reducing methane emissions and supporting local composting initiatives.
+    </p>
+
+    <div class="footer">
+      <p>Alfred's Gooi - Composting for a Greener Cape Town</p>
+      <p>Questions? Reply to this email or contact us via WhatsApp</p>
+    </div>
+  </body>
+</html>

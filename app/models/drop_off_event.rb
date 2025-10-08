@@ -41,12 +41,18 @@ class DropOffEvent < ApplicationRecord
     total_weight_from_buckets / denom
   end
 
-  # After completing drop-off, recalculate site totals
+  # After completing drop-off, recalculate site totals and send email
   after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? }
+  after_update :send_completion_email, if: -> { saved_change_to_is_done? && is_done? }
 
   private
 
   def recalc_site_totals
     drop_off_site.recalc_totals!
+  end
+
+  def send_completion_email
+    return unless drop_off_site.user.present?
+    DropOffEventMailer.completion_notification(self).deliver_later
   end
 end

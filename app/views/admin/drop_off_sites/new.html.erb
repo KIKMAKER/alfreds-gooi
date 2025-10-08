@@ -28,6 +28,8 @@
           placeholder: "e.g. Last stop on route. Enter through main gate.",
           hint: "Any special instructions for the driver" %>
 
+    <%= f.input :photo, as: :file, hint: "Upload a photo of the drop-off site" %>
+
     <%= f.button :submit, "Create Drop-Off Site", class: "small-yellow-btn" %>
   <% end %>
 
