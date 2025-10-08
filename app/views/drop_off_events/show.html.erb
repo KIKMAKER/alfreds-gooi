@@ -6,6 +6,7 @@
     </div>
     <% if @drop_off_event.is_done %>
       <span class="badge bg-success">Completed</span>
+      <%= link_to 'End the day', end_drivers_day_path(@drivers_day), class:"link-title text-success"  %>
     <% else %>
       <%= link_to "Mark Complete", complete_drivers_day_drop_off_event_path(@drivers_day, @drop_off_event),
           data: { turbo_method: :post, turbo_confirm: "Mark this drop-off as complete?" },

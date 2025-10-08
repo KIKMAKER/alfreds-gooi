@@ -14,50 +14,55 @@
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
 
-    <% if @drop_off_events.any? %>
-      <div class="alert alert-info my-3">
-        <strong>Drop-Off Sites Today:</strong>
-        <% @drop_off_events.each do |event| %>
-          <div class="d-flex justify-content-between align-items-center mt-2">
-            <span>📍 <%= event.drop_off_site.name %> - <%= event.drop_off_site.suburb %></span>
-            <%= link_to "Weigh Buckets", drivers_day_drop_off_event_path(@drivers_day, event), class: "btn btn-sm btn-primary" %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-
     <ul data-controller="sortable">
-      <% @collections.each do |collection| %>
-        <li class="collection" data-sortable-url="<%= update_position_collection_path(collection) %>"
-        data-sortable-handle
-        class="sortable-item">
-          <div class="name">
-            <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
-            <% if current_user.admin? %>
-              <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
-            <% end %>
-          </div>
-          <div class="bag">
-            <% if collection.skip %>
-              <%= link_to "skip", edit_collection_path(collection), class: "small-yellow-btn" %>
-            <% else %>
-              <% if (collection.bags || 0) >= 1 %>
-                <%= link_to "#{pluralize(collection.bags, 'bag')}", edit_collection_path(collection), class: "small-yellow-btn" %>
-              <% elsif (collection.buckets || 0) >= 1 %>
-                <%= link_to "#{pluralize(collection.buckets, 'bucket')}", edit_collection_path(collection), class: "small-yellow-btn" %>
-              <% elsif collection.new_customer %>
-                <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
-              <% elsif collection.subscription.user.drop_off? %>
-                <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
-              <% else %>
-                <%= link_to "collect", edit_collection_path(collection), class: "small-yellow-btn" %>
+      <% @route_items.each do |item| %>
+        <% if item.is_a?(DropOffEvent) %>
+          <li class="collection">
+            <div class="name">
+              <p>📍 <%= link_to item.drop_off_site.name, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
+              <% if item.is_done %>
+                <i class="fa-solid fa-check"></i>
               <% end %>
-            <% end %>
-          </div>
-          <div class="address">
-            <%= link_to collection.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{collection.subscription.street_address}", target: :_blank %>
-          </div>
-        </li>
+            </div>
+            <div class="bag">
+              <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
+            </div>
+            <div class="address">
+              <%= link_to item.drop_off_site.suburb, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
+            </div>
+          </li>
+        <% else %>
+          <li class="collection" data-sortable-url="<%= update_position_collection_path(item) %>"
+          data-sortable-handle
+          class="sortable-item">
+            <div class="name">
+              <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
+              <% if current_user.admin? %>
+                <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
+              <% end %>
+            </div>
+            <div class="bag">
+              <% if item.skip %>
+                <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% else %>
+                <% if (item.bags || 0) >= 1 %>
+                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif (item.buckets || 0) >= 1 %>
+                  <%= link_to "#{pluralize(item.buckets, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif item.new_customer %>
+                  <%= link_to "Meet #{item.subscription.user.first_name}", edit_collection_path(item) , class: "small-yellow-btn"%>
+                <% elsif item.subscription.user.drop_off? %>
+                  <%= link_to "Drop off", edit_collection_path(item) , class: "small-yellow-btn"%>
+                <% else %>
+                  <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% end %>
+              <% end %>
+            </div>
+            <div class="address">
+              <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
+            </div>
+          </li>
+        <% end %>
       <% end %>
     </ul>
 
