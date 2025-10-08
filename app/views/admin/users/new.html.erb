@@ -1,0 +1,28 @@
+<div class="user-wrapper">
+  <h1 class="my-4">Create Drop-Off Manager</h1>
+
+  <%= simple_form_for [:admin, @user] do |f| %>
+    <%= f.input :first_name, placeholder: "e.g. Sarah" %>
+
+    <%= f.input :last_name, placeholder: "e.g. Johnson" %>
+
+    <%= f.input :email, placeholder: "e.g. sarah@example.com" %>
+
+    <%= f.input :phone_number,
+          placeholder: "+27 82 555 1234",
+          hint: "International format preferred (e.g. +27 82 555 1234)" %>
+
+    <%= f.input :role,
+          as: :select,
+          collection: [['Drop-Off Manager', 'drop_off']],
+          prompt: "Select role" %>
+
+    <p class="text-muted">
+      Their password is password. The user can reset their password via email.
+    </p>
+
+    <%= f.button :submit, "Create Drop-Off Manager", class: "small-yellow-btn" %>
+  <% end %>
+
+  <%= link_to "← Back to drop-off sites", admin_drop_off_sites_path, class: "mt-3 d-block" %>
+</div>

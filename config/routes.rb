@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         post :create_next_week_events
       end
     end
-    resources :users, only: [:index, :edit, :update, :show] do
+    resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       post :renew_last_subscription, on: :member
     end
   end

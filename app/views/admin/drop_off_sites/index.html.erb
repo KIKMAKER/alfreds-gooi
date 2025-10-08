@@ -1,6 +1,7 @@
 <div class="driver-wrapper">
   <h1>Drop-Off Sites</h1>
   <%= link_to "New Drop-Off Site", new_admin_drop_off_site_path, class: "small-yellow-btn my-3" %>
+  <%= link_to "Create Drop-Off Manager", new_admin_user_path, class: "small-yellow-btn my-3" %>
   <%= button_to "Create Next Week's Drop-Offs", create_next_week_events_admin_drop_off_sites_path, method: :post, class: "small-yellow-btn my-3",
       data: { confirm: "Create drop-off events for next week?" } %>
 

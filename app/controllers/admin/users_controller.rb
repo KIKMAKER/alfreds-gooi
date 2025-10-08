@@ -8,6 +8,21 @@ class Admin::UsersController < ApplicationController
     @users = User.includes(:subscriptions).order(:first_name)
   end
 
+  def new
+    @user = User.new
+  end
+
+  def create
+    @user = User.new(user_create_params)
+    @user.password = "password" # Generate random password
+
+    if @user.save
+      redirect_to admin_drop_off_sites_path, notice: "Drop-off manager created! They can reset their password via email."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def show
     @subscriptions = @user.subscriptions
                           .includes(:collections, :invoices)
@@ -48,6 +63,10 @@ class Admin::UsersController < ApplicationController
   def user_params
     # Adjust according to your User model attributes
     params.require(:user).permit(:first_name, :last_name, :email, :phone_number, :customer_id, :address)
+  end
+
+  def user_create_params
+    params.require(:user).permit(:first_name, :last_name, :email, :phone_number, :role)
   end
 
   def require_admin

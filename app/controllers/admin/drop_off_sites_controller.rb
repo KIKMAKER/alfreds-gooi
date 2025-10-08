@@ -84,7 +84,8 @@ class Admin::DropOffSitesController < ApplicationController
       :phone_number,
       :notes,
       :collection_day,
-      :photo
+      :photo,
+      :user_id
     )
   end
 
