@@ -33,9 +33,11 @@ class CreateCollectionsJob < ApplicationJob
         date: collection_date
       )
       if subscription.holiday_start && subscription.holiday_end && collection.date.between?(subscription.holiday_start, subscription.holiday_end)
-        collection.update(skip: true)
+        collection.mark_skipped!(by: nil, reason: "holiday")
       end
-      collection.update!(skip: subscription.is_paused?)
+
+      collection.mark_skipped!(by: nil, reason: "paused") if subscription.is_paused?
+
       collection.update!(new_customer: true) if subscription.is_new_customer
 
       Rails.logger.info "Created collection for #{subscription.customer_id} on #{collection_date}"

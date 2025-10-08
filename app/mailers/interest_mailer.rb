@@ -1,6 +1,6 @@
 class InterestMailer < ApplicationMailer
-  default to: ENV["INTEREST_NOTIFY_TO"] || "you@example.com",
-          from: ENV["MAIL_FROM"] || "no-reply@your-domain"
+  default to: ENV["INTEREST_NOTIFY_TO"] || "howzit@gooi.me",
+          from: ENV["MAIL_FROM"] || "howzit@gooi.me"
 
   def new_interest_email
     @interest = params[:interest]

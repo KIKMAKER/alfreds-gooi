@@ -1,6 +1,6 @@
 <div class="driver-wrapper">
-   <%= link_to 'all drivers days', drivers_days_path, class:"link-title mb-3" %>
-   <%= link_to 'logistics dashboard', admin_logistics_path, class:"link-title mb-3" %>
+  <%= link_to 'all drivers days', drivers_days_path, class:"link-title mb-3" %>
+  <%= link_to 'logistics dashboard', admin_logistics_path, class:"link-title mb-3" %>
   <h2>Daily list</h2>
   <%= link_to 'todays list', today_subscriptions_path, class: 'small-yellow-btn mt-3' %>
   <%= form_with url: route_drivers_days_path, method: :get, local: true do |f| %>
@@ -35,20 +35,9 @@
   <h2>Create Collections</h2>
   <%= button_to 'Create for Next Week', perform_create_next_week_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   <div class="d-flex mt-3">
-    <%#= link_to 'Import from CSV', load_csv_collections_path, class: 'small-yellow-btn' %>
     <%= button_to 'Create for Today', perform_create_today_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
-    <%#= button_to 'Create for Tomorrow', perform_create_tomorrow_collections_path, class: 'small-yellow-btn', data: { confirm: 'Are you sure you want to run this job?' } %>
   </div>
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>
-  <!--<h3>Collections for this week:</h3>-->
-  <!--<p> <%#= (Date.today + 1).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1).count %></p>
-  <p> <%#= (Date.today + 1).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 1, skip: true).count %></p>
-  <p> <%#= (Date.today + 2).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 2).count %></p>
-  <p> <%#= (Date.today + 2).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 2, skip: true).count %></p>
-  <p> <%#= (Date.today + 3).strftime(" %A") %> Total: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3).count %></p>
-  <p> <%#= (Date.today + 3).strftime(" %A") %> Skips: <%= Collection.where(created_at: Date.today.all_day, date: Date.today + 3, skip: true).count %></p>-->
-  <!--  <p>Wednesday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today ).count %></p>
-  <p>Thursday: <%#= Collection.where(created_at: Date.today.all_day, date: Date.today ).count %></p>-->
   <br>
 </div>
