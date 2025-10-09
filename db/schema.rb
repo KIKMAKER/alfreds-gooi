@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_08_193503) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_09_071145) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_08_193503) do
     t.bigint "drop_off_event_id"
     t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
     t.index ["drop_off_event_id"], name: "index_buckets_on_drop_off_event_id"
+  end
+
+  create_table "business_profiles", force: :cascade do |t|
+    t.bigint "subscription_id", null: false
+    t.string "business_name"
+    t.string "vat_number"
+    t.string "contact_person"
+    t.string "street_address"
+    t.string "suburb"
+    t.string "postal_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_business_profiles_on_subscription_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -388,6 +401,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_08_193503) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "buckets", "drivers_days"
   add_foreign_key "buckets", "drop_off_events"
+  add_foreign_key "business_profiles", "subscriptions"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "drivers_days", "users"

@@ -2,10 +2,30 @@
   <div class="invoice-container">
     <h1>Invoice</h1>
     <div class="user-details">
-      <p><strong>For:</strong> <%= @subscription.user.first_name %></p>
+      <p><strong>For:</strong> <%= @subscription.user.first_name %> <%= @subscription.user.last_name %></p>
       <p><strong>Email:</strong> <%= @subscription.user.email %></p>
-      <p><strong>Address:</strong> <%= @subscription.street_address %>, <%= @subscription.suburb %></p>
       <p><strong>Customer ID:</strong> <%= @subscription.customer_id %>
+        <% if @subscription.business_profile.present? %>
+          <br>
+          <br>
+          <p><strong>Business:</strong> <%= @subscription.business_profile.business_name %></p>
+          <% if @subscription.business_profile.vat_number.present? %>
+            <p><strong>VAT #:</strong> <%= @subscription.business_profile.vat_number %></p>
+          <% end %>
+          <% if @subscription.business_profile.contact_person.present? %>
+            <p><strong>Att:</strong> <%= @subscription.business_profile.contact_person %></p>
+          <% end %>
+          <p><strong>Address:</strong> <%= @subscription.business_profile.street_address %></p>
+          <% if @subscription.business_profile.suburb.present? %>
+            <p><%= @subscription.business_profile.suburb %></p>
+          <% end %>
+          <% if @subscription.business_profile.postal_code.present? %>
+            <p><%= @subscription.business_profile.postal_code %></p>
+          <% end %>
+        <% else %>
+          <p><strong>Address:</strong> <%= @subscription.street_address %>, <%= @subscription.suburb %></p>
+        <% end %>
+
         <p><strong>Due Date:</strong> <%= @invoice.paid ? 'paid!' : @invoice.due_date.strftime('%A, %b %d') %></p>
         <% if current_user.admin? && !@invoice.paid %>
           <%= link_to 'paid', paid_invoice_path(@invoice) %>
