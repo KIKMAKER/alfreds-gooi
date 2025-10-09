@@ -32,9 +32,9 @@
             </div>
             <div class="emojies">
               <% omw_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>
-              <p class="emoji"><%= link_to "🚗", "https://wa.me/'#{drop_off_site.contact_number}'?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
+              <p class="emoji"><%= link_to "🚗", "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
               <% here_message = "Hello #{item.drop_off_site.contact_name}. I am here!" %>
-              <p class="emoji"><%= link_to "🏠",  "https://wa.me/'#{drop_off_site.contact_number}'?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
+              <p class="emoji"><%= link_to "🏠",  "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
             </div>
           </li>
         <% else %>
