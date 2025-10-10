@@ -10,7 +10,15 @@ class OrdersController < ApplicationController
 
     # Find or create order item
     order_item = @order.order_items.find_or_initialize_by(product: product)
-    order_item.quantity = (order_item.quantity || 0) + quantity
+
+    # If new record, set quantity directly; otherwise add to existing quantity
+    if order_item.new_record?
+      order_item.quantity = quantity
+      order_item.price = product.price
+    else
+      order_item.quantity += quantity
+    end
+
     order_item.save!
 
     @order.save! # Triggers calculate_total callback
@@ -20,7 +28,14 @@ class OrdersController < ApplicationController
 
   def remove_item
     order_item = OrderItem.find(params[:id])
+    order = order_item.order
     order_item.destroy
+
+    # If order has no items left, destroy the order
+    if order.order_items.empty?
+      order.destroy
+    end
+
     redirect_to shop_index_path, notice: "Item removed from your order."
   end
 

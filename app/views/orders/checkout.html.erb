@@ -1,4 +1,4 @@
-<div class="user-wrapper">
+<div class="user-wrapper link-decoration">
   <h1 class="my-4">Checkout</h1>
 
   <div class="outline p-3 mb-4">
@@ -17,7 +17,7 @@
   </div>
 
   <% if @next_collection %>
-    <div class="outline p-3 mb-4">
+    <div class="outline p-3 mb-4 lh-lg">
       <h3>Delivery</h3>
       <p>Your order will be delivered with your next collection:</p>
       <p><strong><%= @next_collection.date.strftime('%A, %B %e, %Y') %></strong></p>
