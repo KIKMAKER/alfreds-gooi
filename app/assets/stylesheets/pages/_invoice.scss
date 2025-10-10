@@ -20,7 +20,12 @@
   overflow: scroll;
 
 
-  h1,
+  h1 {
+    color: $dark-green;
+    margin-bottom: 2rem;
+
+  }
+
   p {
     color: $dark-green;
   }
@@ -42,6 +47,8 @@
 }
 
 .user-details {
+  display: flex;
+
   p {
     font-size: 0.9rem;
     // margin-bottom: 0;
@@ -110,8 +117,13 @@
 }
 
 .payment-container {
-  margin: 1rem;
-  max-width: 32rem;
+  margin: 0rem auto;
+  max-width: 40rem;
+  color: #0F4A3A;
+
+  .snapscan {
+    flex-shrink: 4;
+  }
 
   h2 {
     font-size: 1rem;
@@ -135,7 +147,7 @@
   display: flex;
   justify-content: space-between;
 
-  flex-direction: column;
+  // flex-direction: column;
 
   h1 {
     font-size: 1rem;
