@@ -111,7 +111,7 @@ class DriversDaysController < ApplicationController
     # in production today will be the current day,
     # today = "Wednesday"
     # PRODUCTION
-    today = Date.today
+    today = Date.today + 6
     # but in testing I want to be able to test the view for a given day
     # DEVELOPMENT
     # today = (Date.today + 1)
@@ -125,6 +125,7 @@ class DriversDaysController < ApplicationController
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
+    @products_needed = @drivers_day.products_needed_for_delivery
     if request.patch?
       if update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
         # puts "Driver's Day started at: #{current_user.drivers_days.last.start_time}"

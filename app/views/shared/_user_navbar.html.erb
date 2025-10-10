@@ -1,23 +1,23 @@
 <!--<div class="navbar-container" data-controller="hello">
   <div class="inner-container">
     <%#= link_to root_path do %>-->
-      <%#= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
-    <%# end %>
+<%#= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
+<%# end %>
 <!--    <div class="links-container">-->
-      <%#= link_to 'Manage', manage_path, class: "link-title" %>
-      <%#= link_to 'Edit address', edit_subscription_path(current_user.subscriptions.last), class: "link-title" %>
-      <%#= link_to 'Edit personal details', edit_user_registration_path, class: "link-title" %>
-      <%#= link_to "Invoices", invoices_path, class: "link-title" %>
-      <%#= link_to "Referrals", referrals_path, class: "link-title" %>
-      <%# if user_signed_in?  %>
+<%#= link_to 'Manage', manage_path, class: "link-title" %>
+<%#= link_to 'Edit address', edit_subscription_path(current_user.subscriptions.last), class: "link-title" %>
+<%#= link_to 'Edit personal details', edit_user_registration_path, class: "link-title" %>
+<%#= link_to "Invoices", invoices_path, class: "link-title" %>
+<%#= link_to "Referrals", referrals_path, class: "link-title" %>
+<%# if user_signed_in?  %>
 <!--        <div class="sign-up-btn">-->
-          <%#= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
+<%#= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
 <!--        </div>-->
-      <%# else %>
+<%# else %>
 <!--        <div class="sign-up-btn">-->
-          <%#= link_to "Log in", new_user_session_path %>
+<%#= link_to "Log in", new_user_session_path %>
 <!--        </div>-->
-      <%# end %>
+<%# end %>
 <!--    </div>
     <div class="hamburger-menu" data-action="click->hello#toggleHide">
       <div id="menu-icon">
@@ -26,15 +26,15 @@
         <li class="nav-item dropdown">
           <%#= image_tag 'menu-svgrepo-com.png', class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false %>-->
 <!--          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">-->
-            <%#= link_to 'The Story', story_path, class: "dropdown-item" %>
-            <%# if current_user.invoices.any? %>
-              <%#= link_to "Invoices", invoices_path, class: "dropdown-item" %>
-            <%# end %>
-            <%#= link_to "Manage", manage_path, class: "dropdown-item" %>
-            <%#= link_to "account", account_path, class: "dropdown-item" %>
-            <%#= link_to 'Edit ad÷ails', edit_user_registration_path, class: "dropdown-item" %>
-            <%#= link_to "Referrals", referrals_path, class: "dropdown-item" %>
-            <%#= link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
+<%#= link_to 'The Story', story_path, class: "dropdown-item" %>
+<%# if current_user.invoices.any? %>
+<%#= link_to "Invoices", invoices_path, class: "dropdown-item" %>
+<%# end %>
+<%#= link_to "Manage", manage_path, class: "dropdown-item" %>
+<%#= link_to "account", account_path, class: "dropdown-item" %>
+<%#= link_to 'Edit ad÷ails', edit_user_registration_path, class: "dropdown-item" %>
+<%#= link_to "Referrals", referrals_path, class: "dropdown-item" %>
+<%#= link_to "Log out", destroy_user_session_path, class: "dropdown-item", data: {turbo_method: :delete} %>
 <!--          </div>
         </li>
       </ul>
@@ -50,6 +50,9 @@
 
     <!-- Hamburger always visible -->
     <div class="hamburger-menu dropdown ms-auto">
+      <%= link_to shop_index_path do %>
+        <i class="fa-solid fa-cart-shopping"></i>
+      <% end %>
       <button class="btn p-2 border-0 bg-transparent" id="navMenuButton"
               data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open menu">
         <i class="fa-solid fa-bars fa-2x" style="color:#023f3a;"></i>
@@ -60,8 +63,7 @@
         <%#= link_to 'The story', the_story_path, class: "dropdown-item" %>
         <%#= link_to 'How we compost', root_path, class: "dropdown-item" %>
         <li><%= link_to 'Manage', manage_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Edit address', edit_subscription_path(current_user.subscriptions.last), class: "dropdown-item" %></li>
-        <li><%= link_to 'Edit personal details', edit_user_registration_path, class: "dropdown-item" %></li>
+        <li><%= link_to 'Account', account_path, class: "dropdown-item" %></li>
         <li><%= link_to 'Referrals', referrals_path, class: "dropdown-item" %></li>
         <% if current_user.respond_to?(:invoices) && current_user.invoices.any? %>
           <li><%= link_to "Invoices", invoices_path, class: "dropdown-item" %></li>
