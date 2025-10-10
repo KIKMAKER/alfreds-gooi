@@ -2,6 +2,11 @@
   <h1 class="my-4">Shop</h1>
   <p class="mb-4">Order products to be delivered with your next collection</p>
 
+  <div class="outline p-3 mb-4 bg-light">
+    <p class="mb-2"><strong>Need more bags?</strong></p>
+    <p class="small text-muted mb-0">Order Bonnie Bio compostable bin bags below and we'll deliver them with your next collection</p>
+  </div>
+
   <% if @products.any? %>
     <div class="collections">
       <% @products.each do |product| %>
@@ -37,12 +42,12 @@
   <% end %>
 
   <% if @current_order.order_items.any? %>
-    <div class="mt-5">
+    <div class="my-5">
       <h2>Your Order</h2>
       <div class="collections">
         <% @current_order.order_items.each do |item| %>
           <div class="collection mb-2">
-            <div class="name">
+            <div class="address">
               <p><%= item.product.title %></p>
             </div>
             <div class="bag">
@@ -55,9 +60,9 @@
         <% end %>
       </div>
 
-      <div class="mt-3">
-        <p><strong>Total: R<%= @current_order.total_amount.to_i %></strong></p>
-        <%= link_to "Checkout", checkout_order_path(@current_order), class: "submit-btn" %>
+      <div class="mt-3 flex-apart w-75">
+        <h5 class="mb-0">Total: R<%= @current_order.total_amount.to_i %></h5>
+        <%= link_to "Checkout", checkout_order_path(@current_order), class: "small-yellow-btn" %>
       </div>
     </div>
   <% end %>

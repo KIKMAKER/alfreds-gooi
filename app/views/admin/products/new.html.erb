@@ -1,2 +1,20 @@
-<h1>Admin::Products#new</h1>
-<p>Find me in app/views/admin/products/new.html.erb</p>
+<div class="user-wrapper">
+  <h1 class="my-4">New Product</h1>
+
+  <%= simple_form_for [:admin, @product] do |f| %>
+    <%= f.input :title %>
+    <%= f.input :description, as: :text, input_html: { rows: 3 } %>
+    <%= f.input :price, label: "Price (Rands)" %>
+    <%= f.input :stock, label: "Stock Quantity" %>
+    <%= f.input :is_active, label: "Active in Shop?", as: :boolean %>
+
+    <%= f.input :images,
+                as: :file,
+                input_html: { multiple: true },
+                hint: "Upload one or more product images" %>
+
+    <%= f.button :submit, "Create Product", class: "small-yellow-btn" %>
+  <% end %>
+
+  <%= link_to "← Back to Products", admin_products_path, class: "mt-3 d-block" %>
+</div>

@@ -143,13 +143,17 @@ Rails.application.routes.draw do
 
   resources :interests, only: :create
 
+  # customers
+  get "my_subscriptions", to: "customers#subscriptions"
+  get "manage", to: "customers#manage"
+  get "account", to: "customers#account"
+  get "collections_history", to: "customers#collections_history"
+  get "skipme", to: "customers#skipme"
+  get "welcome", to: "customers#welcome"
+  get "referrals", to: "customers#referrals"
+
   # static pages
   root "pages#home"
-  get "manage", to: "pages#manage"
-  get "account", to: "pages#account"
-  get "skipme", to: "collections#skipme"
-  get "welcome", to: "pages#welcome"
-  get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"
 
 

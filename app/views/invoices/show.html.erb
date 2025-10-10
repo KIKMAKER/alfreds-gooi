@@ -1,8 +1,8 @@
 <div class="invoice-wrapper">
   <div class="invoice-container">
-    <h1 class="mb-2">Invoice</h1>
-    <h3 class="text-center mb-3">gooi compost collections</h3>
-    <div class="user-details">
+    <h1 class="mb-4">Invoice</h1>
+    <!--<h5 class="text-center my-3">gooi compost collections</h5>-->
+    <div class="user-details ms-1">
       <div class="user">
         <p><strong>For:</strong> <%= @subscription.user.first_name %> <%= @subscription.user.last_name %></p>
         <p><strong>Email:</strong> <%= @subscription.user.email %></p>
@@ -73,7 +73,7 @@
         <h2>Make a Payment</h2>
         <div class="payment-options">
           <div class="eft">
-            <h3>Bank Details</h3>
+            <h3 class="mb-3">Bank Details</h3>
             <p><strong>Bank:</strong> FNB</p>
             <p><strong>Account Name:</strong> Gooi</p>
             <p><strong>Account Number:</strong> 63066225426</p>
@@ -82,10 +82,10 @@
 
             <p>Please use the reference above when making payment.</p>
           </div>
-          <div class="snapscan">
-            <h3>Snapscan</h3>
-            <p>You can also make make a payment via the secure SnapScan portal. SnapScan accepts bank cards, EFTs, as well as payments through the SnapScan app.</p>
-            <%= link_to "Pay with snapscan", "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "small-yellow-btn p-1"  %>
+          <div class="snapscan ms-4">
+            <h3 class="mb-3">Snapscan</h3>
+            <p class="mb-5">You can also make make a payment via the secure SnapScan portal. SnapScan accepts bank cards, EFTs, as well as payments through the SnapScan app.</p>
+            <%= link_to "Pay with snapscan", "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "small-yellow-btn ms-4"  %>
 
           </div>
         </div>

@@ -1,0 +1,24 @@
+// Account page responsive form styles
+.account-form-container {
+  .outline {
+    // Desktop: max-width with centered margins
+    @media (min-width: 768px) {
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    // Mobile: full width minus padding
+    @media (max-width: 767px) {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  // Ensure form inputs don't exceed their container
+  .form-control,
+  .form-select {
+    max-width: 100%;
+  }
+}

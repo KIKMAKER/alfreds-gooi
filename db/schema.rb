@@ -171,7 +171,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_10_104409) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
-    t.index ["product_id"], name: "index_invoice_items_on_product_id"
+    t.index ["product_id"], name: "index_invoice_items_on_product_id"∑
   end
 
   create_table "invoices", force: :cascade do |t|

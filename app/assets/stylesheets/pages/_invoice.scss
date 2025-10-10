@@ -10,10 +10,6 @@
 
 .invoice-container {
 
-  // background: white;
-  // padding: 2rem;
-  // border-radius: 8px;
-  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   padding-right: 8px;
   max-width: 800px;
@@ -117,9 +113,8 @@
 }
 
 .payment-container {
-  margin: 0rem auto;
   max-width: 40rem;
-  color: #0F4A3A;
+  color: $dark-green;
 
   .snapscan {
     flex-shrink: 4;
