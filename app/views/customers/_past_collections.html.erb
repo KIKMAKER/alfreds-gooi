@@ -1,0 +1,17 @@
+<div class="past-collections-cards">
+  <div class="collections-card">
+    <% collections.each do |collection| %>
+      <li class="list-item">
+        <p><%= collection.date&.strftime('%d %b %Y') %></p>
+        <% if collection.skip == true %>
+          <p class="bucket-height">skipped</p>
+        <% else %>
+          <div class="d-flex align-items-center">
+            <p><%= collection.subscription.XL? ? collection.buckets.truncate : collection.bags %> x </p>
+            <%= image_tag 'bucket.jpg', alt: "bucket", class:"bucket-img" %>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </div>
+</div>

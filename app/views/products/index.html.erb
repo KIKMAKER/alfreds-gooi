@@ -1,8 +1,0 @@
-<div class="driver-wrapper mb-2">
-  <h1>All Products</h1>
-  <% @products.each do |product| %>
-    <p><%= product.title %> - R <%= product.price %></p>
-    <br>
-  <% end %>
-  <%= link_to "add a product", new_product_path, class: "small-yellow-btn" %>
-</div>

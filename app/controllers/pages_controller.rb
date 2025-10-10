@@ -45,12 +45,23 @@ class PagesController < ApplicationController
     @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
 
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
-    @all_collections = current_user.collections.order(date: :desc)
+    @recent_collections = current_user.collections.order(date: :desc).limit(5)
 
   end
 
   def account
+    @user = current_user
     @subscription = current_user.current_sub
+  end
+
+  def collections_history
+    @per  = params.fetch(:per, 20).to_i.clamp(1, 100)
+    @page = params.fetch(:page, 1).to_i
+
+    scope = current_user.collections.order(date: :desc)
+    @total = scope.count
+    @collections = scope.offset((@page - 1) * @per).limit(@per)
+    @total_pages = (@total.to_f / @per).ceil
   end
 
 

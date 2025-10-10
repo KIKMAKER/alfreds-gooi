@@ -1,0 +1,29 @@
+<div class="user-wrapper link-decoration">
+  <h1 class="my-4">All Collections</h1>
+  <%= link_to "← Back to manage", manage_path, class: "d-block mb-3" %>
+
+  <% if @collections.any? %>
+    <!--<div class="collections-carousel">-->
+      <%= render "past_collections", collections: @collections %>
+    <!--</div>-->
+
+    <!-- Pagination -->
+    <% if @total_pages > 1 %>
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <% if @page > 1 %>
+          <%= link_to "← Previous", collections_history_path(page: @page - 1, per: @per), class: "small-yellow-btn" %>
+        <% end %>
+
+        <span class="text-muted">Page <%= @page %> of <%= @total_pages %> (<%= @total %> total)</span>
+
+        <% if @page < @total_pages %>
+          <%= link_to "Next →", collections_history_path(page: @page + 1, per: @per), class: "small-yellow-btn" %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="outline my-5">
+      <p class="text-center">You haven't had any collections yet</p>
+    </div>
+  <% end %>
+</div>

@@ -14,22 +14,13 @@
     </div>
     <!--div containing collection details-->
     <div class="collection-notes">
-      <% if @collection.needs_bags.zero? %>
-        <p>Issue bags:</p>
-        <%= link_to issue_bags_collection_path(@collection) do %>
-          <i class="fa-solid fa-sack-dollar" style="font-size: 32px"></i>
-          <%#= image_tag 'empty_bucket.jpg', alt: "bucket", class:"bucket-img" %>
-        <% end %>
-      <% else %>
-        <strong>
-          <p class = "collection-notes"> Drop off <%= @collection.needs_bags %> rolls of bags</p>
-        </strong>
+
+      <p>Issue bags:</p>
+      <%= link_to issue_bags_collection_path(@collection) do %>
+        <i class="fa-solid fa-sack-dollar" style="font-size: 32px"></i>
+        <%#= image_tag 'empty_bucket.jpg', alt: "bucket", class:"bucket-img" %>
       <% end %>
-      <% if @collection.soil_bag&. > 0 %>
-        <strong>
-          <p class = "collection-notes"> Drop off <%= @collection.soil_bag %> bags of soil</p>
-        </strong>
-      <% end %>
+
       <strong>
         <p>Address:</p>
       </strong>
@@ -43,17 +34,29 @@
         </strong>
         <p><%= @collection.kiki_note %></p>
       <% end %>
-      <% if @collection.subscription.user.drop_off? %>
-        <strong>
-          <p>Do we need to buy soil for anyone?</p>
-        </strong>
+      <% if @orders.any? %>
+        <div class="outline p-3 mb-3">
+          <strong>
+            <p>Product Orders to Deliver:</p>
+          </strong>
+          <% @orders.each do |order| %>
+            <% order.order_items.each do |item| %>
+              <p><%= item.quantity %>x <%= item.product.title %></p>
+            <% end %>
+            <%= button_to "Mark Order ##{order.id} as Delivered",
+                          mark_delivered_order_path(order),
+                          method: :post,
+                          class: "small-yellow-btn mt-2",
+                          data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
+          <% end %>
+        </div>
       <% end %>
     </div>
 
     <!--div containing forms-->
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
-      <%= f.input :skip %>
+        <%= f.input :skip %>
         <% if @collection.subscription.XL? %>
           <%= f.input :buckets, placeholder: "0" %>
         <% else %>

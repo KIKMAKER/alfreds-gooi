@@ -110,7 +110,7 @@
   .bag {
     width: 15%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
   }
   .address {
@@ -172,64 +172,38 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    @media screen and (max-width: 780px) {
-      .collection {
-
-        a {
-
-          font-size: 12px !important;
-        }
-
-      }
-
-      a {
-        font-size: 1rem;
-      }
-      p {
-
-        font-size: 1rem;
-      }
-
-      .emoji {
-        font-size: 1rem;
-      }
-      .small-yellow-btn {
-        padding: 4px 8px;
-        font-size: 14px;
-      }
-    }
-    @media screen and (max-width: 780px) {
-      .collection {
-
-        a {
-
-          font-size: 12px !important;
-        }
-
-      }
-
-      a {
-        font-size: 1rem;
-      }
-      p {
-
-        font-size: 1rem;
-      }
-
-      .emoji {
-        font-size: 1rem;
-      }
-      .small-yellow-btn {
-        padding: 4px 8px;
-        font-size: 14px;
-      }
-    }
   }
   .address {
     width: 30%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+}
+@media screen and (max-width: 780px) {
+  .collection {
+
+    a {
+
+      font-size: 12px !important;
+    }
+
+  }
+
+  a {
+    font-size: 1rem;
+  }
+  p {
+
+    font-size: 1rem;
+  }
+
+  .emoji {
+    font-size: 1rem;
+  }
+  .small-yellow-btn {
+    // padding: 4px 8px;
+    font-size: 14px;
   }
 }
 
@@ -292,22 +266,4 @@
   opacity: 1
 }
 
-@media screen and (max-width: 780px) {
 
-
-  a {
-    font-size: 0.9rem;
-  }
-  p {
-
-    font-size: 1rem;
-  }
-
-  .emoji {
-    font-size: 1rem;
-  }
-  .small-yellow-btn {
-    padding: 4px 8px;
-    font-size: 14px;
-  }
-}

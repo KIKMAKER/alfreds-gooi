@@ -1,0 +1,31 @@
+<div class="user-wrapper">
+  <h1 class="my-4">Edit <%= @product.title %></h1>
+
+  <%= simple_form_for [:admin, @product] do |f| %>
+    <%= f.input :title %>
+    <%= f.input :description, as: :text, input_html: { rows: 3 } %>
+    <%= f.input :price, label: "Price (Rands)" %>
+    <%= f.input :stock, label: "Stock Quantity" %>
+    <%= f.input :is_active, label: "Active in Shop?", as: :boolean %>
+
+    <%= f.input :images,
+                as: :file,
+                input_html: { multiple: true },
+                hint: "Upload one or more product images" %>
+
+    <% if @product.images.attached? %>
+      <div class="mb-3">
+        <p><strong>Current images:</strong></p>
+        <div class="d-flex gap-2 flex-wrap">
+          <% @product.images.each do |image| %>
+            <%= image_tag image, width: 150, class: "img-thumbnail" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.button :submit, "Update Product", class: "small-yellow-btn" %>
+  <% end %>
+
+  <%= link_to "← Back to Products", admin_products_path, class: "mt-3 d-block" %>
+</div>

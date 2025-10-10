@@ -264,6 +264,7 @@ elsif proceed == "y"
     { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
     { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
     { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
+    { title: "Standard 12 month subscription", description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)", price: 2160 },
     { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
     { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 }
   ]

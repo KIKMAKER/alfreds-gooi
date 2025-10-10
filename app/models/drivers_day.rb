@@ -53,6 +53,23 @@ class DriversDay < ApplicationRecord
 
     (total_net_kg || 0).to_f / denom
   end
+
+  def products_needed_for_delivery
+    # Find all orders attached to today's collections
+    orders = Order.where(collection_id: collections.pluck(:id), status: [:pending, :paid])
+
+    # Group order items by product and sum quantities
+    product_summary = {}
+    orders.each do |order|
+      order.order_items.each do |item|
+        product = item.product
+        product_summary[product] ||= { quantity: 0, product: product }
+        product_summary[product][:quantity] += item.quantity
+      end
+    end
+
+    product_summary.values
+  end
   # def todays_driver
   #   DriversDay.where(date: Date.today)
   # end

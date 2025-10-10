@@ -3,7 +3,7 @@
     <%= link_to "← View all your sites", drop_off_site_managers_path, class: "link-title d-block mb-3" %>
   <% end %>
 
-  <h1>Welcome, <%= @drop_off_site.contact_name || current_user.first_name %>!</h1>
+  <h1>Welcome, <%= current_user.first_name || @drop_off_site.contact_name %>!</h1>
   <p class="lh-lg">Thank you for partnering with Alfred's Gooi to divert organic waste from landfill and support local composting initiatives.</p>
 
   <% if @drop_off_site.photo.attached? %>

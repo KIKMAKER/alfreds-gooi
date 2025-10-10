@@ -1,0 +1,36 @@
+<div class="user-wrapper link-decoration">
+  <h1 class="my-4">Checkout</h1>
+
+  <div class="outline p-3 mb-4">
+    <h3>Order Summary</h3>
+    <% @order.order_items.each do |item| %>
+      <div class="d-flex justify-content-between mb-2">
+        <p><%= item.product.title %> x <%= item.quantity %></p>
+        <p>R<%= item.subtotal.to_i %></p>
+      </div>
+    <% end %>
+    <hr>
+    <div class="d-flex justify-content-between">
+      <p><strong>Total:</strong></p>
+      <p><strong>R<%= @order.total_amount.to_i %></strong></p>
+    </div>
+  </div>
+
+  <% if @next_collection %>
+    <div class="outline p-3 mb-4 lh-lg">
+      <h3>Delivery</h3>
+      <p>Your order will be delivered with your next collection:</p>
+      <p><strong><%= @next_collection.date.strftime('%A, %B %e, %Y') %></strong></p>
+      <p class="text-muted"><%= @next_collection.subscription.street_address %>, <%= @next_collection.subscription.suburb %></p>
+    </div>
+
+    <%= button_to "Confirm Order", attach_to_collection_order_path(@order, collection_id: @next_collection.id),
+                  method: :post, class: "submit-btn w-100" %>
+  <% else %>
+    <div class="outline p-3 mb-4">
+      <p class="text-danger">You don't have any upcoming collections scheduled. Please contact us to arrange delivery.</p>
+    </div>
+  <% end %>
+
+  <%= link_to "← Back to Shop", shop_index_path, class: "d-block mt-3" %>
+</div>

@@ -31,6 +31,8 @@
   display: block;
   margin-right: 5vw;
   margin-top: 3vh;
+  display: flex;
+  align-items: center;
 
   /* push it to the right */
   li {
@@ -42,6 +44,11 @@
     text-decoration: none;
     color: #18191F;
     margin: 8px 0px;
+  }
+
+  i {
+    font-size: 1.75rem;
+    color: $dark-green;
   }
 }
 

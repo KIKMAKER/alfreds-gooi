@@ -27,12 +27,30 @@ module Subscriptions
       ActiveRecord::Base.transaction do
         new_sub.save!
 
-        # ⬇️ Use InvoiceBuilder instead of ad-hoc invoice creation
+        # Copy business profile from previous subscription if it exists
+        if last_sub.business_profile.present?
+          BusinessProfile.create!(
+            subscription: new_sub,
+            business_name: last_sub.business_profile.business_name,
+            vat_number: last_sub.business_profile.vat_number,
+            contact_person: last_sub.business_profile.contact_person,
+            street_address: last_sub.business_profile.street_address,
+            suburb: last_sub.business_profile.suburb,
+            postal_code: last_sub.business_profile.postal_code
+          )
+
+        end
+
+        # Calculate referred friends for discount
+        referred_friends = @user.referrals_as_referrer.where(status: 'completed').count
+
+        # ⬇️ Use InvoiceBuilder with proper discount logic
         invoice = InvoiceBuilder.new(
           subscription: new_sub,
           og:           @user.respond_to?(:og) ? @user.og : false,
-          is_new:       false
-          # referee:, referred_friends: — include if you want to drive referral discounts here
+          is_new:       false,
+          referee:      nil,
+          referred_friends: referred_friends
         ).call
 
         return success!(subscription: new_sub, invoice: invoice)
