@@ -84,6 +84,7 @@ class CollectionsController < ApplicationController
 
   def edit
     @subscription = @collection.subscription
+    @orders = @collection.orders.pending_delivery
   end
 
   def update

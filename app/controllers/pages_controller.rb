@@ -50,6 +50,7 @@ class PagesController < ApplicationController
   end
 
   def account
+    @user = current_user
     @subscription = current_user.current_sub
   end
 
