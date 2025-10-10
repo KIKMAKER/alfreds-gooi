@@ -17,7 +17,7 @@
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navMenuButton">
         <li><%= link_to 'Manage', manage_path, class: "dropdown-item" %></li>
         <li><%= link_to 'Account', account_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'My Subscriptions', my_subscriptions_path, class: "dropdown-item" %></li>
+        <li><%= link_to 'Subscriptions', my_subscriptions_path, class: "dropdown-item" %></li>
         <li><%= link_to 'Referrals', referrals_path, class: "dropdown-item" %></li>
         <% if current_user.respond_to?(:invoices) && current_user.invoices.any? %>
           <li><%= link_to "Invoices", invoices_path, class: "dropdown-item" %></li>
