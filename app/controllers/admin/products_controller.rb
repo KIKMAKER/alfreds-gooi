@@ -22,7 +22,15 @@ class Admin::ProductsController < ApplicationController
   end
 
   def update
+    # Filter out empty image strings
+    if params[:product][:images].present?
+      params[:product][:images].reject!(&:blank?)
+    end
+    stock = params[:product][:stock]
+
     if @product.update(product_params)
+      @product.update(stock: stock)
+
       redirect_to admin_products_path, notice: "Product updated successfully!"
     else
       render :edit, status: :unprocessable_entity
