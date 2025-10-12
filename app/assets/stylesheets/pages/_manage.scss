@@ -13,6 +13,16 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
+.streak {
+  // background: linear-gradient(135deg, $dark-green 0%, $dark-yellow 100%);
+  background: $dark-green;
+  // color: white;
+  border-radius: 12px;
+  h4, p {
+    color: white;
+  }
+}
+
 .container-flex {
   display: flex;
   justify-content: space-between;
@@ -75,11 +85,13 @@
   i {
     font-size: 1.2rem;
   }
+
   #right-arrow-icon {
     position: absolute;
     bottom: 0.3rem;
     right: 40%;
   }
+
   #left-arrow-icon {
     position: absolute;
     bottom: 0.3rem;

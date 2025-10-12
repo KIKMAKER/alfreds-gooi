@@ -1,5 +1,6 @@
 <div class="user-wrapper link-decoration">
   <div>
+
     <% if @unpaid_invoice %>
       <div class="container text-center">
         <h1>Hello <%= current_user.first_name %></h1>
@@ -31,30 +32,54 @@
           </div>
         <% else %>
           <p class="my-2 link-decoration align-center">
-            <% if @next_collection %>
-              <% if @next_collection.date >= Date.today %>
-                <h3 class="mb-3">Your next collection is on <%= @subscription.collections&.last.date&.strftime("%A %d %B") %></h3>
-                <p>Don't need collection? <br>
-                  Help Alfred plan by clicking skip below</p>
-                <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start my-3", data: {turbo: false} %>
 
-                <%= link_to "https://wa.me/27785325513",
+            <% if @next_collection && @next_collection.date >= Date.today %>
+              <h3 class="mb-3">Your next collection is on <%= @subscription.collections&.last.date&.strftime("%A %d %B") %></h3>
+              <p>Don't need collection? <br>
+                Help Alfred plan by clicking skip below</p>
+              <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start my-3", data: {turbo: false} %>
+
+              <%= link_to "https://wa.me/27785325513",
                    target: "_blank" do %>
-                  <i class="fa-brands fa-whatsapp"></i>
-                <% end %>
-                <p class="link-text">Chat to Alfred</p>
-                <%# unless @subscription.collections.empty? %>
-                <!--                <div class="mt-4">
+                <i class="fa-brands fa-whatsapp"></i>
+              <% end %>
+              <p class="link-text">Chat to Alfred</p>
+              <%# unless @subscription.collections.empty? %>
+              <!--                <div class="mt-4">
                   <p class="mb-2">Need to pass on a message?</p>
                   <%#= simple_form_for @subscription.collections&.last, url: add_customer_note_collection_path(@subscription.collections&.last), method: :post do |f| %>-->
-                <%#= f.input :customer_note, value: @subscription.collections&.last.customer_note, label: false, placeholder: "Add a note for Alfred..." %>
-                <%#= f.button :submit, "Save Note", class: "submit-btn mt-2" %>
-                <%# end %>
-                <!--                </div>-->
-                <%# end %>
-              <% else %>
-                <p class="mb-3">Your last collection was on <%= @subscription.collections&.last.date&.strftime("%A %d %B") %></p>
-              <% end %>
+              <%#= f.input :customer_note, value: @subscription.collections&.last.customer_note, label: false, placeholder: "Add a note for Alfred..." %>
+              <%#= f.button :submit, "Save Note", class: "submit-btn mt-2" %>
+              <%# end %>
+              <!--                </div>-->
+              <%# end %>
+              <div class="user-holiday-container my-4" data-controller="toggle">
+                <% if @subscription.holiday_end.nil? || @subscription.holiday_end < Date.today %>
+                  <h3>Need to skip more than one week?</h3>
+                  <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a holiday</button>
+                  <div class="card-white d-none position-relative" data-toggle-target="form">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-action="click->toggle#fire" aria-label="Close"></button>
+                    <p class="m-2">Enter your holiday dates and we will skip automatically skip you while you are away.</p>
+                    <%= simple_form_for @subscription do |f| %>
+                      <%= f.input :holiday_start,
+                          as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "Start:" %>
+                      <%= f.input :holiday_end,
+                          as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "End:" %>
+                      <%= f.submit "save", class: "submit-btn" %>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <h2>Upcoming Holiday</h2>
+                  <div class="mt-4 container-flex flex-column">
+                    <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
+                    <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="mb-3">Your last collection was on <%= @subscription.collections&.last.date&.strftime("%A %d %B") %></p>
             <% end %>
           <% end %>
 
@@ -71,34 +96,24 @@
             <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
           </div>
         <% else %>
-
-          <div class="user-holiday-container my-4" data-controller="toggle">
-            <% if @subscription.holiday_end.nil? || @subscription.holiday_end < Date.today %>
-              <h3>Need to skip more than one week?</h3>
-              <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a holiday</button>
-              <div class="card-white d-none position-relative" data-toggle-target="form">
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-action="click->toggle#fire" aria-label="Close"></button>
-                <p class="m-2">Enter your holiday dates and we will skip automatically skip you while you are away.</p>
-                <%= simple_form_for @subscription do |f| %>
-                  <%= f.input :holiday_start,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "Start:" %>
-                  <%= f.input :holiday_end,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "End:" %>
-                  <%= f.submit "save", class: "submit-btn" %>
-                <% end %>
-              </div>
-            <% else %>
-              <h2>Upcoming Holiday</h2>
-              <div class="mt-4 container-flex flex-column">
-                <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
-                <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
-              </div>
-            <% end %>
+          <div class="mt-4 container-flex flex-column text-center align-items-center">
+            <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
           </div>
         <% end %>
-        <div class="mt-5 text-center">
+        <div class="mt-5">
+          <!-- Streak Display -->
+          <% if current_user.current_streak > 0 %>
+            <div class="p-3 mb-4 streak">
+              <div class="d-flex align-items-center justify-content-start gap-3">
+                <span style="font-size: 2rem;">🔥</span>
+                <div>
+                  <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;"><%= current_user.current_streak %> Week Streak!</h4>
+                  <p class="mb-0 small">You've been gooiing since <%= @start_date %>.</p>
+                  <p class="mb-0 small">You've skipped <%= 100 - current_user.consistency_rate %>% of that time.</p>
+                </div>
+              </div>
+            </div>
+          <% end %>
           <h2 class="text-center">Recent Collections</h2>
           <% if @recent_collections.any? %>
             <%= render "past_collections", collections: @recent_collections %>
