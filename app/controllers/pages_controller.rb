@@ -34,74 +34,7 @@ class PagesController < ApplicationController
                 end
   end
 
-  def manage
-    @subscription = current_user.current_sub
-    if @subscription.start_date
-      @days_left = @subscription.remaining_collections.to_i
-    else
-      @subscription.update!(start_date: @subscription.suggested_start_date)
-      @days_left = @subscription.remaining_collections.to_i
-    end
-    @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
-
-    @unpaid_invoice = @subscription.invoices.find_by(paid: false)
-    @recent_collections = current_user.collections.order(date: :desc).limit(5)
-
-  end
-
-  def account
-    @user = current_user
-    @subscription = current_user.current_sub
-  end
-
-  def collections_history
-    @per  = params.fetch(:per, 20).to_i.clamp(1, 100)
-    @page = params.fetch(:page, 1).to_i
-
-    scope = current_user.collections.order(date: :desc)
-    @total = scope.count
-    @collections = scope.offset((@page - 1) * @per).limit(@per)
-    @total_pages = (@total.to_f / @per).ceil
-  end
-
-
-
-  def welcome
-    @subscription = current_user.current_sub
-    merchant_reference = params[:merchantReference]
-    if merchant_reference.present?
-      # Fetch payments (this can be refactored into a service)
-      payments = fetch_snapscan_payments(merchant_reference)
-
-      # Check for a successful payment
-      successful_payment = payments.find { |payment| payment["status"] == "completed" }
-
-      if successful_payment
-        handle_successful_payment(successful_payment)
-        flash[:notice] = "Payment received! Your subscription is now active."
-      else
-        flash[:alert] = "No successful payment found for this subscription."
-      end
-    else
-      flash[:alert] = "No merchant reference provided."
-    end
-
-  end
-
-
-  def referrals
-    @referral_code = current_user.referral_code
-    @referrals = current_user.referrals_as_referrer.where(status: "completed")
-    @referral_count = @referrals.count
-    collection_day = current_user.current_sub.collection_day
-    share_url = "alfred.gooi.me/?referral=#{@referral_code}"
-    # "Hey! I've been using this super easy service to stop my food scraps from going to landfill — they turn it into compost instead. It's a small change with a big impact on the planet. Prices start at R260/month, or as low as R180 if you sign up for longer. They collect here on #{collection_day}, and they're hoping to grow in the neighbourhood to make collections more efficient. If you're keen to join, use my referral link for 15% off: #{share_url}"
-    @message = "Hey! I've been using a service called gooi to send my food scraps to a farm instead of to the landfill. It's such a simple change with a huge impact on the planet. The team is trying to grow in this neighbourhood (they collect every #{collection_day}), and I have a referral code that will get you 15% off - just sign up using this link: #{share_url}"
-    encoded_message = URI.encode_www_form_component(@message)
-    @whatsapp_link = "https://wa.me/?text=#{encoded_message}"
-  end
-
-  def story
+    def story
   end
 
   private

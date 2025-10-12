@@ -12,7 +12,7 @@ class CustomersController < ApplicationController
       @days_left = @subscription.remaining_collections.to_i
     end
     @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
-
+    @start_date = @subscription.start_date.strftime('%b %Y')
     @unpaid_invoice = @subscription.invoices.find_by(paid: false)
     @recent_collections = current_user.collections.order(date: :desc).limit(5)
   end

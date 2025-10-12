@@ -94,6 +94,53 @@ class User < ApplicationRecord
     subscriptions.joins(:collections).count
   end
 
+  def current_streak
+    # Get all past collections across all subscriptions, ordered by date descending
+    past_collections = collections.where('date <= ?', Date.today).order(date: :desc)
+    return 0 if past_collections.empty?
+
+    streak = 0
+    last_collection_date = nil
+
+    past_collections.each do |collection|
+      # Skip if this collection was skipped
+      next if collection.skip
+
+      # If this is the first non-skipped collection, start the streak
+      if last_collection_date.nil?
+        streak = 1
+        last_collection_date = collection.date
+      else
+        # Check if this collection is approximately 7 days before the last one
+        # (allowing for slight variations in collection scheduling)
+        days_diff = (last_collection_date - collection.date).to_i
+
+        if days_diff >= 6 && days_diff <= 8
+          # Collection is roughly a week before, continue streak
+          streak += 1
+          last_collection_date = collection.date
+        else
+          # Gap is too large, streak is broken
+          break
+        end
+      end
+    end
+
+    streak
+  end
+
+  def total_weeks_gooiing
+    first_collection = collections.order(date: :asc).first
+    return 0 unless first_collection
+    ((Date.today - first_collection.date).to_i / 7.0).ceil
+  end
+
+  def consistency_rate
+    return 0 if total_weeks_gooiing.zero?
+    completed = collections.where(skip: false).where('date <= ?', Date.today).count
+    ((completed.to_f / total_weeks_gooiing) * 100).round
+  end
+
   def duplicate_subscription_with_collections(num_collections)
     # Find the user's last subscription
 

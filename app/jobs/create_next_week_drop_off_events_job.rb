@@ -2,17 +2,10 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
   queue_as :default
 
   def perform
-    today = Date.today + 7
-    puts "Creating #{today} drop-off events for next week."
+    next_week = Date.today + 7
+    puts "Creating drop-off events for #{next_week}"
 
-    # Define the days of the week to process (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-    days_to_process = { "Tuesday" => 2, "Wednesday" => 3, "Thursday" => 4 }
-
-    # Process drop-off events for each specified day
-    days_to_process.each do |day_name, weekday|
-      next_drop_off_date = today.next_occurring(weekday)
-      process_day(next_drop_off_date, weekday)
-    end
+    process_day(next_week, next_week.wday)
   end
 
   private

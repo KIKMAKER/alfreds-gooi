@@ -506,6 +506,46 @@ elsif proceed == "y"
     user.phone_number = "+27785325513"
   end
 
+  # Create test collections for Ryan to test streak
+  puts "Creating test collections for Ryan..."
+  ryan = User.find_by(first_name: "Ryan")
+  if ryan
+    ryan_sub = ryan.current_sub
+    ryan_sub.update(is_new_customer: false)
+    if ryan_sub
+      collection_day_index = Date::DAYNAMES.index(ryan_sub.collection_day)
+
+      # Create 8 weeks of consecutive collections (with one skip to break streak at week 5)
+      8.times do |i|
+        weeks_ago = 8 - i
+        collection_date = Date.today - (weeks_ago * 7)
+
+        # Adjust to the correct collection day
+        while collection_date.wday != collection_day_index
+          collection_date += 1.day
+        end
+
+        next if collection_date > Date.today
+
+        drivers_day = DriversDay.find_or_create_by!(date: collection_date, user: alfred)
+
+        Collection.create!(
+          subscription: ryan_sub,
+          drivers_day: drivers_day,
+          date: collection_date,
+          skip: (i == 3), # Skip week 5 to test streak breaking
+          bags: rand(1..3),
+          is_done: true
+        )
+      end
+      puts "Created 8 test collections for #{ryan.first_name} (with 1 skip at week 5)"
+    else
+      puts "No subscription found for Ryan"
+    end
+  else
+    puts "User 'Ryan' not found in database"
+  end
+
   puts "Seed data created successfully!"
 else
   puts "'#{proceed}' wasn't an option, please run rails db:seed and try again."
