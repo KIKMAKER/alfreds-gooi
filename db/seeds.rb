@@ -309,21 +309,39 @@ elsif proceed == "y"
 
     puts "Clearing DB"
 
-    puts "1"
-    InvoiceItem.destroy_all    # Depends on Invoice and Product
-    puts "2"
-    Collection.destroy_all     # Depends on Subscription and DriversDay
-    puts "3"
-    # Contact.destroy_all        # Depends on Subscription
-    puts "4"
-    Invoice.destroy_all        # Depends on Subscription
-    puts "5"
-    DriversDay.destroy_all     # Depends on User
-    puts "6"
-    Subscription.destroy_all   # Depends on User
-    puts "7"
-    User.destroy_all           # Top-level model (referenced by multiple others)
 
+    puts "1. Clearing OrderItems..."
+    OrderItem.destroy_all      # Depends on Order and Product
+    puts "2. Clearing Orders..."
+    Order.destroy_all          # Depends on User and Collection
+    puts "3. Clearing InvoiceItems..."
+    InvoiceItem.destroy_all    # Depends on Invoice and Product
+    puts "4. Clearing Buckets..."
+    Bucket.destroy_all         # Depends on Collection and DropOffEvent
+    puts "5. Clearing DropOffEvents..."
+    DropOffEvent.destroy_all   # Depends on DriversDay and DropOffSite
+    puts "6. Clearing Collections..."
+    Collection.destroy_all     # Depends on Subscription and DriversDay
+    puts "7. Clearing Invoices..."
+    Invoice.destroy_all        # Depends on Subscription
+    puts "8. Clearing BusinessProfiles..."
+    BusinessProfile.destroy_all # Depends on Subscription
+    puts "9. Clearing Referrals..."
+    Referral.destroy_all       # Depends on User
+    puts "10. Clearing DriversDay..."
+    DriversDay.destroy_all     # Depends on User
+    puts "11. Clearing Subscriptions..."
+    Subscription.destroy_all   # Depends on User
+    puts "12. Clearing DropOffSites..."
+    DropOffSite.destroy_all    # Depends on User
+    puts "13. Clearing Users..."
+    User.destroy_all           # Top-level model (referenced by multiple others)
+    puts "14. Clearing Payments..."
+    Payment.destroy_all        # Depends on User
+    puts "15. Clearing Interests..."
+    Interest.destroy_all       # No dependencies
+    puts "16. Clearing DiscountCodes..."
+    DiscountCode.destroy_all   # No dependencies
     puts "DB Clear"
 
     p STARTER_KIT
