@@ -2,9 +2,9 @@ customer_id,first_name,email,suburb,plan,start_date,end_date,total_collections,s
 GFWC028,Melite,viviermelite@gmail.com,Gardens,Standard,6,2024-02-29 02:00:00 +0200,2024-08-29,0,paused
 GFWC077,Camilla,cbuenting@gmail.com,Fish Hoek,Standard,6,2024-02-01 02:00:00 +0200,2024-08-01,0,active
 GFWC082,Kat,katscriven89@gmail.com,Green Point,Standard,6,2024-05-01 02:00:00 +0200,2024-11-01,0,active
-GFWC104,Daniel,danmanners23@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-04-03 02:00:00 +0200,2024-10-03,0,active
+GFWC104,Daniel,danmanners23@gmail.com,Woodstock,Standard,6,2024-04-03 02:00:00 +0200,2024-10-03,0,active
 GFWC096,Althea,althea@moret.co.za,Tamboerskloof,Standard,6,2024-03-04 02:00:00 +0200,2024-09-04,0,active
-GFWC113,Brandon,brandon@kitchenrepublik.com,Woodstock (including Upper Woodstock),XL,6,2024-05-20 02:00:00 +0200,2024-11-20,0,active
+GFWC113,Brandon,brandon@kitchenrepublik.com,Woodstock,XL,6,2024-05-20 02:00:00 +0200,2024-11-20,0,active
 GFWC154,Manal,manal.stulgaitis@gmail.com,Tamboerskloof,Standard,1,2024-10-16 02:00:00 +0200,2024-11-16,0,paused
 GFWC115,Zoë,palmerish@gmail.com,Kalk Bay,Standard,6,2024-05-04 02:00:00 +0200,2024-11-04,0,active
 GFWC035,Leozette,leozetteroode@gmail.com,Mouille Point,Standard,6,2024-04-23 02:00:00 +0200,2024-10-23,0,active
@@ -12,7 +12,7 @@ GFWC127,Greg,gregsher3@gmail.com,Oranjezicht,Standard,6,2024-04-24 02:00:00 +020
 GFWC019,Lucy,lucy.evelynn.martin@gmail.com,Fish Hoek,Standard,6,2024-04-27 02:00:00 +0200,2024-10-27,0,active
 GFWC015,Caity,caity@tbaeacapes.com,Clovelly,Standard,6,2024-01-09 02:00:00 +0200,2024-07-09,0,active
 GFWC058,Xan,xan.wessels@gmail.com,Vredehoek,XL,3,2024-05-30 02:00:00 +0200,2024-08-30,0,active
-GFWC140,Oscar,oscarmaeyer@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-05-07 02:00:00 +0200,2024-11-07,0,active
+GFWC140,Oscar,oscarmaeyer@gmail.com,Woodstock,Standard,6,2024-05-07 02:00:00 +0200,2024-11-07,0,active
 GFWC005,Jess,verheuljess@gmail.com,Gardens,Standard,6,2024-05-25 02:00:00 +0200,2024-11-25,0,active
 GFWC106,Christine,evrchr004@gmail.com,Lakeside,Standard,1,2024-10-08 02:00:00 +0200,2024-11-08,0,active
 GFWC110,Matthew,matthewmdeacon@gmail.com,Sea Point,Standard,6,2024-04-09 02:00:00 +0200,2024-10-09,0,active
@@ -29,7 +29,7 @@ GFWC147,David,david.r.perrott@gmail.com,Hout Bay,Standard,6,2024-05-28 02:00:00 
 GFWC103,Cara,cara.air@gmail.com,Gardens,Standard,5,2024-07-03 02:00:00 +0200,2024-12-03,0,active
 GFWC074,Marjolijn,marjolijn@comersion.com,Newlands,Standard,6,2024-06-04 02:00:00 +0200,2024-12-04,0,active
 GFWC158,Natasha (African Bush Camps),natasha@africanbushcamps.com,Green Point,Standard,3,2024-09-09 02:00:00 +0200,2024-12-09,0,active
-GFWC070,Annemarie,annesteenkamp19@gmail.com,Walmer Estate (District Six),Standard,6,2024-06-12 02:00:00 +0200,2024-12-12,0,active
+GFWC070,Annemarie,annesteenkamp19@gmail.com,District Six,Standard,6,2024-06-12 02:00:00 +0200,2024-12-12,0,active
 GFWC145,Elena,elenapiller@gmail.com,Sea Point,Standard,6,2024-06-13 02:00:00 +0200,2024-12-13,0,active
 GFWC138,Brett,brett@thinka.co.za,Vredehoek,XL,6,2024-05-13 02:00:00 +0200,2024-11-13,0,active
 GFWC163,Kat,rawlings.kh@gmail.com,Gardens,Standard,3,2024-09-18 02:00:00 +0200,2024-12-18,0,active
@@ -51,11 +51,11 @@ GFWC098,Tenike,tenikestoltz21@gmail.com,Lakeside,Standard,6,2024-07-15 02:00:00 
 GFWC049,Chelsea,chelseaannchalmers@gmail.com,Tamboerskloof,Standard,6,2024-07-17 02:00:00 +0200,2025-01-17,0,active
 GFWC112,Lulu,lulu.read@yahoo.co.uk,Claremont,Standard,6,2024-07-17 02:00:00 +0200,2025-01-17,0,active
 GFWC139,Liat,liat@staffwise.org,Higgovale,Standard,6,2024-07-17 02:00:00 +0200,2025-01-17,0,active
-GFWC114,Melani,meljo.robe@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-07-22 02:00:00 +0200,2025-01-22,0,active
+GFWC114,Melani,meljo.robe@gmail.com,Woodstock,Standard,6,2024-07-22 02:00:00 +0200,2025-01-22,0,active
 GFWC141,Tim,timhenderson999@gmail.com,Muizenberg,Standard,6,2024-07-24 02:00:00 +0200,2025-01-24,0,active
 GFWC055,Nura,nura@pegasys.co.za,Vredehoek,Standard,6,2024-07-30 02:00:00 +0200,2025-01-30,0,active
-GFWC061,Kara,karawendylevy@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-09-27 02:00:00 +0200,2025-03-27,0,active
-GFWC060,Christine,christineirons@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-07-31 02:00:00 +0200,2025-01-31,0,active
+GFWC061,Kara,karawendylevy@gmail.com,Woodstock,Standard,6,2024-09-27 02:00:00 +0200,2025-03-27,0,active
+GFWC060,Christine,christineirons@gmail.com,Woodstock,Standard,6,2024-07-31 02:00:00 +0200,2025-01-31,0,active
 GFWC130,Ruth,ruthieberning@gmail.com,Gardens,Standard,6,2024-08-01 02:00:00 +0200,2025-02-01,0,active
 GFWC116,Imogen,hello@imogenlclarke.com,Kalk Bay,Standard,6,2024-08-02 02:00:00 +0200,2025-02-02,0,active
 GFWC017,Liezel,conradieliez@gmail.com,Rondebosch,Standard,6,2024-08-06 02:00:00 +0200,2025-02-06,0,active
@@ -71,11 +71,11 @@ GFWC075,Camila,camilamenell@yahoo.com,Muizenberg,Standard,6,2024-09-27 02:00:00 
 GFWC011,Bianca,biancajpugin@gmail.com,Claremont,Standard,6,2024-07-31 02:00:00 +0200,2025-01-31,0,active
 GFWC056,Oliver,ovanmaasdijk@gmail.com,Vredehoek,Standard,6,2024-08-29 02:00:00 +0200,2025-02-28,0,active
 GFWC088,Kelly,kellysolinger@gmail.com,Muizenberg,Standard,6,2024-08-21 02:00:00 +0200,2025-02-21,0,active
-GFWC065,Roxanne,roxjos@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-09-06 02:00:00 +0200,2025-03-06,1,active
+GFWC065,Roxanne,roxjos@gmail.com,Woodstock,Standard,6,2024-09-06 02:00:00 +0200,2025-03-06,1,active
 GFWC034,Margie,margie_who@mweb.co.za,Kenilworth,Standard,6,2024-09-12 02:00:00 +0200,2025-03-12,0,active
 GFWC101,Courtney,courtsbarends@gmail.com,Oranjezicht,Standard,6,2024-09-18 02:00:00 +0200,2025-03-18,0,active
 GFWC160,Lyn-Anne,lyn-annejoubert@woolworths.co.za,Zonnebloem (District Six),XL,6,2024-09-18 02:00:00 +0200,2025-03-18,0,active
-GFWC064,Tom,parkinsonchef@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-09-20 02:00:00 +0200,2025-03-20,0,active
+GFWC064,Tom,parkinsonchef@gmail.com,Woodstock,Standard,6,2024-09-20 02:00:00 +0200,2025-03-20,0,active
 GFWC123,Sara,sarita.n.araujo@gmail.com,Sea Point,Standard,6,2024-09-20 02:00:00 +0200,2025-03-20,0,active
 GFWC157,Plentify,jess@plentify.io,Ndabeni,Standard,6,2024-08-27 02:00:00 +0200,2025-02-27,0,active
 GFWC006,Vee,gabirein9@gmail.com,Bakoven,XL,6,2024-09-26 02:00:00 +0200,2025-03-26,0,active
@@ -91,12 +91,12 @@ GFWC142,Amanda,amanda@spicedesign.co.za,Constantia,XL,6,2024-11-05 00:00:00 +020
 GFWC089,Becca,bexirons@gmail.com,Rondebosch,Standard,6,2024-08-22 02:00:00 +0200,2025-02-22,0,active
 GFWC161,Marti,martinjameslund@gmail.com,Sea Point,Standard,6,2024-08-28 02:00:00 +0200,2025-02-28,0,active
 SFL0001,Kobus (jnr),kobuswhmeiring@gmail.com,Constantia,XL,0,2024-05-03 00:00:00 +0200,2024-05-03,0,active
-GFWC062,Katie,katherinejbarry@gmail.com,Woodstock (including Upper Woodstock),Standard,6,2024-10-22 02:00:00 +0200,2025-04-22,0,active
+GFWC062,Katie,katherinejbarry@gmail.com,Woodstock,Standard,6,2024-10-22 02:00:00 +0200,2025-04-22,0,active
 GFWC051,Suzani,suzanivandermerwe@gmail.com,Tamboerskloof,Standard,6,2024-10-22 02:00:00 +0200,2025-04-22,0,active
 GFWC021,Christina,christi.1415@gmail.com,Fresnaye,Standard,6,2024-10-30 02:00:00 +0200,2025-04-30,0,active
 GFWC167,Megan,meganjstreet@gmail.com,Gardens,Standard,6,2024-10-30 00:00:00 +0200,2025-04-30,1,active
 GFWC168,Tasneem,tasneemkarodia@gmail.com,Observatory,Standard,6,2024-10-30 00:00:00 +0200,2025-04-30,0,active
-GFWC067,Faith,mamaallesfood@gmail.com,Woodstock (including Upper Woodstock),XL,6,2024-10-31 02:00:00 +0200,2025-04-30,0,active
+GFWC067,Faith,mamaallesfood@gmail.com,Woodstock,XL,6,2024-10-31 02:00:00 +0200,2025-04-30,0,active
 GFWC030,Franca,fmfalanga@icloud.com,Green Point,Standard,6,2024-11-05 02:00:00 +0200,2025-05-05,0,active
 GFWC071,Callum,calbre11@gmail.com,Gardens,Standard,12,2024-06-14 02:00:00 +0200,2025-06-14,0,active
 GFWC001,Megan,meganjstreet@gmail.com,Gardens,Standard,6,,,0,active
@@ -105,7 +105,7 @@ GFWC001,Megan,meganjstreet@gmail.com,Gardens,Standard,6,,,0,active
 GFWC155,Mirandi,hello@mirandinel.com,Sea Point,Standard,3,2024-08-19 02:00:00 +0200,2024-11-19,0,active
 GFWC149,Ryan,ryan@menno.co.za,Observatory,Standard,6,2024-06-17 02:00:00 +0200,2024-12-17,0,active
 GFWC151,Rhett,rhett.delaney@gmail.com,Oranjezicht,Standard,6,2024-07-01 02:00:00 +0200,2025-01-01,0,active
-GFWC084,Rebecca,rebecca.hess89@gmail.com,Woodstock (including Upper Woodstock),Standard,7,2024-02-19 02:00:00 +0200,2024-09-19,0,paused
+GFWC084,Rebecca,rebecca.hess89@gmail.com,Woodstock,Standard,7,2024-02-19 02:00:00 +0200,2024-09-19,0,paused
 GFWC083,Ruan,ruan.smith@gmail.com,Muizenberg,Standard,6,2023-08-18 02:00:00 +0200,2024-02-18,0,paused
 GFWC059,Justin,justinvrooyencpt@gmail.com,Vredehoek,Standard,7,2024-01-24 02:00:00 +0200,2024-08-24,0,paused
 GFWC046,Alicia,alicia.mcfadzean@gmail.com,Sea Point,Standard,6,2024-03-21 02:00:00 +0200,2024-09-21,0,active

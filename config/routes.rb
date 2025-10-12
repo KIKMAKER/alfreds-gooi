@@ -1,8 +1,16 @@
 Rails.application.routes.draw do
+  # Shop and Orders
+  get "shop", to: "shop#index", as: :shop_index
+  post "orders/add_item", to: "orders#add_item", as: :add_to_order
+  delete "orders/remove_item/:id", to: "orders#remove_item", as: :remove_from_order
+  get "orders/:id/checkout", to: "orders#checkout", as: :checkout_order
+  post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
+  post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
     resources :logistics, only: :index
     resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :products, only: [:index, :new, :create, :edit, :update]
     resources :drop_off_sites do
       member do
         post :create_event
@@ -127,7 +135,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :products, only: [:index, :new, :create]
   resources :collections do
     member do
       get :issue_bags
@@ -136,13 +143,17 @@ Rails.application.routes.draw do
 
   resources :interests, only: :create
 
+  # customers
+  get "my_subscriptions", to: "customers#subscriptions"
+  get "manage", to: "customers#manage"
+  get "account", to: "customers#account"
+  get "collections_history", to: "customers#collections_history"
+  get "skipme", to: "customers#skipme"
+  get "welcome", to: "customers#welcome"
+  get "referrals", to: "customers#referrals"
+
   # static pages
   root "pages#home"
-  get "manage", to: "pages#manage"
-  get "account", to: "pages#account"
-  get "skipme", to: "collections#skipme"
-  get "welcome", to: "pages#welcome"
-  get "referrals", to: "pages#referrals"
   get "story", to: "pages#story"
 
 

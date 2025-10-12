@@ -1,0 +1,39 @@
+<div class="driver-wrapper">
+  <h1>Products & Stock Management</h1>
+  <%= link_to "New Product", new_admin_product_path, class: "small-yellow-btn my-3" %>
+
+  <div class="collection-header">
+    <div class="text-center name w-25"><p>Product</p></div>
+    <div class="text-center bag"><p>Price</p></div>
+    <div class="text-center address"><p>Stock</p></div>
+    <div class="text-center status"><p>Active</p></div>
+    <div class="text-center actions"><p>Actions</p></div>
+  </div>
+
+  <div class="collections">
+    <ul>
+      <% @products.each do |product| %>
+        <li class="collection">
+          <div class="
+          name w-25">
+            <p><%= product.title %></p>
+          </div>
+          <div class="text-center bag">
+            <p>R<%= product.price.to_i %></p>
+          </div>
+          <div class="text-center address">
+            <p class="<%= product.out_of_stock? ? 'text-danger' : 'text-success' %>">
+              <%= product.stock %>
+            </p>
+          </div>
+          <div class="text-center tatus">
+            <p><%= product.is_active ? '✓' : '✗' %></p>
+          </div>
+          <div class="text-center ctions">
+            <%= link_to "Edit", edit_admin_product_path(product), class: "small-yellow-btn" %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

@@ -70,6 +70,16 @@
                 params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
               </div>
             </div>
+            <div class="month-card popular">
+              <p>1 year</p>
+              <h3 class="pricing-text mt-2"><strong>R2160</strong></h3>
+              <p class="pricing-text">R180 per month</p>
+              <div>
+                <br>
+                <%= button_to 'Select', subscriptions_path,
+                params: {subscription: { plan: 'Standard', duration: '12' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+              </div>
+            </div>
           </div>
           <h2 class="mt-5">XL Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1 large bucket of compostable waste</p>

@@ -2,6 +2,7 @@ class Collection < ApplicationRecord
   belongs_to :subscription, optional: true
   belongs_to :drivers_day, optional: true
   has_one :user, through: :subscription
+  has_many :orders, dependent: :nullify
   acts_as_list scope: :drivers_day
 
   # Scopes

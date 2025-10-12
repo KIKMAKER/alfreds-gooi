@@ -264,6 +264,7 @@ elsif proceed == "y"
     { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
     { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
     { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
+    { title: "Standard 12 month subscription", description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)", price: 2160 },
     { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
     { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 }
   ]
@@ -308,21 +309,39 @@ elsif proceed == "y"
 
     puts "Clearing DB"
 
-    puts "1"
-    InvoiceItem.destroy_all    # Depends on Invoice and Product
-    puts "2"
-    Collection.destroy_all     # Depends on Subscription and DriversDay
-    puts "3"
-    # Contact.destroy_all        # Depends on Subscription
-    puts "4"
-    Invoice.destroy_all        # Depends on Subscription
-    puts "5"
-    DriversDay.destroy_all     # Depends on User
-    puts "6"
-    Subscription.destroy_all   # Depends on User
-    puts "7"
-    User.destroy_all           # Top-level model (referenced by multiple others)
 
+    puts "1. Clearing OrderItems..."
+    OrderItem.destroy_all      # Depends on Order and Product
+    puts "2. Clearing Orders..."
+    Order.destroy_all          # Depends on User and Collection
+    puts "3. Clearing InvoiceItems..."
+    InvoiceItem.destroy_all    # Depends on Invoice and Product
+    puts "4. Clearing Buckets..."
+    Bucket.destroy_all         # Depends on Collection and DropOffEvent
+    puts "5. Clearing DropOffEvents..."
+    DropOffEvent.destroy_all   # Depends on DriversDay and DropOffSite
+    puts "6. Clearing Collections..."
+    Collection.destroy_all     # Depends on Subscription and DriversDay
+    puts "7. Clearing Invoices..."
+    Invoice.destroy_all        # Depends on Subscription
+    puts "8. Clearing BusinessProfiles..."
+    BusinessProfile.destroy_all # Depends on Subscription
+    puts "9. Clearing Referrals..."
+    Referral.destroy_all       # Depends on User
+    puts "10. Clearing DriversDay..."
+    DriversDay.destroy_all     # Depends on User
+    puts "11. Clearing Subscriptions..."
+    Subscription.destroy_all   # Depends on User
+    puts "12. Clearing DropOffSites..."
+    DropOffSite.destroy_all    # Depends on User
+    puts "13. Clearing Users..."
+    User.destroy_all           # Top-level model (referenced by multiple others)
+    puts "14. Clearing Payments..."
+    Payment.destroy_all        # Depends on User
+    puts "15. Clearing Interests..."
+    Interest.destroy_all       # No dependencies
+    puts "16. Clearing DiscountCodes..."
+    DiscountCode.destroy_all   # No dependencies
     puts "DB Clear"
 
     p STARTER_KIT
@@ -485,6 +504,46 @@ elsif proceed == "y"
     user.password = "password"
     user.role = "driver"
     user.phone_number = "+27785325513"
+  end
+
+  # Create test collections for Ryan to test streak
+  puts "Creating test collections for Ryan..."
+  ryan = User.find_by(first_name: "Ryan")
+  if ryan
+    ryan_sub = ryan.current_sub
+    ryan_sub.update(is_new_customer: false)
+    if ryan_sub
+      collection_day_index = Date::DAYNAMES.index(ryan_sub.collection_day)
+
+      # Create 8 weeks of consecutive collections (with one skip to break streak at week 5)
+      8.times do |i|
+        weeks_ago = 8 - i
+        collection_date = Date.today - (weeks_ago * 7)
+
+        # Adjust to the correct collection day
+        while collection_date.wday != collection_day_index
+          collection_date += 1.day
+        end
+
+        next if collection_date > Date.today
+
+        drivers_day = DriversDay.find_or_create_by!(date: collection_date, user: alfred)
+
+        Collection.create!(
+          subscription: ryan_sub,
+          drivers_day: drivers_day,
+          date: collection_date,
+          skip: (i == 3), # Skip week 5 to test streak breaking
+          bags: rand(1..3),
+          is_done: true
+        )
+      end
+      puts "Created 8 test collections for #{ryan.first_name} (with 1 skip at week 5)"
+    else
+      puts "No subscription found for Ryan"
+    end
+  else
+    puts "User 'Ryan' not found in database"
   end
 
   puts "Seed data created successfully!"
