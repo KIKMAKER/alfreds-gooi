@@ -88,7 +88,7 @@ class InvoicesController < ApplicationController
 
   def invoice_items_params
     # params.require(:invoice).permit(:issued_date, :due_date, :subscription_id)
-    params.require(:invoice).permit(invoice_items_attributes: [ :product_id, :quantity ])
+    params.require(:invoice).permit(invoice_items_attributes: [ :id, :product_id, :quantity ])
   end
 
   def set_invoice

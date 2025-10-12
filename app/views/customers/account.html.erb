@@ -1,0 +1,48 @@
+<div class="account-form-container user-wrapper">
+  <h1 class="my-4">My Account</h1>
+  <p>Update your details, change your password, or edit your address.</p>
+
+  <!-- Personal Details Section -->
+  <div class="outline p-4 mb-4">
+    <h3 class="mb-3">Personal Details</h3>
+    <%= simple_form_for @user, url: user_registration_path, html: { method: :put } do |f| %>
+      <%= f.input :first_name, label: "First Name" %>
+      <%= f.input :last_name, label: "Last Name" %>
+      <%= f.input :email, label: "Email" %>
+      <%= f.input :phone_number, label: "Phone Number", hint: "International format preferred (e.g. +27 82 555 1234)" %>
+
+      <%= f.button :submit, "Update Personal Details", class: "small-yellow-btn" %>
+    <% end %>
+  </div>
+
+  <!-- Password Section -->
+  <div class="outline p-4 mb-4">
+    <h3 class="mb-3">Change Password</h3>
+    <%= simple_form_for @user, url: user_registration_path, html: { method: :put } do |f| %>
+      <%= f.input :password, label: "New Password", hint: "Leave blank if you don't want to change it" %>
+      <%= f.input :password_confirmation, label: "Confirm New Password" %>
+      <%= f.input :current_password, label: "Current Password", hint: "We need your current password to confirm changes" %>
+
+      <%= f.button :submit, "Update Password", class: "small-yellow-btn" %>
+    <% end %>
+  </div>
+
+  <% if @subscription %>
+    <!-- Address Section -->
+    <div class="outline p-4 mb-4">
+      <h3 class="mb-3">Delivery Address</h3>
+      <%= simple_form_for @subscription do |f| %>
+        <%= f.input :street_address, label: "Street Address" %>
+        <%= f.input :suburb,
+                    as: :select,
+                    collection: Subscription::SUBURBS,
+                    prompt: "Select a suburb" %>
+        <%= f.input :access_code, label: "Access Code", hint: "Gate code or special instructions" %>
+
+        <%= f.button :submit, "Update Address", class: "small-yellow-btn" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= link_to "← Back to Dashboard", manage_path, class: "d-block mt-3" %>
+</div>

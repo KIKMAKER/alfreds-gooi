@@ -23,3 +23,9 @@
   color: $dark-green;
   font-weight: 600;
 }
+
+.flex-apart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

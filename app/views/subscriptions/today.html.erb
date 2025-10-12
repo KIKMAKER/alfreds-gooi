@@ -1,6 +1,5 @@
 <!--ALFREDS PAGE-->
 <div class="driver-wrapper">
-  <%= link_to "Weigh buckets", drivers_day_buckets_path(@drivers_day), class: "sign-up-btn mb-3" %>
   <div class="collection-header">
 
     <div class="name">
@@ -31,10 +30,10 @@
               <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
             <div class="emojies">
-              <% omy_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>
-              <p class="emoji"><%= link_to "🚗", "https://wa.me/27785325513?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
+              <% omw_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>
+              <p class="emoji"><%= link_to "🚗", "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
               <% here_message = "Hello #{item.drop_off_site.contact_name}. I am here!" %>
-              <p class="emoji"><%= link_to "🏠",  "https://wa.me/27785325513?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
+              <p class="emoji"><%= link_to "🏠",  "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
             </div>
           </li>
         <% else %>

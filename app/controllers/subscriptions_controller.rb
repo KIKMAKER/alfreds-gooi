@@ -100,44 +100,31 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    # create sub from the form input
-    @subscription = Subscription.new(subscription_params)
-    # assign to logged in user
-    @subscription.user = current_user
-    # set gooi customer_id on the sub
-    @subscription.customer_id = current_user.subscriptions.last.customer_id || @subscription.set_customer_id
-    # set attributes to match previous sub
-    @subscription.suburb = current_user.subscriptions.last.suburb
-    @subscription.street_address = current_user.subscriptions.last.street_address
-    @subscription.collection_order = current_user.subscriptions.last.collection_order
-    # sub should definitely not be new if created through this route
-    @subscription.is_new_customer = false
+    # Use RenewalService to duplicate last subscription with all associated data
+    result = Subscriptions::RenewalService.new(user: current_user).call
 
-    # find any friends this user has refered who have actually signed up
-    referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
-    # get og from the params as boolean
-    og = params[:og] == "true" || current_user.og
-    is_new = params[:new] == "true"
-    # save the sub
-    if @subscription.save
-      # check for sub overlap
+    if result.success?
+      @subscription = result.subscription
+      @invoice = result.invoice
+
+      # Update subscription with form params (plan, duration, etc.) if provided
+      @subscription.update!(subscription_params) if subscription_params.present?
+
+      # check for sub overlap and set proper start date
       start_date = @subscription.suggested_start_date(payment_date: Date.current)
-      # assign start date
       @subscription.update!(start_date: start_date)
+
+      # Recalculate end_date based on new start date and duration
+      @subscription.update!(end_date: start_date.advance(months: @subscription.duration))
+
       # check if future collections exist and move them to this sub
       @subscription.adopt_future_collections!
-      # create an invoice
-      # @invoice = create_invoice_for_subscription(@subscription, og, is_new, nil, referred_friends)
-      @invoice = InvoiceBuilder.new(
-        subscription: @subscription,
-        og: og,
-        is_new: is_new,
-        referee: nil,
-        referred_friends: referred_friends
-      ).call
+
       # check if the user wants bags
       redirect_to want_bags_subscription_path(@subscription)
     else
+      flash[:alert] = result.error
+      @subscription = Subscription.new(subscription_params)
       render :new, status: :unprocessable_entity
     end
   end
