@@ -1,35 +1,68 @@
 <div class="gooi-container">
   <div class="outline">
-    <h1>Driver's Days</h1>
-    <div class="grid-container-driver">
-      <div class="grid-header">
-        <div class="grid-item"><strong>DATE</strong></div>
-        <div class="grid-item"><strong>START TIME</strong></div>
-        <div class="grid-item"><strong>END TIME</strong></div>
-        <div class="grid-item"><strong>START KMS</strong></div>
-        <div class="grid-item"><strong>END KMS</strong></div>
-        <div class="grid-item"><strong>TOTAL BUCKETS</strong></div>
-        <div class="grid-item"><strong>SFL TIME</strong></div>
-        <div class="grid-item"><strong>NOTE</strong></div>
-        <div class="grid-item"><strong>MESSAGE FROM ALFRED</strong></div>
-      </div>
-      <% @drivers_days.each do |drivers_day| %>
-        <div class="grid-row">
-          <div class="grid-item grid-item-flexed">
-            <%= link_to drivers_day.date.strftime('%b %d'), drivers_day_path(drivers_day) %>
-            <%= link_to "edit", edit_drivers_day_path(drivers_day) %>
-            <%= link_to "delete", drivers_day_path(drivers_day), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
-            </div>
-          <div class="grid-item"><%= drivers_day.start_time&.strftime('%I:%M') %></div>
-          <div class="grid-item"><%= drivers_day.end_time&.strftime('%I:%M') %></div>
-          <div class="grid-item"><%= drivers_day.start_kms %></div>
-          <div class="grid-item"><%= drivers_day.end_kms %></div>
-          <div class="grid-item"><%= drivers_day.total_buckets || "NA" %></div>
-          <div class="grid-item"><%= drivers_day.sfl_time&.strftime('%I:%M') %></div>
-          <div class="grid-item"><%= drivers_day.note&.truncate(100) %></div>
-          <div class="grid-item"><%= drivers_day.message_from_alfred&.truncate(100) %></div>
-        </div>
-      <% end %>
+    <div>
+      <br>
+      <h1>Driver's Days</h1>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">KMs</th>
+            <th scope="col">Buckets</th>
+            <th scope="col">Trees 🌳</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @drivers_days.each do |drivers_day| %>
+            <tr>
+              <td>
+                <%= link_to drivers_day.date.strftime('%a, %b %d, %Y'), drivers_day_path(drivers_day), class: "link-green" %>
+              </td>
+              <td>
+                <%= drivers_day.start_time&.strftime('%I:%M %p') || '—' %>
+              </td>
+              <td>
+                <%= drivers_day.end_time&.strftime('%I:%M %p') || '—' %>
+              </td>
+              <td>
+                <% if drivers_day.start_kms && drivers_day.end_kms %>
+                  <%= drivers_day.end_kms - drivers_day.start_kms %> km
+                  <small class="text-muted d-block">
+                    <%= drivers_day.start_kms %> → <%= drivers_day.end_kms %>
+                  </small>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td>
+                <%= drivers_day.total_buckets || '—' %>
+              </td>
+              <td>
+                <% if drivers_day.day_statistic %>
+                  <%= number_with_precision(drivers_day.day_statistic.trees_net, precision: 1) %>
+                  <small class="text-muted d-block">
+                    <%= number_with_precision(drivers_day.day_statistic.net_kg, precision: 1) %> kg
+                  </small>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td>
+                <%= link_to "View", drivers_day_path(drivers_day), class: "btn btn-sm btn-outline-primary" %>
+                <%= link_to "Edit", edit_drivers_day_path(drivers_day), class: "btn btn-sm btn-outline-secondary" %>
+                <%= link_to "Delete", drivers_day_path(drivers_day),
+                    data: {turbo_method: :delete, turbo_confirm: "Are you sure? This will remove the driver's day but collections will remain."},
+                    class: "btn btn-sm btn-outline-danger" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
     </div>
   </div>
 </div>
