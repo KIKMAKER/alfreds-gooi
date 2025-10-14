@@ -111,8 +111,6 @@ Rails.application.routes.draw do
       get :vamos
       get :start
       patch :start
-      get :drop_off
-      patch :drop_off
       get :end
       patch :end
       get :collections
