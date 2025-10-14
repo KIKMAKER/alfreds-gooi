@@ -1,0 +1,74 @@
+<div class="user-wrapper">
+  <div class="collection-body">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Edit Invoice #<%= @invoice.number %></h1>
+      <%= link_to "← Back to Invoice", invoice_path(@invoice), class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+
+    <%= simple_form_for @invoice do |f| %>
+      <div class="form-group mb-4">
+        <label class="form-label"><strong>Subscription:</strong></label>
+        <p><%= @invoice.subscription.user.first_name %> <%= @invoice.subscription.user.last_name %> (<%= @invoice.subscription.street_address %>)</p>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Invoice Items</h3>
+      </div>
+
+      <div id="invoice-items-container">
+        <%= f.simple_fields_for :invoice_items do |item_form| %>
+          <div class="invoice-item mb-3 p-3 border rounded" data-invoice-item>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1">
+                <label class="form-label"><strong><%= item_form.object.product&.title || "Product" %></strong></label>
+                <p class="text-muted small mb-0">R<%= item_form.object.amount&.to_i || 0 %> each</p>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <%= item_form.input :quantity,
+                    label: false,
+                    input_html: { class: "form-control text-center", style: "width: 80px;" },
+                    wrapper_html: { class: "mb-0" } %>
+                <%= item_form.input :_destroy,
+                    as: :boolean,
+                    label: "Remove",
+                    wrapper_html: { class: "mb-0" } %>
+              </div>
+            </div>
+            <%= item_form.input :product_id, as: :hidden %>
+            <%= item_form.input :amount, as: :hidden %>
+          </div>
+        <% end %>
+
+        <hr class="my-4">
+
+        <h4 class="mb-3">Add New Items</h4>
+        <% @products.each_with_index do |product, index| %>
+          <% next if @invoice.invoice_items.map(&:product_id).include?(product.id) %>
+          <div class="invoice-item mb-3 p-3 border rounded bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1">
+                <label class="form-label"><strong><%= product.title %></strong></label>
+                <p class="text-muted small mb-0">R<%= product.price.to_i %> each</p>
+              </div>
+              <div>
+                <%= number_field_tag "invoice[invoice_items_attributes][new_#{index}][quantity]",
+                    nil,
+                    class: "form-control text-center",
+                    style: "width: 80px;",
+                    min: 0,
+                    step: 1,
+                    placeholder: "0" %>
+                <%= hidden_field_tag "invoice[invoice_items_attributes][new_#{index}][product_id]", product.id %>
+                <%= hidden_field_tag "invoice[invoice_items_attributes][new_#{index}][amount]", product.price %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="mt-4">
+          <%= f.button :submit, "Update Invoice", class: 'gooi-button' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
