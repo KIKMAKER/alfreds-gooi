@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show update destroy paid issued_bags send]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send]
 
   def index
     if current_user.admin?
@@ -30,11 +30,26 @@ class InvoicesController < ApplicationController
     end
   end
 
-  def update
-    @invoice = Invoice.find(params[:id])
-    create_invoice_items(@invoice)
+  def edit
+    @products = Product.all
+    @invoice.invoice_items.build if @invoice.invoice_items.empty?
+  end
 
-    redirect_to invoice_path(@invoice)
+  def update
+    if params[:invoice][:invoice_items_attributes].present?
+      # Handle nested attributes update
+      if @invoice.update(invoice_params)
+        @invoice.calculate_total
+        redirect_to invoice_path(@invoice), notice: 'Invoice was successfully updated.'
+      else
+        @products = Product.all
+        render :edit, status: :unprocessable_entity
+      end
+    else
+      # Legacy behavior for issued_bags route
+      create_invoice_items(@invoice)
+      redirect_to invoice_path(@invoice)
+    end
   end
 
   def show
@@ -85,6 +100,15 @@ class InvoicesController < ApplicationController
 
 
   private
+
+  def invoice_params
+    params.require(:invoice).permit(
+      :issued_date,
+      :due_date,
+      :subscription_id,
+      invoice_items_attributes: [:id, :product_id, :quantity, :amount, :_destroy]
+    )
+  end
 
   def invoice_items_params
     # params.require(:invoice).permit(:issued_date, :due_date, :subscription_id)
