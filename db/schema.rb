@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_10_104409) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_14_142345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,33 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_10_104409) do
     t.integer "position"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
+  end
+
+  create_table "day_statistics", force: :cascade do |t|
+    t.bigint "drivers_day_id", null: false
+    t.decimal "net_kg"
+    t.integer "bucket_count"
+    t.integer "full_count"
+    t.integer "half_count"
+    t.decimal "full_equiv"
+    t.decimal "avg_kg_bucket"
+    t.decimal "avg_kg_full"
+    t.integer "households"
+    t.integer "bags_sum"
+    t.decimal "route_hours"
+    t.decimal "stops_per_hr"
+    t.decimal "kg_per_hr"
+    t.integer "kms"
+    t.decimal "kg_per_km"
+    t.decimal "avoided_co2e_kg"
+    t.decimal "driving_co2e_kg"
+    t.decimal "net_co2e_kg"
+    t.decimal "trees_gross"
+    t.decimal "trees_to_offset_drive"
+    t.decimal "trees_net"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drivers_day_id"], name: "index_day_statistics_on_drivers_day_id"
   end
 
   create_table "discount_codes", force: :cascade do |t|
@@ -171,7 +198,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_10_104409) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
-    t.index ["product_id"], name: "index_invoice_items_on_product_id"∑
+    t.index ["product_id"], name: "index_invoice_items_on_product_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -428,6 +455,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_10_104409) do
   add_foreign_key "business_profiles", "subscriptions"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
+  add_foreign_key "day_statistics", "drivers_days"
   add_foreign_key "drivers_days", "users"
   add_foreign_key "drop_off_events", "drivers_days"
   add_foreign_key "drop_off_events", "drop_off_sites"

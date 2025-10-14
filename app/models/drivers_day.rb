@@ -3,6 +3,7 @@ class DriversDay < ApplicationRecord
   has_many :collections, dependent: :nullify
   has_many :drop_off_events, dependent: :nullify
   has_many :buckets, dependent: :destroy
+  has_one :day_statistic, dependent: :destroy
 
     # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -16,12 +17,6 @@ class DriversDay < ApplicationRecord
 
   # custom methods
 
-  def hours_worked
-    difference_in_seconds = end_time - start_time
-    difference_in_hours = difference_in_seconds / 3600.0 # There are 3600 seconds in an hour
-    format("%.2f hours", difference_in_hours)
-  end
-
   def note_nil_zero?
     note.nil? || note == ""
   end
@@ -31,27 +26,6 @@ class DriversDay < ApplicationRecord
       total_net_kg: buckets.sum(:weight_kg),
       total_buckets: buckets.count
     )
-  end
-
-  # “Full-equivalent” count using the half flag (no ratios beyond half)
-  def full_equivalent_count
-    full = buckets.where(half: false).count
-    halves = buckets.where(half: true).count
-    full + halves * 0.5
-  end
-
-  # Averages you may want to display
-  def avg_net_kg_per_bucket
-    return 0.0 if total_buckets.to_i.zero?
-
-    (total_net_kg || 0).to_f / total_buckets.to_f
-  end
-
-  def avg_net_kg_per_full_equiv
-    denom = full_equivalent_count.to_f
-    return 0.0 if denom <= 0
-
-    (total_net_kg || 0).to_f / denom
   end
 
   def products_needed_for_delivery
@@ -69,6 +43,73 @@ class DriversDay < ApplicationRecord
     end
 
     product_summary.values
+  end
+
+  def calculate_and_save_statistics!
+    # Bucket stats
+    bucket_records = buckets
+    net_kg = bucket_records.sum(:weight_kg).to_f
+    bucket_count = bucket_records.count
+    half_count = bucket_records.where(half: true).count
+    full_count = bucket_count - half_count
+    full_equiv = full_count + (half_count * 0.5)
+
+    # Collection stats
+    households = collections.where(skip: false).where.not(updated_at: nil).count
+    bags_sum = collections.where(skip: false).sum(:bags)
+
+    # Route time stats
+    route_hours = if start_time && end_time
+                    ((end_time - start_time) / 3600.0)
+                  end
+    stops_per_hr = route_hours&.positive? ? (households / route_hours) : nil
+    kg_per_hr = route_hours&.positive? ? (net_kg / route_hours) : nil
+
+    # Distance stats
+    kms = if start_kms && end_kms
+            end_kms - start_kms
+          end
+    kg_per_km = (kms && kms > 0) ? (net_kg / kms) : nil
+
+    # Environmental impact calculations
+    waste_kg = net_kg
+    kms_float = kms.to_f
+
+    avoided = waste_kg * IMPACT[:co2e_per_kg_diverted]
+    litres = (IMPACT[:l_per_100km] / 100.0) * kms_float
+    driving = litres * IMPACT[:diesel_co2e_per_litre]
+    net_co2e = avoided - driving
+
+    trees_gross = avoided / IMPACT[:tree_co2e_per_year]
+    trees_to_offset_drive = driving / IMPACT[:tree_co2e_per_year]
+    trees_net = net_co2e / IMPACT[:tree_co2e_per_year]
+
+    # Create or update the day_statistic record
+    stat = day_statistic || build_day_statistic
+    stat.update!(
+      net_kg: net_kg,
+      bucket_count: bucket_count,
+      full_count: full_count,
+      half_count: half_count,
+      full_equiv: full_equiv,
+      avg_kg_bucket: bucket_count.positive? ? (net_kg / bucket_count) : 0.0,
+      avg_kg_full: full_equiv.positive? ? (net_kg / full_equiv) : 0.0,
+      households: households,
+      bags_sum: bags_sum,
+      route_hours: route_hours,
+      stops_per_hr: stops_per_hr,
+      kg_per_hr: kg_per_hr,
+      kms: kms,
+      kg_per_km: kg_per_km,
+      avoided_co2e_kg: avoided,
+      driving_co2e_kg: driving,
+      net_co2e_kg: net_co2e,
+      trees_gross: trees_gross,
+      trees_to_offset_drive: trees_to_offset_drive,
+      trees_net: trees_net
+    )
+
+    stat
   end
   # def todays_driver
   #   DriversDay.where(date: Date.today)
