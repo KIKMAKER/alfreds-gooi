@@ -109,6 +109,7 @@ Rails.application.routes.draw do
     end
     member do
       get :vamos
+      get :complete
       get :start
       patch :start
       get :end
