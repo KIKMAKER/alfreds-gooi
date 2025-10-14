@@ -1,0 +1,124 @@
+<div class="driver-wrapper">
+  <% if @drivers_day&.end_time && @stat %>
+    <br>
+    <h1>Thank you for your work today</h1>
+    <br>
+    <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large' %>
+    <br>
+    <br>
+
+    <% if @drivers_day.end_kms.nil? %>
+      <p>The end kms didn't save or weren't entered</p>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
+        <%= f.submit "Save kms", class: "gooi-button" %>
+      <% end %>
+    <% else %>
+      <p>We planted the equivalent of <%= number_with_precision(@stat.trees_net, precision: 2) %> trees</p>
+
+      <small class="text-muted d-block">
+        From waste: <%= number_with_precision(@stat.trees_gross, precision: 2) %>
+      </small>
+      <small class="text-muted d-block">
+        To offset driving: <%= number_with_precision(@stat.trees_to_offset_drive, precision: 2) %>
+      </small>
+    <% end %>
+
+    <% unless @drivers_day.start_time && @drivers_day.end_time %>
+      <p>Seems the start/end time of your day wasn't saved</p>
+      <p>Please enter them here:</p>
+      <%= simple_form_for @drivers_day do |f| %>
+        <%= f.input :start_time, label: "Start time", required: true %>
+        <%= f.input :end_time, label: "End time", required: true %>
+        <%= f.submit "Save times", class: "gooi-button" %>
+      <% end %>
+    <% end %>
+
+    <p>Travel safe, see you next time</p>
+    <div>
+      <br>
+      <div class="row g-3 my-3 text-center">
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Net kg</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.net_kg, precision: 2) %></div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Buckets (F / H)</div>
+            <div class="fs-6 fw-bold">
+              <%= @stat.bucket_count %>
+              <small class="text-muted">(<%= @stat.full_count %> / <%= @stat.half_count %>)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Full-equiv</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.full_equiv, precision: 2) %></div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Avg kg / bucket</div>
+            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.avg_kg_bucket, precision: 2) %></div>
+            <small class="text-muted">per full-equiv: <%= number_with_precision(@stat.avg_kg_full, precision: 2) %></small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Households</div>
+            <div class="fs-4 fw-bold"><%= @stat.households %></div>
+            <small class="text-muted">Bags: <%= @stat.bags_sum %></small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Route time</div>
+            <div class="fs-4 fw-bold">
+              <% if @stat.route_hours %>
+                <%= number_with_precision(@stat.route_hours, precision: 2) %> h
+              <% else %>—<% end %>
+            </div>
+            <small class="text-muted">
+              <% if @stat.stops_per_hr %>
+                <%= number_with_precision(@stat.stops_per_hr, precision: 2) %> stops/h ·
+                <%= number_with_precision(@stat.kg_per_hr, precision: 2) %> kg/h
+              <% else %>—<% end %>
+            </small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card p-3" style="border-radius:1em">
+            <div class="text-muted">Distance</div>
+            <div class="fs-4 fw-bold">
+              <% if @stat.kms %>
+                <%= @stat.kms %> km
+              <% else %>—<% end %>
+            </div>
+            <small class="text-muted">
+              <% if @stat.kg_per_km %>
+                <%= number_with_precision(@stat.kg_per_km, precision: 2) %> kg/km
+              <% else %>—<% end %>
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <br>
+    </div>
+    <%= link_to "View all today's collections", today_subscriptions_path, class: "small-yellow-btn" %>
+
+  <% else %>
+    <h1>No stats available yet</h1>
+    <p>Complete your day first to see your stats!</p>
+    <%= link_to "Back to Welcome", vamos_drivers_day_path(@drivers_day), class: "small-yellow-btn" %>
+  <% end %>
+</div>

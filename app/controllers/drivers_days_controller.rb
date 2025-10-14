@@ -20,14 +20,11 @@ class DriversDaysController < ApplicationController
 
 
   def vamos
-    # in production today will be the current day,
+    # Morning briefing before starting the day
     today = Date.today
-    # but in testing I want to be able to test the view for a given day
-    # today = Date.today  + 1
     @today = today.strftime("%A")
 
     @drivers_day = DriversDay.find(params[:id])
-    @stat = @drivers_day.day_statistic
 
     if @drivers_day
       @collections = @drivers_day.collections
@@ -41,6 +38,16 @@ class DriversDaysController < ApplicationController
       @count = 0
       @bags_needed = []
     end
+  end
+
+  def complete
+    # Stats dashboard after completing the day
+    today = Date.today
+    @today = today.strftime("%A")
+
+    @drivers_day = DriversDay.find(params[:id])
+    @stat = @drivers_day.day_statistic
+    @collections = @drivers_day.collections
   end
 
 
@@ -87,7 +94,7 @@ class DriversDaysController < ApplicationController
     @drivers_day.end_time = Time.now
     @drivers_day.save!
 
-    if update_drivers_day(drivers_day_params, next_path: vamos_drivers_day_path(@drivers_day))
+    if update_drivers_day(drivers_day_params, next_path: complete_drivers_day_path(@drivers_day))
       # Calculate and save statistics
       @drivers_day.calculate_and_save_statistics!
 
