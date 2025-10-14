@@ -116,8 +116,9 @@ class DriversDaysController < ApplicationController
     # DEVELOPMENT
     # today = (Date.today + 1)
     @today = today.strftime("%A")
+    alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
-    @drivers_day = DriversDay.find_or_create_by(date: today)
+    @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
     @drivers_day.start_time = Time.now
     @drivers_day.save!
     @subscriptions = Subscription.where(collection_day: @today, status: 'active').order(:collection_order)
@@ -136,21 +137,6 @@ class DriversDaysController < ApplicationController
       end
     end
   end
-
-  # def drop_off
-  #   @collections = @drivers_day.collections
-  #   @total_bags_collected = @collections.sum(:bags)
-  #   @total_buckets_collected = @collections.sum(:buckets)
-  #   if request.patch?
-  #     if update_drivers_day(drivers_day_params, next_path: end_drivers_day_path)
-  #       puts "Driver's Day had #{@drivers_day.total_buckets} buckets and dropped off at #{@drivers_day.sfl_time}"
-  #       flash[:notice] = "Drop off updated successfully with #{@drivers_day.total_buckets} buckets."
-  #     else
-  #       flash.now[:alert] = "Failed to update Driver's Day"
-  #       render :drop_off
-  #     end
-  #   end
-  # end
 
   def end
     @drivers_day = DriversDay.includes(:collections).find(params[:id])
