@@ -1,9 +1,9 @@
 <div class="invoice-wrapper">
   <div class="invoice-container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 link-decoration">
       <h1 class="mb-0">Invoice</h1>
       <% if current_user.admin? %>
-        <%= link_to "Edit Invoice", edit_invoice_path(@invoice), class: "btn btn-sm btn-outline-primary" %>
+        <%= link_to "Edit Invoice", edit_invoice_path(@invoice), class: "link-text" %>
       <% end %>
     </div>
     <!--<h5 class="text-center my-3">gooi compost collections</h5>-->

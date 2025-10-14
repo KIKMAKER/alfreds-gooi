@@ -37,14 +37,24 @@ class InvoicesController < ApplicationController
 
   def update
     if params[:invoice][:invoice_items_attributes].present?
-      # Handle nested attributes update
-      if @invoice.update(invoice_params)
-        @invoice.calculate_total
-        redirect_to invoice_path(@invoice), notice: 'Invoice was successfully updated.'
-      else
-        @products = Product.all
-        render :edit, status: :unprocessable_entity
+      # Handle updates and deletions via nested attributes
+      @invoice.update(invoice_params)
+
+      # Handle new items manually
+      params[:invoice][:invoice_items_attributes].each do |key, item_params|
+        next unless key.to_s.start_with?('new_')
+        next if item_params[:quantity].blank? || item_params[:quantity].to_f <= 0
+
+        product = Product.find(item_params[:product_id])
+        @invoice.invoice_items.create!(
+          product_id: product.id,
+          quantity: item_params[:quantity].to_f,
+          amount: product.price
+        )
       end
+
+      @invoice.calculate_total
+      redirect_to invoice_path(@invoice), notice: 'Invoice was successfully updated.'
     else
       # Legacy behavior for issued_bags route
       create_invoice_items(@invoice)

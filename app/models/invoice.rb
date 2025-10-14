@@ -2,7 +2,9 @@ class Invoice < ApplicationRecord
   belongs_to :subscription, optional: true
   has_one :user, through: :subscription
   has_many :invoice_items, dependent: :destroy
-  accepts_nested_attributes_for :invoice_items, allow_destroy: true
+  accepts_nested_attributes_for :invoice_items,
+                                 allow_destroy: true,
+                                 reject_if: proc { |attributes| attributes['quantity'].blank? || attributes['quantity'].to_f <= 0 }
   has_many :payments, dependent: :nullify
 
   # validates :issued_date, :due_date, :total_amount, presence: true
