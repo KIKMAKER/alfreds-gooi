@@ -70,6 +70,24 @@ class DriversDaysController < ApplicationController
     @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
     @products_needed = @drivers_day.products_needed_for_delivery
 
+    # Check for recently lapsed customers
+    two_weeks_ago = today - 2.weeks
+    existing_ids = @drivers_day.collections.pluck(:subscription_id)
+
+    @recently_lapsed = Subscription
+      .where(collection_day: Date::DAYNAMES[today.wday])
+      .where(status: 'completed')
+      .where(end_date: two_weeks_ago..today)
+      .where.not(id: existing_ids)
+      .includes(:user, :collections)
+      .order(end_date: :desc)
+
+    # Filter to only those who had collections in their last week
+    @recently_lapsed = @recently_lapsed.select do |sub|
+      last_week = sub.end_date - 1.week
+      sub.collections.where('date >= ? AND date <= ?', last_week, sub.end_date).where(skip: false).any?
+    end
+
     if request.patch?
       # Set start_time when form is actually submitted
       @drivers_day.start_time = Time.now

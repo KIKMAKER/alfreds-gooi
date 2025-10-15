@@ -1,5 +1,11 @@
 <!--ALFREDS PAGE-->
 <div class="driver-wrapper">
+  <div class="mb-3 text-center link-decorations">
+    <h2 class="mb-2">Today's Route</h2>
+
+    <%= link_to "Someone missing from the list?", recently_lapsed_subscriptions_path, class: "link-text" %>
+  </div>
+
   <div class="collection-header">
 
     <div class="name">
@@ -42,9 +48,6 @@
           class="sortable-item">
             <div class="name">
               <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
-              <% if item.is_done %>
-              </i><i class="fa-solid fa-check"></i>
-            <% end %>
             <% if current_user.admin? %>
               <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             <% end %>
