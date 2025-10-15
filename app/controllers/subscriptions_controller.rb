@@ -359,6 +359,55 @@ class SubscriptionsController < ApplicationController
   end
 
 
+  def recently_lapsed
+    # Find driver's day
+    today = Date.today
+    driver = User.find_by(first_name: "Alfred", role: 'driver')
+    @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
+
+    two_weeks_ago = today - 2.weeks
+
+    # Get IDs of subs already on today's list
+    existing_ids = @drivers_day.collections.pluck(:subscription_id)
+
+    # Find recently completed subscriptions for today's collection day
+    @recently_lapsed = Subscription
+      .where(collection_day: Date::DAYNAMES[today.wday])  # Matches today (enum uses day name string)
+      .where(status: 'completed')                          # Properly ended
+      .where(end_date: two_weeks_ago..today)           # Ended in last 2 weeks
+      .where.not(id: existing_ids)                     # Not already on list
+      .includes(:user, :collections)
+      .order(end_date: :desc)                          # Most recent first
+
+    # Filter to only those who actually had collections in their last week
+    @recently_lapsed = @recently_lapsed.select do |sub|
+      last_week = sub.end_date - 1.week
+      sub.collections.where('date >= ? AND date <= ?', last_week, sub.end_date).where(skip: false).any?
+    end
+  end
+
+  def collect_courtesy
+    subscription = Subscription.find(params[:id])
+    today = Date.today
+    driver = User.find_by(first_name: "Alfred", role: 'driver')
+    @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
+
+    # Create collection for today
+    Collection.create!(
+      subscription: subscription,
+      drivers_day: @drivers_day,
+      date: today,
+      bags: 0,
+      skip: false,
+      new_customer: false,
+      buckets: 0.0
+    )
+
+    user = subscription.user
+    flash[:notice] = "#{user.first_name} added to today's collections!"
+    redirect_to recently_lapsed_subscriptions_path
+  end
+
   # a special view that will load all of the collections for a given day
   def today_notes
     # in production today will be the current day,

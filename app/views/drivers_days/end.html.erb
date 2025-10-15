@@ -1,6 +1,6 @@
 <div class="driver-wrapper">
   <h1>Well done!</h1>
-  
+
   <h3 class="mt-3">You are almost done</h3>
   <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
 
@@ -9,8 +9,6 @@
       <%= f.input :total_buckets, label: "Total buckets", required: true, input_html: { min: 0 } %>
       <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
       <%= f.input :message_from_alfred, label: "Any note for Kiki?" %>
-      <!-- Hidden field for start_time --><!---->
-      <%= f.hidden_field :end_time, value: Time.current %>
       <%= f.submit "Thank you!", class: "small-yellow-btn"  %>
     <% end %>
   </div>

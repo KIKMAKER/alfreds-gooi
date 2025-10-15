@@ -1,0 +1,100 @@
+<div class="driver-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Recently Lapsed Customers</h1>
+  </div>
+
+  <div class="text-muted text-center mb-4">
+    <p>These customers' subscriptions ended in the last 2 weeks.</p>
+    <p>You can collect from them as a courtesy to encourage resubscription.</p>
+  </div>
+
+  <% if @recently_lapsed.any? %>
+    <div>
+      <div class="collection">
+        <div class="name">
+          <p><strong>Name</strong></p>
+        </div>
+        <div class="address">
+          <p><strong>Address</strong></p>
+        </div>
+        <div class="address">
+          <p><strong>Ended</strong></p>
+        </div>
+        <div class="emojies">
+          <p><strong>Actions</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="collections">
+      <% @recently_lapsed.each do |subscription| %>
+        <% user = subscription.user %>
+        <% last_collection = subscription.collections.where(skip: false).order(date: :desc).first %>
+        <% days_since_last = last_collection ? (Date.today - last_collection.date).to_i : nil %>
+        <%
+          message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email} and your password should be 'password' unless you've changed it."
+          whatsapp_url = user.generate_whatsapp_link(message)
+        %>
+
+        <div class="collection my-2">
+          <div class="name">
+            <p><%= user.first_name %> <%= user.last_name %></p>
+          </div>
+          <div class="address">
+            <p class="mb-0"><%= subscription.street_address %></p>
+          </div>
+          <div class="address">
+            <small class="text-muted">
+              <%= subscription.end_date.strftime('%b %d') %>
+              <% if days_since_last %>
+                <br>
+                · Last collected: <%= days_since_last %> days ago
+              <% end %>
+            </small>
+          </div>
+
+          <div class="emojies">
+            <p class="emoji">
+              <%= link_to  whatsapp_url, target: "_blank" do %>
+                <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
+              <% end %>
+            </p>
+            <p class="emoji">
+              <%= button_to "add to list",
+                  collect_courtesy_subscription_path(subscription),
+                  method: :post,
+                  class: "small-yellow-btn",
+                  title: "Add to today's list",
+                  data: {
+                    turbo_confirm: "Add #{user.first_name} to today's list?"
+                  } %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-4 p-3 bg-light rounded">
+      <h5>💬 What happens when you click "Collect & Notify":</h5>
+      <ol class="mb-0">
+        <li>A collection is created for today using their old subscription</li>
+        <li>WhatsApp opens with a pre-filled message encouraging them to resubscribe</li>
+        <li>They'll appear on today's route</li>
+      </ol>
+    </div>
+
+  <% else %>
+    <div class="outline p-4 text-center">
+      <h3>🎉 No recently lapsed customers!</h3>
+      <p class="text-muted mb-0">
+        Everyone who ended their subscription in the last 2 weeks either:
+        <br>
+        • Is already on today's list, or
+        <br>
+        • Wasn't actively collecting before their sub ended
+      </p>
+      <div class="mt-3">
+        <%= link_to "Back to Today's List", today_subscriptions_path, class: "small-yellow-btn" %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     # - here I am creating /subscriptions/today
     collection do
       get :today
+      get :recently_lapsed
       get :export
       get :update_end_date
       post :import_csv
@@ -96,6 +97,7 @@ Rails.application.routes.draw do
       patch :holiday_dates
       get :complete
       post :reassign_collections
+      post :collect_courtesy
     end
   end
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes
@@ -115,10 +117,6 @@ Rails.application.routes.draw do
       get :end
       patch :end
       get :collections
-      get :missing_customers
-      post 'create_missing_collection/:subscription_id', to: 'drivers_days#create_missing_collection', as: :create_missing_collection
-      get 'whatsapp_message', to: 'drivers_days#whatsapp_message'
-
     end
     resources :collections, only: [:index] do
       collection do
