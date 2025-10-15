@@ -5,7 +5,7 @@
   </p>
 
   <p style="font-size: 1.1rem;">
-    Over this time, we’ve collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
+    Over this time, we've collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
     and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
   </p>
 
@@ -14,19 +14,11 @@
   </p>
 
   <p style="font-size: 1.1rem;">
-    You're welcome to rejoin the movement anytime.
+    <strong>Thank you for resubscribing!</strong> 🎉 We're so glad you're continuing your gooiing journey with us.
   </p>
-  <p style="margin: 2rem 0;">
-    <a href="<%= new_subscription_url %>"
-       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
-      Resubscribe Now
-    </a>
-  </p>
+
   <p style="font-size: 1.1rem;">
-    If you haven't logged into the website before, we have an account waiting for you! Just use this email address and the default password: 'password', which you can change at any time.
-  </p>
-  <p style="font-size: 1.1rem;">
-    We hope to see you (and your kitchen scraps) again soon 👀🍌🥬
+    See you soon (and your kitchen scraps too) 👀🍌🥬
   </p>
   <p style="font-size: 1.1rem;">Thanks again,</p>
   <p>

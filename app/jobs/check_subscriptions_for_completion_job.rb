@@ -25,10 +25,11 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
         subscription.end_date!
 
         if has_next
-          # only alert admins
-          SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_now
+          # customer has resubscribed - send thank you email (no resubscribe CTA)
+          SubscriptionMailer.with(subscription: subscription).subscription_completed_with_renewal.deliver_now
+          SubscriptionMailer.with(subscription: subscription).subscription_completed_with_renewal_alert.deliver_now
         else
-          # customer + alert
+          # customer hasn't resubscribed - send email with resubscribe CTA
           SubscriptionMailer.with(subscription: subscription).subscription_completed.deliver_now
           SubscriptionMailer.with(subscription: subscription).subscription_completed_alert.deliver_now
         end
