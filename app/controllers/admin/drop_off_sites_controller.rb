@@ -72,7 +72,7 @@ class Admin::DropOffSitesController < ApplicationController
   private
 
   def set_drop_off_site
-    @drop_off_site = DropOffSite.find(params[:id])
+    @drop_off_site = DropOffSite.find_by(slug: params[:id])
   end
 
   def drop_off_site_params
@@ -85,7 +85,11 @@ class Admin::DropOffSitesController < ApplicationController
       :notes,
       :collection_day,
       :photo,
-      :user_id
+      :user_id,
+      :story,
+      :website,
+      :instagram_handle,
+      :facebook_url
     )
   end
 

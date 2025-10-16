@@ -166,49 +166,6 @@ section {
   font-weight: 700;
 }
 
-.btn-gooi {
-  margin: 16px 0px;
-  padding: 16px 56px;
-  background-color: #fff;
-  color: #023F3A;
-  border: none;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-family: 'Montserrat', sans-serif;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #ffffff00;
-    color: #fff;
-    border: 1px solid #fff;
-    padding: 16px 80px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.sign-up-btn {
-  display: flex;
-  justify-content: center;
-  background-color: #FBB718;
-  border: none;
-  border-radius: 50px;
-  padding: 8px 16px;
-  // margin-left: 16px;
-  transition: all 0.3s ease;
-  text-decoration: none !important;
-  color: white;
-  // margin-top: 1rem;
-  max-width: 10rem;
-
-  a {
-    color: white;
-    text-decoration: none !important;
-  }
-}
-
 .header-video {
   width: 100%;
   height: 100%;

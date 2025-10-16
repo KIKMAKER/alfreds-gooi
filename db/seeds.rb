@@ -2,12 +2,12 @@ require 'csv'
 puts "Welcome to the gooi seed file"
 puts "Enter 'y' to seed the whole database"
 puts "Enter 'products' to seed only products"
-puts "Enter 'p' to seed only payments"
+puts "Enter 'ppayments' to seed only payments"
 puts "Enter 'dropoffs' to seed only drop-off sites"
 
 proceed = STDIN.gets.chomp.downcase
 
-if proceed == "p"
+if proceed == "payments"
   puts "Clearing past payments"
   Payment.destroy_all
 
@@ -485,6 +485,81 @@ elsif proceed == "y"
       end
 
     end
+
+  ## DROP-OFF SITES
+  puts "Seeding drop-off sites..."
+
+  def seed_drop_off_sites_with_users(sites)
+    sites.each do |site_data|
+      # Create or find the manager user
+      user = User.find_or_create_by!(email: site_data[:email]) do |u|
+        u.first_name = site_data[:contact_name].split.first
+        u.last_name = site_data[:contact_name].split.last || ""
+        u.password = "password"
+        u.role = "drop_off"
+        u.phone_number = site_data[:phone_number]
+      end
+      puts "  ✓ User created: #{user.first_name} (#{user.email})"
+
+      # Create or find the drop-off site
+      site = DropOffSite.find_or_create_by!(name: site_data[:name]) do |s|
+        s.street_address = site_data[:street_address]
+        s.suburb = site_data[:suburb]
+        s.contact_name = site_data[:contact_name]
+        s.phone_number = site_data[:phone_number]
+        s.notes = site_data[:notes]
+        s.collection_day = site_data[:collection_day]
+        s.user = user
+      end
+
+      # Update existing sites to associate with user
+      site.update!(user: user) if site.user.nil?
+
+      puts "  ✓ Site created: #{site.name} (#{site.collection_day}s) - Manager: #{site.contact_name}"
+    end
+  end
+
+  drop_off_sites_data = [
+    {
+      name: "Neighbourhood Farm",
+      street_address: "Paris Road, Fish Hoek",
+      suburb: "Fish Hoek",
+      contact_name: "Sibusiso",
+      phone_number: "+27825551234",
+      email: "sibusiso@neighbourhoodfarm.co.za",
+      notes: "Last stop on Tuesday route. Enter through main gate.",
+      collection_day: "Tuesday"
+    },
+    {
+      name: "Soil For Life",
+      street_address: "Brounger Road, Sillery",
+      suburb: "Constantia",
+      contact_name: "Sarah Green",
+      phone_number: "+27217944982",
+      email: "sarah@soilforlife.co.za",
+      notes: "Last stop on Wednesday route. Drop-off area at back of property.",
+      collection_day: "Wednesday"
+    },
+    {
+      name: "Streetscapes Farm",
+      street_address: "Upper Orange Street",
+      suburb: "Vredehoek",
+      contact_name: "Richard",
+      phone_number: "+27834567890",
+      email: "richard@streetscapes.co.za",
+      notes: "Last stop on Thursday route. Ring bell at entrance.",
+      collection_day: "Thursday"
+    }
+  ]
+
+  seed_drop_off_sites_with_users(drop_off_sites_data)
+
+  puts "\n✓ #{DropOffSite.count} drop-off sites have been seeded to the DB."
+  puts "✓ #{User.where(role: 'drop_off').count} drop-off manager users created."
+  puts "\nLogin credentials (all passwords: 'password'):"
+  User.where(role: 'drop_off').each do |user|
+    puts "  - #{user.email}"
+  end
 
 
   # ADMIN + DRIVER

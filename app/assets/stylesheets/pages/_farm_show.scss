@@ -1,0 +1,49 @@
+.farm-page-header {
+  position: relative;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  height: 90vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  h1 {
+    font-size: 2rem;
+    padding-top: 1rem;
+  }
+
+  .blog-header-subheader {
+    margin-bottom: 2rem;
+  }
+
+
+
+  .inner-header-container {
+    margin: 0 10%;
+  }
+
+  // WAVES STYLE
+  .waves {
+    position: absolute;
+    width: 100%;
+    height: 15vh;
+    bottom: -1px;
+    right: 0px;
+  }
+
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3rem;
+    color: white;
+    text-align: center;
+    padding-top: 15vh;
+    margin-bottom: 1vh;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: white;
+    text-align: center;
+  }
+}
