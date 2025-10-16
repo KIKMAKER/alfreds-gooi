@@ -108,6 +108,7 @@ class SubscriptionsController < ApplicationController
       @invoice = result.invoice
 
       # Update subscription with form params (plan, duration, etc.) if provided
+    
       @subscription.update!(subscription_params) if subscription_params.present?
 
       # check for sub overlap and set proper start date
@@ -115,7 +116,7 @@ class SubscriptionsController < ApplicationController
       @subscription.update!(start_date: start_date)
 
       # Recalculate end_date based on new start date and duration
-      @subscription.update!(end_date: start_date.advance(months: @subscription.duration))
+      # @subscription.update!(end_date: start_date.advance(months: @subscription.duration))
 
       # check if future collections exist and move them to this sub
       @subscription.adopt_future_collections!

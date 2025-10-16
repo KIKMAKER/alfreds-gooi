@@ -42,6 +42,26 @@
       </div>
     <% end %>
 
+    <h4 class="mt-4 mb-3">Public Page Content</h4>
+
+    <%= f.input :story,
+          as: :text,
+          input_html: { rows: 6 },
+          placeholder: "Tell the story of this farm - their mission, values, composting methods, community impact, etc.",
+          hint: "This will appear on the public farm page" %>
+
+    <%= f.input :website,
+          placeholder: "https://example.com",
+          hint: "Full URL to the farm's website" %>
+
+    <%= f.input :instagram_handle,
+          placeholder: "farmname",
+          hint: "Instagram handle without the @ symbol" %>
+
+    <%= f.input :facebook_url,
+          placeholder: "https://facebook.com/farmname",
+          hint: "Full URL to the farm's Facebook page" %>
+
     <%= f.button :submit, "Update Drop-Off Site", class: "small-yellow-btn" %>
   <% end %>
 

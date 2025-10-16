@@ -153,6 +153,9 @@ Rails.application.routes.draw do
   root "pages#home"
   get "story", to: "pages#story"
 
+  # farms (public-facing drop-off sites)
+  resources :farms, only: [:index, :show], param: :slug
+
 
 
   # Block WordPress scanning bots

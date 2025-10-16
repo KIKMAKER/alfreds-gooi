@@ -7,11 +7,15 @@ class DropOffSite < ApplicationRecord
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
+  # Slug generation
+  before_validation :generate_slug, if: -> { slug.blank? || will_save_change_to_name? }
+
   # Validations
   validates :name, presence: true
   validates :street_address, presence: true
   validates :suburb, inclusion: { in: Subscription::SUBURBS }
   validates :collection_day, presence: true
+  validates :slug, presence: true, uniqueness: true
 
   # Enum for collection day
   enum :collection_day, Date::DAYNAMES
@@ -33,5 +37,34 @@ class DropOffSite < ApplicationRecord
     )
   end
 
+  # Override to_param to use slug in URLs
+  def to_param
+    slug
+  end
+
+  # Class method to get suburbs for a given collection day
+  def self.suburbs_for_day(day)
+    case day.to_s.capitalize
+    when "Tuesday"
+      Subscription::TUESDAY_SUBURBS
+    when "Wednesday"
+      Subscription::WEDNESDAY_SUBURBS
+    when "Thursday"
+      Subscription::THURSDAY_SUBURBS
+    else
+      []
+    end
+  end
+
+  # Instance method to get suburbs served by this drop-off site
+  def served_suburbs
+    self.class.suburbs_for_day(collection_day)
+  end
+
+  private
+
+  def generate_slug
+    self.slug = name.parameterize
+  end
+
 end
-  

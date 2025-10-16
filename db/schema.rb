@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_14_142345) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_16_094812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -178,6 +178,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_14_142345) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "slug"
+    t.text "story"
+    t.string "website"
+    t.string "instagram_handle"
+    t.string "facebook_url"
+    t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
   end
 
