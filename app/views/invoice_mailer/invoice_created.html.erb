@@ -1,24 +1,28 @@
-<div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
-  <h1 style="margin:0 0 12px;">Your invoice is ready</h1>
-  <% if @user %>
-    <p style="margin:0 0 12px;">Hi <%= @user.first_name || @user.email %>,</p>
-  <% end %>
+<div>
 
-  <p style="margin:0 0 16px;">
-    Your invoice <strong>#<%= @invoice.number || @invoice.id %></strong> has been generated.
-  </p>
+  <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
+    <h1 style="margin:0 0 12px;">Your invoice is ready</h1>
+    <% if @user %>
+      <p style="margin:0 0 12px;">Hi <%= @user.first_name || @user.email %>,</p>
+    <% end %>
 
-  <p style="margin:0 0 16px;">
-    <strong>Total:</strong> R <%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %><br>
-    <strong>Due:</strong> <%= @invoice.due_date&.strftime('%e %b %Y') %>
-  </p>
+    <p style="margin:0 0 16px;">
+      Your invoice <strong>#<%= @invoice.number || @invoice.id %></strong> has been generated.
+    </p>
 
-  <p style="margin:24px 0;">
-    <a href="<%= invoice_url(@invoice) %>"
-       style="display:inline-block;padding:10px 16px;text-decoration:none;border-radius:6px;border:1px solid #1a7f37;">
-      View invoice
-    </a>
-  </p>
+    <p style="margin:0 0 16px;">
+      <strong>Total:</strong> R <%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %><br>
+      <strong>Due:</strong> <%= @invoice.due_date&.strftime('%e %b %Y') %>
+    </p>
 
-  <p style="color:#6b7280;">With appreciation,<br>Gooi</p>
+    <p style="margin:24px 0;">
+      <a href="<%= invoice_url(@invoice) %>"
+        style="display:inline-block;padding:10px 16px;text-decoration:none;border-radius:6px;border:1px solid #1a7f37;">
+        View invoice
+      </a>
+    </p>
+
+    <p style="color:#6b7280;">With appreciation,<br>Gooi</p>
+  </div>
+  
 </div>
