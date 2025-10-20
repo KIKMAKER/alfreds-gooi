@@ -4,6 +4,7 @@ class PagesController < ApplicationController
   def home
     @discount_code = params[:discount_code]
     @interest = Interest.new
+    @farms = DropOffSite.order(:name).limit(4)
     if @discount_code.present?
       found_code = DiscountCode.find_by(code: @discount_code.upcase)
       if found_code.discount_cents.present?
