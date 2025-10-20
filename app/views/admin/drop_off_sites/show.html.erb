@@ -75,13 +75,13 @@
 
   <div class="flex-wrapper mt-4">
 
-    <%= form_with url: create_event_admin_drop_off_site_path(@drop_off_site), method: :post, class: "d-inline-block" do |f| %>
+    <%= form_with url: create_event_admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id), method: :post, class: "d-inline-block" do |f| %>
       <%= f.date_field :date, class: "form-control d-inline-block", style: "width: auto;", placeholder: "Select date" %>
       <%= f.submit "Create Drop-Off Event", class: "small-yellow-btn" %>
     <% end %>
     <div class="my-2">
-    <%= link_to "Edit Site", edit_admin_drop_off_site_path(site.slug || site.id), class: "link-title text-warning me-2" %>
-    <%= link_to "Delete Site", admin_drop_off_site_path(site.slug || site.id),
+    <%= link_to "Edit Site", edit_admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id), class: "link-title text-warning me-2" %>
+    <%= link_to "Delete Site", admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id),
         data: { turbo_method: :delete, turbo_confirm: "Delete #{@drop_off_site.name}? This will remove all drop-off events." },
         class: "link-title text-danger ms-2" %>
     </div>
