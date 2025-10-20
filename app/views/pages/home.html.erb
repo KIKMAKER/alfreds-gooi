@@ -118,6 +118,7 @@
       </div>
     </div>
   </section>
+
   <!--where we collect section-->
   <section class="map-section">
 
@@ -220,6 +221,44 @@
       <% end %>
     </div>
 
+  </section>
+
+  <!-- Partner Farms Section -->
+  <section class="partner-farms-section">
+    <h1>Our Partner Farms<span class="yellow-txt">.</span></h1>
+    <p class="section-description">
+      Your food waste doesn't disappear—it transforms into healthy soil at these incredible farms and composting sites.
+    </p>
+
+    <div class="farms-grid">
+      <% @farms.each do |farm| %>
+        <div class="farm-card-mini">
+          <%= link_to farm_path(farm.slug || farm.id), class: "farm-card-link" do %>
+            <div class="farm-image-container">
+              <% if farm.photo.attached? %>
+                <%= image_tag farm.photo, alt: farm.name, class: "farm-image" %>
+              <% else %>
+                <div class="farm-image-placeholder">
+                  <i class="fa-solid fa-seedling"></i>
+                </div>
+              <% end %>
+              <span class="collection-day-badge"><%= farm.collection_day %></span>
+            </div>
+            <div class="farm-card-content">
+              <div class="d-flex justify-content-between align-items-center">
+                <h3><%= farm.name %></h3>
+                <p class="farm-suburb"><i class="fa-solid fa-location-dot"></i> <%= farm.suburb %></p>
+              </div>
+              <span class="farm-stat"><%= number_with_precision(farm.total_weight_kg || 0, precision: 0) %> kg collected</span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-4 link-decoration">
+      <%= link_to 'View All Our Partner Farms', farms_path %>
+    </div>
   </section>
 
   <!--testimonial section-->
