@@ -39,26 +39,26 @@
   <% if recent_events.any? %>
     <div class="collection-header">
       <div class="name"><p class="lh-lg">Date</p></div>
-      <div class="bag"><p class="lh-lg">Weight</p></div>
-      <div class="address"><p class="lh-lg">Buckets</p></div>
+      <div><p class="lh-lg">Weight</p></div>
+      <div><p class="lh-lg me-4">Buckets</p></div>
       <div class="status"><p class="lh-lg">Status</p></div>
     </div>
     <div class="collections">
       <ul>
         <% recent_events.each do |event| %>
           <li class="collection">
-            <div class="name">
+            <div>
               <p class="lh-lg"><%= event.date.strftime("%a, %b %e") %></p>
             </div>
-            <div class="bag">
+            <div>
               <p class="lh-lg"><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</p>
             </div>
-            <div class="address">
+            <div>
               <p class="lh-lg"><%= event.buckets.count %> buckets</p>
             </div>
             <div class="status">
               <% if event.is_done %>
-                <i class="fa-solid fa-check text-success"></i>
+                <i class="fa-solid fa-check text-success text-center" style="width:5rem"></i>
               <% else %>
                 <span class="small-yellow-btn">Pending</span>
               <% end %>
