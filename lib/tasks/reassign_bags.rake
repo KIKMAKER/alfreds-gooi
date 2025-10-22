@@ -72,9 +72,12 @@ namespace :collections do
       end
 
       # Check if donor has more than 1 bag
-      if donor_collection.bags <= 1
+      donor_bags = donor_collection.bags || 0
+      receiver_bags = receiver_collection.bags || 0
+
+      if donor_bags <= 1
         stats[:skipped_donor_insufficient] += 1
-        puts "Week #{current_week_start.strftime('%b %d')} - #{week_end.strftime('%b %d')}: ⊘ Skipped (donor has #{donor_collection.bags} bag)"
+        puts "Week #{current_week_start.strftime('%b %d')} - #{week_end.strftime('%b %d')}: ⊘ Skipped (donor has #{donor_bags} bag)"
         current_week_start += 1.week
         next
       end
@@ -82,9 +85,9 @@ namespace :collections do
       # Perform transfer
       if mode.downcase == 'live'
         ActiveRecord::Base.transaction do
-          donor_collection.update!(bags: donor_collection.bags - 1)
+          donor_collection.update!(bags: donor_bags - 1)
           receiver_collection.update!(
-            bags: receiver_collection.bags + 1,
+            bags: receiver_bags + 1,
             skip: false
           )
         end
@@ -93,11 +96,14 @@ namespace :collections do
       stats[:transfers_made] += 1
       stats[:total_bags_transferred] += 1
 
-      # Calculate before/after values
-      donor_before = mode.downcase == 'live' ? donor_collection.bags + 1 : donor_collection.bags
-      donor_after = mode.downcase == 'live' ? donor_collection.bags : donor_collection.bags - 1
-      receiver_before = mode.downcase == 'live' ? receiver_collection.bags - 1 : receiver_collection.bags
-      receiver_after = mode.downcase == 'live' ? receiver_collection.bags : receiver_collection.bags + 1
+      # Calculate before/after values (reload if live mode to show updated values)
+      donor_collection.reload if mode.downcase == 'live'
+      receiver_collection.reload if mode.downcase == 'live'
+
+      donor_before = mode.downcase == 'live' ? donor_collection.bags + 1 : donor_bags
+      donor_after = mode.downcase == 'live' ? donor_collection.bags : donor_bags - 1
+      receiver_before = mode.downcase == 'live' ? receiver_collection.bags - 1 : receiver_bags
+      receiver_after = mode.downcase == 'live' ? receiver_collection.bags : receiver_bags + 1
       receiver_skip_before = mode.downcase == 'live' ? true : receiver_collection.skip
 
       puts "Week #{current_week_start.strftime('%b %d')} - #{week_end.strftime('%b %d')}: ✓ #{mode.downcase == 'live' ? 'TRANSFERRED' : 'Would transfer'} 1 bag"
