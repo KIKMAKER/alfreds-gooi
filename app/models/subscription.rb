@@ -210,7 +210,7 @@ class Subscription < ApplicationRecord
 
     # Find the next sub strictly after "this_end"
     next_sub = user.subscriptions
-                   .where("start_date > ?", this_end)
+                   .where("start_date >= ?", this_end)
                    .order(:start_date)
                    .first
 
