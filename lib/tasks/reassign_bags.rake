@@ -93,9 +93,16 @@ namespace :collections do
       stats[:transfers_made] += 1
       stats[:total_bags_transferred] += 1
 
+      # Calculate before/after values
+      donor_before = mode.downcase == 'live' ? donor_collection.bags + 1 : donor_collection.bags
+      donor_after = mode.downcase == 'live' ? donor_collection.bags : donor_collection.bags - 1
+      receiver_before = mode.downcase == 'live' ? receiver_collection.bags - 1 : receiver_collection.bags
+      receiver_after = mode.downcase == 'live' ? receiver_collection.bags : receiver_collection.bags + 1
+      receiver_skip_before = mode.downcase == 'live' ? true : receiver_collection.skip
+
       puts "Week #{current_week_start.strftime('%b %d')} - #{week_end.strftime('%b %d')}: ✓ #{mode.downcase == 'live' ? 'TRANSFERRED' : 'Would transfer'} 1 bag"
-      puts "  Donor: #{donor_collection.bags + (mode.downcase == 'live' ? 1 : 0)} → #{donor_collection.bags - (mode.downcase == 'live' ? 0 : 1)} bags (#{donor_collection.date.strftime('%a %b %d')})"
-      puts "  Receiver: #{receiver_collection.bags - (mode.downcase == 'live' ? 1 : 0)} → #{receiver_collection.bags + (mode.downcase == 'live' ? 0 : 1)} bags, skip: #{receiver_collection.skip + (mode.downcase == 'live' ? 1 : 0)} → false (#{receiver_collection.date.strftime('%a %b %d')})"
+      puts "  Donor: #{donor_before} → #{donor_after} bags (#{donor_collection.date.strftime('%a %b %d')})"
+      puts "  Receiver: #{receiver_before} → #{receiver_after} bags, skip: #{receiver_skip_before} → false (#{receiver_collection.date.strftime('%a %b %d')})"
 
       current_week_start += 1.week
     end
