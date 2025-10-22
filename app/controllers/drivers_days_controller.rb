@@ -89,8 +89,8 @@ class DriversDaysController < ApplicationController
     end
 
     if request.patch?
-      # Set start_time when form is actually submitted
-      @drivers_day.start_time = Time.now
+      # Set start_time when form is actually submitted (only if not already set)
+      @drivers_day.start_time ||= Time.current
       @drivers_day.save!
 
       if update_drivers_day(drivers_day_params, next_path: today_subscriptions_path)
@@ -109,7 +109,7 @@ class DriversDaysController < ApplicationController
     return unless request.patch?
 
     # Set end_time when form is actually submitted
-    @drivers_day.end_time = Time.now
+    @drivers_day.end_time = Time.current
     @drivers_day.save!
 
     if update_drivers_day(drivers_day_params, next_path: complete_drivers_day_path(@drivers_day))
