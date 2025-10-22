@@ -1,6 +1,6 @@
 class InvoiceMailerPreview < ActionMailer::Preview
   def invoice_created
-    # create user
+    # user
     user = User.first || User.create!(
       email: "test@example.com",
       password: "password",
@@ -16,7 +16,7 @@ class InvoiceMailerPreview < ActionMailer::Preview
 
     # create invoice
     invoice = Invoice.first || Invoice.create!(
-      subscription: subscription,  # This is crucial for your mailer
+      subscription: subscription,
       total_amount: 12500,
       due_date: Date.today + 15.days,
       number: "INV-001"
