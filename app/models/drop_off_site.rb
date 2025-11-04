@@ -39,7 +39,7 @@ class DropOffSite < ApplicationRecord
 
   # Override to_param to use slug in URLs
   def to_param
-    slug
+    slug.presence || id.to_s
   end
 
   # Class method to get suburbs for a given collection day

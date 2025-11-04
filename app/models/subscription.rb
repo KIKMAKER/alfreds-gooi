@@ -15,6 +15,7 @@ class Subscription < ApplicationRecord
   SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   validates :suburb, inclusion: { in: SUBURBS }
   validates :street_address, presence: true
+  validates :suburb, :plan, :duration, presence: true
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
@@ -31,7 +32,6 @@ class Subscription < ApplicationRecord
   scope :order_by_user_name, -> { joins(:user).order('users.first_name ASC') }
 
   ## VALIDATIONS
-  # validates :street_address, :suburb, :plan, :duration, presence: true
 
   ## ENUMS
   enum :status, %i[pending active pause completed legacy]
@@ -210,7 +210,7 @@ class Subscription < ApplicationRecord
 
     # Find the next sub strictly after "this_end"
     next_sub = user.subscriptions
-                   .where("start_date > ?", this_end)
+                   .where("start_date >= ?", this_end)
                    .order(:start_date)
                    .first
 

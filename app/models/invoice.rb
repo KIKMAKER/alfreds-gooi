@@ -12,14 +12,13 @@ class Invoice < ApplicationRecord
   ## custom methods
 
   def set_number
-    last_invoice = Invoice.last
-    self.number = if last_invoice.nil?
-                            1
-                          elsif Invoice.last.number.to_i
-                            Invoice.last.number.to_i + 1
-                          else
-                            Invoice.last.number
-                          end
+    last_invoice = Invoice.where.not(id: self.id).order(created_at: :desc).first
+    new_number = if last_invoice.nil? || last_invoice.number.nil?
+                   1
+                 else
+                   last_invoice.number.to_i + 1
+                 end
+    self.update_column(:number, new_number)
   end
 
   def calculate_total

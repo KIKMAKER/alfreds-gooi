@@ -65,5 +65,5 @@
     <%= f.button :submit, "Update Drop-Off Site", class: "small-yellow-btn" %>
   <% end %>
 
-  <%= link_to "← Back to site", admin_drop_off_site_path(@drop_off_site), class: "mt-3 d-block" %>
+  <%= link_to "← Back to site", admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id), class: "mt-3 d-block" %>
 </div>
