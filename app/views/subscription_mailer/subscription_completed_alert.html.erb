@@ -6,8 +6,8 @@
     Your subscription (which started on <strong><%= @subscription.start_date.strftime('%e %b %Y') %></strong>) has run its course.
   </p>
   <p style="font-size: 1.1rem;">
-    Over this time, we’ve collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
-    and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
+    Over this time, we've collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
+    and picked up a total of <strong><%= @subscription.XL? ? @subscription.collections.where(skip: false).sum(:buckets) : @subscription.collections.where(skip: false).sum(:bags) %> <%= @subscription.XL? ? "buckets" : "bags" %></strong> of compostables! ♻️
   </p>
   <p style="font-size: 1.1rem;">
     We’ve loved collecting your <strong>gooi-goodies</strong> — every bit of organic waste you diverted helped feed the soil and reduce landfill pressure 🌱

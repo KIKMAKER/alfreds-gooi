@@ -35,7 +35,7 @@ class PagesController < ApplicationController
                 end
   end
 
-    def story
+  def story
   end
 
   private
