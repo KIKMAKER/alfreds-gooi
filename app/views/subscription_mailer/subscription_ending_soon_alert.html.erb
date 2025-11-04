@@ -7,7 +7,7 @@
   </p>
   <p style="font-size: 1.1rem;">
     We've collected <strong><%= @subscription.collections.where(skip: false).count %> times</strong>
-    and picked up a total of <strong><%= @subscription.collections.where(skip: false).sum(:bags) %> bags</strong> of compostables! ♻️
+    and picked up a total of <strong><%= @subscription.XL? ? @subscription.collections.where(skip: false).sum(:buckets) : @subscription.collections.where(skip: false).sum(:bags) %> <%= @subscription.XL? ? "buckets" : "bags" %></strong> of compostables! ♻️
   </p>
   <p style="font-size: 1.1rem;">
     Don't miss a week of gooiing! Click below to continue your subscription.

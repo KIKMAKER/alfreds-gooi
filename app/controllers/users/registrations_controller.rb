@@ -27,8 +27,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     respond_with resource
   end
 
-
-
   # POST /resource
   def create
 
@@ -43,6 +41,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
+      # Preserve plan/duration/discount/referral for re-rendering the form
+      subscription = resource.subscriptions.first
+      if subscription
+        @plan = subscription.plan
+        @duration = subscription.duration
+        @discount_code = subscription.discount_code
+        @referral_code = subscription.referral_code
+      end
+
       clean_up_passwords resource
       set_minimum_password_length
       respond_with resource
