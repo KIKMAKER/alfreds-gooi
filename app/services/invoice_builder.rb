@@ -59,7 +59,8 @@ class InvoiceBuilder
       )
       mark_referrals_used
     elsif @referee
-      title = "Referral discount #{@subscription.plan} #{@subscription.duration} month"
+      plan_name = @subscription.plan == "XL" ? "XL" : @subscription.plan.downcase
+      title = "Referral discount #{plan_name} #{@subscription.duration} month"
       discount = Product.find_by(title: title)
       invoice.invoice_items.create!(product: discount, quantity: 1, amount: discount.price)
 

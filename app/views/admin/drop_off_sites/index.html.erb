@@ -18,7 +18,7 @@
         <% @drop_off_sites.each do |site| %>
           <li class="collection">
             <div class="name">
-              <p><%= link_to site.name, admin_drop_off_site_path(site) %></p>
+              <p><%= link_to site.name, admin_drop_off_site_path(site.slug || site.id) %></p>
             </div>
             <div class="day">
               <span class="small-yellow-btn"><%= site.collection_day %></span>

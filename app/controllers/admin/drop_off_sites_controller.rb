@@ -40,7 +40,7 @@ class Admin::DropOffSitesController < ApplicationController
   end
 
   def create_event
-    @drop_off_site = DropOffSite.find(params[:id])
+    @drop_off_site = DropOffSite.find_by(slug: params[:id]) || DropOffSite.find(params[:id])
 
     unless params[:date].present?
       redirect_to admin_drop_off_site_path(@drop_off_site), alert: "Please select a date for the drop-off event."
@@ -72,7 +72,7 @@ class Admin::DropOffSitesController < ApplicationController
   private
 
   def set_drop_off_site
-    @drop_off_site = DropOffSite.find_by(slug: params[:id])
+    @drop_off_site = DropOffSite.find_by(slug: params[:id]) || DropOffSite.find(params[:id])
   end
 
   def drop_off_site_params
