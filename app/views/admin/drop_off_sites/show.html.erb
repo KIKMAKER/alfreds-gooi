@@ -42,6 +42,7 @@
       <div><p class="lh-lg">Weight</p></div>
       <div><p class="lh-lg me-4">Buckets</p></div>
       <div class="status"><p class="lh-lg">Status</p></div>
+      <div><p class="lh-lg">Actions</p></div>
     </div>
     <div class="collections">
       <ul>
@@ -62,6 +63,9 @@
               <% else %>
                 <span class="small-yellow-btn">Pending</span>
               <% end %>
+            </div>
+            <div>
+              <%= link_to "Edit", edit_drivers_day_drop_off_event_path(event.drivers_day, event), class: "link-title text-warning" %>
             </div>
           </li>
         <% end %>
