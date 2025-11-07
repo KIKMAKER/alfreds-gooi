@@ -44,6 +44,7 @@
 
 .user-details {
   display: flex;
+  justify-content: space-between;
 
   p {
     font-size: 0.9rem;
@@ -183,5 +184,10 @@
       text-align: left;
     }
 
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
   }
 }

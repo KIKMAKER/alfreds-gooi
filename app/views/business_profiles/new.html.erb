@@ -1,0 +1,40 @@
+<div class="user-wrapper">
+  <h1 class="my-4">Add Business Details</h1>
+
+  <div class="user-form">
+    <%= simple_form_for @business_profile, url: subscription_business_profile_path(@subscription), method: :post do |f| %>
+      <%= f.error_notification %>
+
+      <%= f.input :business_name,
+            placeholder: "e.g. ABC Restaurant Group",
+            required: true %>
+
+      <%= f.input :vat_number,
+            placeholder: "e.g. 4123456789",
+            hint: "Optional - only if you're VAT registered" %>
+
+      <%= f.input :contact_person,
+            placeholder: "e.g. John Smith, Accounts Manager",
+            hint: "Optional - person to address the invoice to" %>
+
+      <%= f.input :street_address,
+            placeholder: "e.g. 123 Business Park Road",
+            hint: "Optional - billing address if different from collection address" %>
+
+      <%= f.input :suburb,
+            as: :select,
+            collection: Subscription::SUBURBS,
+            prompt: "Select a suburb",
+            hint: "Optional" %>
+
+      <%= f.input :postal_code,
+            placeholder: "e.g. 7945",
+            hint: "Optional" %>
+
+      <div class="mt-3">
+        <%= f.button :submit, "Save Business Details", class: "submit-btn" %>
+        <%= link_to "Cancel", invoice_path(@subscription.invoices.last), class: "btn btn-outline-secondary ms-2" %>
+      </div>
+    <% end %>
+  </div>
+</div>

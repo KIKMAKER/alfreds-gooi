@@ -147,16 +147,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
     subscription = resource.subscriptions.first
 
     if subscription.present?
-      # Apply valid discount code
-      # if subscription.discount_code.present?
-      #   code = DiscountCode.find_by(code: subscription.discount_code.to_s.strip.upcase)
+      # Check if user wants to add multiple locations
+      if params[:multi_location] == '1'
+        # Store the initial subscription details in session for the add_locations page
+        session[:initial_subscription_id] = subscription.id
+        session[:multi_location_signup] = true
+        return add_locations_subscriptions_path
+      end
 
-      #   if code&.available?
-      #     subscription.update!(discount_code: code)
-      #   end
-      # end
-
-      # Send emails
+      # Single location flow - send emails and go to welcome
       UserMailer.with(subscription: subscription).welcome.deliver_now
       UserMailer.with(subscription: subscription).sign_up_alert.deliver_now
 
