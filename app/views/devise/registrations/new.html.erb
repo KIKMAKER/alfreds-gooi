@@ -14,6 +14,12 @@
           <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off" %>
           <p class="mb-1">or</p>
           <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code" %>
+          <h3 class="mt-2">Subscription details</h3>
+          <p>Tick the box below to add multiple subscriptions (in the next step).</p>
+          <div class="mb-3">
+            <%= check_box_tag :multi_location, '1', false, id: 'multi_location' %>
+            <%= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
+          </div>
           <p class="mb-1">If your suburb isn't on this list, contact us at howzit@gooi.me to talk about expansion!</p>
           <%= subscription_fields.input :suburb, label: false,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
@@ -27,6 +33,7 @@
         </div>
         <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
         <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
+
         <div class="form-actions">
           <%= f.button :submit, "Sign up", class: 'submit-btn' %>
         </div>

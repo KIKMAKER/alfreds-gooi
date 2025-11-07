@@ -281,6 +281,11 @@ class Subscription < ApplicationRecord
     invoices.delete_all
   end
 
+  def short_address
+    return street_address if street_address.blank?
+    street_address.split(',').first.strip
+  end
+
   private
 
   # infer starter kit based on sub plan

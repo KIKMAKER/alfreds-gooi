@@ -1,3 +1,4 @@
+
 # app/services/snapscan/webhook_handler.rb
 module Snapscan
   class WebhookHandler
