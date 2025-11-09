@@ -4,16 +4,24 @@ class CustomersController < ApplicationController
   end
 
   def manage
-    @subscription = current_user.current_sub
-    if @subscription.start_date
-      @days_left = @subscription.remaining_collections.to_i
-    else
-      @subscription.update!(start_date: @subscription.suggested_start_date)
-      @days_left = @subscription.remaining_collections.to_i
+    @subscriptions = current_user.subscriptions.where(status: [:active, :pending]).order(created_at: :asc)
+    @subscription = @subscriptions.first || current_user.current_sub
+
+    # Check for unpaid invoices across all subscriptions
+    @unpaid_invoice = current_user.invoices.find_by(paid: false)
+
+    # For single subscription (legacy flow)
+    if @subscriptions.count == 1
+      if @subscription.start_date
+        @days_left = @subscription.remaining_collections.to_i
+      else
+        @subscription.update!(start_date: @subscription.suggested_start_date)
+        @days_left = @subscription.remaining_collections.to_i
+      end
+      @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
+      @start_date = @subscription.start_date.strftime('%b %Y')
     end
-    @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
-    @start_date = @subscription.start_date.strftime('%b %Y')
-    @unpaid_invoice = @subscription.invoices.find_by(paid: false)
+
     @recent_collections = current_user.collections.order(date: :desc).limit(5)
   end
 
