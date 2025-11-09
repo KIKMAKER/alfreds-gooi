@@ -8,6 +8,124 @@
         <p class="mb-4">Please settle your account to continue gooiing</p>
         <%= link_to "View invoice", invoice_path(@unpaid_invoice), class:"small-yellow-btn" %>
       </div>
+    <% elsif @subscriptions.count > 1 %>
+      <!-- Multi-location management -->
+      <div class="container">
+        <h1 class="text-center my-4">Manage Your Locations</h1>
+
+        <div class="table-responsive">
+          <table class="white-table table table-hover">
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th>Next Collection</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @subscriptions.each do |sub| %>
+                <% next_collection = sub.collections.where('date >= ?', Date.today).order(date: :asc).first %>
+                <tr>
+                  <td>
+                    <strong><%= sub.short_address %></strong><br>
+                    <small class="text-muted"><%= sub.suburb %></small>
+                    <% if sub.holiday_end && sub.holiday_end >= Date.today %>
+                      <span class="badge bg-info">On Holiday</span><br>
+                      <small>Until <%= sub.holiday_end.strftime("%d %b") %></small>
+                    <% elsif next_collection&.skip %>
+                      <span class="badge bg-warning text-dark">Skip Next</span>
+                    <% else %>
+                      <span class="badge bg-success">Active</span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if next_collection %>
+                      <%= next_collection.date.strftime("%a %d %b") %>
+                      <% if next_collection.skip %>
+                        <br>
+                        <span class="badge bg-warning text-dark">Skipped</span>
+                      <% end %>
+                    <% elsif sub.is_new_customer %>
+                      <span class="text-muted">Starter kit delivery</span>
+                    <% else %>
+                      <span class="text-muted">No upcoming</span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <div class="btn-group-vertical btn-group-sm" role="group">
+                      <% if next_collection && !next_collection.skip %>
+                        <%= button_to "Skip Next", pause_subscription_path(sub), class: "tiny-yellow-btn", method: :post, data: {turbo: false} %>
+                      <% elsif next_collection&.skip %>
+                        <%= button_to "Unskip", unpause_subscription_path(sub), class: "tiny-yellow-btn", method: :post, data: {turbo: false} %>
+                      <% end %>
+                      <button type="button" class="tiny-yellow-btn mt-2" data-bs-toggle="modal" data-bs-target="#holidayModal<%= sub.id %>">
+                        <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan Holiday" %>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Holiday Modal for this subscription -->
+                <div class="modal fade" id="holidayModal<%= sub.id %>" tabindex="-1" aria-labelledby="holidayModalLabel<%= sub.id %>" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="holidayModalLabel<%= sub.id %>">
+                          <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan Holiday" %>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <% if sub.holiday_end && sub.holiday_end >= Date.today %>
+                          <div class="mb-3">
+                            <p><strong>Current Holiday:</strong></p>
+                            <p><%= sub.holiday_start.strftime("%a %d %b") %> - <%= sub.holiday_end.strftime("%a %d %b") %></p>
+                            <%= button_to "Cancel Holiday", clear_holiday_subscription_path(sub), class: "btn btn-danger btn-sm mb-3", method: :post, data: {turbo: false} %>
+                          </div>
+                          <hr>
+                        <% end %>
+
+                        <p class="text-muted">We will automatically skip collections while you're away.</p>
+                        <%= simple_form_for sub, url: holiday_dates_subscription_path(sub), method: :patch do |f| %>
+                          <%= f.input :holiday_start,
+                              as: :string,
+                              input_html: { data: { controller: "datepicker" } },
+                              label: "Start Date:" %>
+                          <%= f.input :holiday_end,
+                              as: :string,
+                              input_html: { data: { controller: "datepicker" } },
+                              label: "End Date:" %>
+                          <%= f.submit "Save Holiday", class: "small-yellow-btn" %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 text-center">
+          <p class="my-2 link-decoration align-center">
+            <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
+                   target: "_blank" do %>
+              <i class="fa-brands fa-whatsapp"></i>
+              Chat to Alfred
+            <% end %>
+          </p>
+        </div>
+
+        <div class="mt-5">
+          <h2 class="text-center">Recent Collections</h2>
+          <% if @recent_collections.any? %>
+            <%= render "past_collections", collections: @recent_collections %>
+            <%= link_to "View All Collections", collections_history_path, class: "d-block text-center mt-3" %>
+          <% else %>
+            <p class="text-center">You haven't had any collections yet</p>
+          <% end %>
+        </div>
+      </div>
     <% else %>
       <div class="text-center my-2">
         <h2 class="mb-4">Upcoming Collection</h2>

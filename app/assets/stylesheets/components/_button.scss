@@ -11,7 +11,25 @@
     color: white !important;
     text-decoration: none;
   }
+
 }
+.tiny-yellow-btn {
+  font-size: 0.6rem;
+  background-color: #FBB718;
+  border: none;
+  border-radius: 50px;
+  padding: 2px 8px;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  color: white !important;
+
+  a {
+    color: white !important;
+    text-decoration: none;
+  }
+}
+
+
 
 .gooi-button {
   color: white;
