@@ -286,6 +286,21 @@ class Subscription < ApplicationRecord
     street_address.split(',').first.strip
   end
 
+  def activate_subscription
+    subscription.update!(
+      status: :active,
+      start_date: subscription.suggested_start_date,
+      is_paused: false
+    )
+
+    referral = Referral.find_by(
+      referee_id: subscription.user_id,
+      referrer_id: User.find_by(referral_code: subscription.referral_code)&.id
+    )
+    referral&.completed!
+  end
+
+
   private
 
   # infer starter kit based on sub plan

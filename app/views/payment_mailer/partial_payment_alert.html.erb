@@ -1,0 +1,37 @@
+<h1>⚠️ Partial Payment Received</h1>
+
+<h2>Customer Details</h2>
+<p><strong>Name:</strong> <%= @user.first_name %> <%= @user.last_name %></p>
+<p><strong>Email:</strong> <%= @user.email %></p>
+<p><strong>Phone:</strong> <%= @user.phone_number %></p>
+
+<h2>Payment Details</h2>
+<p><strong>Amount Paid:</strong> R<%= number_to_currency(@payment_amount, unit: '') %></p>
+<p><strong>Invoice Total:</strong> R<%= number_to_currency(@invoice.total_amount, unit: '') %></p>
+<p><strong>Shortfall:</strong> R<%= number_to_currency(@shortfall, unit: '') %></p>
+<p><strong>Payment Reference:</strong> <%= @payment.snapscan_id %></p>
+
+<h2>Action Taken</h2>
+<p>✅ <strong>Activated 1 subscription:</strong></p>
+<ul>
+  <li><%= @activated_subscription.short_address %>, <%= @activated_subscription.suburb %> - <%= @activated_subscription.plan %> <%= @activated_subscription.duration %> month</li>
+</ul>
+
+<% if @pending_subscriptions.any? %>
+<p>⏸️ <strong><%= @pending_subscriptions.count %> <%= 'subscription'.pluralize(@pending_subscriptions.count) %> still pending:</strong></p>
+<ul>
+  <% @pending_subscriptions.each do |sub| %>
+    <li><%= sub.short_address %>, <%= sub.suburb %> - <%= sub.plan %> <%= sub.duration %> month</li>
+  <% end %>
+</ul>
+<% end %>
+
+<h2>Contact Customer</h2>
+<p>
+  <a href="https://wa.me/<%= @user.phone_number.gsub(/\D/, '') %>?text=Hi%20<%= @user.first_name %>!%20Thanks%20for%20your%20payment%20of%20R<%= @payment_amount.to_i %>.%20We%20still%20need%20R<%= @shortfall.to_i %>%20to%20activate%20all%20your%20locations.%20Can%20you%20please%20complete%20the%20payment?"
+     style="display: inline-block; padding: 12px 24px; background-color: #25D366; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+    💬 WhatsApp <%= @user.first_name %>
+  </a>
+</p>
+
+<p><small>Invoice #<%= @invoice.number %> | <%= @invoice.issued_date.strftime('%d %b %Y') %></small></p>
