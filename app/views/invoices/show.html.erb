@@ -7,12 +7,12 @@
       <% end %>
     </div>
     <!--<h5 class="text-center my-3">gooi compost collections</h5>-->
-    <div class="user-details ms-1">
-      <div class="user">
+    <div class="user-details ms-1 ">
+      <div class="user me-4">
         <p><strong>For:</strong> <%= @subscription.user.first_name %> <%= @subscription.user.last_name %></p>
         <p><strong>Email:</strong> <%= @subscription.user.email %></p>
         <p><strong>Customer ID:</strong> <%= @subscription.customer_id %>
-          <p><strong>Address:</strong> <%= @subscription.street_address %>, <%= @subscription.suburb %></p>
+          <p><strong>Address:</strong> <%= @subscription.short_address %>, <%= @subscription.suburb %></p>
           <p><strong>Due Date:</strong> <%= @invoice.paid ? 'paid!' : @invoice.due_date.strftime('%A, %b %d') %></p>
           <% if current_user.admin? && !@invoice.paid %>
             <%= link_to 'paid', paid_invoice_path(@invoice) %>
@@ -20,13 +20,20 @@
         </div>
         <div class="business">
           <% if @subscription.business_profile.present? %>
-            <p><strong>Business:</strong> <%= @subscription.business_profile.business_name %></p>
-            <% if @subscription.business_profile.vat_number.present? %>
-              <p><strong>VAT #:</strong> <%= @subscription.business_profile.vat_number %></p>
-            <% end %>
-            <% if @subscription.business_profile.contact_person.present? %>
-              <p><strong>Att:</strong> <%= @subscription.business_profile.contact_person %></p>
-            <% end %>
+              <p><strong>Business:</strong> <%= @subscription.business_profile.business_name %></p>
+              <% if @subscription.business_profile.vat_number.present? %>
+                <p><strong>VAT #:</strong> <%= @subscription.business_profile.vat_number %></p>
+              <% end %>
+              <% if @subscription.business_profile.contact_person.present? %>
+                <p><strong>Att:</strong> <%= @subscription.business_profile.contact_person %></p>
+              <% end %>
+              <%= link_to "Edit Business Details", edit_subscription_business_profile_path(@subscription), class: "link-title text-warning", style: "font-size:0.64rem; font-weight:bold" %>
+          <% else %>
+
+            <div class="mb-2">
+              <p>Need an invoice for your business?</p>
+              <%= link_to "Add details", new_subscription_business_profile_path(@subscription), class: "submit-btn" %>
+            </div>
           <% end %>
         </div>
       </div>
@@ -77,7 +84,7 @@
       <div class="payment-container">
         <h2>Make a Payment</h2>
         <div class="payment-options">
-          <div class="eft">
+          <div class="eft w-50 me-4">
             <h3 class="mb-3">Bank Details</h3>
             <p><strong>Bank:</strong> FNB</p>
             <p><strong>Account Name:</strong> Gooi</p>
@@ -87,10 +94,10 @@
 
             <p>Please use the reference above when making payment.</p>
           </div>
-          <div class="snapscan ms-4">
+          <div class="snapscan">
             <h3 class="mb-3">Snapscan</h3>
-            <p class="mb-5">You can also make make a payment via the secure SnapScan portal. SnapScan accepts bank cards, EFTs, as well as payments through the SnapScan app.</p>
-            <%= link_to "Pay with snapscan", "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "small-yellow-btn ms-4"  %>
+            <p class="mb-5">Make payment via the secure SnapScan portal. <br>SnapScan accepts bank cards as well as payments through the SnapScan app.</p>
+            <%= link_to "Pay with snapscan", "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}", target:"blank", class: "small-yellow-btn"  %>
 
           </div>
         </div>

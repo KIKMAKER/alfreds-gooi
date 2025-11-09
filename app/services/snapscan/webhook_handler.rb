@@ -1,3 +1,4 @@
+
 # app/services/snapscan/webhook_handler.rb
 module Snapscan
   class WebhookHandler
@@ -28,37 +29,99 @@ module Snapscan
     private
 
     def create_payment_and_process_subscription
-      payment = Payment.create!(
-        snapscan_id: @payload["id"],
-        status: @payload["status"],
-        total_amount: @payload["totalAmount"],
-        tip_amount: @payload["tipAmount"],
-        fee_amount: @payload["feeAmount"],
-        settle_amount: @payload["settleAmount"],
-        date: @payload["date"],
-        user_reference: @payload["userReference"],
-        merchant_reference: @payload["merchantReference"],
-        user: @user,
-        invoice: @invoice
-      )
+      # Idempotency check - prevent duplicate webhook processing
+      existing_payment = Payment.find_by(snapscan_id: @payload["id"])
+      if existing_payment
+        Rails.logger.info "Payment already processed for snapscan_id #{@payload['id']}"
+        return :duplicate
+      end
 
-      @invoice.update!(paid: true)
-      subscription = @invoice.subscription
-      return unless subscription
+      payment_amount = @payload["totalAmount"].to_f / 100.0 # SnapScan sends in cents
+      invoice_total = @invoice.total_amount.to_f
+      pending_subscriptions = @user.subscriptions.where(status: :pending, is_paused: true).order(created_at: :asc)
 
-      subscription.update!(
-        status: 'active',
-        start_date: subscription.suggested_start_date,
-        is_paused: false
-      )
+      ActiveRecord::Base.transaction do
+        payment = Payment.create!(
+          snapscan_id: @payload["id"],
+          status: @payload["status"],
+          total_amount: @payload["totalAmount"],
+          tip_amount: @payload["tipAmount"],
+          fee_amount: @payload["feeAmount"],
+          settle_amount: @payload["settleAmount"],
+          date: @payload["date"],
+          user_reference: @payload["userReference"],
+          merchant_reference: @payload["merchantReference"],
+          user: @user,
+          invoice: @invoice
+        )
 
-      referral = Referral.find_by(referee_id: subscription.user_id, referrer_id: User.find_by(referral_code: subscription.referral_code)&.id)
-      referral&.completed!
+        @invoice.update!(paid: true)
 
-      first_collection = CreateFirstCollectionJob.perform_now(subscription)
-      add_order_items_to_collection(first_collection)
+        # Check if payment covers full invoice amount
+        if payment_amount >= invoice_total
+          # Full payment - activate all pending subscriptions
+          pending_subscriptions.each do |subscription|
+            subscription.activate_subscription
+            first_collection = CreateFirstCollectionJob.perform_now(subscription)
+            add_order_items_to_collection(first_collection)
+          end
+          Rails.logger.info "Full payment received. Activated #{pending_subscriptions.count} subscriptions."
+        else
+          # Partial payment - check if it covers first subscription
+          first_sub = pending_subscriptions.first
+          if first_sub
+            first_sub_cost = calculate_subscription_cost(first_sub)
+
+            if payment_amount >= first_sub_cost
+              # Activate first subscription
+              first_sub.activate_subscription
+              first_collection = CreateFirstCollectionJob.perform_now(first_sub)
+              add_order_items_to_collection(first_collection)
+              shortfall = invoice_total - payment_amount
+
+              # Send alert email
+              PaymentMailer.partial_payment_alert(
+                payment: payment,
+                invoice: @invoice,
+                user: @user,
+                activated_subscription: first_sub,
+                shortfall: shortfall,
+                pending_subscriptions: pending_subscriptions - [first_sub]
+              ).deliver_now
+
+              Rails.logger.info "Partial payment received. Activated 1 subscription. Shortfall: R#{shortfall}"
+            else
+              # Payment doesn't even cover first subscription
+              PaymentMailer.insufficient_payment_alert(
+                payment: payment,
+                invoice: @invoice,
+                user: @user,
+                required_amount: first_sub_cost,
+                shortfall: invoice_total - payment_amount
+              ).deliver_now
+
+              Rails.logger.error "Insufficient payment. Does not cover first subscription."
+            end
+          end
+        end
+      end
 
       :success
+    rescue StandardError => e
+      Rails.logger.error "Error processing payment: #{e.message}\n#{e.backtrace.join("\n")}"
+      raise
+    end
+
+    def calculate_subscription_cost(subscription)
+      # Calculate the cost for this subscription from invoice items
+      # This is a simplified version - you may need to adjust based on your invoice structure
+      plan_name = subscription.plan == "XL" ? "XL" : subscription.plan.downcase
+      product_title = "#{plan_name} #{subscription.duration} month"
+
+      invoice_item = @invoice.invoice_items.joins(:product).find_by(products: { title: product_title })
+      return 0.0 unless invoice_item
+
+      invoice_item.quantity * invoice_item.amount
     end
 
     def add_order_items_to_collection(collection)

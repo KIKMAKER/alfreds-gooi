@@ -1,0 +1,111 @@
+.white-table {
+  background-color: white !important;
+  width: 100%;
+  margin-bottom: 1rem;
+  color: rgba(15, 74, 58, 0.78) !important;
+  border: none !important;
+  border-bottom: 2px solid $dark-green;
+  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  // border-radius: 8px;
+  overflow: hidden;
+
+  // Override Bootstrap striped table styles
+  --bs-table-bg: white !important;
+  --bs-table-striped-bg: white !important;
+  --bs-table-hover-bg: rgba(15, 74, 58, 0.03) !important;
+
+  thead {
+    background-color: rgba(15, 74, 58, 0.05) !important;
+
+    th {
+      background-color: rgba(15, 74, 58, 0.05) !important;
+      border: none !important;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      color: rgba(15, 74, 58, 0.78) !important;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  tbody {
+    background-color: white !important;
+    border-bottom: 1px solid $dark-green;
+
+    tr {
+      background-color: white !important;
+      border-bottom: 1px solid rgba(15, 74, 58, 0.2) !important;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      &:hover {
+        background-color: rgba(15, 74, 58, 0.03) !important;
+      }
+
+      td {
+        background-color: transparent !important;
+        padding: 1.5rem 1.5rem;
+        border: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        vertical-align: middle;
+        color: rgba(15, 74, 58, 0.78) !important;
+
+        strong {
+          color: rgba(15, 74, 58, 0.9);
+        }
+
+        .text-muted {
+          color: rgba(15, 74, 58, 0.5) !important;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .badge {
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  .btn-group-vertical {
+    gap: 0.5rem;
+
+    .btn {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .white-table {
+    font-size: 0.9rem;
+
+    thead th {
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    tbody td {
+      padding: 1rem 1rem;
+    }
+
+    .btn-group-vertical .btn {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
+}

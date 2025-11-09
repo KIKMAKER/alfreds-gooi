@@ -140,6 +140,46 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def add_locations
+    # Page to add additional subscription locations after initial signup
+    # unless session[:multi_location_signup]
+    #   redirect_to root_path, alert: "Invalid access"
+    #   return
+    # end
+
+    # Show all pending subscriptions for this user (including the initial one)
+    @subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending).order(created_at: :asc)
+    # Empty subscription for the form
+    @subscription = Subscription.new
+  end
+
+  def create_locations
+    unless session[:multi_location_signup]
+      redirect_to root_path, alert: "Invalid access"
+      return
+    end
+
+    # Check if user clicked "Done" button
+    if params[:commit] == "Done - Create Invoice"
+      # Finish multi-location signup and go to invoice
+      finish_multi_location_signup
+      return
+    end
+
+    # Create the additional subscription - user can choose plan/duration per location
+    @subscription = current_user.subscriptions.build(subscription_params)
+    @subscription.is_paused = true
+    @subscription.status = :pending
+
+    if @subscription.save
+      flash[:success] = "Location added!"
+      redirect_to add_locations_subscriptions_path
+    else
+      @subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending).order(created_at: :asc)
+      render :add_locations, status: :unprocessable_entity
+    end
+  end
+
   def want_bags
     # @invoice = create_invoice_for_subscription(@subscription, current_user.og, false)
     @invoice = @subscription.invoices.order(created_at: :asc).last
@@ -229,6 +269,9 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
 
+    # Check if this is a multi-location signup
+    @user_subscriptions = @subscription.user.subscriptions
+
     if @discount_code.present?
       discount_amount = nil
       if @discount_code.discount_cents.present?
@@ -248,24 +291,37 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
 
-
-    # Rails.logger.info "Set users referral code to: #{current_user.generate_referral_code}"
     is_new = params[:new] == "true"
 
-    # referal code of the referrer (so you kInnow who referred them)
+    # referal code of the referrer (so you know who referred them)
     referral_code = @subscription.referral_code
     # find the referee by the referral code
     referee = User.find_by(referral_code: referral_code)
 
     if @subscription.invoices.empty?
-      @invoice = InvoiceBuilder.new(
-        subscription: @subscription,
-        og: nil,
-        is_new: is_new,
-        referee: referee
-      ).call
+      # Check if this is a multi-location signup
+      # Find all pending subscriptions for this user (multi-location case)
+      user_pending_subs = current_user.subscriptions.where(is_paused: true, status: :pending)
 
+      if user_pending_subs.count > 1
+        # Multi-location: create one invoice for all subscriptions
+        @invoice = InvoiceBuilder.new(
+          subscriptions: user_pending_subs,
+          og: nil,
+          is_new: is_new,
+          referee: referee
+        ).call
+      else
+        # Single location: create invoice for just this subscription
+        @invoice = InvoiceBuilder.new(
+          subscription: @subscription,
+          og: nil,
+          is_new: is_new,
+          referee: referee
+        ).call
+      end
     end
+
     @invoice = @subscription.invoices.order(created_at: :asc).last
     redirect_to invoice_path(@invoice)
   end
@@ -457,6 +513,24 @@ class SubscriptionsController < ApplicationController
   end
 
   private
+
+  def finish_multi_location_signup
+    # Get all pending subscriptions for this multi-location signup
+    subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending)
+
+    # Send welcome emails
+    first_subscription = subscriptions.first
+    UserMailer.with(subscription: first_subscription).welcome.deliver_now
+    UserMailer.with(subscription: first_subscription).sign_up_alert.deliver_now
+
+    # Clear session flag
+    session.delete(:multi_location_signup)
+    session.delete(:initial_subscription_id)
+
+    # Redirect to first subscription's welcome page
+    # The invoice will be created when they click "view invoice"
+    redirect_to welcome_subscription_path(first_subscription)
+  end
 
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,

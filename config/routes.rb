@@ -70,9 +70,12 @@ Rails.application.routes.draw do
   end
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
+    resource :business_profile, only: [:new, :create, :edit, :update]
     resources :collections, only: %i[new create]
     # - here I am creating /subscriptions/today
     collection do
+      get :add_locations
+      post :create_locations
       get :today
       get :recently_lapsed
       get :export

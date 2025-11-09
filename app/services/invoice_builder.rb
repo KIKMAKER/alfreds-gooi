@@ -1,7 +1,11 @@
 # app/services/invoice_builder.rb
 class InvoiceBuilder
-  def initialize(subscription: , og: false, is_new: false, referee: nil, referred_friends: 0)
-    @subscription = subscription
+  def initialize(subscription: nil, subscriptions: nil, og: false, is_new: false, referee: nil, referred_friends: 0)
+    # Accept either a single subscription or multiple subscriptions
+    @subscriptions = subscriptions || [subscription].compact
+    raise ArgumentError, "At least one subscription required" if @subscriptions.empty?
+
+    @subscription = @subscriptions.first # Keep for backwards compatibility
     @og = og
     @is_new = is_new
     @referee = referee
@@ -10,14 +14,17 @@ class InvoiceBuilder
 
   def call
     invoice = Invoice.create!(
-      subscription: @subscription,
+      subscription: @subscription, # Link to first subscription for now
       issued_date: Time.current,
       due_date: Time.current + 2.weeks,
       total_amount: 0
     )
 
-    add_starter_kit(invoice) if @is_new
-    add_subscription_product(invoice)
+    # Add items for each subscription
+    @subscriptions.each do |sub|
+      add_starter_kit(invoice, sub) if @is_new
+      add_subscription_product(invoice, sub)
+    end
 
     apply_referrals(invoice)
     invoice.calculate_total
@@ -25,22 +32,21 @@ class InvoiceBuilder
 
     InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
 
-
     invoice
   end
 
   private
 
-  def add_starter_kit(invoice)
-    kit = Product.find_by(title: "#{@subscription.plan} Starter Kit")
+  def add_starter_kit(invoice, subscription)
+    kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
     invoice.invoice_items.create!(product: kit, quantity: 1, amount: kit.price)
   end
 
-  def add_subscription_product(invoice)
+  def add_subscription_product(invoice, subscription)
     title = if @og
-              "#{@subscription.plan} #{@subscription.duration} month OG subscription"
+              "#{subscription.plan} #{subscription.duration} month OG subscription"
             else
-              "#{@subscription.plan} #{@subscription.duration} month subscription"
+              "#{subscription.plan} #{subscription.duration} month subscription"
             end
 
     product = Product.find_by(title: title)

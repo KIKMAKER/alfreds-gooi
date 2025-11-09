@@ -90,16 +90,28 @@ class InvoicesController < ApplicationController
   end
 
   def paid
-    # @invoice = Invoice.find(params[:id])
-    if @invoice.update!(paid: true)
-      subscription = @invoice.subscription
-      subscription.active!
-      subscription.update(start_date: subscription.suggested_start_date)
+    user = @invoice.subscription.user
+    pending_subscriptions = user.subscriptions.where(status: :pending, is_paused: true)
 
-      redirect_to invoice_path(@invoice)
-    else
-      render :show, status: "An error occured the invoice is #{@invoice.paid ? 'paid' : 'not paid' }"
+    ActiveRecord::Base.transaction do
+      @invoice.update!(paid: true)
+
+      pending_subscriptions.each do |subscription|
+        subscription.activate_subscription
+
+        # Create first collection for each subscription
+        first_collection = CreateFirstCollectionJob.perform_now(subscription)
+
+        
+      end
     end
+
+    count = pending_subscriptions.count
+    flash[:notice] = "Payment recorded! #{count} #{'subscription'.pluralize(count)} activated."
+    redirect_to invoice_path(@invoice)
+  rescue StandardError => e
+    flash[:alert] = "An error occurred: #{e.message}"
+    redirect_to invoice_path(@invoice)
   end
 
   def issued_bags
