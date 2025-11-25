@@ -287,15 +287,15 @@ class Subscription < ApplicationRecord
   end
 
   def activate_subscription
-    subscription.update!(
+    update!(
       status: :active,
-      start_date: subscription.suggested_start_date,
+      start_date: suggested_start_date,
       is_paused: false
     )
 
     referral = Referral.find_by(
-      referee_id: subscription.user_id,
-      referrer_id: User.find_by(referral_code: subscription.referral_code)&.id
+      referee_id: user_id,
+      referrer_id: User.find_by(referral_code: referral_code)&.id
     )
     referral&.completed!
   end
