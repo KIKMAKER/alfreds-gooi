@@ -62,6 +62,8 @@
                 <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
               <% elsif item.subscription.XL? %>
                 <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
+              <% elsif item.subscription.Commercial? %>
+                <%= link_to "#{pluralize(item.subscription.buckets_per_collection, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
               <% else %>
                 <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
               <% end %>

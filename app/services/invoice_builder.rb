@@ -39,20 +39,63 @@ class InvoiceBuilder
 
   def add_starter_kit(invoice, subscription)
     kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
-    invoice.invoice_items.create!(product: kit, quantity: 1, amount: kit.price)
+
+    # For commercial subscriptions, add starter kit quantity based on buckets_per_collection
+    quantity = subscription.Commercial? ? subscription.buckets_per_collection : 1
+
+    invoice.invoice_items.create!(product: kit, quantity: quantity, amount: kit.price)
   end
 
   def add_subscription_product(invoice, subscription)
-    title = if @og
-              "#{subscription.plan} #{subscription.duration} month OG subscription"
-            else
-              "#{subscription.plan} #{subscription.duration} month subscription"
-            end
+    if subscription.Commercial?
+      add_commercial_subscription(invoice, subscription)
+    else
+      title = if @og
+                "#{subscription.plan} #{subscription.duration} month OG subscription"
+              else
+                "#{subscription.plan} #{subscription.duration} month subscription"
+              end
 
-    product = Product.find_by(title: title)
-    raise "Product not found: #{title}" unless product
+      product = Product.find_by(title: title)
+      raise "Product not found: #{title}" unless product
 
-    invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
+      invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
+    end
+  end
+
+  def add_commercial_subscription(invoice, subscription)
+    total_collections = (subscription.duration * 52.0 / 12.0).round
+
+    # Line 1: Monthly collection fee (duration-specific pricing)
+    monthly_title = case subscription.duration
+                    when 12
+                      "Commercial weekly collection per month (12-month rate)"
+                    when 6
+                      "Commercial weekly collection per month (6-month rate)"
+                    when 3
+                      "Commercial weekly collection per month (3-month rate)"
+                    else
+                      raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
+                    end
+
+    monthly_product = Product.find_by(title: monthly_title)
+    raise "Product not found: #{monthly_title}" unless monthly_product
+
+    invoice.invoice_items.create!(
+      product: monthly_product,
+      quantity: subscription.duration,
+      amount: monthly_product.price
+    )
+
+    # Line 2: Volume charge per 45L bucket
+    volume_product = Product.find_by(title: "Commercial volume per 45L")
+    raise "Product not found: Commercial volume per 45L" unless volume_product
+
+    invoice.invoice_items.create!(
+      product: volume_product,
+      quantity: total_collections,
+      amount: subscription.buckets_per_collection * volume_product.price
+    )
   end
 
   def apply_referrals(invoice)

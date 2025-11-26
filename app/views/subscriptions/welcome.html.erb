@@ -10,7 +10,12 @@
     <% end %>
 
     <h2>Here's how it works:</h2>
-    <p>Your invoice for the Gooi starter kit has been generated and is ready for payment. Your starter kit includes a compost bin, compostable bags, and a guide to help you get started with our service.</p>
+
+    <% if @subscription.Commercial? %>
+      <p>Your invoice has been generated and is ready for payment. Your starter kit includes <%= pluralize(@subscription.buckets_per_collection, 'commercial bucket') %> (45L each) for your weekly collection, along with a guide to help you get started with our service.</p>
+    <% else %>
+      <p>Your invoice for the Gooi starter kit has been generated and is ready for payment. Your starter kit includes a compost bin, compostable bags, and a guide to help you get started with our service.</p>
+    <% end %>
 
     <% if @user_subscriptions.count > 1 %>
       <p><strong>Your collection schedule:</strong></p>
@@ -23,7 +28,11 @@
       <p>We will be in your neighbourhood every <strong><%= @subscription.collection_day %></strong>.</p>
     <% end %>
 
-    <p>On week one we will deliver your starter kit. Once you have some compost for us to collect you can be ready with your full bag, or stash it outside before we arrive, and we can collect it on our way past.</p>
+    <% if @subscription.Commercial? %>
+      <p>On week one we will deliver your commercial buckets. Once you have organic waste for us to collect, simply fill your buckets and have them ready for collection on your scheduled day.</p>
+    <% else %>
+      <p>On week one we will deliver your starter kit. Once you have some compost for us to collect you can be ready with your full bag, or stash it outside before we arrive, and we can collect it on our way past.</p>
+    <% end %>
     <p>To ensure that you receive your starter kit on time, kindly settle the invoice as soon as possible.</p>
     <%= link_to "view invoice", welcome_invoice_subscription_path(@subscription, new: true), class: "submit-btn my-2" %>
     <p>We are excited to have you on board and look forward to being your go-to organic waste collection service. Let's work together to create a cleaner, healthier planet for us all.</p>

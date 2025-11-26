@@ -25,7 +25,12 @@
             <div class="quantity">
               <p><%= item.quantity.to_i %></p>
             </div>
-            <p><%= item.product.title %></p>
+            <% if item.product.title == "Commercial volume per 45L" %>
+              <% buckets_per_collection = (item.amount / 24).to_i %>
+              <p><%= item.quantity %> collections × Commercial volume (<%= buckets_per_collection %> × 45L @ R24 each)</p>
+            <% else %>
+              <p><%= item.product.title %> <% if item.quantity > 1 %>(R<%= item.amount.round(2) %> each)<% end %></p>
+            <% end %>
           </div>
           <p>R<%= (item.amount * item.quantity).round(2) %></p>
         </div>

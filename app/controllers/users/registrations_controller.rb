@@ -10,7 +10,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @duration = params[:duration]
     @discount_code = params[:discount_code] if params[:discount_code].present?
     @referral_code = params[:referral] if params[:referral].present?
-
+    @buckets_per_collection = params[:buckets_per_collection]
 
     # Always build a fresh resource, Devise might hang onto state between requests
     self.resource = build_resource({})
@@ -21,6 +21,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       duration: @duration,
       discount_code: @discount_code,
       referral_code: @referral_code,
+      buckets_per_collection: @buckets_per_collection,
       is_paused: true
     )
 
@@ -41,13 +42,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
-      # Preserve plan/duration/discount/referral for re-rendering the form
+      # Preserve plan/duration/discount/referral/buckets for re-rendering the form
       subscription = resource.subscriptions.first
       if subscription
         @plan = subscription.plan
         @duration = subscription.duration
         @discount_code = subscription.discount_code
         @referral_code = subscription.referral_code
+        @buckets_per_collection = subscription.buckets_per_collection
       end
 
       clean_up_passwords resource
@@ -112,7 +114,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       :first_name, :last_name, :email, :phone_number, :password, :password_confirmation,
       subscriptions_attributes: [
         :plan, :duration, :street_address, :suburb, :referral_code,
-        :discount_code, :apartment_unit_number, :is_paused
+        :discount_code, :apartment_unit_number, :is_paused, :buckets_per_collection
       ]
     ])
   end

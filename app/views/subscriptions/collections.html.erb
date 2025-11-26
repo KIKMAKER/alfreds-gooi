@@ -5,7 +5,7 @@
       <div class="grid-header">
         <div class="grid-item "><strong>ID</strong></div>
         <div class="grid-item"><strong>DATE</strong></div>
-        <% if @subscription.XL? %>
+        <% if @subscription.XL? || @subscription.Commercial? %>
           <div class="grid-item"><strong>BUCKETS</strong></div>
         <% else %>
           <div class="grid-item"><strong>BAGS</strong></div>
@@ -17,7 +17,7 @@
         <div class="grid-row">
           <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
           <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
-          <% if @subscription.XL? %>
+          <% if @subscription.XL? || @subscription.Commercial? %>
             <div class="grid-item"><%= collection.buckets %></div>
           <% else %>
             <div class="grid-item"><%= collection.bags %></div>

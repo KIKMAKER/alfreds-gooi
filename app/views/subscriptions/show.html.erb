@@ -7,6 +7,9 @@
       </div>
       <div>
         <p>Plan: <%= @subscription.plan %></p>
+        <% if @subscription.Commercial? %>
+          <p>Buckets per collection: <%= @subscription.buckets_per_collection %> × 45L</p>
+        <% end %>
         <p>Start Date: <%= @subscription.start_date&.strftime('%d %b, %Y') || "still pending" %></p>
         <p>End Date: <%= @subscription.end_date&.strftime('%d %b, %Y') || "still pending"  %></p>
         <p>Collection Day: <%= @subscription.collection_day %></p>
@@ -30,7 +33,7 @@
         <h2 class="mt-2">Summary</h2>
         <p>Total collections: <%= @total_collections %></p>
         <p>Skipped collections: <%= @skipped_collections %></p>
-        <% if @subscription.XL? %>
+        <% if @subscription.XL? || @subscription.Commercial? %>
           <p>Total Buckets: <%= @total_buckets %></p>
           <p>Buckets in the Last Month: <%= @buckets_last_month %></p>
           <p>Buckets in the Last 3 Months: <%= @buckets_last_three_months %> ~ ave: <%= @buckets_last_three_months/3 %></p>

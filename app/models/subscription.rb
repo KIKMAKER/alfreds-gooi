@@ -35,7 +35,7 @@ class Subscription < ApplicationRecord
 
   ## ENUMS
   enum :status, %i[pending active pause completed legacy]
-  enum :plan, %i[once_off Standard XL]
+  enum :plan, %i[once_off Standard XL Commercial]
   enum :collection_day, Date::DAYNAMES
 
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze

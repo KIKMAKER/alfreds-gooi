@@ -98,7 +98,8 @@ elsif proceed == "products"
 
   starter_kit_products = [
     { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
-    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 }
+    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
+    { title: "Commercial Starter Kit", description: "45L bucket, informative poster and gooi branding", price: 300 }
   ]
 
   seed_products(starter_kit_products)
@@ -140,6 +141,20 @@ elsif proceed == "products"
 
   xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
   puts "#{xl_subs} XL subscriptions created"
+
+  puts "Creating Commercial products"
+
+  commercial_products = [
+    { title: "Commercial weekly collection per month (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
+    { title: "Commercial weekly collection per month (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
+    { title: "Commercial weekly collection per month (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
+    { title: "Commercial volume per 45L", description: "Volume charge per 45L bucket", price: 24 }
+  ]
+
+  seed_products(commercial_products)
+
+  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
+  puts "#{commercial_products_count} Commercial products created"
 
   puts "Creating additional stock"
   referred_friends = 2
@@ -286,6 +301,20 @@ elsif proceed == "y"
 
   xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
   puts "#{xl_subs} XL subscriptions created"
+
+  puts "Creating Commercial products"
+
+  commercial_products = [
+    { title: "Commercial weekly collection per month (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
+    { title: "Commercial weekly collection per month (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
+    { title: "Commercial weekly collection per month (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
+    { title: "Commercial volume per 45L", description: "Volume charge per 45L bucket", price: 24 }
+  ]
+
+  seed_products(commercial_products)
+
+  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
+  puts "#{commercial_products_count} Commercial products created"
 
   puts "Creating additional stock"
 

@@ -663,6 +663,56 @@ button {
   display: none;
 }
 
+// Commercial signup section
+.commercial-signup-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 3rem;
+}
+
+.commercial-card {
+  background-color: rgba(2, 63, 58, 0.05);
+  border: 2px solid $dark-green;
+  border-radius: 12px;
+  padding: 2rem 3rem;
+  max-width: 80vw;
+  text-align: center;
+
+  h3 {
+    font-family: 'Libre Baskerville', serif;
+    color: $dark-green;
+    font-size: 28px;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $dark-green;
+    font-size: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    text-align: left;
+
+    li {
+      color: $dark-green;
+      padding: 0.5rem 0;
+      font-size: 15px;
+
+      &:before {
+        content: "✓ ";
+        color: $dark-yellow;
+        font-weight: bold;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
 // play button Style
 
 
