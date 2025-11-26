@@ -22,6 +22,8 @@ class CustomersController < ApplicationController
       @start_date = @subscription.start_date.strftime('%b %Y')
     else
       @days_left = 0
+      @start_date = current_user.subscriptions.order(created_at: :asc).first.start_date.strftime('%b %Y')
+
     end
 
     @recent_collections = current_user.collections.order(date: :desc).limit(5)
