@@ -54,9 +54,10 @@
               <div class="quantity">
                 <p><%= item.quantity.to_i %></p>
               </div>
-              <% if item.product.title == "Commercial volume per 45L" %>
-                <% buckets_per_collection = (item.amount / 24).to_i %>
-                <p><%= item.quantity.truncate %> collections × Commercial volume (<%= buckets_per_collection %> × 45L @ R24 each)</p>
+              <% if item.product.title.start_with?("Commercial volume per 45L") %>
+                <% rate_per_bucket = item.product.price %>
+                <% buckets_per_collection = (item.amount / rate_per_bucket).to_i %>
+                <p><%= item.quantity.truncate %> collections × Commercial volume (<%= buckets_per_collection %> × 45L @ R<%= rate_per_bucket.truncate %> each)</p>
               <% else %>
                 <p><%= item.product.title %> <% if item.quantity > 1 %>(R<%= item.amount.truncate %> each)<% end %></p>
               <% end %>

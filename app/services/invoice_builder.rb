@@ -87,9 +87,20 @@ class InvoiceBuilder
       amount: monthly_product.price
     )
 
-    # Line 2: Volume charge per 45L bucket
-    volume_product = Product.find_by(title: "Commercial volume per 45L")
-    raise "Product not found: Commercial volume per 45L" unless volume_product
+    # Line 2: Volume charge per 45L bucket (duration-specific pricing)
+    volume_title = case subscription.duration
+                   when 12
+                     "Commercial volume per 45L (12-month rate)"
+                   when 6
+                     "Commercial volume per 45L (6-month rate)"
+                   when 3
+                     "Commercial volume per 45L (3-month rate)"
+                   else
+                     raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
+                   end
+
+    volume_product = Product.find_by(title: volume_title)
+    raise "Product not found: #{volume_title}" unless volume_product
 
     invoice.invoice_items.create!(
       product: volume_product,

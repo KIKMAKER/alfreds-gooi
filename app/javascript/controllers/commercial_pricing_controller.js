@@ -21,14 +21,19 @@ export default class extends Controller {
       3: 240
     }
 
-    // Volume charge per 45L bucket per collection
-    const volumePerBucket = 24  // R24 per 45L bucket
+    // Volume charge per 45L bucket per collection (duration-specific)
+    const volumeRates = {
+      12: 24,
+      6: 27,
+      3: 30
+    }
 
     // Starter kit cost per bucket
     const starterKitPerBucket = 300  // R300 per 45L bucket
 
     // Calculate
     const monthlyRate = monthlyRates[duration]
+    const volumePerBucket = volumeRates[duration]
     const totalCollections = Math.round((duration * 52) / 12)  // Weekly collections
     const totalMonthlyFees = monthlyRate * duration
     const totalVolumeFees = buckets * volumePerBucket * totalCollections
