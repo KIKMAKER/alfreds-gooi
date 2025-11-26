@@ -20,6 +20,8 @@ class CustomersController < ApplicationController
       end
       @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
       @start_date = @subscription.start_date.strftime('%b %Y')
+    else
+      @days_left = 0
     end
 
     @recent_collections = current_user.collections.order(date: :desc).limit(5)
