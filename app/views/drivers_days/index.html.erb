@@ -11,6 +11,7 @@
             <th scope="col">Start</th>
             <th scope="col">End</th>
             <th scope="col">KMs</th>
+            <th scope="col">Households</th>
             <th scope="col">Buckets</th>
             <th scope="col">Trees 🌳</th>
             <th scope="col">Actions</th>
@@ -37,6 +38,9 @@
                 <% else %>
                   —
                 <% end %>
+              </td>
+              <td>
+                <%= drivers_day.collections.where(skip: false).count %>
               </td>
               <td>
                 <%= drivers_day.total_buckets || '—' %>
