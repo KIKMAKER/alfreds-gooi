@@ -145,11 +145,11 @@ elsif proceed == "products"
   puts "Creating Commercial products"
 
   commercial_products = [
-    # { title: "Commercial weekly collection per month (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
     { title: "Commercial weekly collection per month (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
+    { title: "Commercial volume per 45L (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
+    # { title: "Commercial weekly collection per month (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
     # { title: "Commercial weekly collection per month (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
     # { title: "Commercial volume per 45L (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    { title: "Commercial volume per 45L (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
     # { title: "Commercial volume per 45L (3-month rate)", description: "Volume charge per 45L bucket", price: 30 }
   ]
 
