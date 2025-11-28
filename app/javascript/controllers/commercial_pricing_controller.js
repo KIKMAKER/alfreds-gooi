@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["buckets", "price", "estimate"]
+  static values = { renewal: Boolean }
 
   connect() {
     console.log("Commercial pricing controller connected")
@@ -9,10 +10,15 @@ export default class extends Controller {
   }
 
   calculate() {
-    const duration = parseInt(document.querySelector('input[name="duration"]:checked')?.value || 12)
+    // Check for both 'duration' (signup) and 'commercial_duration' (renewal) radio buttons
+    const duration = parseInt(
+      document.querySelector('input[name="duration"]:checked')?.value ||
+      document.querySelector('input[name="commercial_duration"]:checked')?.value ||
+      12
+    )
     const buckets = parseInt(this.bucketsTarget.value || 1)
 
-    console.log("Calculating with duration:", duration, "buckets:", buckets)
+    console.log("Calculating with duration:", duration, "buckets:", buckets, "renewal:", this.renewalValue)
 
     // Monthly rates based on duration
     const monthlyRates = {
@@ -37,16 +43,23 @@ export default class extends Controller {
     const totalCollections = Math.round((duration * 52) / 12)  // Weekly collections
     const totalMonthlyFees = monthlyRate * duration
     const totalVolumeFees = buckets * volumePerBucket * totalCollections
-    const starterKitCost = buckets * starterKitPerBucket
+    const starterKitCost = this.renewalValue ? 0 : (buckets * starterKitPerBucket)
     const grandTotal = totalMonthlyFees + totalVolumeFees + starterKitCost
 
     // Update the price display
-    this.priceTarget.innerHTML = `
-      <small class="d-block">Starter kit: ${buckets} buckets × R${starterKitPerBucket} = R${starterKitCost.toFixed(2)}</small>
+    let priceHTML = ''
+
+    if (!this.renewalValue) {
+      priceHTML += `<small class="d-block">Starter kit: ${buckets} buckets × R${starterKitPerBucket} = R${starterKitCost.toFixed(2)}</small>`
+    }
+
+    priceHTML += `
       <small class="d-block">Monthly collection fee: R${monthlyRate} × ${duration} months = R${totalMonthlyFees.toFixed(2)}</small>
       <small class="d-block">Volume charge: ${buckets} buckets × ${totalCollections} collections × R${volumePerBucket} = R${totalVolumeFees.toFixed(2)}</small>
       <strong class="d-block mt-2">Total: R${grandTotal.toFixed(2)}</strong>
     `
+
+    this.priceTarget.innerHTML = priceHTML
 
     // Update hidden fields
     const durationField = document.getElementById('subscription_duration')
