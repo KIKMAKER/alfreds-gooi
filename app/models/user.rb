@@ -141,6 +141,37 @@ class User < ApplicationRecord
     ((completed.to_f / total_weeks_gooiing) * 100).round
   end
 
+  # Lifetime environmental impact stats
+  LITRES_PER_BAG = 5.0
+  LITRES_PER_BUCKET = 25.0
+  KG_PER_LITRE = 0.6
+  COMPOST_MULTIPLIER = 0.35
+  CO2E_MULTIPLIER = 1.96
+
+  def lifetime_bags
+    collections.where(skip: false).sum(:bags).to_f
+  end
+
+  def lifetime_buckets
+    collections.where(skip: false).sum(:buckets).to_f
+  end
+
+  def lifetime_litres
+    (lifetime_bags * LITRES_PER_BAG) + (lifetime_buckets * LITRES_PER_BUCKET)
+  end
+
+  def lifetime_input_kg
+    lifetime_litres * KG_PER_LITRE
+  end
+
+  def lifetime_compost_kg
+    (lifetime_input_kg * COMPOST_MULTIPLIER).round(0)
+  end
+
+  def lifetime_co2e_kg
+    (lifetime_input_kg * CO2E_MULTIPLIER).round(0)
+  end
+
   def duplicate_subscription_with_collections(num_collections)
     # Find the user's last subscription
 

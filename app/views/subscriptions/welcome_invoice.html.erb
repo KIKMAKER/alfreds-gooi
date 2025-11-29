@@ -25,33 +25,39 @@
             <div class="quantity">
               <p><%= item.quantity.to_i %></p>
             </div>
-            <% if item.product.title.start_with?("Commercial volume per 45L") %>
+            <% if item.product.title.start_with?("Volume Processing") %>
               <% rate_per_bucket = item.product.price %>
               <% buckets_per_collection = (item.amount / rate_per_bucket).to_i %>
-              <p><%= item.quantity %> collections × Commercial volume (<%= buckets_per_collection %> × 45L @ R<%= rate_per_bucket.round(2) %> each)</p>
+              <% liters_per_collection = buckets_per_collection * 45 %>
+              <% rate_per_liter = item.amount.to_f / liters_per_collection %>
+              <p>Volume Processing (<%= liters_per_collection %>L per collection) @ R<%= '%.2f' % rate_per_liter %>/L</p>
+            <% elsif item.product.title.start_with?("Commercial Starter Buckets") %>
+              <p><%= item.product.title %> @ R<%= item.amount.round(2) %> each</p>
+            <% elsif item.product.title.start_with?("Weekly Collection Service") %>
+              <p><%= item.product.title %> @ R<%= item.amount.round(2) %>/month</p>
             <% else %>
               <p><%= item.product.title %> <% if item.quantity > 1 %>(R<%= item.amount.round(2) %> each)<% end %></p>
             <% end %>
           </div>
           <p>R<%= (item.amount * item.quantity).round(2) %></p>
         </div>
-          <% if @discount_code.present? %>
-            <div class="invoice-item">
-              <div class="quantity-description">
-                <div class="quantity">
-                  <p>1</p>
-                </div>
-                <p><%= @discount_code.code %> Discount</p>
-              </div>
-              <p class="text-success">
-                <% if @discount_code.discount_percent.present? %>
-                  -<%= @discount_code.discount_percent %>% off
-                <% elsif @discount_code.discount_cents.present? %>
-                  -R<%= '%.2f' % (@discount_code.discount_cents / 100.0) %>
-                <% end %>
-              </p>
+      <% end %>
+      <% if @discount_code.present? %>
+        <div class="invoice-item">
+          <div class="quantity-description">
+            <div class="quantity">
+              <p>1</p>
             </div>
-          <% end %>
+            <p><%= @discount_code.code %> Discount</p>
+          </div>
+          <p class="text-success">
+            <% if @discount_code.discount_percent.present? %>
+              -<%= @discount_code.discount_percent %>% off
+            <% elsif @discount_code.discount_cents.present? %>
+              -R<%= '%.2f' % (@discount_code.discount_cents / 100.0) %>
+            <% end %>
+          </p>
+        </div>
       <% end %>
     </div>
     <div class="invoice-total">

@@ -27,6 +27,11 @@ class Admin::UsersController < ApplicationController
     @subscriptions = @user.subscriptions
                           .includes(:collections, :invoices)
                           .order(start_date: :desc)
+
+    # Calculate lifetime environmental impact stats
+    @lifetime_litres = @user.lifetime_litres.round(0)
+    @lifetime_compost_kg = @user.lifetime_compost_kg
+    @lifetime_co2e_kg = @user.lifetime_co2e_kg
   end
 
   def edit

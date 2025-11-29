@@ -38,12 +38,31 @@ class InvoiceBuilder
   private
 
   def add_starter_kit(invoice, subscription)
-    kit = Product.find_by(title: "#{subscription.plan} Starter Kit")
+    kit_title = if subscription.Commercial?
+                  "Commercial Starter Buckets (45L)"
+                else
+                  "#{subscription.plan} Starter Kit"
+                end
+
+    kit = Product.find_by(title: kit_title)
+    raise "Product not found: #{kit_title}" unless kit
 
     # For commercial subscriptions, add starter kit quantity based on buckets_per_collection
     quantity = subscription.Commercial? ? subscription.buckets_per_collection : 1
 
-    invoice.invoice_items.create!(product: kit, quantity: quantity, amount: kit.price)
+    # Find existing kit item to consolidate
+    existing_kit = invoice.invoice_items.find_by(
+      product: kit,
+      amount: kit.price
+    )
+
+    if existing_kit
+      # Add to existing quantity
+      existing_kit.update!(quantity: existing_kit.quantity + quantity)
+    else
+      # Create new invoice item
+      invoice.invoice_items.create!(product: kit, quantity: quantity, amount: kit.price)
+    end
   end
 
   def add_subscription_product(invoice, subscription)
@@ -69,11 +88,11 @@ class InvoiceBuilder
     # Line 1: Monthly collection fee (duration-specific pricing)
     monthly_title = case subscription.duration
                     when 12
-                      "Commercial weekly collection per month (12-month rate)"
+                      "Weekly Collection Service (12-month rate)"
                     when 6
-                      "Commercial weekly collection per month (6-month rate)"
+                      "Weekly Collection Service (6-month rate)"
                     when 3
-                      "Commercial weekly collection per month (3-month rate)"
+                      "Weekly Collection Service (3-month rate)"
                     else
                       raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
                     end
@@ -81,20 +100,32 @@ class InvoiceBuilder
     monthly_product = Product.find_by(title: monthly_title)
     raise "Product not found: #{monthly_title}" unless monthly_product
 
-    invoice.invoice_items.create!(
+    # Find or create invoice item for monthly fee
+    existing_monthly = invoice.invoice_items.find_by(
       product: monthly_product,
-      quantity: subscription.duration,
       amount: monthly_product.price
     )
+
+    if existing_monthly
+      # Add to existing quantity
+      existing_monthly.update!(quantity: existing_monthly.quantity + subscription.duration)
+    else
+      # Create new invoice item
+      invoice.invoice_items.create!(
+        product: monthly_product,
+        quantity: subscription.duration,
+        amount: monthly_product.price
+      )
+    end
 
     # Line 2: Volume charge per 45L bucket (duration-specific pricing)
     volume_title = case subscription.duration
                    when 12
-                     "Commercial volume per 45L (12-month rate)"
+                     "Volume Processing (12-month rate)"
                    when 6
-                     "Commercial volume per 45L (6-month rate)"
+                     "Volume Processing (6-month rate)"
                    when 3
-                     "Commercial volume per 45L (3-month rate)"
+                     "Volume Processing (3-month rate)"
                    else
                      raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
                    end
@@ -102,11 +133,25 @@ class InvoiceBuilder
     volume_product = Product.find_by(title: volume_title)
     raise "Product not found: #{volume_title}" unless volume_product
 
-    invoice.invoice_items.create!(
+    volume_amount = subscription.buckets_per_collection * volume_product.price
+
+    # Find or create invoice item for volume charge
+    existing_volume = invoice.invoice_items.find_by(
       product: volume_product,
-      quantity: total_collections,
-      amount: subscription.buckets_per_collection * volume_product.price
+      amount: volume_amount
     )
+
+    if existing_volume
+      # Add to existing quantity
+      existing_volume.update!(quantity: existing_volume.quantity + total_collections)
+    else
+      # Create new invoice item
+      invoice.invoice_items.create!(
+        product: volume_product,
+        quantity: total_collections,
+        amount: volume_amount
+      )
+    end
   end
 
   def apply_referrals(invoice)
