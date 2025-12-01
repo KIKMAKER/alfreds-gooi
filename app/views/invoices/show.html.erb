@@ -54,10 +54,16 @@
               <div class="quantity">
                 <p><%= item.quantity.to_i %></p>
               </div>
-              <% if item.product.title.start_with?("Volume Processing") %>
+              <% if item.product.title.start_with?("Volume Processing per 45L") %>
                 <% rate_per_bucket = item.product.price %>
                 <% buckets_per_collection = (item.amount / rate_per_bucket).to_i %>
                 <% liters_per_collection = buckets_per_collection * 45 %>
+                <% rate_per_liter = item.amount.to_f / liters_per_collection %>
+                <p>Volume Processing (<%= liters_per_collection %>L per collection) @ R<%= '%.2f' % rate_per_liter %>/L</p>
+              <% elsif item.product.title.start_with?("Volume Processing per 25L") %>
+                <% rate_per_bucket = item.product.price %>
+                <% buckets_per_collection = (item.amount / rate_per_bucket).to_i %>
+                <% liters_per_collection = buckets_per_collection * 25 %>
                 <% rate_per_liter = item.amount.to_f / liters_per_collection %>
                 <p>Volume Processing (<%= liters_per_collection %>L per collection) @ R<%= '%.2f' % rate_per_liter %>/L</p>
               <% elsif item.product.title.start_with?("Commercial Starter Buckets") %>
