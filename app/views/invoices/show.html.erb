@@ -77,21 +77,16 @@
             <p>R<%= (item.amount * item.quantity).truncate %></p>
           </div>
         <% end %>
-        <% if @discount_code.present? %>
-
+        <% @invoice.invoice_discount_codes.each do |invoice_discount| %>
           <div class="invoice-item">
             <div class="quantity-description">
               <div class="quantity">
                 <p>1</p>
               </div>
-              <p><%= @discount_code.code %> Discount</p>
+              <p><%= invoice_discount.discount_code.code %> Discount</p>
             </div>
             <p class="text-success">
-              <% if @discount_code.discount_percent.present? %>
-                -<%= @discount_code.discount_percent %>% off
-              <% elsif @discount_code.discount_cents.present? %>
-                -R<%= '%.2f' % (@discount_code.discount_cents / 100.0) %>
-              <% end %>
+              -R<%= '%.2f' % invoice_discount.discount_amount %>
             </p>
           </div>
         <% end %>

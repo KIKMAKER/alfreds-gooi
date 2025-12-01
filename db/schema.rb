@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_01_083255) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_01_120531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -194,6 +194,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_083255) do
     t.text "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "invoice_discount_codes", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "discount_code_id", null: false
+    t.decimal "discount_amount", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discount_code_id"], name: "index_invoice_discount_codes_on_discount_code_id"
+    t.index ["invoice_id"], name: "index_invoice_discount_codes_on_invoice_id"
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -468,6 +478,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_083255) do
   add_foreign_key "drop_off_events", "drivers_days"
   add_foreign_key "drop_off_events", "drop_off_sites"
   add_foreign_key "drop_off_sites", "users"
+  add_foreign_key "invoice_discount_codes", "discount_codes"
+  add_foreign_key "invoice_discount_codes", "invoices"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "subscriptions"

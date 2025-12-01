@@ -1,4 +1,6 @@
 class DiscountCode < ApplicationRecord
+  has_many :invoice_discount_codes, dependent: :destroy
+  has_many :invoices, through: :invoice_discount_codes
 
   def available?
     not_expired = expires_at.nil? || Date.today <= expires_at.to_date

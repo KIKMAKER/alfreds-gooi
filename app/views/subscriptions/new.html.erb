@@ -201,15 +201,18 @@
 
       forms.forEach(form => {
         form.addEventListener('submit', function(e) {
-          const discountCode = discountInput.value.trim();
+          // Only process discount code if the input exists (not on commercial renewal)
+          if (discountInput) {
+            const discountCode = discountInput.value.trim();
 
-          if (discountCode) {
-            // Create hidden input for discount code
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'subscription[discount_code]';
-            hiddenInput.value = discountCode;
-            form.appendChild(hiddenInput);
+            if (discountCode) {
+              // Create hidden input for discount code
+              const hiddenInput = document.createElement('input');
+              hiddenInput.type = 'hidden';
+              hiddenInput.name = 'subscription[discount_code]';
+              hiddenInput.value = discountCode;
+              form.appendChild(hiddenInput);
+            }
           }
         });
       });

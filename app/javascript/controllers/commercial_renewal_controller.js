@@ -7,6 +7,17 @@ export default class extends Controller {
     console.log("Commercial renewal controller connected")
     // Initial update when page loads
     this.updateForm()
+
+    // Add submit handler to log form data
+    this.formTarget.addEventListener('submit', (e) => {
+      console.log("=== FORM SUBMITTING ===")
+      console.log("Form element:", this.formTarget)
+      const formData = new FormData(this.formTarget)
+      console.log("Form data:")
+      for (let [key, value] of formData.entries()) {
+        console.log(`  ${key}: ${value}`)
+      }
+    })
   }
 
   updateForm(event) {

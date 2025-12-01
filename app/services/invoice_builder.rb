@@ -27,8 +27,8 @@ class InvoiceBuilder
     end
 
     apply_referrals(invoice)
-    invoice.calculate_total
     apply_discount_code(invoice) if @subscription.discount_code
+    invoice.calculate_total  # Calculate total AFTER adding all items including discounts
 
     InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
 
@@ -121,7 +121,8 @@ class InvoiceBuilder
 
     # Line 2: Volume charge (duration and bucket-size specific pricing)
     bucket_size = subscription.bucket_size || 45
-    volume_title = case subscription.duration
+    # raise
+    volume_title = case subscription.duration.to_i
                    when 12
                      "Volume Processing per #{bucket_size}L (12-month rate)"
                    when 6
@@ -185,18 +186,32 @@ class InvoiceBuilder
     code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
 
     if code&.available?
-      if code.percentage_based?
+      # Calculate the pre-discount subtotal
+      subtotal = invoice.invoice_items.sum { |item| item.amount * item.quantity }
+
+      discount_amount = if code.percentage_based?
         percent_off = code.discount_percent.clamp(0, 100)
-        discount = (invoice.total_amount * percent_off / 100.0).round
-        invoice.total_amount -= discount
+        (subtotal * percent_off / 100.0).round(2)
       elsif code.fixed_amount?
-        invoice.total_amount -= (code.discount_cents / 100)
+        (code.discount_cents / 100.0).round(2)
+      else
+        0
       end
 
-      invoice.total_amount = 0 if invoice.total_amount.negative?
-      invoice.used_discount_code = true
-      invoice.save!
-      code.increment!(:used_count)
+      # Don't apply discount if it would make total negative
+      discount_amount = subtotal if discount_amount > subtotal
+
+      if discount_amount > 0
+        # Create the association between invoice and discount code
+        invoice.invoice_discount_codes.create!(
+          discount_code: code,
+          discount_amount: discount_amount
+        )
+
+        invoice.used_discount_code = true
+        invoice.save!
+        code.increment!(:used_count)
+      end
     end
   end
 

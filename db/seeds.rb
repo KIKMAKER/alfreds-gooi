@@ -147,10 +147,10 @@ elsif proceed == "products"
   commercial_products = [
     { title: "Weekly Collection Service (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
     { title: "Volume Processing (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
-    # { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
-    # { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
-    # { title: "Volume Processing (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    # { title: "Volume Processing (3-month rate)", description: "Volume charge per 45L bucket", price: 30 }
+    { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
+    { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
+    { title: "Volume Processing (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
+    { title: "Volume Processing (3-month rate)", description: "Volume charge per 45L bucket", price: 30 }
   ]
 
   seed_products(commercial_products)
