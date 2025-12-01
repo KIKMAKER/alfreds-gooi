@@ -39,7 +39,8 @@ class InvoiceBuilder
 
   def add_starter_kit(invoice, subscription)
     kit_title = if subscription.Commercial?
-                  "Commercial Starter Buckets (45L)"
+                  bucket_size = subscription.bucket_size || 45
+                  "Commercial Starter Buckets (#{bucket_size}L)"
                 else
                   "#{subscription.plan} Starter Kit"
                 end
@@ -88,11 +89,11 @@ class InvoiceBuilder
     # Line 1: Monthly collection fee (duration-specific pricing)
     monthly_title = case subscription.duration
                     when 12
-                      "Weekly Collection Service (12-month rate)"
+                      "Commercial weekly collection per month (12-month rate)"
                     when 6
-                      "Weekly Collection Service (6-month rate)"
+                      "Commercial weekly collection per month (6-month rate)"
                     when 3
-                      "Weekly Collection Service (3-month rate)"
+                      "Commercial weekly collection per month (3-month rate)"
                     else
                       raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
                     end
@@ -118,14 +119,15 @@ class InvoiceBuilder
       )
     end
 
-    # Line 2: Volume charge per 45L bucket (duration-specific pricing)
+    # Line 2: Volume charge (duration and bucket-size specific pricing)
+    bucket_size = subscription.bucket_size || 45
     volume_title = case subscription.duration
                    when 12
-                     "Volume Processing (12-month rate)"
+                     "Volume Processing per #{bucket_size}L (12-month rate)"
                    when 6
-                     "Volume Processing (6-month rate)"
+                     "Volume Processing per #{bucket_size}L (6-month rate)"
                    when 3
-                     "Volume Processing (3-month rate)"
+                     "Volume Processing per #{bucket_size}L (3-month rate)"
                    else
                      raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
                    end

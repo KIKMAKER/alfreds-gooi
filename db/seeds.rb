@@ -267,7 +267,8 @@ elsif proceed == "y"
   starter_kit_products = [
     { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
     { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
-    { title: "Commercial Starter Buckets (45L)", description: "45L buckets plus signage for kitchen staff and customers", price: 150 }
+    { title: "Commercial Starter Buckets (45L)", description: "45L buckets plus signage for kitchen staff and customers", price: 150 },
+    { title: "Commercial Starter Buckets (25L)", description: "25L buckets plus signage for kitchen staff and customers", price: 100 }
   ]
 
   seed_products(starter_kit_products)
@@ -311,10 +312,12 @@ elsif proceed == "y"
     { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
     { title: "Weekly Collection Service (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
     { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
-    { title: "Volume Processing (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    { title: "Volume Processing (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
-    { title: "Volume Processing (3-month rate)", description: "Volume charge per 45L bucket", price: 30 },
-    { title: "Commercial volume per 25L (6-month rate)", description: "Volume charge per 25L bucket", price: 240 }
+    { title: "Volume Processing per 45L (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
+    { title: "Volume Processing per 45L (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
+    { title: "Volume Processing per 45L (3-month rate)", description: "Volume charge per 45L bucket", price: 30 },
+    { title: "Volume Processing per 25L (12-month rate)", description: "Volume charge per 25L bucket", price: 24 },
+    { title: "Volume Processing per 25L (6-month rate)", description: "Volume charge per 25L bucket", price: 27 },
+    { title: "Volume Processing per 25L (3-month rate)", description: "Volume charge per 25L bucket", price: 30 }
   ]
 
   seed_products(commercial_products)

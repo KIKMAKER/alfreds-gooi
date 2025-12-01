@@ -60,26 +60,5 @@ export default class extends Controller {
     `
 
     this.priceTarget.innerHTML = priceHTML
-
-    // Update hidden fields
-    const durationField = document.getElementById('subscription_duration')
-    const bucketsField = document.getElementById('subscription_buckets')
-
-    console.log("Duration field:", durationField)
-    console.log("Buckets field:", bucketsField)
-
-    if (durationField) {
-      durationField.value = duration
-      console.log("Set duration field to:", duration)
-    } else {
-      console.error("Could not find duration field with id 'subscription_duration'")
-    }
-
-    if (bucketsField) {
-      bucketsField.value = buckets
-      console.log("Set buckets field to:", buckets)
-    } else {
-      console.error("Could not find buckets field with id 'subscription_buckets'")
-    }
   }
 }

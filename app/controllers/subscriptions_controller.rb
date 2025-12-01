@@ -535,7 +535,7 @@ class SubscriptionsController < ApplicationController
   def subscription_params
     params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
-                  :buckets_per_collection, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+                  :buckets_per_collection, :bucket_size, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end
 
   def set_subscription

@@ -4,7 +4,7 @@ class Subscription < ApplicationRecord
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
   has_many :referrals, dependent: :nullify
-  has_one :business_profile, dependent: :destroy
+  has_one :business_profile, dependent: :nullify
 
   before_create do
     self.set_customer_id unless self.customer_id
@@ -16,6 +16,7 @@ class Subscription < ApplicationRecord
   validates :suburb, inclusion: { in: SUBURBS }
   validates :street_address, presence: true
   validates :suburb, :plan, :duration, presence: true
+  validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 

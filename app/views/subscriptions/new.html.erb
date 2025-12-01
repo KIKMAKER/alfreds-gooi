@@ -18,32 +18,47 @@
 
       <% last_commercial = current_user.subscriptions.where(plan: :Commercial).order(created_at: :desc).first %>
 
-      <div class="mb-4 mt-4" data-controller="commercial-pricing" data-commercial-pricing-renewal-value="true">
+      <div class="mb-4 mt-4" data-controller="commercial-pricing commercial-renewal" data-commercial-pricing-renewal-value="true">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label"><strong>Contract Duration</strong></label>
             <div class="mb-3">
               <div class="form-check">
-                <%= radio_button_tag 'commercial_duration', '12', true, class: 'form-check-input', data: { action: 'commercial-pricing#calculate' }, id: 'commercial_duration_12' %>
+                <%= radio_button_tag 'commercial_duration', '12', true, class: 'form-check-input', data: { action: 'change->commercial-pricing#calculate change->commercial-renewal#updateForm' }, id: 'commercial_duration_12' %>
                 <%= label_tag 'commercial_duration_12', '12 months (R200/month)', class: 'form-check-label' %>
               </div>
               <div class="form-check">
-                <%= radio_button_tag 'commercial_duration', '6', false, class: 'form-check-input', data: { action: 'commercial-pricing#calculate' }, id: 'commercial_duration_6' %>
+                <%= radio_button_tag 'commercial_duration', '6', false, class: 'form-check-input', data: { action: 'change->commercial-pricing#calculate change->commercial-renewal#updateForm' }, id: 'commercial_duration_6' %>
                 <%= label_tag 'commercial_duration_6', '6 months (R220/month)', class: 'form-check-label' %>
               </div>
               <div class="form-check">
-                <%= radio_button_tag 'commercial_duration', '3', false, class: 'form-check-input', data: { action: 'commercial-pricing#calculate' }, id: 'commercial_duration_3' %>
+                <%= radio_button_tag 'commercial_duration', '3', false, class: 'form-check-input', data: { action: 'change->commercial-pricing#calculate change->commercial-renewal#updateForm' }, id: 'commercial_duration_3' %>
                 <%= label_tag 'commercial_duration_3', '3 months (R240/month)', class: 'form-check-label' %>
               </div>
             </div>
           </div>
 
-          <div class="col-md-6">
-            <label class="form-label"><strong>Buckets per collection (45L)</strong></label>
+          <div class="col-md-4">
+            <label class="form-label"><strong>Bucket Size</strong></label>
+            <div class="mb-3">
+              <div class="form-check">
+                <%= radio_button_tag 'commercial_bucket_size', '45', (last_commercial.bucket_size || 45) == 45, class: 'form-check-input', data: { action: 'change->commercial-pricing#calculate change->commercial-renewal#updateForm' }, id: 'commercial_bucket_size_45' %>
+                <%= label_tag 'commercial_bucket_size_45', '45 Litre buckets', class: 'form-check-label' %>
+              </div>
+              <div class="form-check">
+                <%= radio_button_tag 'commercial_bucket_size', '25', (last_commercial.bucket_size || 45) == 25, class: 'form-check-input', data: { action: 'change->commercial-pricing#calculate change->commercial-renewal#updateForm' }, id: 'commercial_bucket_size_25' %>
+                <%= label_tag 'commercial_bucket_size_25', '25 Litre buckets', class: 'form-check-label' %>
+              </div>
+            </div>
+            <small class="text-muted">Current: <%= last_commercial.bucket_size || 45 %>L</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label"><strong>Buckets per collection</strong></label>
             <%= number_field_tag 'commercial_buckets', last_commercial.buckets_per_collection || 1,
                       min: 1, max: 20,
                       class: 'form-control mb-3',
-                      data: { action: 'commercial-pricing#calculate', commercial_pricing_target: 'buckets' },
+                      data: { action: 'input->commercial-pricing#calculate input->commercial-renewal#updateForm', commercial_pricing_target: 'buckets', commercial_renewal_target: 'buckets' },
                       id: 'commercial_buckets_field' %>
             <small class="text-muted">Current: <%= last_commercial.buckets_per_collection %> buckets</small>
           </div>
@@ -54,12 +69,14 @@
           <p class="mb-0" data-commercial-pricing-target="price">Calculating...</p>
         </div>
 
-        <%= button_to 'Renew Subscription', subscriptions_path,
-                params: { subscription: { plan: 'Commercial', duration: '12', buckets_per_collection: last_commercial.buckets_per_collection || 1 }, og: false, new: false },
-                method: :post,
-                class: "sign-up-btn mt-3",
-                id: 'commercial-renewal-form',
-                data: { turbo: false } %>
+        <%= form_with url: subscriptions_path, method: :post,
+                      data: { turbo: false, commercial_renewal_target: 'form' },
+                      html: { id: 'commercial-renewal-form' } do |f| %>
+          <%= f.hidden_field :og, value: false %>
+          <%= f.hidden_field :new, value: false %>
+          <%= f.hidden_field 'subscription[plan]', value: 'Commercial' %>
+          <%= f.submit 'Renew Subscription', class: 'sign-up-btn mt-3' %>
+        <% end %>
       </div>
   <% else %>
     <section>
@@ -197,35 +214,5 @@
         });
       });
     <% end %>
-
-    // Commercial renewal form dynamic updates
-    const commercialForm = document.getElementById('commercial-renewal-form');
-    if (commercialForm) {
-      const durationRadios = document.querySelectorAll('input[name="commercial_duration"]');
-      const bucketsInput = document.getElementById('commercial_buckets_field');
-
-      function updateCommercialForm() {
-        const selectedDuration = document.querySelector('input[name="commercial_duration"]:checked')?.value || '12';
-        const selectedBuckets = bucketsInput?.value || '1';
-
-        // Update form params
-        const durationInput = commercialForm.querySelector('input[name="subscription[duration]"]');
-        const bucketsParamInput = commercialForm.querySelector('input[name="subscription[buckets_per_collection]"]');
-
-        if (durationInput) durationInput.value = selectedDuration;
-        if (bucketsParamInput) bucketsParamInput.value = selectedBuckets;
-      }
-
-      durationRadios.forEach(radio => {
-        radio.addEventListener('change', updateCommercialForm);
-      });
-
-      if (bucketsInput) {
-        bucketsInput.addEventListener('input', updateCommercialForm);
-      }
-
-      // Initial update
-      updateCommercialForm();
-    }
   });
 </script>
