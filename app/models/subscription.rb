@@ -299,6 +299,10 @@ class Subscription < ApplicationRecord
       referrer_id: User.find_by(referral_code: referral_code)&.id
     )
     referral&.completed!
+
+    # Send payment received confirmation email
+    SubscriptionMailer.with(subscription: self).payment_received.deliver_now
+    SubscriptionMailer.with(subscription: self).payment_received_alert.deliver_now
   end
 
 
