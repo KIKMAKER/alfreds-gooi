@@ -25,10 +25,10 @@ class Invoice < ApplicationRecord
 
   def calculate_total
     # Calculate the total from the invoice items' amount * quantity
-    subtotal = invoice_items.sum { |item| item.amount * item.quantity }
+    subtotal = invoice_items.sum { |item| (item.amount || 0) * (item.quantity || 0) }
 
     # Subtract any discount codes applied
-    discounts = invoice_discount_codes.sum(:discount_amount)
+    discounts = invoice_discount_codes.sum(:discount_amount) || 0
 
     total = subtotal - discounts
 
