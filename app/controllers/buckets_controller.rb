@@ -48,6 +48,6 @@ class BucketsController < ApplicationController
   end
 
   def bucket_params
-    params.require(:bucket).permit(:gross_kg, :half)
+    params.require(:bucket).permit(:gross_kg, :half, :bucket_size)
   end
 end

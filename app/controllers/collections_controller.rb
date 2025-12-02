@@ -287,8 +287,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :invoice_items_attributes)
-    # buckets
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :buckets_45l, :buckets_25l, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :invoice_items_attributes)
   end
 
   def bags_invoice_params

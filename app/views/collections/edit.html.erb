@@ -57,7 +57,10 @@
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
-        <% if @collection.subscription.XL? || @collection.subscription.Commercial? %>
+        <% if @collection.subscription.Commercial? %>
+          <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
+          <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
+        <% elsif @collection.subscription.XL? %>
           <%= f.input :buckets, placeholder: "0" %>
         <% else %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
@@ -105,7 +108,10 @@
         <%= f.input :skip %>
         <% if @subscription.Standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
-        <% elsif @subscription.XL? || @subscription.Commercial? %>
+        <% elsif @subscription.Commercial? %>
+          <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
+          <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
+        <% elsif @subscription.XL? %>
           <%= f.input :buckets, label: "Number of buckets collected", placeholder: "0" %>
         <% end %>
         <% if current_user.admin? %>

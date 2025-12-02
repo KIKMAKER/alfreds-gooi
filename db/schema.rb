@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_01_120531) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_02_093134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_120531) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "drop_off_event_id"
+    t.integer "bucket_size", default: 25
     t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
     t.index ["drop_off_event_id"], name: "index_buckets_on_drop_off_event_id"
   end
@@ -87,6 +88,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_120531) do
     t.boolean "wants_veggies"
     t.string "customer_note"
     t.integer "position"
+    t.integer "buckets_45l", default: 0
+    t.integer "buckets_25l", default: 0
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end

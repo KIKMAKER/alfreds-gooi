@@ -53,6 +53,6 @@ class Admin::CollectionsController < ApplicationController
   private
 
   def collection_params
-    params.require(:collection).permit(:date, :time, :bags, :skip, :alfred_message)
+    params.require(:collection).permit(:date, :time, :bags, :buckets, :buckets_45l, :buckets_25l, :skip, :alfred_message)
   end
 end

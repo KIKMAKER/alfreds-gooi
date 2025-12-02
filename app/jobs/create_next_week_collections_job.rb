@@ -6,7 +6,7 @@ class CreateNextWeekCollectionsJob < ApplicationJob
     puts "Today is #{today}"
 
     # Define the days of the week to process (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-    days_to_process = { "Tuesday" => 2, "Wednesday" => 3, "Thursday" => 4 }
+    days_to_process = { "Monday" => 1, "Tuesday" => 2, "Wednesday" => 3, "Thursday" => 4 }
 
     # Process collections for each specified day
     days_to_process.each do |day_name, weekday|
