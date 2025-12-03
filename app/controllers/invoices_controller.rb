@@ -92,6 +92,7 @@ class InvoicesController < ApplicationController
   def paid
     user = @invoice.subscription.user
     pending_subscriptions = user.subscriptions.where(status: :pending, is_paused: true)
+    active_subscriptions = user.subscriptions.where(status: :active, is_paused: false)
 
     ActiveRecord::Base.transaction do
       @invoice.update!(paid: true)
@@ -102,11 +103,11 @@ class InvoicesController < ApplicationController
         # Create first collection for each subscription
         first_collection = CreateFirstCollectionJob.perform_now(subscription)
 
-        
+
       end
     end
 
-    count = pending_subscriptions.count
+    count = active_subscriptions.count
     flash[:notice] = "Payment recorded! #{count} #{'subscription'.pluralize(count)} activated."
     redirect_to invoice_path(@invoice)
   rescue StandardError => e
