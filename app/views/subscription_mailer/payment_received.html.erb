@@ -1,0 +1,55 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Payment received! 🎉</h1>
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @user.first_name %>,
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong> and ready to gooi! ♻️
+  </p>
+
+  <% if @subscription.Commercial? %>
+    <p style="font-size: 1.1rem;">
+      <strong>Your subscription details:</strong><br>
+      Duration: <%= @subscription.duration %> months<br>
+      Buckets per collection: <%= @subscription.buckets_per_collection %> × <%= @subscription.bucket_size %>L buckets<br>
+      Collection day: <%= @subscription.collection_day %>
+    </p>
+  <% else %>
+    <p style="font-size: 1.1rem;">
+      <strong>Your subscription details:</strong><br>
+      Plan: <%= @subscription.plan %><br>
+      Duration: <%= @subscription.duration %> months<br>
+      Collection day: <%= @subscription.collection_day %>
+    </p>
+  <% end %>
+
+  <p style="font-size: 1.1rem;">
+    Your first collection is scheduled for <strong><%= @subscription.start_date.strftime('%A, %e %B %Y') %></strong>.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    <strong>What happens next?</strong><br>
+    • Alfred will collect from your address every <%= @subscription.collection_day %><br>
+    • Please leave your compost out before 8am on collection day<br>
+    • You can manage your subscription anytime at <%= link_to 'gooi.me', root_url, style: "color: #FBB718; text-decoration: none; font-weight: bold;" %>
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    If you haven't logged into the website before, we have an account waiting for you! Just use this email address (<%= @user.email %>) and the default password: 'password', which you can change at any time.
+  </p>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= root_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View My Account
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Thanks for joining the food waste revolution! 🌱
+  </p>
+
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+</div>

@@ -47,4 +47,21 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def payment_received
+    @subscription = params[:subscription]
+    @user = @subscription.user
+    mail(to: @user.email, subject: "Payment received - your gooi subscription is now active!")
+  end
+
+  def payment_received_alert
+    @subscription = params[:subscription]
+
+    mail(
+      to: 'howzit@gooi.me',
+      subject: "Payment received email sent to #{@subscription.user.first_name}!",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
+
 end

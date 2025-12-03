@@ -414,14 +414,19 @@ class SubscriptionsController < ApplicationController
     collections = @drivers_day.collections
                 .includes(:subscription, :user)
                 .joins(:subscription)
-                .order('subscriptions.collection_order')
-                .each_with_index do |collection, index|
-                  collection.update(position: index + 1) # Set position starting from 1
-                end
-    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
+                .order('subscriptions.collection_order NULLS LAST')
+                .to_a
+
+    # Update position field to match the optimized order
+    collections.each_with_index do |collection, index|
+      new_position = index + 1
+      collection.update_column(:position, new_position) unless collection.position == new_position
+    end
+
+    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position).to_a
 
     # Combine collections and drop-off events, sorted by position
-    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
+    @route_items = (collections + drop_off_events).sort_by(&:position)
   end
 
   def recently_lapsed

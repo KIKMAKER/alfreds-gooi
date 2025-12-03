@@ -5,17 +5,46 @@ class DriversDaysController < ApplicationController
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
 
     @drivers_day = DriversDay.find_or_create_by!(date: selected_date, user_id: User.find_by(first_name: "Alfred").id)
+
+    # Get collections ordered by subscription's optimized route order
     collections = @drivers_day.collections
-                                .includes(:subscription, :user)
-                                .joins(:subscription)
-                                .order('subscriptions.collection_order')
-                                .each_with_index do |collection, index|
-                                  collection.update(position: index + 1) # Set position starting from 1
-                                end
-    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
+                              .includes(:subscription, :user)
+                              .joins(:subscription)
+                              .order('subscriptions.collection_order NULLS LAST')
+                              .to_a
+
+    Rails.logger.info "=== ROUTE DEBUG ==="
+    Rails.logger.info "Total collections: #{collections.count}"
+    Rails.logger.info "First 5 collections with their subscription.collection_order:"
+    collections.first(5).each do |c|
+      Rails.logger.info "  - #{c.subscription.user.first_name}: collection_order=#{c.subscription.collection_order}, position=#{c.position}"
+    end
+
+    # Update position field to match the optimized order (for manual sorting/drag-drop)
+    collections.each_with_index do |collection, index|
+      new_position = index + 1
+      collection.update_column(:position, new_position) unless collection.position == new_position
+    end
+
+    Rails.logger.info "After updating positions:"
+    collections.first(5).each do |c|
+      Rails.logger.info "  - #{c.subscription.user.first_name}: collection_order=#{c.subscription.collection_order}, position=#{c.position}"
+    end
+
+    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position).to_a
 
     # Combine collections and drop-off events, sorted by position
-    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
+    @route_items = (collections + drop_off_events).sort_by(&:position)
+
+    Rails.logger.info "Final @route_items (first 5):"
+    @route_items.first(5).each do |item|
+      if item.is_a?(Collection)
+        Rails.logger.info "  - Collection: #{item.subscription.user.first_name}, position=#{item.position}"
+      else
+        Rails.logger.info "  - DropOffEvent: #{item.drop_off_site.name}, position=#{item.position}"
+      end
+    end
+    Rails.logger.info "==================="
   end
 
 
@@ -63,7 +92,7 @@ class DriversDaysController < ApplicationController
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
-    @subscriptions = Subscription.where(collection_day: @today, status: 'active').order(:collection_order)
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active').order('collection_order NULLS LAST')
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }

@@ -26,6 +26,24 @@ class CollectionsController < ApplicationController
     redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
   end
 
+  def optimise_route_with_routexl
+    collection_day = params[:day]
+    if collection_day.blank?
+      flash[:alert] = "Please specify a collection day"
+      redirect_to this_week_collections_path and return
+    end
+
+    result = RouteXlOptimiser.optimise_route(collection_day)
+
+    if result[:success]
+      flash[:notice] = result[:message]
+    else
+      flash[:alert] = result[:message]
+    end
+
+    redirect_to this_week_collections_path
+  end
+
   def import_csv
     # find the driver (there is only one)
     driver = User.find_by(role: 'driver')
@@ -212,11 +230,14 @@ class CollectionsController < ApplicationController
     @drivers_day = DriversDay.find(params[:drivers_day_id])
 
     # Order by subscriptions.collection_order and update positions
-    @drivers_day.collections
-                .joins(:subscription)
-                .order('subscriptions.collection_order')
-                .each_with_index do |collection, index|
-      collection.update(position: index + 1) # Set position starting from 1
+    collections = @drivers_day.collections
+                              .joins(:subscription)
+                              .order('subscriptions.collection_order NULLS LAST')
+                              .to_a
+
+    collections.each_with_index do |collection, index|
+      new_position = index + 1
+      collection.update_column(:position, new_position) unless collection.position == new_position
     end
   end
 

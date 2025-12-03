@@ -1,0 +1,129 @@
+<div class="user-wrapper">
+  <h1>Bulk WhatsApp Messaging</h1>
+  <p class="text-muted">Filter customers and generate WhatsApp links to send messages</p>
+
+  <%= form_with url: admin_bulk_messages_path, method: :get, local: true do |f| %>
+    <div class="card p-4 mb-4" style="border-radius: 1em;">
+      <h3 class="mb-3">Filters</h3>
+
+      <div class="row g-3">
+        <!-- Collection Day -->
+        <div class="col-md-3">
+          <%= f.label :collection_day, "Collection Day", class: "form-label" %>
+          <%= f.select :collection_day,
+                       options_for_select([['All Days', 'all']] + Subscription.collection_days.keys.map { |day| [day, day] }, params[:collection_day]),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <!-- Suburb -->
+        <div class="col-md-3">
+          <%= f.label :suburb, "Suburb", class: "form-label" %>
+          <%= f.select :suburb,
+                       options_for_select([['All Suburbs', 'all']] + Subscription::SUBURBS.map { |s| [s, s] }, params[:suburb]),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <!-- Plan -->
+        <div class="col-md-3">
+          <%= f.label :plan, "Plan", class: "form-label" %>
+          <%= f.select :plan,
+                       options_for_select([['All Plans', 'all']] + Subscription.plans.keys.map { |p| [p.titleize, p] }, params[:plan]),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <!-- Collections Range -->
+        <div class="col-md-3">
+          <%= f.label :min_collections, "Min Collections", class: "form-label" %>
+          <%= f.number_field :min_collections, value: params[:min_collections], class: "form-control", placeholder: "e.g. 5" %>
+        </div>
+
+        <div class="col-md-3">
+          <%= f.label :max_collections, "Max Collections", class: "form-label" %>
+          <%= f.number_field :max_collections, value: params[:max_collections], class: "form-control", placeholder: "e.g. 20" %>
+        </div>
+
+        <!-- Date Range -->
+        <div class="col-md-3">
+          <%= f.label :date_from, "First Sub From", class: "form-label" %>
+          <%= f.date_field :date_from, value: params[:date_from], class: "form-control" %>
+        </div>
+
+        <div class="col-md-3">
+          <%= f.label :date_to, "First Sub To", class: "form-label" %>
+          <%= f.date_field :date_to, value: params[:date_to], class: "form-control" %>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <h3 class="mb-3">Message</h3>
+      <div class="mb-3">
+        <%= f.label :message, "WhatsApp Message", class: "form-label" %>
+        <%= f.text_area :message,
+                        value: params[:message],
+                        rows: 5,
+                        class: "form-control",
+                        placeholder: "Hi {first_name}! This is your friendly reminder..." %>
+        <small class="text-muted">Use {first_name} to personalize the message for each customer</small>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= f.submit "Filter & Generate Links", class: "submit-btn" %>
+        <%= link_to "Reset", admin_bulk_messages_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @users.present? %>
+    <div class="card p-4" style="border-radius: 1em;">
+      <h3 class="mb-3">Results: <%= @users.count %> <%= 'customer'.pluralize(@users.count) %></h3>
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Suburb</th>
+              <th>Day</th>
+              <th>Collections</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <% subscription = user.subscriptions.active.first %>
+              <tr>
+                <td><%= link_to "#{user.first_name} #{user.last_name}", admin_user_path(user) %></td>
+                <td><%= user.phone_number %></td>
+                <td><%= subscription&.suburb %></td>
+                <td><%= subscription&.collection_day %></td>
+                <td><%= subscription&.total_collections || 0 %></td>
+                <td>
+                  <% if @message.present? %>
+                    <% personalized_message = @message.gsub('{first_name}', user.first_name) %>
+                    <% encoded_message = ERB::Util.url_encode(personalized_message) %>
+                    <%= link_to "https://wa.me/#{user.phone_number}?text=#{encoded_message}",
+                                target: "_blank",
+                                class: "link-title" do %>
+                      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    <% end %>
+                  <% else %>
+                    <span class="text-muted">Enter message above</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% elsif params[:message].present? %>
+    <div class="alert alert-info">
+      No customers match your filter criteria.
+    </div>
+  <% end %>
+</div>

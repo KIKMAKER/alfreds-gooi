@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
+    resources :bulk_messages, only: [:index]
     resources :logistics, only: :index
     resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
   resources :drop_off_site_managers, only: [:index, :show, :edit, :update]
 
   patch 'optimise_route', to: 'collections#optimise_route'
+  post 'optimise_route_with_routexl', to: 'collections#optimise_route_with_routexl'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
   post "perform_create_next_week_collections", to: "collections#perform_create_next_week_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route

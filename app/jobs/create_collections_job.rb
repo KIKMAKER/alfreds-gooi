@@ -23,12 +23,12 @@ class CreateCollectionsJob < ApplicationJob
     )
     Rails.logger.info "Driver's Day created for #{collection_date}: #{drivers_day.user.first_name} (ID: #{drivers_day.id})"
 
-    subscriptions = Subscription.where(collection_day: day_name, status: "active")
+      subscriptions = Subscription.where(collection_day: day_name, status: "active")
 
-    subscriptions.find_each do |subscription|
+      subscriptions.find_each do |subscription|
 
-      collection = Collection.find_or_create_by!(
-        drivers_day: drivers_day,
+        collection = Collection.find_or_create_by!(
+          drivers_day: drivers_day,
         subscription: subscription,
         date: collection_date
       )
