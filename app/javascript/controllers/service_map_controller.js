@@ -5,6 +5,7 @@ export default class extends Controller {
   static values = {
     token: String,
     geoUrl: String,
+    monday: Array,
     tuesday: Array,
     wednesday: Array,
     thursday: Array
@@ -14,6 +15,7 @@ export default class extends Controller {
     if (!this.hasTokenValue || !this.hasGeoUrlValue) return
 
     // Precompute normalized sets for fast lookup
+    this.mondaySet    = new Set((this.mondayValue || []).map(n => this.standardize(n)))
     this.tuesdaySet   = new Set((this.tuesdayValue || []).map(n => this.standardize(n)))
     this.wednesdaySet = new Set((this.wednesdayValue || []).map(n => this.standardize(n)))
     this.thursdaySet  = new Set((this.thursdayValue  || []).map(n => this.standardize(n)))
@@ -65,6 +67,7 @@ export default class extends Controller {
           "fill-color": [
             "match",
             ["get", "day"],
+            "Monday",    "#E74C3C",
             "Tuesday",   "#5DADE2",
             "Wednesday", "#58D68D",
             "Thursday",  "#F5B041",
@@ -145,6 +148,7 @@ export default class extends Controller {
 
   dayFor(name) {
     const key = this.standardize(name)
+    if (this.mondaySet.has(key))    return "Monday"
     if (this.tuesdaySet.has(key))   return "Tuesday"
     if (this.wednesdaySet.has(key)) return "Wednesday"
     if (this.thursdaySet.has(key))  return "Thursday"
@@ -186,6 +190,7 @@ export default class extends Controller {
     const el = this.element.querySelector("#service-map-legend")
     if (!el) return
     el.innerHTML = `
+      <div class="legend-row"><span class="swatch" style="background:#E74C3C"></span> Monday</div>
       <div class="legend-row"><span class="swatch" style="background:#5DADE2"></span> Tuesday</div>
       <div class="legend-row"><span class="swatch" style="background:#58D68D"></span> Wednesday</div>
       <div class="legend-row"><span class="swatch" style="background:#F5B041"></span> Thursday</div>
