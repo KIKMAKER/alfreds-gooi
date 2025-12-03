@@ -28,6 +28,12 @@
                 input_html: { step: 0.01, min: 0, autofocus: true },
                 hint: "We'll subtract #{Bucket::TARE_KG} kg automatically." %>
 
+          <%= f.input :bucket_size,
+                as: :radio_buttons,
+                collection: [[25, '25L'], [45, '45L']],
+                label: "Bucket size",
+                wrapper_html: { class: 'mb-3' } %>
+
           <%= f.input :half,
                 as: :boolean,
                 label: "Half-full bucket" %>
@@ -75,6 +81,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Size</th>
           <th>Net kg</th>
           <th>Half?</th>
           <th>Added</th>
@@ -85,6 +92,7 @@
         <% @buckets.each_with_index do |b, i| %>
           <tr class="align-middle">
             <td><%= i + 1 %></td>
+            <td><%= b.bucket_size %>L</td>
             <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
             <td><%= b.half? ? "Yes" : "No" %></td>
             <td><%= l b.created_at, format: :short %></td>
@@ -98,7 +106,7 @@
           </tr>
         <% end %>
         <% if @buckets.empty? %>
-          <tr><td colspan="5" class="text-center text-muted">No buckets weighed yet.</td></tr>
+          <tr><td colspan="6" class="text-center text-muted">No buckets weighed yet.</td></tr>
         <% end %>
       </tbody>
     </table>
