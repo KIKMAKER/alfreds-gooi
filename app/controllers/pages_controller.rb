@@ -27,12 +27,17 @@ class PagesController < ApplicationController
     @drivers_day = DriversDay.find_or_create_by(date: today)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
-    @collections.joins(:subscription)
-                .order('subscriptions.collection_order')
-                .each_with_index do |collection, index|
-                  collection.update(position: index + 1) # Set position starting from 1
-                end
+    @collections = @drivers_day.collections
+                               .includes(:subscription, :user)
+                               .joins(:subscription)
+                               .order('subscriptions.collection_order NULLS LAST')
+                               .to_a
+
+    # Update position field to match the optimized order
+    @collections.each_with_index do |collection, index|
+      new_position = index + 1
+      collection.update_column(:position, new_position) unless collection.position == new_position
+    end
   end
 
   def story

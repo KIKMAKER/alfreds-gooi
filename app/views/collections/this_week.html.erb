@@ -40,4 +40,26 @@
   <br>
   <p><%= @unskipped_collections.count + @skipped_collections.count %> collections created for today</p>
   <br>
+
+  <h2>Optimize Routes</h2>
+  <p class="text-muted">Uses RouteXL API to optimize collection order. Costs EUR 5 per route.</p>
+  <div class="d-flex flex-wrap gap-2 mt-3">
+    <%= button_to 'Sort Monday Route', optimise_route_with_routexl_path(day: 'Monday'),
+        class: 'btn btn-danger',
+        style: 'border-radius:1em',
+        data: { confirm: "This costs EUR 5. Optimize #{Subscription.active.where(collection_day: 'Monday').count} Monday subscriptions?" } %>
+    <%= button_to 'Sort Tuesday Route', optimise_route_with_routexl_path(day: 'Tuesday'),
+        class: 'btn btn-primary',
+        style: 'border-radius:1em',
+        data: { confirm: "This costs EUR 5. Optimize #{Subscription.active.where(collection_day: 'Tuesday').count} Tuesday subscriptions?" } %>
+    <%= button_to 'Sort Wednesday Route', optimise_route_with_routexl_path(day: 'Wednesday'),
+        class: 'btn btn-success',
+        style: 'border-radius:1em',
+        data: { confirm: "This costs EUR 5. Optimize #{Subscription.active.where(collection_day: 'Wednesday').count} Wednesday subscriptions?" } %>
+    <%= button_to 'Sort Thursday Route', optimise_route_with_routexl_path(day: 'Thursday'),
+        class: 'btn btn-warning',
+        style: 'border-radius:1em',
+        data: { confirm: "This costs EUR 5. Optimize #{Subscription.active.where(collection_day: 'Thursday').count} Thursday subscriptions?" } %>
+  </div>
+  <br>
 </div>
