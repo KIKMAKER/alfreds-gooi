@@ -51,12 +51,22 @@ class Admin::UsersController < ApplicationController
     result = Subscriptions::RenewalService.new(user: @user).call
 
     if result.success?
+      # Create invoice for the new subscription
+      invoice = InvoiceBuilder.new(
+        subscription: result.subscription,
+        og: @user.og || false,
+        is_new: false
+      ).call
+
       redirect_to admin_user_path(@user),
-        notice: "Created subscription ##{result.subscription.id} and invoice ##{result.invoice.id}."
+        notice: "Created subscription ##{result.subscription.id} and invoice ##{invoice.id}."
     else
       redirect_to admin_user_path(@user),
         alert: "Could not renew subscription: #{result.error}"
     end
+  rescue StandardError => e
+    redirect_to admin_user_path(@user),
+      alert: "Error creating subscription/invoice: #{e.message}"
   end
 
   private

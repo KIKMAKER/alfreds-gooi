@@ -41,6 +41,15 @@ class DropOffEvent < ApplicationRecord
     total_weight_from_buckets / denom
   end
 
+  # Count buckets by size
+  def bucket_count_25l
+    buckets.where(bucket_size: 25).count
+  end
+
+  def bucket_count_45l
+    buckets.where(bucket_size: 45).count
+  end
+
   # After completing drop-off, recalculate site totals and send email
   after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? }
   after_update :send_completion_email, if: -> { saved_change_to_is_done? && is_done? }
