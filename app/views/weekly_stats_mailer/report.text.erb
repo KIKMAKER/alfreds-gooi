@@ -1,17 +1,17 @@
 ♻️ Gooi Weekly Report — <%= @stats.period_label %>
 
 Customers served: <%= @stats.customers_served %>
-Buckets diverted: <%= @stats.buckets_diverted.round(1) %>  (~<%= @stats.litres_diverted %> L)
-Kgs collected: <%= input_kg = (@stats.litres_diverted || (@stats.buckets_diverted * 25)).to_f * 0.6 %>
-Kgs compost: <%= compost_kg = (input_kg * 0.35).round(0) %>
-Emissions avoided: <%= co2e_kg   = (input_kg * 1.96).round(0) %>
+Buckets diverted: <%= @stats.buckets_diverted.round(1) %>
+Kgs collected: <%= @stats.kg_diverted %> kg
+Kgs compost: <%= compost_kg = (@stats.kg_diverted * 0.35).round(0) %>
+Emissions avoided: <%= co2e_kg = (@stats.kg_diverted * 1.96).round(0) %>
 New customers: <%= @stats.new_customers %>
 <!--Skips recorded: <%#= @stats.skips %>-->
 <!--Soil bags delivered: <%#= @stats.soil_bags %>
 Route distance: <%#= @stats.route_kms %> km-->
 
 **This week with Gooi**
-Thanks to **<%= @stats.customers_served %>** neighbours, we kept **<%= (@stats.litres_diverted || (@stats.buckets_diverted * 25)).round(0) %> L** of kitchen scraps out of landfill. That makes about:
+Thanks to **<%= @stats.customers_served %>** neighbours, we kept **<%= @stats.kg_diverted %> kg** of kitchen scraps out of landfill. That makes about:
 • **<%= compost_kg %> kg** of finished compost for local soil
 • **<%= co2e_kg %> kg CO₂e** emissions avoided
 <% if @stats.new_customers.to_i > 0 %>
