@@ -39,9 +39,12 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
         # 2) Ending soon nudges (only if no future sub to avoid spam)
         if has_next
           Rails.logger.info "Muted ending-soon emails for sub ##{subscription.id} (future_sub=true)"
+        elsif subscription.ending_soon_emailed_at == Date.today
+          Rails.logger.info "Skipped ending-soon emails for sub ##{subscription.id} (already emailed today)"
         else
           SubscriptionMailer.with(subscription: subscription).subscription_ending_soon.deliver_now
           SubscriptionMailer.with(subscription: subscription).subscription_ending_soon_alert.deliver_now
+          subscription.update_column(:ending_soon_emailed_at, Date.today)
           Rails.logger.info "Ending-soon emails sent for sub ##{subscription.id}"
         end
 
