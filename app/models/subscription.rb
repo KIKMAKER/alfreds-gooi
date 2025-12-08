@@ -17,6 +17,7 @@ class Subscription < ApplicationRecord
   validates :street_address, presence: true
   validates :suburb, :plan, :duration, presence: true
   validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
+  validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
@@ -101,8 +102,9 @@ class Subscription < ApplicationRecord
   def self.humanized_plans
     {
       once_off: 'Once Off',
-      standard: 'Standard',
-      XL: 'Extra Large'
+      Standard: 'Standard',
+      XL: 'Extra Large',
+      Commercial: 'Commercial'
     }
   end
 

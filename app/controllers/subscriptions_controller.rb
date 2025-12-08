@@ -100,43 +100,61 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    # Use RenewalService to duplicate last subscription with new params
-    result = Subscriptions::RenewalService.new(
-      user: current_user,
-      new_params: subscription_params
-    ).call
+    if current_user.admin?
+      # Admin creating subscription for a customer - create from params directly
+      @subscription = Subscription.new(subscription_params)
+      @subscription.status = 'pending'
 
-    if result.success?
-      @subscription = result.subscription
+      if @subscription.save
+        # Create invoice for the new subscription
+        @invoice = InvoiceBuilder.new(
+          subscription: @subscription,
+          og: @subscription.user.og || false,
+          is_new: false
+        ).call
 
-      # Calculate referred friends for invoice builder
-      referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
-
-      # Create invoice AFTER subscription has correct plan/duration
-      @invoice = InvoiceBuilder.new(
-        subscription: @subscription,
-        og: current_user.og,
-        is_new: false,
-        referee: nil,
-        referred_friends: referred_friends
+        flash[:notice] = "Subscription created successfully. Invoice ##{@invoice.id} sent to customer."
+        redirect_to admin_user_path(@subscription.user)
+      else
+        flash.now[:alert] = @subscription.errors.full_messages.to_sentence
+        render :new, status: :unprocessable_entity
+      end
+    else
+      # Regular user renewal - use RenewalService to duplicate last subscription
+      result = Subscriptions::RenewalService.new(
+        user: current_user,
+        new_params: subscription_params
       ).call
 
-      # check for sub overlap and set proper start date
-      start_date = @subscription.suggested_start_date(payment_date: Date.current)
-      @subscription.update!(start_date: start_date)
+      if result.success?
+        @subscription = result.subscription
 
-      # check if future collections exist and move them to this sub
-      @subscription.adopt_future_collections!
+        # Calculate referred friends for invoice builder
+        referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
 
-      # # check if the user wants bags
-      # redirect_to want_bags_subscription_path(@subscription)
+        # Create invoice AFTER subscription has correct plan/duration
+        @invoice = InvoiceBuilder.new(
+          subscription: @subscription,
+          og: current_user.og,
+          is_new: false,
+          referee: nil,
+          referred_friends: referred_friends
+        ).call
 
-      flash.now[:notice] = "Your subscription has been created and will be active once payment is made."
-      redirect_to invoice_path(@invoice)
-    else
-      flash[:alert] = result.error
-      @subscription = Subscription.new(subscription_params)
-      render :new, status: :unprocessable_entity
+        # check for sub overlap and set proper start date
+        start_date = @subscription.suggested_start_date(payment_date: Date.current)
+        @subscription.update!(start_date: start_date)
+
+        # check if future collections exist and move them to this sub
+        @subscription.adopt_future_collections!
+
+        flash.now[:notice] = "Your subscription has been created and will be active once payment is made."
+        redirect_to invoice_path(@invoice)
+      else
+        flash[:alert] = result.error
+        @subscription = Subscription.new(subscription_params)
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 

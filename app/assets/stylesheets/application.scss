@@ -211,14 +211,14 @@ ul {
 //   justify-content: space-between;
 // }
 
-.radio_buttons {
-  display: grid; // Use a grid layout for better control
-  grid-template-columns: repeat(auto-fit,
-      minmax(60px, 1fr)); // Create as many columns as possible with a minimum size of 60px
-  gap: 4px; // Space between grid items
-  width: 90%; // Ensure the wrapper takes the full width
-  margin-left: 1vh;
-}
+// .radio_buttons {
+//   display: grid; // Use a grid layout for better control
+//   grid-template-columns: repeat(auto-fit,
+//       minmax(60px, 1fr)); // Create as many columns as possible with a minimum size of 60px
+//   gap: 4px; // Space between grid items
+//   width: 90%; // Ensure the wrapper takes the full width
+//   margin-left: 1vh;
+// }
 
 .radio-buttons {
 
