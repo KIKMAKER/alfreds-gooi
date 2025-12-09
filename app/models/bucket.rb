@@ -4,7 +4,8 @@ class Bucket < ApplicationRecord
 
   # Driver puts a bucket (with compost) on the scale. We record the gross,
   # and auto-subtract tare before save so weight_kg is NET.
-  TARE_KG = 0.90
+  TARE_25L_KG = 0.90
+  TARE_45L_KG = 1.50
 
   # Virtual attribute to accept the scale reading
   attr_accessor :gross_kg
@@ -23,7 +24,16 @@ class Bucket < ApplicationRecord
 
   def apply_tare
     return if gross_kg.blank?
-    net = gross_kg.to_f - TARE_KG
+
+    # Use appropriate tare weight based on bucket size
+    tare = case bucket_size
+           when 45
+             TARE_45L_KG
+           else
+             TARE_25L_KG  # Default for 25L or nil
+           end
+
+    net = gross_kg.to_f - tare
     self.weight_kg = [[net, 0].max, 99.999].min.round(3)
   end
 

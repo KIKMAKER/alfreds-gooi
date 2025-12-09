@@ -28,6 +28,31 @@ class DriversDay < ApplicationRecord
     )
   end
 
+  # Full-equivalent count normalized to 25L buckets
+  # A 45L bucket = 1.8 equivalent 25L buckets (45/25)
+  def full_equivalent_count
+    total = 0.0
+    buckets.each do |bucket|
+      size_multiplier = (bucket.bucket_size || 25).to_f / 25.0  # Normalize to 25L
+      half_multiplier = bucket.half? ? 0.5 : 1.0
+      total += size_multiplier * half_multiplier
+    end
+    total
+  end
+
+  # Average weight per bucket
+  def avg_net_kg_per_bucket
+    return 0.0 if buckets.count.zero?
+    total_net_kg.to_f / buckets.count
+  end
+
+  # Average weight per full-equivalent 25L bucket
+  def avg_net_kg_per_full_equiv
+    equiv = full_equivalent_count.to_f
+    return 0.0 if equiv <= 0
+    total_net_kg.to_f / equiv
+  end
+
   def products_needed_for_delivery
     # Find all orders attached to today's collections
     orders = Order.where(collection_id: collections.pluck(:id), status: [:pending, :paid])

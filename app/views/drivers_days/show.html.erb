@@ -2,6 +2,7 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><%= @drivers_day.date.strftime('%A, %B %d, %Y') %></h1>
     <%= link_to "Edit", edit_drivers_day_path(@drivers_day), class: "btn btn-sm btn-outline-secondary" %>
+
   </div>
 
   <% if @stat %>
@@ -155,7 +156,8 @@
         <p>Distance: <%= @drivers_day.start_kms || '—' %> → <%= @drivers_day.end_kms || '—' %> km</p>
       </strong>
       <strong>
-        <p>Buckets: <%= @drivers_day.total_buckets || '—' %></p>
+        <p>Buckets: <%= @drivers_day.total_buckets || '—' %> - <%= link_to 'view', drivers_day_buckets_path(@drivers_day)  %>
+        </p>
       </strong>
     </div>
   <% end %>
