@@ -32,6 +32,11 @@
               as: :integer,
               input_html: { min: 1, max: 20 },
               label: "Buckets per collection" %>
+          <%= f.input :collections_per_week,
+              as: :integer,
+              input_html: { min: 1, max: 7, value: 1 },
+              label: "Collections per week",
+              hint: "How many times per week should we collect? (e.g., 2 = twice per week)" %>
           <%= f.input :monthly_invoicing,
               as: :boolean,
               label: "Enable monthly invoicing (instead of upfront billing)",

@@ -120,10 +120,12 @@ class InvoiceBuilder
 
     volume_amount = subscription.buckets_per_collection * volume_product.price
 
+    collections_per_week = subscription.collections_per_week || 1
+
     if subscription.monthly_invoicing?
       # Calculate and store the full contract total
-      full_monthly_cost = monthly_product.price * subscription.duration
-      full_volume_cost = volume_amount * total_collections
+      full_monthly_cost = monthly_product.price * subscription.duration * collections_per_week
+      full_volume_cost = volume_amount * total_collections * collections_per_week
       contract_total = full_monthly_cost + full_volume_cost
 
       subscription.update!(
@@ -134,13 +136,13 @@ class InvoiceBuilder
       # Only invoice for the FIRST month
       invoice.invoice_items.create!(
         product: monthly_product,
-        quantity: 1,
+        quantity: 1 * collections_per_week,
         amount: monthly_product.price
       )
 
       invoice.invoice_items.create!(
         product: volume_product,
-        quantity: collections_per_month,
+        quantity: collections_per_month * collections_per_week,
         amount: volume_amount
       )
     else
@@ -153,12 +155,12 @@ class InvoiceBuilder
 
       if existing_monthly
         # Add to existing quantity
-        existing_monthly.update!(quantity: existing_monthly.quantity + subscription.duration)
+        existing_monthly.update!(quantity: existing_monthly.quantity + (subscription.duration * collections_per_week))
       else
         # Create new invoice item
         invoice.invoice_items.create!(
           product: monthly_product,
-          quantity: subscription.duration,
+          quantity: subscription.duration * collections_per_week,
           amount: monthly_product.price
         )
       end
@@ -171,12 +173,12 @@ class InvoiceBuilder
 
       if existing_volume
         # Add to existing quantity
-        existing_volume.update!(quantity: existing_volume.quantity + total_collections)
+        existing_volume.update!(quantity: existing_volume.quantity + (total_collections * collections_per_week))
       else
         # Create new invoice item
         invoice.invoice_items.create!(
           product: volume_product,
-          quantity: total_collections,
+          quantity: total_collections * collections_per_week,
           amount: volume_amount
         )
       end

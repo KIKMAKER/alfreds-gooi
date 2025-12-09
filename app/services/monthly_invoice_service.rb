@@ -38,6 +38,7 @@ class MonthlyInvoiceService
     # Get the bucket configuration
     bucket_size = @subscription.bucket_size || 45
     buckets_per_collection = @subscription.buckets_per_collection
+    collections_per_week = @subscription.collections_per_week || 1
 
     # Create the invoice
     invoice = Invoice.create!(
@@ -64,7 +65,7 @@ class MonthlyInvoiceService
 
     invoice.invoice_items.create!(
       product: monthly_product,
-      quantity: 1, # One month
+      quantity: 1 * collections_per_week, # One month × collections per week
       amount: monthly_product.price
     )
 
@@ -87,7 +88,7 @@ class MonthlyInvoiceService
 
     invoice.invoice_items.create!(
       product: volume_product,
-      quantity: collections_per_month,
+      quantity: collections_per_month * collections_per_week,
       amount: volume_amount
     )
 
