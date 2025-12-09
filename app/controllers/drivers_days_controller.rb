@@ -194,7 +194,7 @@ class DriversDaysController < ApplicationController
 
   def update
     if @drivers_day.update(drivers_day_params)
-      redirect_to root_path, notice: 'Driver\'s day was successfully updated.'
+      redirect_to drivers_days_path, notice: 'Driver\'s day was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end
