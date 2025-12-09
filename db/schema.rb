@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_09_124428) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_09_135313) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -449,6 +449,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_09_124428) do
     t.date "next_invoice_date"
     t.date "ending_soon_emailed_at"
     t.integer "collections_per_week", default: 1, null: false
+    t.decimal "starter_kit_installment", precision: 10, scale: 2
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
