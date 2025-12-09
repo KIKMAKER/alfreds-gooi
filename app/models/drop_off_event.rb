@@ -27,11 +27,16 @@ class DropOffEvent < ApplicationRecord
     total_weight_from_buckets / buckets.count
   end
 
-  # Full-equivalent count using the half flag
+  # Full-equivalent count normalized to 25L buckets
+  # A 45L bucket = 1.8 equivalent 25L buckets (45/25)
   def full_equivalent_count
-    full = buckets.where(half: false).count
-    halves = buckets.where(half: true).count
-    full + halves * 0.5
+    total = 0.0
+    buckets.each do |bucket|
+      size_multiplier = (bucket.bucket_size || 25).to_f / 25.0  # Normalize to 25L
+      half_multiplier = bucket.half? ? 0.5 : 1.0
+      total += size_multiplier * half_multiplier
+    end
+    total
   end
 
   # Average weight per full-equivalent bucket
@@ -39,6 +44,15 @@ class DropOffEvent < ApplicationRecord
     denom = full_equivalent_count.to_f
     return 0.0 if denom <= 0
     total_weight_from_buckets / denom
+  end
+
+  # Count buckets by size
+  def bucket_count_25l
+    buckets.where(bucket_size: 25).count
+  end
+
+  def bucket_count_45l
+    buckets.where(bucket_size: 45).count
   end
 
   # After completing drop-off, recalculate site totals and send email

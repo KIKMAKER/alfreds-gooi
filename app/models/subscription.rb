@@ -17,6 +17,7 @@ class Subscription < ApplicationRecord
   validates :street_address, presence: true
   validates :suburb, :plan, :duration, presence: true
   validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
+  validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
@@ -39,9 +40,10 @@ class Subscription < ApplicationRecord
   enum :plan, %i[once_off Standard XL Commercial]
   enum :collection_day, Date::DAYNAMES
 
+  MONDAY_SUBURBS = ["Observatory", "Woodstock", "De Waterkant",  "Bo-Kaap", "Foreshore"]
   TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
-  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Schotsche Kloof", "Woodstock", "Constantia", "Witteboomen"].sort!.freeze
-  THURSDAY_SUBURBS = ["Gardens", "Higgovale", "District Six", "Oranjezicht", "Cape Town", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Observatory", ].sort!.freeze
+  WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Schotsche Kloof", "Constantia", "Witteboomen"].sort!.freeze
+  THURSDAY_SUBURBS = ["Gardens", "Higgovale", "District Six", "Oranjezicht", "Cape Town", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Observatory" ].sort!.freeze
   FUTURE_SUBURBS = ["Sunnydale", "Sun Valley", "Noordhoek", "Glencairn", "Milnerton", "Tableview", "Grassy Park"]
   LEGACY_TO_CANONICAL = {
                           "Devil's Peak Estate"            => "Vredehoek",
@@ -100,8 +102,9 @@ class Subscription < ApplicationRecord
   def self.humanized_plans
     {
       once_off: 'Once Off',
-      standard: 'Standard',
-      XL: 'Extra Large'
+      Standard: 'Standard',
+      XL: 'Extra Large',
+      Commercial: 'Commercial'
     }
   end
 
@@ -299,6 +302,10 @@ class Subscription < ApplicationRecord
       referrer_id: User.find_by(referral_code: referral_code)&.id
     )
     referral&.completed!
+
+    # Send payment received confirmation email
+    SubscriptionMailer.with(subscription: self).payment_received.deliver_now
+    SubscriptionMailer.with(subscription: self).payment_received_alert.deliver_now
   end
 
 

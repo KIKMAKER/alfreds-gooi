@@ -10,7 +10,7 @@ class InvoiceMailerPreview < ActionMailer::Preview
     # subscription
     subscription = Subscription.first || Subscription.create!(
       user: user,
-      plan: "standard",
+      plan: "Standard",
       status: "active"
     )
 

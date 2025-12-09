@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 class WeeklyStats
-  # Buckets are 25L each
-  LITRES_PER_BUCKET = 25.0
-
   Result = Struct.new(
     :period_label, :start_date, :end_date,
-    :customers_served, :buckets_diverted, :litres_diverted,
+    :customers_served, :buckets_diverted, :kg_diverted,
     :skips, :new_customers, :route_kms, :soil_bags
   )
 
@@ -16,9 +13,9 @@ class WeeklyStats
 
     if mode == :route_week
       raise ArgumentError, "anchor_date required for :route_week" unless anchor_date
-      # Week starts Monday; route is Tue..Thu
-      week_start = anchor_date.beginning_of_week(:monday) + 1.day   # Tuesday
-      week_end   = week_start + 2.days                              # Thursday
+      # Week starts Monday; route is Mon..Thu
+      week_start = anchor_date.beginning_of_week(:monday)          # Monday
+      week_end   = week_start + 4.days                             # Thursday
       start_date ||= week_start
       end_date   ||= week_end
     else
@@ -33,7 +30,7 @@ class WeeklyStats
     served_ids       = cols.where(skip: false).distinct.pluck(:subscription_id)
     customers_served = served_ids.count
     buckets_diverted = days.sum(:total_buckets).to_f
-    litres_diverted  = (buckets_diverted * LITRES_PER_BUCKET).round(0)
+    kg_diverted      = days.sum(:total_net_kg).to_f.round(1)
 
     skips         = cols.where(skip: true).count
     new_customers = cols.where(new_customer: true).distinct.count(:subscription_id)
@@ -46,7 +43,7 @@ class WeeklyStats
 
     Result.new(
       period_label, start_date, end_date,
-      customers_served, buckets_diverted, litres_diverted,
+      customers_served, buckets_diverted, kg_diverted,
       skips, new_customers, route_kms
     )
     # soil_bags,

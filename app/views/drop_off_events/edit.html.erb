@@ -25,7 +25,14 @@
           <%= f.input :gross_kg,
                 label: "Scale reading (kg, incl. bucket/tare)",
                 input_html: { step: 0.01, min: 0, autofocus: true },
-                hint: "We'll subtract #{Bucket::TARE_KG} kg automatically." %>
+                hint: "Tare will be subtracted automatically (25L: #{Bucket::TARE_25L_KG}kg, 45L: #{Bucket::TARE_45L_KG}kg)" %>
+
+          <%= f.input :bucket_size,
+                as: :radio_buttons,
+                collection: [[25, '25L'], [45, '45L']],
+                label: "Bucket size",
+                item_wrapper_class: 'form-check form-check-inline radio-buttons',
+                wrapper_html: { class: 'mb-3' } %>
 
           <%= f.input :half,
                 as: :boolean,
@@ -58,7 +65,8 @@
         <div class="row text-center">
           <div class="col-6 col-md-3 mb-2">
             <div class="text-muted">Buckets</div>
-            <div class="fs-4 fw-bold"><%= @drop_off_event.buckets.count %></div>
+            <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_25l %> 25L</div>
+            <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_45l %> 45L</div>
           </div>
           <div class="col-6 col-md-3 mb-2">
             <div class="text-muted">Net kg</div>
@@ -87,6 +95,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Size</th>
           <th>Net kg</th>
           <th>Half?</th>
           <th>Added</th>
@@ -97,6 +106,7 @@
         <% @drop_off_event.buckets.order(created_at: :desc).each_with_index do |b, i| %>
           <tr class="align-middle">
             <td><%= i + 1 %></td>
+            <td><%= b.bucket_size %>L</td>
             <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
             <td><%= b.half? ? "Yes" : "No" %></td>
             <td><%= l b.created_at, format: :short %></td>
@@ -110,7 +120,7 @@
           </tr>
         <% end %>
         <% if @drop_off_event.buckets.empty? %>
-          <tr><td colspan="5" class="text-center text-muted">No buckets weighed yet.</td></tr>
+          <tr><td colspan="6" class="text-center text-muted">No buckets weighed yet.</td></tr>
         <% end %>
       </tbody>
     </table>

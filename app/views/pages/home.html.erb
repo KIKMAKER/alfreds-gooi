@@ -138,6 +138,7 @@
           data-controller="service-map"
           data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
           data-service-map-geo-url-value="<%= asset_path('Suburbs.geojson') %>"
+          data-service-map-monday-value='<%= raw Subscription::MONDAY_SUBURBS.to_json %>'
           data-service-map-tuesday-value='<%= raw Subscription::TUESDAY_SUBURBS.to_json %>'
           data-service-map-wednesday-value='<%= raw Subscription::WEDNESDAY_SUBURBS.to_json %>'
           data-service-map-thursday-value='<%= raw Subscription::THURSDAY_SUBURBS.to_json %>'>
@@ -149,6 +150,7 @@
                 <p><strong>Toggle:</strong></p>
                 <div class="filter-buttons gap-2">
                   <button class="btn-gooi-outline" type="button" data-day-filter="all">All</button>
+                  <button class="btn-gooi-outline" type="button" data-day-filter="Monday">Monday</button>
                   <button class="btn-gooi-outline" type="button" data-day-filter="Tuesday">Tuesday</button>
                   <button class="btn-gooi-outline" type="button" data-day-filter="Wednesday">Wednesday</button>
                   <button class="btn-gooi-outline" type="button" data-day-filter="Thursday">Thursday</button>

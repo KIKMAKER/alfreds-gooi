@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
+    resources :bulk_messages, only: [:index]
     resources :logistics, only: :index
     resources :collections, only: [:index, :edit, :update, :destroy]
     resources :discount_codes, only: [:index, :new, :create, :show]

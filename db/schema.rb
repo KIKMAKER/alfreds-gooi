@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_02_093134) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_08_145059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -444,6 +444,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_02_093134) do
     t.string "discount_code"
     t.integer "buckets_per_collection"
     t.integer "bucket_size", default: 45
+    t.boolean "monthly_invoicing", default: false, null: false
+    t.decimal "contract_total", precision: 10, scale: 2
+    t.date "next_invoice_date"
+    t.date "ending_soon_emailed_at"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
