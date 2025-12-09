@@ -49,6 +49,21 @@
                 <%= subscription.XL? ? "#{subscription.total_bags} buckets" : "#{subscription.total_bags} bags" %>
               </td>
               <td>
+                <% if subscription.monthly_invoicing? %>
+                  <div class="mb-2">
+                    <small class="text-muted d-block mb-1">Contract Progress</small>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar" role="progressbar"
+                           style="width: <%= subscription.invoicing_progress_percentage %>%;"
+                           aria-valuenow="<%= subscription.invoicing_progress_percentage %>"
+                           aria-valuemin="0"
+                           aria-valuemax="100">
+                        <%= subscription.invoicing_progress_percentage %>%
+                      </div>
+                    </div>
+                    <small class="text-muted">R<%= number_with_delimiter(subscription.amount_invoiced.to_i, delimiter: ' ') %> / R<%= number_with_delimiter(subscription.contract_total.to_i, delimiter: ' ') %></small>
+                  </div>
+                <% end %>
                 <% if subscription.invoices.any? %>
                   <% subscription.invoices.order(issued_date: :desc).each do |invoice| %>
                     <%= link_to "Invoice ##{invoice.number || invoice.id}",
@@ -123,26 +138,41 @@
             </div>
           </div>
 
-          <% if subscription.invoices.any? %>
+          <% if subscription.monthly_invoicing? || subscription.invoices.any? %>
             <hr>
-            <small class="text-muted">Invoices</small>
-            <div class="mt-2">
-              <% subscription.invoices.order(issued_date: :desc).each do |invoice| %>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <%= link_to "Invoice ##{invoice.number || invoice.id}",
-                              invoice_path(invoice),
-                              class: "small" %>
-                  <div>
-                    <small class="text-muted">R<%= invoice.total_amount.to_i %></small>
-                    <% if invoice.paid %>
-                      <span class="badge bg-success">Paid</span>
-                    <% else %>
-                      <span class="badge bg-danger">Unpaid</span>
-                    <% end %>
-                  </div>
+            <% if subscription.monthly_invoicing? %>
+              <small class="text-muted d-block mb-2">Contract Progress</small>
+              <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar" role="progressbar"
+                     style="width: <%= subscription.invoicing_progress_percentage %>%;"
+                     aria-valuenow="<%= subscription.invoicing_progress_percentage %>"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                  <%= subscription.invoicing_progress_percentage %>%
                 </div>
-              <% end %>
-            </div>
+              </div>
+              <small class="text-muted d-block mb-3">R<%= number_with_delimiter(subscription.amount_invoiced.to_i, delimiter: ' ') %> / R<%= number_with_delimiter(subscription.contract_total.to_i, delimiter: ' ') %></small>
+            <% end %>
+            <% if subscription.invoices.any? %>
+              <small class="text-muted">Invoices</small>
+              <div class="mt-2">
+                <% subscription.invoices.order(issued_date: :desc).each do |invoice| %>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <%= link_to "Invoice ##{invoice.number || invoice.id}",
+                                invoice_path(invoice),
+                                class: "small" %>
+                    <div>
+                      <small class="text-muted">R<%= invoice.total_amount.to_i %></small>
+                      <% if invoice.paid %>
+                        <span class="badge bg-success">Paid</span>
+                      <% else %>
+                        <span class="badge bg-danger">Unpaid</span>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       <% end %>
