@@ -15,7 +15,7 @@ class WeeklyStats
       raise ArgumentError, "anchor_date required for :route_week" unless anchor_date
       # Week starts Monday; route is Mon..Thu
       week_start = anchor_date.beginning_of_week(:monday)          # Monday
-      week_end   = week_start + 3.days                             # Thursday
+      week_end   = week_start + 4.days                             # Thursday
       start_date ||= week_start
       end_date   ||= week_end
     else
