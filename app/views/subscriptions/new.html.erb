@@ -37,6 +37,10 @@
               input_html: { min: 1, max: 7, value: 1 },
               label: "Collections per week",
               hint: "How many times per week should we collect? (e.g., 2 = twice per week)" %>
+          <%= f.input :is_new_customer,
+              as: :boolean,
+              label: "Include starter buckets",
+              hint: "Add starter bucket cost to invoice (split into installments if monthly invoicing is enabled)" %>
           <%= f.input :monthly_invoicing,
               as: :boolean,
               label: "Enable monthly invoicing (instead of upfront billing)",

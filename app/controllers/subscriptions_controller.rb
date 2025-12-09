@@ -110,7 +110,7 @@ class SubscriptionsController < ApplicationController
         @invoice = InvoiceBuilder.new(
           subscription: @subscription,
           og: @subscription.user.og || false,
-          is_new: false
+          is_new: @subscription.is_new_customer
         ).call
 
         flash[:notice] = "Subscription created successfully. Invoice ##{@invoice.id} sent to customer."

@@ -51,18 +51,36 @@ class InvoiceBuilder
     # For commercial subscriptions, add starter kit quantity based on buckets_per_collection
     quantity = subscription.Commercial? ? subscription.buckets_per_collection : 1
 
-    # Find existing kit item to consolidate
-    existing_kit = invoice.invoice_items.find_by(
-      product: kit,
-      amount: kit.price
-    )
+    # For monthly invoicing, split the cost into installments
+    if subscription.monthly_invoicing? && subscription.duration.present?
+      # Calculate installment amount (total cost / duration)
+      total_cost = kit.price * quantity
+      installment_amount = total_cost / subscription.duration
 
-    if existing_kit
-      # Add to existing quantity
-      existing_kit.update!(quantity: existing_kit.quantity + quantity)
+      # Add as monthly installment (quantity = 1 per month)
+      invoice.invoice_items.create!(
+        product: kit,
+        quantity: 1,
+        amount: installment_amount
+      )
+
+      # Store the installment amount on subscription for future invoices
+      subscription.update_column(:starter_kit_installment, installment_amount)
     else
-      # Create new invoice item
-      invoice.invoice_items.create!(product: kit, quantity: quantity, amount: kit.price)
+      # Standard behavior: charge full amount upfront
+      # Find existing kit item to consolidate
+      existing_kit = invoice.invoice_items.find_by(
+        product: kit,
+        amount: kit.price
+      )
+
+      if existing_kit
+        # Add to existing quantity
+        existing_kit.update!(quantity: existing_kit.quantity + quantity)
+      else
+        # Create new invoice item
+        invoice.invoice_items.create!(product: kit, quantity: quantity, amount: kit.price)
+      end
     end
   end
 
