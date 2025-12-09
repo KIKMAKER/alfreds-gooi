@@ -26,7 +26,7 @@
           <%= f.input :gross_kg,
                 label: "Scale reading (kg, incl. bucket/tare)",
                 input_html: { step: 0.01, min: 0, autofocus: true },
-                hint: "We'll subtract #{Bucket::TARE_KG} kg automatically." %>
+                hint: "Tare will be subtracted automatically (25L: #{Bucket::TARE_25L_KG}kg, 45L: #{Bucket::TARE_45L_KG}kg)" %>
 
           <%= f.input :bucket_size,
                 as: :radio_buttons,
