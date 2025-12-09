@@ -32,6 +32,10 @@
               as: :integer,
               input_html: { min: 1, max: 20 },
               label: "Buckets per collection" %>
+          <%= f.input :monthly_invoicing,
+              as: :boolean,
+              label: "Enable monthly invoicing (instead of upfront billing)",
+              hint: "Customer will receive one invoice per month instead of a single invoice for the full contract" %>
         </div>
 
         <%= f.button :submit, class:'gooi-button' %>

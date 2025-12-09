@@ -6,6 +6,10 @@ class CreateCollectionsJob < ApplicationJob
     day_name = next_collection_date.strftime("%A")
     process_day(next_collection_date, day_name)
     Rails.logger.info "Ran Create Collection Job"
+
+    # Check for monthly invoices that need to be generated
+    MonthlyInvoiceService.process_all
+    Rails.logger.info "Checked for monthly invoices to generate"
   end
 
   private

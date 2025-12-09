@@ -91,6 +91,23 @@ class Subscription < ApplicationRecord
     collections.where("created_at >= ?", n.months.ago).sum(:buckets)
   end
 
+  def amount_invoiced
+    return 0 unless monthly_invoicing?
+    invoices.sum(:total_amount)
+  end
+
+  def amount_remaining
+    return 0 unless monthly_invoicing?
+    return 0 unless contract_total
+    contract_total - amount_invoiced
+  end
+
+  def invoicing_progress_percentage
+    return 0 unless monthly_invoicing?
+    return 0 unless contract_total && contract_total.positive?
+    (amount_invoiced / contract_total * 100).round
+  end
+
   def self.active_subs_for(day)
     all.where(collection_day: day).includes(:collections).order(:collection_order)
   end
