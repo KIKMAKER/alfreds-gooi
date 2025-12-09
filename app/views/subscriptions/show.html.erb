@@ -26,6 +26,23 @@
       <div>
         <br>
         <h2>Invoices</h2>
+        <% if @subscription.monthly_invoicing? %>
+          <div class="mb-3 p-3 bg-light rounded">
+            <h5>Contract Progress</h5>
+            <div class="progress mb-2" style="height: 25px;">
+              <div class="progress-bar" role="progressbar"
+                   style="width: <%= @subscription.invoicing_progress_percentage %>%;"
+                   aria-valuenow="<%= @subscription.invoicing_progress_percentage %>"
+                   aria-valuemin="0"
+                   aria-valuemax="100">
+                <%= @subscription.invoicing_progress_percentage %>%
+              </div>
+            </div>
+            <p><strong>Contract Total:</strong> R<%= number_with_delimiter(@subscription.contract_total) %></p>
+            <p><strong>Invoiced to Date:</strong> R<%= number_with_delimiter(@subscription.amount_invoiced) %></p>
+            <p><strong>Remaining:</strong> R<%= number_with_delimiter(@subscription.amount_remaining) %></p>
+          </div>
+        <% end %>
         <% @subscription.invoices.each do |invoice| %>
           <%= link_to "id. #{invoice.id} - R#{invoice.total_amount}", invoice_path(invoice)  %>
         <% end %>
