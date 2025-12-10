@@ -76,7 +76,7 @@ namespace :data do
       xl_buckets = dd.collections
                      .joins(:subscription)
                      .where(subscriptions: { plan: 'XL' })
-                     .count
+                     .sum(:buckets)
 
       # Skip if no data
       if standard_bags == 0 && xl_buckets == 0
