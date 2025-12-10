@@ -28,7 +28,7 @@ namespace :data do
       xl_buckets = dd.collections
                      .joins(:subscription)
                      .where(subscriptions: { plan: 'XL' })
-                     .count # Each XL collection = 1 full bucket
+                     .sum(:buckets) # Each XL collection = 1 full bucket
 
       # Calculate bag buckets (physical buckets that held bags)
       bag_buckets = dd.total_buckets - xl_buckets
