@@ -15,6 +15,10 @@ class DriversDay < ApplicationRecord
   after_commit :send_weekly_stats_if_thursday_finished,
                if: -> { saved_change_to_end_time? && end_time.present? }
 
+  # Send daily snapshot email when any day is completed
+  after_commit :send_daily_snapshot_email,
+               if: -> { saved_change_to_end_time? && end_time.present? && day_statistic.present? }
+
   # custom methods
 
   def note_nil_zero?
@@ -155,6 +159,14 @@ class DriversDay < ApplicationRecord
 
     # If you prefer a background hop (still immediate), swap to:
     # SendWeeklyStatsJob.perform_later(anchor_date: date)
+  end
+
+  def send_daily_snapshot_email
+    # Send synchronously so it lands as soon as day is completed
+    DailySnapshotMailer.report(drivers_day_id: id).deliver_now
+  rescue StandardError => e
+    # Log error but don't fail the commit
+    Rails.logger.error("Failed to send daily snapshot email for DriversDay #{id}: #{e.message}")
   end
 
   def set_default_buckets

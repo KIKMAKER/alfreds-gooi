@@ -1,0 +1,24 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">
+    Daily Impact Snapshot 📊
+  </h1>
+
+  <p style="font-size: 1.1rem; margin: 1rem 0;">
+    Your daily impact snapshot for <strong><%= @drivers_day.date.strftime('%A, %B %d, %Y') %></strong> is ready!
+  </p>
+
+  <p style="font-size: 1.1rem; margin: 1rem 0;">
+    Click below to view your beautiful impact card:
+  </p>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= @snapshot_url %>"
+       style="background-color: #FBB718; color: white; padding: 12px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; display: inline-block;">
+      View Daily Snapshot ✨
+    </a>
+  </p>
+
+  <p style="font-size: 0.9rem; color: #666; margin-top: 2rem;">
+    Keep up the great work making Cape Town more sustainable!
+  </p>
+</div>

@@ -5,12 +5,12 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
     next_week = Date.today + 7
     puts "Creating drop-off events for #{next_week}"
 
-    process_day(next_week, next_week.wday)
+    process_day(next_week)
   end
 
   private
 
-  def process_day(drop_off_date, day_name)
+  def process_day(drop_off_date)
     # Create drivers_day entry
     driver = User.find_by(role: 'driver')
     unless driver
@@ -24,19 +24,27 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
     )
     puts "Driver's Day processed for #{drop_off_date}: #{drivers_day.user.first_name} with ID: #{drivers_day.id}"
 
-    # Find all drop-off sites assigned to this day
-    drop_off_sites = DropOffSite.where(collection_day: day_name)
+    # Find last week's DriversDay for the same day to replicate its drop-off events
+    this_week_drivers_day = DriversDay.find_by(date: Date.today)
 
-    drop_off_sites.each do |site|
-      # Create drop-off event for this site if it doesn't exist
-      drop_off_event = DropOffEvent.find_or_create_by!(
-        drivers_day: drivers_day,
-        drop_off_site: site,
-        date: drop_off_date
-      )
-      puts "Created drop-off event for #{site.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
+    if this_week_drivers_day
+      # Get drop-off events from last week and recreate them for this week
+      this_week_events = this_week_drivers_day.drop_off_events
+
+      this_week_events.each do |this_event|
+        # Create drop-off event for the same site this week
+        drop_off_event = DropOffEvent.find_or_create_by!(
+          drivers_day: drivers_day,
+          drop_off_site: this_event.drop_off_site,
+          date: drop_off_date
+        )
+        puts "Created drop-off event for #{this_week_drivers_day.drop_off_event.drop_off_site.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
+      end
+
+      puts "Completed creating #{this_week_events.count} drop-off events for #{drop_off_date} based on last week"
+    else
+      puts "No DriversDay found for #{drop_off_date} - skipping drop-off event creation"
+      puts "Tip: Manually create drop-off events for this day, and they'll auto-replicate next week"
     end
-
-    puts "Completed creating #{drop_off_sites.count} drop-off events for #{drop_off_date}"
   end
 end

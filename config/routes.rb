@@ -121,6 +121,7 @@ Rails.application.routes.draw do
       get :end
       patch :end
       get :collections
+      get :snapshot
     end
     resources :collections, only: [:index] do
       collection do

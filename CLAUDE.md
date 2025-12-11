@@ -163,6 +163,7 @@ Mailers in `app/mailers/`:
 - `InvoiceMailer` - Invoice sending
 - `InterestMailer` - New interest notification
 - `WeeklyStatsMailer` - Thursday weekly statistics report
+- `DailySnapshotMailer` - Daily impact snapshot link sent when DriversDay completed
 - `UserMailer` - General user communications
 
 Configured to use Postmark Rails for delivery.

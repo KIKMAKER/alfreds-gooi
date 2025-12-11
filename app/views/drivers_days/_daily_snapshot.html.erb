@@ -5,9 +5,9 @@
       <div class="gooi-logo-snapshot">gooi report<span class="sparkle">✨</span></div>
       <div class="snapshot-date"><%= @drivers_day.date.strftime('%A, %B %d, %Y').upcase %></div>
     </div>
-    <h1 class="snapshot-headline">
-      Today we kept <span class="highlight"><%= number_with_delimiter(@kg_diverted) %></span> kg from landfills
-    </h1>
+    <!--<h1 class="snapshot-headline">
+      Today we kept <span class="highlight"><%#= number_with_delimiter(@kg_diverted) %></span> kg from landfills
+    </h1>-->
   </div>
 
   <div class="snapshot-body">
@@ -18,8 +18,8 @@
       </div>
 
       <div class="stat-item">
-        <div class="stat-value"><%= number_with_precision(@buckets_diverted, precision: 1) %></div>
-        <div class="stat-label">Buckets Diverted</div>
+        <div class="stat-value"><%= number_with_precision(@kg_diverted, precision: 1) %></div>
+        <div class="stat-label">Collected (kg)</div>
       </div>
 
       <div class="stat-item">
@@ -29,7 +29,7 @@
 
       <div class="stat-item">
         <div class="stat-value"><%= @compost_kg %></div>
-        <div class="stat-label">Compost Created</div>
+        <div class="stat-label">Compost Created (kg)</div>
       </div>
     </div>
 
