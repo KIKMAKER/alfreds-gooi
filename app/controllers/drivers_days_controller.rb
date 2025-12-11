@@ -188,6 +188,24 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.find(params[:id])
     @collections = @drivers_day.collections
     @stat = @drivers_day.day_statistic
+
+    # Prepare snapshot card variables
+    if @stat
+      # Get new customers count from collections (not in day_statistic)
+      @new_customers = @collections.where(new_customer: true).distinct.count(:subscription_id)
+
+      # Derived calculations
+      @compost_kg = (@stat.net_kg * 0.35).round # 35% conversion rate
+      @landfill_m3 = (@stat.net_kg / 400.0).round(1) # ~400kg per m³ density
+
+      # Format values for display
+      @kg_diverted = @stat.net_kg.round
+      @customers_served = @stat.households
+      @buckets_diverted = @stat.full_equiv
+      @co2_avoided = @stat.avoided_co2e_kg.round
+      @trees_equivalent = @stat.trees_net.round
+    end
+
   end
 
   def edit; end

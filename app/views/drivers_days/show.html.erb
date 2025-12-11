@@ -1,24 +1,11 @@
 <div class="driver-wrapper">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><%= @drivers_day.date.strftime('%A, %B %d, %Y') %></h1>
+    <h1><%= @drivers_day.date.strftime('%A, %B %d, %Y') %> done!</h1>
     <%= link_to "Edit", edit_drivers_day_path(@drivers_day), class: "btn btn-sm btn-outline-secondary" %>
 
   </div>
 
   <% if @stat %>
-    <div class="mb-4">
-      <h3>Environmental Impact 🌳</h3>
-      <div class="card p-4 mb-4" style="border-radius:1em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        <div class="text-center">
-          <h2 class="mb-0"><%= number_with_precision(@stat.trees_net, precision: 1) %> trees</h2>
-          <p class="mb-0">equivalent planted today</p>
-          <div class="mt-3">
-            <small class="d-block">From waste diverted: <%= number_with_precision(@stat.trees_gross, precision: 1) %> trees</small>
-            <small class="d-block">To offset driving: <%= number_with_precision(@stat.trees_to_offset_drive, precision: 1) %> trees</small>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="mb-4">
       <strong>
@@ -141,6 +128,9 @@
         <p class="mb-0"><%= @drivers_day.message_from_alfred %></p>
       </div>
     <% end %>
+    <h3 class="mb-3">Customer stats</h3>
+
+    <%= render 'daily_snapshot' %>
 
   <% else %>
     <div class="alert alert-warning">
@@ -163,8 +153,8 @@
   <% end %>
 
   <br>
-  <div class="d-flex gap-2">
-    <%= link_to "All Days", drivers_days_path, class: "gooi-button" %>
-    <%= link_to "View Collections", collections_drivers_day_path(@drivers_day), class: "gooi-button" %>
+  <div class="d-flex gap-2 mb-3">
+    <%= link_to "All Days", drivers_days_path, class: "submit-btn" %>
+    <%= link_to "View Collections", collections_drivers_day_path(@drivers_day), class: "submit-btn" %>
   </div>
 </div>
