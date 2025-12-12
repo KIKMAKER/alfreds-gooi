@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   resources :drop_off_site_managers, only: [:index, :show, :edit, :update]
 
   patch 'optimise_route', to: 'collections#optimise_route'
+  post 'optimise_route_with_routexl', to: 'collections#optimise_route_with_routexl'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"
   post "perform_create_next_week_collections", to: "collections#perform_create_next_week_collections"
   # Defines getting the csv - the form then sends the data to the import_csv route

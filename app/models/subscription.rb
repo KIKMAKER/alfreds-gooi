@@ -109,7 +109,7 @@ class Subscription < ApplicationRecord
   end
 
   def self.active_subs_for(day)
-    all.where(collection_day: day).includes(:collections).order(:collection_order)
+    all.where(collection_day: day).includes(:collections).order('collection_order NULLS LAST')
   end
 
   def self.count_skip_subs_for(day)
