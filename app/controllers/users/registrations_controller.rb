@@ -119,8 +119,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     ])
   end
 
-
-
   # def after_sign_up_path_for(resource)
   #   if resource.persisted?
   #     @subscription = Subscription.create!(
@@ -167,7 +165,5 @@ class Users::RegistrationsController < Devise::RegistrationsController
       root_path
     end
   end
-
-
 
 end

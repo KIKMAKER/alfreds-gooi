@@ -8,7 +8,9 @@
       <%= f.input :last_name, required: true, autofocus: true, input_html: { autocomplete: "family-name" } %>
       <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email" } %>
       <%= f.input :phone_number, required: true, autofocus: true, input_html: { autocomplete: "tel" } %>
-      <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+
+      <% if params[:simple] == 'true' %>
+        <!-- SIMPLE MODE: No Mapbox, plain text input -->
         <%= f.simple_fields_for :subscriptions do |subscription_fields| %>
           <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
           <% if @plan != 'Commercial' %>
@@ -75,10 +77,83 @@
 
           <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
-          <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
+          <%= subscription_fields.input :street_address, label: "Street Address", placeholder: "e.g., 123 Main Street, Gardens" %>
+        <% end %>
+      <% else %>
+        <!-- NORMAL MODE: Mapbox autocomplete -->
+        <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+          <%= f.simple_fields_for :subscriptions do |subscription_fields| %>
+            <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
+            <% if @plan != 'Commercial' %>
+              <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off" %>
+              <p class="mb-1">or</p>
+              <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code" %>
+            <% end %>
+
+            <h3 class="mt-2"><%= @plan == 'Commercial' ? 'Commercial Collection Details' : 'Subscription details' %></h3>
+
+            <% if @plan == 'Commercial' %>
+              <!-- Commercial-specific fields -->
+              <div class="mb-4" data-controller="commercial-pricing">
+              <p>Estimate the volume to be collected and we will work out a price just for you!</p>
+              <br>
+                <label class="form-label"><strong>Contract Duration</strong></label>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <%= radio_button_tag 'duration', '12', @duration == '12' || @duration.nil?, class: 'form-check-input', data: { action: 'commercial-pricing#calculate' } %>
+                    <%= label_tag 'duration_12', '12 months (R200/month)', class: 'form-check-label' %>
+                  </div>
+                  <div class="form-check">
+                    <%= radio_button_tag 'duration', '6', @duration == '6', class: 'form-check-input', data: { action: 'commercial-pricing#calculate' } %>
+                    <%= label_tag 'duration_6', '6 months (R220/month)', class: 'form-check-label' %>
+                  </div>
+                  <div class="form-check">
+                    <%= radio_button_tag 'duration', '3', @duration == '3', class: 'form-check-input', data: { action: 'commercial-pricing#calculate' } %>
+                    <%= label_tag 'duration_3', '3 months (R240/month)', class: 'form-check-label' %>
+                  </div>
+                </div>
+
+                <label class="form-label"><strong>How many 45L buckets per collection?</strong></label>
+                <%= number_field_tag 'buckets_per_collection', @buckets_per_collection || 1,
+                    min: 1, max: 20,
+                    class: 'form-control mb-3',
+                    data: { action: 'commercial-pricing#calculate', commercial_pricing_target: 'buckets' } %>
+                <small class="text-muted">Estimate how much waste you generate weekly</small>
+
+                <div class="mt-3 p-3 bg-light rounded" data-commercial-pricing-target="estimate">
+                  <p class="mb-1"><strong>Estimated cost:</strong></p>
+                  <p class="mb-0" data-commercial-pricing-target="price">Calculate above</p>
+                </div>
+              </div>
+
+              <%= subscription_fields.hidden_field :plan, value: @plan %>
+              <%= subscription_fields.hidden_field :duration, value: @duration, id: 'subscription_duration' %>
+              <%= subscription_fields.hidden_field :buckets_per_collection, value: @buckets_per_collection, id: 'subscription_buckets' %>
+              <%= subscription_fields.hidden_field :is_paused, value: true %>
+
+            <% else %>
+              <!-- Residential-specific fields -->
+              <p>Tick the box below to add multiple subscriptions (in the next step).</p>
+              <div class="mb-3">
+                <%= check_box_tag :multi_location, '1', false, id: 'multi_location' %>
+                <%= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
+              </div>
+
+              <%= subscription_fields.hidden_field :plan, value: @plan %>
+              <%= subscription_fields.hidden_field :duration, value: @duration %>
+              <%= subscription_fields.hidden_field :is_paused, value: true %>
+            <% end %>
+
+            <h3 class="my-3">Pick Up Location</h3>
+
+            <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
+            <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
+            <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
           <% end %>
         </div>
-        <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
+      <% end %>
+
+      <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
         <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
 
         <div class="form-actions">
