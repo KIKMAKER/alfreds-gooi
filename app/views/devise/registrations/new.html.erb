@@ -44,19 +44,19 @@
             <p class="mb-1">or</p>
             <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code" %>
 
-            <h3 class="mt-2">Subscription details</h3>
-
+            <h3 class="mt-5">Subscription details</h3>
+<!--
             <p>Tick the box below to add multiple subscriptions (in the next step).</p>
             <div class="mb-3">
-              <%= check_box_tag :multi_location, '1', false, id: 'multi_location' %>
-              <%= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
-            </div>
-
+              <%#= check_box_tag :multi_location, '1', false, id: 'multi_location' %>-->
+              <%#= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
+<!--            </div>
+-->
             <%= subscription_fields.hidden_field :plan, value: @plan %>
             <%= subscription_fields.hidden_field :duration, value: @duration %>
             <%= subscription_fields.hidden_field :is_paused, value: true %>
 
-            <h3 class="my-3">Pick Up Location</h3>
+            <!--<h3 class="my-3">Pick Up Location</h3>-->
 
             <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
             <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
@@ -66,12 +66,12 @@
       <% end %>
 
       <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
-        <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
+      <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
 
-        <div class="form-actions">
-          <%= f.button :submit, "Sign up", class: 'submit-btn' %>
-        </div>
-      <% end %>
-      <%= render "devise/shared/links" %>
-    </div>
+      <div class="form-actions">
+        <%= f.button :submit, "Sign up", class: 'submit-btn' %>
+      </div>
+    <% end %>
+    <%= render "devise/shared/links" %>
   </div>
+</div>
