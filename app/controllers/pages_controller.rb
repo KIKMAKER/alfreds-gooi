@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home, :story ]
+  skip_before_action :authenticate_user!, only: [ :home, :story, :commercial ]
 
   def home
     @discount_code = params[:discount_code]
@@ -36,6 +36,10 @@ class PagesController < ApplicationController
   end
 
   def story
+  end
+
+  def commercial
+    # Static page, no logic needed
   end
 
   private

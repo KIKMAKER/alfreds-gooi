@@ -157,6 +157,7 @@ Rails.application.routes.draw do
   # static pages
   root "pages#home"
   get "story", to: "pages#story"
+  get "commercial", to: "pages#commercial"
 
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug
