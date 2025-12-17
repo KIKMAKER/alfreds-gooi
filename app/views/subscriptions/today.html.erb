@@ -72,7 +72,6 @@
                   <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
                 <% end %>
               <% end %>
-              <% raise %>
             </div>
             <div class="address">
               <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
