@@ -40,7 +40,13 @@ class Users::SessionsController < Devise::SessionsController
   protected
 
   def after_sign_in_path_for(resource)
-    # PRIORITY: role-based
+    # PRIORITY 1: Check if user was trying to access a specific path
+    stored = stored_location_for(resource)
+    if stored.present? && safe_redirect_path?(stored)
+      return stored
+    end
+
+    # PRIORITY 2: Role-based default redirects (if no stored location)
     return this_week_collections_path if resource.admin?
 
     if resource.driver?
@@ -62,13 +68,7 @@ class Users::SessionsController < Devise::SessionsController
 
     return drop_off_site_manager_path(resource.drop_off_sites.first) if resource.drop_off?
 
-    # FALLBACK: use Devise helper (fetches & clears) if you still want “return to”
-    stored = stored_location_for(resource)
-
-    if stored.present? && safe_redirect_path?(stored)
-      return stored
-    end
-
+    # PRIORITY 3: Final fallback
     root_path
   end
 
