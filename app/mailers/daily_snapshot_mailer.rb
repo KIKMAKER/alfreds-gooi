@@ -8,7 +8,7 @@ class DailySnapshotMailer < ApplicationMailer
     @snapshot_url = drivers_day_snapshot_url(@drivers_day)
 
     mail(
-      to: ENV.fetch("GOOI_STATS_EMAIL_TO", "kristen.c.kennedy@gmail.com"),
+      to: to,
       subject: "Daily Impact Snapshot: #{@drivers_day.date.strftime('%A, %B %d, %Y')}"
     )
   end
