@@ -22,6 +22,7 @@
           <% end %>
         </p>
       </strong>
+      <%= link_to "buckets", drivers_day_buckets_path(@drivers_day) %>
     </div>
 
     <div>
@@ -128,7 +129,7 @@
         <p class="mb-0"><%= @drivers_day.message_from_alfred %></p>
       </div>
     <% end %>
-    <h3 class="mb-3">Customer stats</h3>
+    <h3 class="mb-3">Customer Stats</h3>
 
     <%= render 'daily_snapshot' %>
 

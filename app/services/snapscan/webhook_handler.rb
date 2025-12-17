@@ -38,7 +38,7 @@ module Snapscan
 
       payment_amount = @payload["totalAmount"].to_f / 100.0 # SnapScan sends in cents
       invoice_total = @invoice.total_amount.to_f
-      pending_subscriptions = @user.subscriptions.where(status: :pending, is_paused: true).order(created_at: :asc)
+      pending_subscriptions = @user.subscriptions.where(status: :pending).order(created_at: :asc)
 
       ActiveRecord::Base.transaction do
         payment = Payment.create!(

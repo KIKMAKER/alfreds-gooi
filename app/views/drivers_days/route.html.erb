@@ -51,6 +51,8 @@
                   <%= link_to "Meet #{item.subscription.user.first_name}", edit_collection_path(item) , class: "small-yellow-btn"%>
                 <% elsif item.subscription.user.drop_off? %>
                   <%= link_to "Drop off", edit_collection_path(item) , class: "small-yellow-btn"%>
+                  <% elsif item.subscription.Commercial? %>
+                <%= link_to "#{pluralize(item.buckets_45l + item.buckets_25l, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
                 <% else %>
                   <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
                 <% end %>

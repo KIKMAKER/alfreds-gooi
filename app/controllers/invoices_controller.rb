@@ -91,7 +91,7 @@ class InvoicesController < ApplicationController
 
   def paid
     user = @invoice.subscription.user
-    pending_subscriptions = user.subscriptions.where(status: :pending, is_paused: true)
+    pending_subscriptions = user.subscriptions.where(status: :pending)
     active_subscriptions = user.subscriptions.where(status: :active, is_paused: false)
 
     ActiveRecord::Base.transaction do

@@ -166,7 +166,7 @@ class SubscriptionsController < ApplicationController
     # end
 
     # Show all pending subscriptions for this user (including the initial one)
-    @subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending).order(created_at: :asc)
+    @subscriptions = current_user.subscriptions.where(status: :pending).order(created_at: :asc)
     # Empty subscription for the form
     @subscription = Subscription.new
   end
@@ -193,7 +193,7 @@ class SubscriptionsController < ApplicationController
       flash[:success] = "Location added!"
       redirect_to add_locations_subscriptions_path
     else
-      @subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending).order(created_at: :asc)
+      @subscriptions = current_user.subscriptions.where(status: :pending).order(created_at: :asc)
       render :add_locations, status: :unprocessable_entity
     end
   end
@@ -319,7 +319,7 @@ class SubscriptionsController < ApplicationController
     if @subscription.invoices.empty?
       # Check if this is a multi-location signup
       # Find all pending subscriptions for this user (multi-location case)
-      user_pending_subs = current_user.subscriptions.where(is_paused: true, status: :pending)
+      user_pending_subs = current_user.subscriptions.where(status: :pending)
 
       if user_pending_subs.count > 1
         # Multi-location: create one invoice for all subscriptions
@@ -534,7 +534,7 @@ class SubscriptionsController < ApplicationController
 
   def finish_multi_location_signup
     # Get all pending subscriptions for this multi-location signup
-    subscriptions = current_user.subscriptions.where(is_paused: true, status: :pending)
+    subscriptions = current_user.subscriptions.where(status: :pending)
 
     # Send welcome emails
     first_subscription = subscriptions.first

@@ -21,8 +21,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       duration: @duration,
       discount_code: @discount_code,
       referral_code: @referral_code,
-      buckets_per_collection: @buckets_per_collection,
-      is_paused: true
+      buckets_per_collection: @buckets_per_collection
     )
 
     respond_with resource

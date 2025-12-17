@@ -48,40 +48,45 @@
           class="sortable-item">
             <div class="name">
               <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
-            <% if current_user.admin? %>
-              <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
-            <% end %>
-          </div>
-          <div class="bag">
-            <% if item.skip %>
-              <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
-            <% else %>
-              <% if item.new_customer %>
-                <%= link_to "Meet", edit_collection_path(item) , class: "small-yellow-btn"%>
-              <% elsif item.subscription.Standard? %>
-                <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
-              <% elsif item.subscription.XL? %>
-                <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
-              <% elsif item.subscription.Commercial? %>
-                <%= link_to "#{pluralize(item.subscription.buckets_per_collection, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
-              <% else %>
-                <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% if current_user.admin? %>
+                <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
               <% end %>
-            <% end %>
-          </div>
-          <div class="address">
-            <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
-          </div>
-          <div class="emojies">
-            <p class="emoji"><%= link_to "🚗", item.subscription.user.generate_whatsapp_link("Hello #{item.user.first_name}. I am on my way!"), target: :_blank %></p>
-            <p class="emoji"><%= link_to "🏠", item.subscription.user.generate_whatsapp_link("I am at your house."), target: :_blank %></p>
-            <p class="emoji"><%= link_to "🪴", item.subscription.user.generate_whatsapp_link("Thank you #{item.user.first_name}, I have got your bag. Hope you have a wonderful weekend."), target: :_blank %></p>
-          </div>
-        </li>
+            </div>
+            <div class="bag">
+              <% if item.skip %>
+                <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% else %>
+                <% if (item.bags || 0) >= 1 %>
+                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif (item.buckets || 0) >= 1 %>
+                  <%= link_to "#{pluralize(item.buckets, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif item.new_customer %>
+                  <%= link_to "Meet", edit_collection_path(item) , class: "small-yellow-btn"%>
+                <% elsif item.subscription.Standard? %>
+                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif item.subscription.XL? %>
+                  <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
+                <% elsif item.subscription.Commercial? %>
+                  <%= link_to "#{pluralize(item.buckets_45l + item.buckets_25l, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
+                <% else %>
+                  <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% end %>
+              <% end %>
+              <% raise %>
+            </div>
+            <div class="address">
+              <%= link_to item.subscription.street_address&.truncate(20), "https://maps.google.com/?q=#{item.subscription.street_address}", target: :_blank %>
+            </div>
+            <div class="emojies">
+              <p class="emoji"><%= link_to "🚗", item.subscription.user.generate_whatsapp_link("Hello #{item.user.first_name}. I am on my way!"), target: :_blank %></p>
+              <p class="emoji"><%= link_to "🏠", item.subscription.user.generate_whatsapp_link("I am at your house."), target: :_blank %></p>
+              <p class="emoji"><%= link_to "🪴", item.subscription.user.generate_whatsapp_link("Thank you #{item.user.first_name}, I have got your bag. Hope you have a wonderful weekend."), target: :_blank %></p>
+            </div>
+          </li>
+        <% end %>
       <% end %>
-    <% end %>
-  </ul>
-  <!--</ul>-->
-</div>
+    </ul>
+    <!--</ul>-->
+  </div>
 
 </div>
