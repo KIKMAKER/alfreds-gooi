@@ -69,6 +69,9 @@ Rails.application.routes.draw do
 
     end
   end
+
+  resources :quotations
+
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do
     resource :business_profile, only: [:new, :create, :edit, :update]

@@ -1,0 +1,91 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Quotation #<%= @quotation.number %></h1>
+    <div>
+      <%= link_to 'Edit', edit_quotation_path(@quotation), class: 'btn btn-secondary' %>
+      <%= link_to 'Back to List', quotations_path, class: 'btn btn-outline-secondary' %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Customer/Prospect Details</h5>
+        </div>
+        <div class="card-body">
+          <% if @quotation.user.present? %>
+            <p><strong>Customer:</strong> <%= @quotation.customer_name %></p>
+            <p><strong>Email:</strong> <%= @quotation.customer_email %></p>
+            <p><strong>Phone:</strong> <%= @quotation.user.phone_number %></p>
+          <% else %>
+            <p><strong>Prospect:</strong> <%= @quotation.prospect_name %></p>
+            <p><strong>Email:</strong> <%= @quotation.prospect_email %></p>
+            <p><strong>Phone:</strong> <%= @quotation.prospect_phone %></p>
+            <% if @quotation.prospect_company.present? %>
+              <p><strong>Company:</strong> <%= @quotation.prospect_company %></p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Quotation Information</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Created:</strong> <%= @quotation.created_date.strftime('%B %d, %Y') %></p>
+          <p><strong>Expires:</strong> <%= @quotation.expires_at.strftime('%B %d, %Y') %>
+            <% if @quotation.expired? %>
+              <span class="badge bg-danger">Expired</span>
+            <% end %>
+          </p>
+          <p><strong>Status:</strong>
+            <span class="badge bg-<%= status_color(@quotation.status) %>">
+              <%= @quotation.status.titleize %>
+            </span>
+          </p>
+          <% if @quotation.notes.present? %>
+            <p><strong>Notes:</strong> <%= @quotation.notes %></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h5>Items</h5>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @quotation.quotation_items.each do |item| %>
+            <tr>
+              <td><%= item.product.title %></td>
+              <td><%= item.quantity %></td>
+              <td>R<%= item.amount.to_i %></td>
+              <td>R<%= (item.quantity * item.amount).to_i %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+            <td><strong>R<%= @quotation.total_amount.to_i %></strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

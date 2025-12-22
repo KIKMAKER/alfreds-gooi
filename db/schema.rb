@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_09_135313) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_22_114649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -285,6 +285,36 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_09_135313) do
     t.integer "stock", default: 0
   end
 
+  create_table "quotation_items", force: :cascade do |t|
+    t.bigint "quotation_id", null: false
+    t.bigint "product_id", null: false
+    t.float "quantity", default: 1.0
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_quotation_items_on_product_id"
+    t.index ["quotation_id"], name: "index_quotation_items_on_quotation_id"
+  end
+
+  create_table "quotations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "subscription_id"
+    t.string "prospect_name"
+    t.string "prospect_email"
+    t.string "prospect_phone"
+    t.string "prospect_company"
+    t.text "notes"
+    t.integer "number"
+    t.date "created_date"
+    t.date "expires_at"
+    t.integer "status", default: 0
+    t.decimal "total_amount", precision: 10, scale: 2, default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_quotations_on_subscription_id"
+    t.index ["user_id"], name: "index_quotations_on_user_id"
+  end
+
   create_table "referrals", force: :cascade do |t|
     t.bigint "referrer_id", null: false
     t.bigint "referee_id", null: false
@@ -498,6 +528,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_09_135313) do
   add_foreign_key "orders", "users"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "users"
+  add_foreign_key "quotation_items", "products"
+  add_foreign_key "quotation_items", "quotations"
+  add_foreign_key "quotations", "subscriptions"
+  add_foreign_key "quotations", "users"
   add_foreign_key "referrals", "subscriptions"
   add_foreign_key "referrals", "users", column: "referee_id"
   add_foreign_key "referrals", "users", column: "referrer_id"

@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Quotations</h1>
+    <%= link_to 'New Quotation', new_quotation_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Customer/Prospect</th>
+            <th>Created</th>
+            <th>Expires</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @quotations.each do |quotation| %>
+            <tr class="<%= 'table-secondary' if quotation.expired? %>">
+              <td><%= quotation.number %></td>
+              <td>
+                <%= quotation.customer_name %>
+                <% if quotation.is_prospect? %>
+                  <span class="badge bg-info">Prospect</span>
+                <% end %>
+              </td>
+              <td><%= quotation.created_date.strftime('%b %d, %Y') %></td>
+              <td>
+                <%= quotation.expires_at.strftime('%b %d, %Y') %>
+                <% if quotation.expired? %>
+                  <span class="badge bg-danger">Expired</span>
+                <% end %>
+              </td>
+              <td>R<%= quotation.total_amount.to_i %></td>
+              <td>
+                <span class="badge bg-<%= status_color(quotation.status) %>">
+                  <%= quotation.status.titleize %>
+                </span>
+              </td>
+              <td>
+                <%= link_to 'View', quotation_path(quotation), class: 'btn btn-sm btn-outline-primary' %>
+                <%= link_to 'Edit', edit_quotation_path(quotation), class: 'btn btn-sm btn-outline-secondary' %>
+                <%= button_to 'Delete', quotation_path(quotation), method: :delete,
+                    data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-outline-danger' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

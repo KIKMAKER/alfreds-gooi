@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
   # Associations
   has_many :subscriptions, dependent: :nullify
+  has_many :quotations, dependent: :nullify
   has_many :invoices, through: :subscriptions
   has_many :collections, through: :subscriptions
   has_many :drivers_days
