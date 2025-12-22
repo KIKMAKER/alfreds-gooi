@@ -116,6 +116,7 @@
     </div>
     <%= link_to "View all today's collections", today_subscriptions_path, class: "small-yellow-btn" %>
 
+  <%= render 'daily_snapshot', drivers_day: @drivers_day, new_customers: @new_customers, compost_kg: @compost_kg, landfill_m3: @landfill_m3, kg_diverted: @kg_diverted, customers_served: @customers_served, buckets_diverted: @buckets_diverted, co2_avoided: @co2_avoided, trees_equivalent: @trees_equivalent %>
   <% else %>
     <h1>No stats available yet</h1>
     <p>Complete your day first to see your stats!</p>

@@ -7,6 +7,18 @@
       <h3 class="mb-3">Filters</h3>
 
       <div class="row g-3">
+        <!-- Status Filter -->
+        <div class="col-md-3">
+          <%= f.label :status_filter, "Status", class: "form-label" %>
+          <%= f.select :status_filter,
+                       options_for_select([
+                         ['All Active Subscriptions', 'all_active'],
+                         ['Recently Completed (Last 2 Weeks)', 'recently_completed']
+                       ], params[:status_filter] || 'all_active'),
+                       {},
+                       class: "form-select" %>
+        </div>
+
         <!-- Collection Day -->
         <div class="col-md-3">
           <%= f.label :collection_day, "Collection Day", class: "form-label" %>
@@ -95,7 +107,11 @@
           </thead>
           <tbody>
             <% @users.each do |user| %>
-              <% subscription = user.subscriptions.active.first %>
+              <% subscription = if params[:status_filter] == 'recently_completed'
+                                  user.subscriptions.where(status: :completed).order(updated_at: :desc).first
+                                else
+                                  user.subscriptions.active.first
+                                end %>
               <tr>
                 <td><%= link_to "#{user.first_name} #{user.last_name}", admin_user_path(user) %></td>
                 <td><%= user.phone_number %></td>
