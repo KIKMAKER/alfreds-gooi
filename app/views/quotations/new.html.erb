@@ -39,24 +39,28 @@
     <h3>Products</h3>
     <p class="text-muted">Enter quantities for products to include in this quotation:</p>
 
-    <%= f.simple_fields_for :quotation_items do |item_fields| %>
-      <div class="row mb-2">
-        <% @products.each do |product| %>
-          <div class="col-md-6 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><%= product.title %></h5>
-                <p class="card-text">R<%= product.price.to_i %></p>
-                <%= item_fields.hidden_field :product_id, value: product.id %>
-                <%= item_fields.input :quantity,
-                    label: "Quantity",
-                    input_html: { min: 0, step: 0.1, value: 0 } %>
+    <div class="row mb-2">
+      <% @products.each_with_index do |product, index| %>
+        <div class="col-md-6 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><%= product.title %></h5>
+              <p class="card-text">R<%= product.price.to_i %></p>
+              <%= hidden_field_tag "quotation[quotation_items_attributes][#{index}][product_id]", product.id %>
+              <div class="mb-3">
+                <%= label_tag "quotation[quotation_items_attributes][#{index}][quantity]", "Quantity", class: "form-label" %>
+                <%= number_field_tag "quotation[quotation_items_attributes][#{index}][quantity]",
+                    nil,
+                    class: "form-control",
+                    min: 0,
+                    step: 0.1,
+                    placeholder: "0" %>
               </div>
             </div>
           </div>
-        <% end %>
-      </div>
-    <% end %>
+        </div>
+      <% end %>
+    </div>
 
     <div class="mt-4">
       <%= f.button :submit, 'Create Quotation', class: 'btn btn-primary' %>

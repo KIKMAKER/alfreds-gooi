@@ -16,7 +16,8 @@ class QuotationsController < ApplicationController
   end
 
   def create
-    @quotation = Quotation.new(quotation_params)
+    # Exclude quotation_items_attributes for create - we handle items manually
+    @quotation = Quotation.new(quotation_params.except(:quotation_items_attributes))
 
     if @quotation.save
       create_quotation_items(@quotation)
