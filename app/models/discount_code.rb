@@ -15,4 +15,9 @@ class DiscountCode < ApplicationRecord
   def fixed_amount?
     discount_cents.present?
   end
+
+  # Temporary: Restrict NEWSOIL26 to 3-month plans only
+  def three_month_only?
+    code == "NEWSOIL26"
+  end
 end

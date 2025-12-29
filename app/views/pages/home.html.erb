@@ -494,17 +494,24 @@
         <div class="standard-months-container" data-pricing-target="standard">
           <%# 1 month (260) %>
           <% orig = 260.0; dur = 1.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per   = total / dur %>
+          total = if @discount_code&.upcase == "NEWSOIL26"
+                    orig * dur  # No discount for 3-month-only codes
+                  elsif @pct.positive?
+                    orig * dur * (1 - @pct)
+                  else
+                    [orig * dur - @amt, 0].max
+                  end
+          per   = total / dur
+          has_discount = (total < orig * dur) %>
           <div class="month-card">
             <h3>1 month</h3>
             <p class="pricing-text">
-              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
             </p>
             <p class="pricing-text">
               <strong>Total:</strong>
-              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <% if has_discount %><s> R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(total, precision: 2) %></strong>
             </p>
             <div class="sign-up-btn">
@@ -534,18 +541,25 @@
 
           <%# 6 months (180 * 6 = 1080) %>
           <% orig = 180.0; dur = 6.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per   = total / dur %>
+          total = if @discount_code&.upcase == "NEWSOIL26"
+                    orig * dur  # No discount for 3-month-only codes
+                  elsif @pct.positive?
+                    orig * dur * (1 - @pct)
+                  else
+                    [orig * dur - @amt, 0].max
+                  end
+          per   = total / dur
+          has_discount = (total < orig * dur) %>
           <div class="month-card popular">
             <h4>Most popular</h4>
             <h3>6 months</h3>
             <p class="pricing-text">
-              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
             </p>
             <p class="pricing-text">
               <strong>Total:</strong>
-              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <% if has_discount %><s> R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(total, precision: 2) %></strong>
             </p>
             <div class="sign-up-btn">
@@ -557,17 +571,24 @@
         <div class="standard-months-container hide" data-pricing-target="extra">
           <%# XL 1 month (300) %>
           <% orig = 300.0; dur = 1.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per   = total / dur %>
+          total = if @discount_code&.upcase == "NEWSOIL26"
+                    orig * dur  # No discount for 3-month-only codes
+                  elsif @pct.positive?
+                    orig * dur * (1 - @pct)
+                  else
+                    [orig * dur - @amt, 0].max
+                  end
+          per   = total / dur
+          has_discount = (total < orig * dur) %>
           <div class="month-card">
             <h3>1 month</h3>
             <p class="pricing-text">
-              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
             </p>
             <p class="pricing-text">
               <strong>Total:</strong>
-              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <% if has_discount %><s> R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(total, precision: 2) %></strong>
             </p>
             <div class="sign-up-btn">
@@ -597,17 +618,24 @@
 
           <%# XL 6 months (240 * 6 = 1440) %>
           <% orig = 240.0; dur = 6.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per   = total / dur %>
+          total = if @discount_code&.upcase == "NEWSOIL26"
+                    orig * dur  # No discount for 3-month-only codes
+                  elsif @pct.positive?
+                    orig * dur * (1 - @pct)
+                  else
+                    [orig * dur - @amt, 0].max
+                  end
+          per   = total / dur
+          has_discount = (total < orig * dur) %>
           <div class="month-card">
             <h3>6 months</h3>
             <p class="pricing-text">
-              <s>R<%= number_with_precision(orig, precision: 2) %></s>
+              <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(per, precision: 2) %></strong> per month
             </p>
             <p class="pricing-text">
               <strong>Total:</strong>
-              <s> R<%= number_with_precision(orig * dur, precision: 2) %></s>
+              <% if has_discount %><s> R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
               <strong> R<%= number_with_precision(total, precision: 2) %></strong>
             </p>
             <div class="sign-up-btn">
