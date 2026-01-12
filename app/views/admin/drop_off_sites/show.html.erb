@@ -52,7 +52,7 @@
               <p class="lh-lg"><%= event.date.strftime("%a, %b %e") %></p>
             </div>
             <div>
-              <p class="lh-lg"><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</p>
+              <p class="lh-lg"><%= number_with_precision(event.weight_kg, precision: 1) %> kg</p>
             </div>
             <div>
               <p class="lh-lg"><strong><%= event.bucket_count_25l %></strong> 25L, <strong><%= event.bucket_count_45l %></strong> 45L</p>
