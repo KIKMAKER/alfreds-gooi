@@ -22,9 +22,11 @@ class Admin::ProductsController < ApplicationController
   end
 
   def update
-    # Filter out empty image strings
+    # Remove images param if no new files selected (preserves existing attachments)
     if params[:product][:images].present?
       params[:product][:images].reject!(&:blank?)
+      # If all values were blank, remove the images key entirely
+      params[:product].delete(:images) if params[:product][:images].empty?
     end
     stock = params[:product][:stock]
 
