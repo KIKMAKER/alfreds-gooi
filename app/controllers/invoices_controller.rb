@@ -1,9 +1,15 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send apply_discount_code]
 
   def index
     if current_user.admin?
       @invoices = Invoice.includes(subscription: :user).order(issued_date: :desc)
+
+      # Filter by user if user_id param is present
+      if params[:user_id].present?
+        @user = User.find(params[:user_id])
+        @invoices = @invoices.joins(subscription: :user).where(users: { id: @user.id })
+      end
     elsif current_user.customer?
       @invoices = current_user.invoices.includes(subscription: :user).order(issued_date: :desc)
     end
@@ -122,6 +128,70 @@ class InvoicesController < ApplicationController
     redirect_to send_invoice_path(@invoice)
   end
 
+  def apply_discount_code
+    unless current_user.admin?
+      redirect_to invoice_path(@invoice), alert: "Only admins can apply discount codes"
+      return
+    end
+
+    code_string = params[:discount_code]&.strip&.upcase
+    code = DiscountCode.find_by(code: code_string)
+
+    unless code
+      redirect_to invoice_path(@invoice), alert: "Discount code '#{code_string}' not found"
+      return
+    end
+
+    # Check if already applied
+    if @invoice.invoice_discount_codes.where(discount_code: code).exists?
+      redirect_to invoice_path(@invoice), alert: "This discount code is already applied to this invoice"
+      return
+    end
+
+    # Validate 3-month restriction if applicable
+    if code.three_month_only? && @invoice.subscription.duration != 3
+      redirect_to invoice_path(@invoice), alert: "This discount code is only valid for 3-month subscriptions"
+      return
+    end
+
+    # Calculate discount amount
+    subtotal = @invoice.invoice_items.sum { |item| item.amount * item.quantity }
+
+    discount_amount = if code.percentage_based?
+      percent_off = code.discount_percent.clamp(0, 100)
+      (subtotal * percent_off / 100.0).round(2)
+    elsif code.fixed_amount?
+      (code.discount_cents / 100.0).round(2)
+    else
+      0
+    end
+
+    # Don't apply discount if it would make total negative
+    discount_amount = subtotal if discount_amount > subtotal
+
+    if discount_amount <= 0
+      redirect_to invoice_path(@invoice), alert: "Discount code results in R0 discount"
+      return
+    end
+
+    # Apply the discount
+    ActiveRecord::Base.transaction do
+      @invoice.invoice_discount_codes.create!(
+        discount_code: code,
+        discount_amount: discount_amount
+      )
+
+      @invoice.update!(used_discount_code: true)
+      code.increment!(:used_count)
+
+      # Recalculate total
+      @invoice.calculate_total
+    end
+
+    redirect_to invoice_path(@invoice), notice: "Discount code '#{code.code}' applied successfully! New total: R#{@invoice.reload.total_amount.to_i}"
+  rescue StandardError => e
+    redirect_to invoice_path(@invoice), alert: "Error applying discount code: #{e.message}"
+  end
 
   private
 

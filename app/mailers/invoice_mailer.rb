@@ -16,4 +16,20 @@ class InvoiceMailer < ApplicationMailer
       message_stream: 'outbound'
     )
   end
+
+  # Sends an admin alert for monthly invoices
+  # Expects: params[:invoice], params[:installment_number]
+  def invoice_created_alert
+    @invoice            = params[:invoice]
+    @subscription       = @invoice.subscription
+    @user               = @subscription&.user
+    @installment_number = params[:installment_number]
+
+    mail(
+      to: "howzit@gooi.me",
+      subject: "Monthly Invoice Generated: #{@user&.first_name} - Installment #{@installment_number}",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
 end

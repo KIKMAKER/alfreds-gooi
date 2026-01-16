@@ -1,9 +1,16 @@
 <div class="driver-wrapper link-decoration mb-2">
   <div class="d-flex">
-    <h1>All invoices</h1>
+    <% if @user.present? %>
+      <h1>Invoices for <%= @user.first_name %> <%= @user.last_name %></h1>
+    <% else %>
+      <h1>All invoices</h1>
+    <% end %>
     <% if current_user.admin? %>
       <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
       <%= link_to 'view payments', payments_path, class:"link-title"  %>
+      <% if @user.present? %>
+        <%= link_to 'all invoices', invoices_path, class:"link-title" %>
+      <% end %>
     <% end %>
   </div>
   <% @invoices.each do |invoice| %>
@@ -12,7 +19,8 @@
         <div class="payment-card">
           <p><%= invoice.issued_date.strftime('%b %d') %></p>
           <div class="payment-card-user">
-            <%= invoice.user&.first_name || '?' %>
+            <%= invoice.user&.first_name || '?' %><br>
+            <small class="text-muted">#<%= invoice.number || invoice.id %></small>
           </div>
           <div class="payment-card-amount">
             <h2>R<%= invoice.total_amount.truncate %></h2>
