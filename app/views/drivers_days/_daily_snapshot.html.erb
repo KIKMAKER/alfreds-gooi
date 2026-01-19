@@ -3,7 +3,7 @@
   <div class="snapshot-header">
     <div class="logo-date-row">
       <div class="gooi-logo-snapshot">gooi report<span class="sparkle">✨</span></div>
-      <div class="snapshot-date"><%= @drivers_day.date.strftime('%A, %B %d, %Y').upcase %></div>
+      <div class="snapshot-date"><%= drivers_day.date.strftime('%A, %B %d, %Y').upcase %></div>
     </div>
     <!--<h1 class="snapshot-headline">
       Today we kept <span class="highlight"><%#= number_with_delimiter(@kg_diverted) %></span> kg from landfills
@@ -13,22 +13,22 @@
   <div class="snapshot-body">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-value"><%= @customers_served %></div>
+        <div class="stat-value"><%= customers_served %></div>
         <div class="stat-label">Customers Served</div>
       </div>
 
       <div class="stat-item">
-        <div class="stat-value"><%= number_with_precision(@kg_diverted, precision: 1) %></div>
+        <div class="stat-value"><%= number_with_precision(kg_diverted, precision: 1) %></div>
         <div class="stat-label">Collected (kg)</div>
       </div>
 
       <div class="stat-item">
-        <div class="stat-value"><%= @new_customers %></div>
+        <div class="stat-value"><%= new_customers %></div>
         <div class="stat-label">New Households</div>
       </div>
 
       <div class="stat-item">
-        <div class="stat-value"><%= @compost_kg %></div>
+        <div class="stat-value"><%= compost_kg %></div>
         <div class="stat-label">Compost Created (kg)</div>
       </div>
     </div>
@@ -37,15 +37,15 @@
       <div class="impact-title">Environmental Impact</div>
       <div class="impact-stats">
         <div class="impact-item">
-          <div class="impact-value"><%= number_with_delimiter(@co2_avoided) %></div>
+          <div class="impact-value"><%= number_with_delimiter(co2_avoided) %></div>
           <div class="impact-desc">CO₂ emissions avoided</div>
         </div>
         <div class="impact-item">
-          <div class="impact-value"><%= @trees_equivalent %></div>
+          <div class="impact-value"><%= trees_equivalent %></div>
           <div class="impact-desc">tree seedlings grown for 10 years</div>
         </div>
         <div class="impact-item">
-          <div class="impact-value"><%= @landfill_m3 %></div>
+          <div class="impact-value"><%= landfill_m3 %></div>
           <div class="impact-desc">landfill space saved (m<sup>3</sup>)</div>
         </div>
       </div>
@@ -53,7 +53,7 @@
   </div>
 
   <div class="snapshot-footer">
-    <p>Together we're building <strong><%= @drivers_day.drop_off_events.first&.drop_off_site&.name || "a healthier planet" %></strong>.
+    <p>Together we're building <strong><%= drivers_day.drop_off_events.first&.drop_off_site&.name || "a healthier planet" %></strong>.
     </p>
   </div>
 </div>

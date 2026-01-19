@@ -10,8 +10,19 @@ class Admin::BulkMessagesController < ApplicationController
   private
 
   def filter_users
-    # Start with active subscriptions
-    subscriptions = Subscription.active.includes(:user)
+    # Filter by status
+    subscriptions = case params[:status_filter]
+                    when 'recently_completed'
+                      # Subscriptions completed in the last 2 weeks
+                      Subscription.where(status: :completed)
+                                  .where('updated_at >= ?', 2.weeks.ago)
+                                  .includes(:user)
+                    when 'all_active'
+                      Subscription.active.includes(:user)
+                    else
+                      # Default to active subscriptions
+                      Subscription.active.includes(:user)
+                    end
 
     # Filter by collection day
     if params[:collection_day].present? && params[:collection_day] != 'all'

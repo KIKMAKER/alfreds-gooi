@@ -77,16 +77,23 @@ class CustomersController < ApplicationController
   end
 
   def skipme
-    target_dates = [Date.current, Date.current.tomorrow]
-    @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).last
-    collection = @subscription.collections.where(date: target_dates).order(:date).first
+    @subscription = current_user.subscriptions.where(status: 'active').order(:created_at).last
+
+    # Find the next upcoming collection (any day from today onwards)
+    collection = @subscription&.collections&.where('date >= ?', Date.current).order(:date).first
 
     return redirect_to manage_path, notice: "No active subscription found." unless @subscription && collection
 
-    date = collection.date == Date.current ? 'today' : 'tomorrow'
+    # Determine the message based on when the collection is
+    days_until = (collection.date - Date.current).to_i
+    date_text = case days_until
+                when 0 then 'today'
+                when 1 then 'tomorrow'
+                else "on #{collection.date.strftime('%A, %b %d')}"
+                end
 
     if collection.mark_skipped!(by: current_user, reason: "skipme")
-      @note = "Success!\n We'll skip you #{date}"
+      @note = "Success!\n We'll skip you #{date_text}"
     else
       @note = "Something went wrong, please manually skip, or whatsapp Alfred"
     end

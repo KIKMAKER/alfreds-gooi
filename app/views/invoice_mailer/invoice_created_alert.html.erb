@@ -1,0 +1,37 @@
+<div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #1f2937; margin-bottom: 20px;">Monthly Invoice Generated</h2>
+
+  <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Customer:</strong> <%= @user&.first_name %> <%= @user&.last_name %>
+    </p>
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Email:</strong> <%= @user&.email %>
+    </p>
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Subscription:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> months)
+    </p>
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Installment:</strong> <%= @installment_number %> of <%= @subscription.duration %>
+    </p>
+  </div>
+
+  <div style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Invoice #:</strong> <%= @invoice.number || @invoice.id %>
+    </p>
+    <p style="margin: 0 0 12px; font-size: 16px;">
+      <strong>Total Amount:</strong> R<%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
+    </p>
+    <p style="margin: 0; font-size: 16px;">
+      <strong>Due Date:</strong> <%= @invoice.due_date&.strftime('%e %b %Y') %>
+    </p>
+  </div>
+
+  <div style="text-align: center;">
+    <a href="<%= invoice_url(@invoice) %>"
+       style="display: inline-block; padding: 12px 24px; background: #1a7f37; color: white; text-decoration: none; border-radius: 6px; font-weight: 500;">
+      View Invoice in Admin
+    </a>
+  </div>
+</div>

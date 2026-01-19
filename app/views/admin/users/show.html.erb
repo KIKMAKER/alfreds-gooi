@@ -22,6 +22,10 @@
 
       <hr>
 
+      <div class="mb-3">
+        <%= link_to "view invoices (#{@user.invoices.count})", invoices_path(user_id: @user.id), class: "link-title" %>
+      </div>
+
       <% if @lifetime_litres > 0 %>
         <div class="outline p-3 mb-4">
           <h3 class="mb-3">♻️ Lifetime Environmental Impact</h3>

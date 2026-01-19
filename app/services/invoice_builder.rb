@@ -232,6 +232,12 @@ class InvoiceBuilder
     code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
 
     if code&.available?
+      # Validate 3-month-only restriction
+      if code.three_month_only? && @subscription.duration != 3
+        Rails.logger.info "Discount code #{code.code} is only valid for 3-month subscriptions (attempted on #{@subscription.duration}-month)"
+        return
+      end
+
       # Calculate the pre-discount subtotal
       subtotal = invoice.invoice_items.sum { |item| item.amount * item.quantity }
 

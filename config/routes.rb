@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       get :paid
       patch :issued_bags, to: "invoices#issued_bags"
       get :send, to: "invoices#send"
+      post :apply_discount_code
     end
     collection do
       get "bags/:bags", to: "invoices#bags", as: :bag

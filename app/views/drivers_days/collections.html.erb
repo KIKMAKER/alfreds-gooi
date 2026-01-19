@@ -13,7 +13,9 @@
         <div class="grid-row">
           <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
           <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
-          <% if collection.subscription.XL? %>
+          <% if collection.subscription.Commercial? %>
+            <div class="grid-item"><%= collection.buckets_45l %> x 45L, <%= collection.buckets_25l %> x 25L</div>
+          <% elsif collection.subscription.XL? %>
             <div class="grid-item"><%= collection.buckets %></div>
           <% else %>
             <div class="grid-item"><%= collection.bags %></div>

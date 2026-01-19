@@ -6,6 +6,26 @@
         <%= link_to "Edit Invoice", edit_invoice_path(@invoice), class: "link-text" %>
       <% end %>
     </div>
+
+    <% if current_user.admin? %>
+      <div class="outline p-3 mb-4" style="background: linear-gradient(135deg, rgba(245, 177, 26, 0.1) 0%, rgba(245, 177, 26, 0.2) 100%); border-left: 4px solid rgb(245, 177, 26);">
+        <h5 class="mb-3" style="color: rgb(200, 140, 20);">Admin: Apply Discount Code</h5>
+        <%= form_with url: apply_discount_code_invoice_path(@invoice), method: :post, class: "d-flex align-items-end gap-2" do |f| %>
+          <div class="flex-grow-1">
+            <%= text_field_tag :discount_code, nil,
+                placeholder: "Enter discount code",
+                class: "form-control",
+                style: "max-width: 300px; border: 2px solid rgba(245, 177, 26, 0.3);" %>
+          </div>
+          <%= submit_tag "Apply Discount", class: "small-yellow-btn" %>
+        <% end %>
+        <% if @invoice.invoice_discount_codes.any? %>
+          <small style="color: rgb(150, 110, 15);" class="mt-2 d-block">
+            Current discounts: <%= @invoice.invoice_discount_codes.map { |d| d.discount_code.code }.join(', ') %>
+          </small>
+        <% end %>
+      </div>
+    <% end %>
     <!--<h5 class="text-center my-3">gooi compost collections</h5>-->
     <div class="user-details ms-1 ">
       <div class="user me-4">
