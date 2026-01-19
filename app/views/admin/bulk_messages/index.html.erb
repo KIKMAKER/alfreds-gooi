@@ -13,7 +13,8 @@
           <%= f.select :status_filter,
                        options_for_select([
                          ['All Active Subscriptions', 'all_active'],
-                         ['Recently Completed (Last 2 Weeks)', 'recently_completed']
+                         ['Recently Completed (Last 2 Weeks)', 'recently_completed'],
+                         ['Pending', 'all_pending']
                        ], params[:status_filter] || 'all_active'),
                        {},
                        class: "form-select" %>
@@ -109,6 +110,8 @@
             <% @users.each do |user| %>
               <% subscription = if params[:status_filter] == 'recently_completed'
                                   user.subscriptions.where(status: :completed).order(updated_at: :desc).first
+                                elsif params[:status_filter] == 'all_pending'
+                                  user.subscriptions.where(status: :pending).order(updated_at: :desc).first
                                 else
                                   user.subscriptions.active.first
                                 end %>
