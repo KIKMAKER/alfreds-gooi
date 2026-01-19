@@ -19,6 +19,8 @@ class Admin::BulkMessagesController < ApplicationController
                                   .includes(:user)
                     when 'all_active'
                       Subscription.active.includes(:user)
+                    when 'all_pending'
+                      Subscription.pending.includes(:user)
                     else
                       # Default to active subscriptions
                       Subscription.active.includes(:user)

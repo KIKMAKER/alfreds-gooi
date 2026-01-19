@@ -79,7 +79,7 @@
                         rows: 5,
                         class: "form-control",
                         placeholder: "Hi {first_name}! This is your friendly reminder..." %>
-        <small class="text-muted">Use {first_name} to personalize the message for each customer</small>
+        <small class="text-muted">Use {first_name} and {account_start} to personalize the message for each customer</small>
       </div>
 
       <div class="d-flex gap-2">
@@ -120,8 +120,15 @@
                 <td><%= subscription&.total_collections || 0 %></td>
                 <td>
                   <% if @message.present? %>
-                    <% personalized_message = @message.gsub('{first_name}', user.first_name) %>
+                    <% replacements = {
+                                        '{first_name}'    => user.first_name,
+                                        '{account_start}' => user.created_at.strftime("%b %d")
+                                      } %>
+                    <% personalized_message = replacements.reduce(@message) { |msg, (k, v)| msg.gsub(k, v.to_s) } %>
                     <% encoded_message = ERB::Util.url_encode(personalized_message) %>
+<!---->
+                    <%# personalized_message = @message.gsub('{first_name}', user.first_name) %>
+                    <%# encoded_message = ERB::Util.url_encode(personalized_message) %>
                     <%= link_to "https://wa.me/#{user.phone_number}?text=#{encoded_message}",
                                 target: "_blank",
                                 class: "link-title" do %>
