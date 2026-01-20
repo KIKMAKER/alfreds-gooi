@@ -24,11 +24,13 @@ class InvoiceBuilder
     @subscriptions.each do |sub|
       add_starter_kit(invoice, sub) if @is_new
       add_subscription_product(invoice, sub)
+      # Add starter kit installment for subsequent monthly invoices
+      add_monthly_starter_kit_installment(invoice, sub) unless @is_new
     end
 
     apply_referrals(invoice)
     apply_discount_code(invoice) if @subscription.discount_code
-    invoice.calculate_total  # Calculate total AFTER adding all items including discounts
+    invoice.calculate_total # Calculate total AFTER adding all items including discounts
 
     InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
 
@@ -270,5 +272,27 @@ class InvoiceBuilder
 
   def mark_referrals_used
     @subscription.user.referrals_as_referrer.completed.each(&:used!)
+  end
+
+  def add_monthly_starter_kit_installment(invoice, subscription)
+    return unless subscription.monthly_invoicing?
+    return unless subscription.starter_kit_installment.present?
+
+    # Find the starter kit product to link to
+    kit_title = if subscription.Commercial?
+                  bucket_size = subscription.bucket_size || 45
+                  "Commercial Starter Buckets (#{bucket_size}L)"
+                else
+                  "#{subscription.plan} Starter Kit"
+                end
+
+    kit = Product.find_by(title: kit_title)
+    return unless kit
+
+    invoice.invoice_items.create!(
+      product: kit,
+      quantity: 1,
+      amount: subscription.starter_kit_installment
+    )
   end
 end
