@@ -71,7 +71,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :quotations
+  resources :quotations do
+    member do
+      get :send_email
+      get :pdf
+    end
+  end
 
   # resources create all the CRUD routes for a model - here I am nesting new and create collection methods under subscriptions
   resources :subscriptions do

@@ -1,6 +1,7 @@
 class QuotationsController < ApplicationController
-  before_action :set_quotation, only: %i[show edit update destroy]
-  before_action :authenticate_admin!, only: %i[index new create edit update destroy]
+  skip_before_action :authenticate_user!, only: %i[show pdf]
+  before_action :set_quotation, only: %i[show edit update destroy send_email pdf]
+  before_action :authenticate_admin!, only: %i[index new create edit update destroy send_email]
 
   def index
     @quotations = Quotation.includes(:user, :products).order(created_at: :desc)
@@ -68,6 +69,28 @@ class QuotationsController < ApplicationController
   def destroy
     @quotation.destroy
     redirect_to quotations_path, notice: 'Quotation was successfully deleted.'
+  end
+
+  def send_email
+    begin
+      QuotationMailer.with(quotation: @quotation).quotation_created.deliver_now
+      @quotation.update(status: :sent) if @quotation.status == 'draft'
+      redirect_to quotation_path(@quotation), notice: "Quotation email sent successfully to #{@quotation.customer_email}"
+    rescue StandardError => e
+      redirect_to quotation_path(@quotation), alert: "Error sending quotation: #{e.message}"
+    end
+  end
+
+  def pdf
+    begin
+      pdf = QuotationPdfGenerator.new(@quotation).generate
+      send_data pdf.render,
+                filename: "quotation_#{@quotation.number || @quotation.id}.pdf",
+                type: 'application/pdf',
+                disposition: 'inline'  # Opens in browser instead of downloading
+    rescue StandardError => e
+      redirect_to quotation_path(@quotation), alert: "Error generating PDF: #{e.message}"
+    end
   end
 
   private

@@ -1,0 +1,22 @@
+GOOI
+compost collections
+================================================================================
+
+Your quotation is ready
+--------------------------------------------------------------------------------
+
+Hi <%= @quotation.customer_name %>,
+
+Your quotation #<%= @quotation.number || @quotation.id %> has been generated.
+
+Total: R<%= number_with_precision(@quotation.total_amount.to_f, precision: 2) %>
+Valid until: <%= @quotation.expires_at.strftime('%e %b %Y') %>
+
+View your quotation online:
+<%= quotation_url(@quotation) %>
+
+With appreciation,
+Gooi
+
+================================================================================
+Contact us: howzit@gooi.me | www.gooi.me

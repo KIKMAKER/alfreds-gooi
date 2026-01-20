@@ -1,91 +1,108 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Quotation #<%= @quotation.number %></h1>
-    <div>
-      <%= link_to 'Edit', edit_quotation_path(@quotation), class: 'btn btn-secondary' %>
-      <%= link_to 'Back to List', quotations_path, class: 'btn btn-outline-secondary' %>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card mb-4">
-        <div class="card-header">
-          <h5>Customer/Prospect Details</h5>
+<div class="invoice-wrapper">
+  <div class="invoice-container">
+    <div class="d-flex justify-content-between align-items-center mb-4 link-decoration">
+      <h1 class="mb-0">Quotation</h1>
+      <% if current_user&.admin? %>
+        <div class="d-flex gap-2">
+          <%= link_to "Edit Quotation", edit_quotation_path(@quotation), class: "link-text me-3" %>
+          <%= link_to "View PDF", pdf_quotation_path(@quotation), class: "btn btn-outline-secondary", target: "_blank" %>
+          <%= link_to "Send Quotation Email", send_email_quotation_path(@quotation), class: "small-yellow-btn", data: { turbo_method: :get, turbo_confirm: "Send quotation email to #{@quotation.customer_email}?" } %>
         </div>
-        <div class="card-body">
-          <% if @quotation.user.present? %>
-            <p><strong>Customer:</strong> <%= @quotation.customer_name %></p>
-            <p><strong>Email:</strong> <%= @quotation.customer_email %></p>
-            <p><strong>Phone:</strong> <%= @quotation.user.phone_number %></p>
-          <% else %>
-            <p><strong>Prospect:</strong> <%= @quotation.prospect_name %></p>
-            <p><strong>Email:</strong> <%= @quotation.prospect_email %></p>
+      <% end %>
+    </div>
+
+    <% if current_user&.admin? %>
+      <div class="outline p-3 mb-4" style="background: linear-gradient(135deg, rgba(245, 177, 26, 0.1) 0%, rgba(245, 177, 26, 0.2) 100%); border-left: 4px solid rgb(245, 177, 26);">
+        <h5 class="mb-3" style="color: rgb(200, 140, 20);">Quotation Status</h5>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-<%= status_color(@quotation.status) %> fs-6">
+            <%= @quotation.status.titleize %>
+          </span>
+          <% if @quotation.expired? %>
+            <span class="badge bg-danger fs-6">Expired</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="user-details ms-1">
+      <div class="user me-4">
+        <p><strong>For:</strong> <%= @quotation.customer_name %></p>
+        <p><strong>Email:</strong> <%= @quotation.customer_email %></p>
+        <% if @quotation.user.present? %>
+          <p><strong>Phone:</strong> <%= @quotation.user.phone_number %></p>
+          <% if @quotation.user.subscriptions.any? %>
+            <p><strong>Customer ID:</strong> <%= @quotation.user.subscriptions.last.customer_id %></p>
+          <% end %>
+        <% else %>
+          <% if @quotation.prospect_phone.present? %>
             <p><strong>Phone:</strong> <%= @quotation.prospect_phone %></p>
-            <% if @quotation.prospect_company.present? %>
-              <p><strong>Company:</strong> <%= @quotation.prospect_company %></p>
-            <% end %>
           <% end %>
-        </div>
+          <% if @quotation.prospect_company.present? %>
+            <p><strong>Company:</strong> <%= @quotation.prospect_company %></p>
+          <% end %>
+        <% end %>
+        <p><strong>Quote Date:</strong> <%= @quotation.created_date.strftime('%A, %b %d, %Y') %></p>
+        <p><strong>Valid Until:</strong> <%= @quotation.expires_at.strftime('%A, %b %d, %Y') %>
+          <% if @quotation.expired? %>
+            <span class="badge bg-danger ms-2">Expired</span>
+          <% end %>
+        </p>
       </div>
+      <% if @quotation.notes.present? %>
+        <div class="business">
+          <p><strong>Notes:</strong></p>
+          <p><%= @quotation.notes %></p>
+        </div>
+      <% end %>
     </div>
 
-    <div class="col-md-6">
-      <div class="card mb-4">
-        <div class="card-header">
-          <h5>Quotation Information</h5>
+    <div class="invoice-table">
+      <div class="header">
+        <div class="quantity-description">
+          <div class="quantity">
+            <h1>Quantity</h1>
+          </div>
+          <h1>Item</h1>
         </div>
-        <div class="card-body">
-          <p><strong>Created:</strong> <%= @quotation.created_date.strftime('%B %d, %Y') %></p>
-          <p><strong>Expires:</strong> <%= @quotation.expires_at.strftime('%B %d, %Y') %>
-            <% if @quotation.expired? %>
-              <span class="badge bg-danger">Expired</span>
-            <% end %>
-          </p>
-          <p><strong>Status:</strong>
-            <span class="badge bg-<%= status_color(@quotation.status) %>">
-              <%= @quotation.status.titleize %>
-            </span>
-          </p>
-          <% if @quotation.notes.present? %>
-            <p><strong>Notes:</strong> <%= @quotation.notes %></p>
-          <% end %>
+        <h1>Amount</h1>
+      </div>
+      <% @quotation.quotation_items.each do |item| %>
+        <div class="invoice-item">
+          <div class="quantity-description">
+            <div class="quantity">
+              <p><%= item.quantity.to_i %></p>
+            </div>
+            <p><%= item.product.title %> <% if item.quantity > 1 %>(R<%= item.amount.truncate %> each)<% end %></p>
+          </div>
+          <p>R<%= (item.amount * item.quantity).truncate %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="invoice-total">
+      <p>Total: R<%= @quotation.total_amount.truncate %></p>
+    </div>
+
+    <div class="text-center my-4">
+      <%= link_to "Download PDF", pdf_quotation_path(@quotation), class: "small-yellow-btn", target: "_blank" %>
+    </div>
+
+    <% if !@quotation.expired? && @quotation.status != 'accepted' %>
+      <div class="payment-container">
+        <h2>Questions?</h2>
+        <p class="mb-3">If you have any questions about this quotation or would like to proceed, please contact us:</p>
+        <div class="payment-options">
+          <div class="eft w-50 me-4">
+            <p><strong>Email:</strong> howzit@gooi.me</p>
+            <p><strong>Phone:</strong> +27 78 532 5513</p>
+          </div>
+          <div class="snapscan">
+            <p>This quotation is valid until <%= @quotation.expires_at.strftime('%B %d, %Y') %>.</p>
+            <p class="mb-3">We look forward to working with you!</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h5>Items</h5>
-    </div>
-    <div class="card-body">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @quotation.quotation_items.each do |item| %>
-            <tr>
-              <td><%= item.product.title %></td>
-              <td><%= item.quantity %></td>
-              <td>R<%= item.amount.to_i %></td>
-              <td>R<%= (item.quantity * item.amount).to_i %></td>
-            </tr>
-          <% end %>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" class="text-end"><strong>Total:</strong></td>
-            <td><strong>R<%= @quotation.total_amount.to_i %></strong></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+    <% end %>
   </div>
 </div>
