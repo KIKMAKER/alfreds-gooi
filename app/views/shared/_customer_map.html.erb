@@ -1,0 +1,65 @@
+<div data-controller="customer-map"
+     data-customer-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
+     data-customer-map-data-url-value="<%= data_url %>"
+     data-customer-map-initial-day-value="<%= local_assigns[:initial_filter] || 'all' %>">
+
+  <!-- Filter Controls -->
+  <div class="map-controls d-flex flex-wrap gap-2 align-items-center mb-3">
+    <strong>Filter by Day:</strong>
+    <div class="filter-buttons d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary active"
+              data-action="click->customer-map#filterDay"
+              data-day="all">
+        All
+      </button>
+      <button class="btn btn-sm btn-outline-danger"
+              data-action="click->customer-map#filterDay"
+              data-day="Monday">
+        Monday
+      </button>
+      <button class="btn btn-sm btn-outline-primary"
+              data-action="click->customer-map#filterDay"
+              data-day="Tuesday">
+        Tuesday
+      </button>
+      <button class="btn btn-sm btn-outline-success"
+              data-action="click->customer-map#filterDay"
+              data-day="Wednesday">
+        Wednesday
+      </button>
+      <button class="btn btn-sm btn-outline-warning"
+              data-action="click->customer-map#filterDay"
+              data-day="Thursday">
+        Thursday
+      </button>
+    </div>
+  </div>
+
+  <!-- Map Container -->
+  <div id="customer-map"
+       style="width: 100%; height: <%= local_assigns[:map_height] || '650px' %>; border-radius: 8px; border: 1px solid #dee2e6;">
+  </div>
+
+  <!-- Legend -->
+  <div class="customer-map-legend mt-2 d-flex gap-3 align-items-center flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge" style="background:#E74C3C; width:12px; height:12px;"></span>
+      <small>Monday</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge" style="background:#5DADE2; width:12px; height:12px;"></span>
+      <small>Tuesday</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge" style="background:#58D68D; width:12px; height:12px;"></span>
+      <small>Wednesday</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge" style="background:#F5B041; width:12px; height:12px;"></span>
+      <small>Thursday</small>
+    </div>
+    <div class="ms-auto">
+      <small class="text-muted">Marker size = avg weekly volume (last 4 collections)</small>
+    </div>
+  </div>
+</div>

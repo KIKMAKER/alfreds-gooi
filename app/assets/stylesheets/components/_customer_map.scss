@@ -1,0 +1,39 @@
+// Customer Map Component Styles
+
+.customer-popup {
+  min-width: 200px;
+
+  strong {
+    font-size: 14px;
+  }
+
+  p {
+    margin-bottom: 0.25rem;
+    font-size: 12px;
+  }
+
+  hr {
+    margin: 0.5rem 0;
+  }
+}
+
+.map-controls {
+  .filter-buttons {
+    .btn {
+      transition: all 0.2s;
+
+      &.active {
+        font-weight: bold;
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+.customer-map-legend {
+  font-size: 0.875rem;
+
+  .badge {
+    border-radius: 50%;
+  }
+}

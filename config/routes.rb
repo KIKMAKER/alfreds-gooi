@@ -8,8 +8,16 @@ Rails.application.routes.draw do
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
     resources :bulk_messages, only: [:index]
-    resources :logistics, only: :index
-    resources :collections, only: [:index, :edit, :update, :destroy]
+    resources :logistics, only: :index do
+      collection do
+        get :customer_map_data
+      end
+    end
+    resources :collections, only: [:index, :edit, :update, :destroy] do
+      collection do
+        get :customer_map_data
+      end
+    end
     resources :discount_codes, only: [:index, :new, :create, :show]
     resources :products, only: [:index, :new, :create, :edit, :update]
     resources :drop_off_sites do

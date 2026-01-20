@@ -33,6 +33,16 @@
     </div>
   </div>
 
+  <!-- Customer Map Section -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="mb-3">Active Customers Map</h3>
+      <%= render 'shared/customer_map',
+          data_url: customer_map_data_admin_logistics_path(format: :json),
+          map_height: '700px' %>
+    </div>
+  </div>
+
   <h3 class="mt-4">By Route Day</h3>
   <table class="table table-sm align-middle">
     <thead>
