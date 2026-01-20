@@ -69,8 +69,12 @@ class Admin::LogisticsController < ApplicationController
       .where.not(latitude: nil, longitude: nil)
 
     features = subscriptions.map do |sub|
-      # Get last 4 collections and calculate average total volume
-      recent_collections = sub.collections.order(date: :desc).limit(4)
+      # Get last 4 COMPLETED collections (skip pre-created ones with no data)
+      recent_collections = sub.collections
+        .where.not(updated_at: nil)
+        .where(skip: false)
+        .order(date: :desc)
+        .limit(4)
 
       if recent_collections.any?
         total_volumes = recent_collections.map do |c|
@@ -80,7 +84,7 @@ class Admin::LogisticsController < ApplicationController
         avg_weekly_volume = (total_volumes.sum.to_f / recent_collections.count).round(2)
 
         # Separate bags and buckets for display
-        avg_bags = (recent_collections.sum(&:bags) / recent_collections.count.to_f).round(2)
+        avg_bags = (recent_collections.map { |c| c.bags || 0 }.sum / recent_collections.count.to_f).round(2)
         avg_buckets = (recent_collections.map { |c| (c.buckets || 0) + (c.buckets_45l || 0) + (c.buckets_25l || 0) }.sum / recent_collections.count.to_f).round(2)
       else
         avg_weekly_volume = 0

@@ -17,8 +17,13 @@ export default class extends Controller {
   }
 
   async setupMap() {
+    const container = this.element.querySelector('#customer-map')
+
+    // Ensure container is empty (fixes Mapbox warning)
+    container.innerHTML = ''
+
     this.map = new mapboxgl.Map({
-      container: this.element.querySelector('#customer-map'),
+      container: container,
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [18.4241, -33.9249],  // Cape Town
       zoom: 10,
@@ -32,19 +37,34 @@ export default class extends Controller {
   }
 
   async loadCustomerData() {
-    const response = await fetch(this.dataUrlValue, { cache: 'reload' })
-    const geojson = await response.json()
+    try {
+      const response = await fetch(this.dataUrlValue, { cache: 'reload' })
 
-    const addMarkers = () => {
-      this.addCustomerMarkers(geojson)
-      this.fitMapToBounds(geojson)
-    }
+      if (!response.ok) {
+        console.error('Failed to load customer data:', response.status, response.statusText)
+        return
+      }
 
-    // Check if map is already loaded
-    if (this.map.loaded()) {
-      addMarkers()
-    } else {
-      this.map.on('load', addMarkers)
+      const geojson = await response.json()
+
+      if (!geojson || !geojson.features) {
+        console.error('Invalid GeoJSON response:', geojson)
+        return
+      }
+
+      const addMarkers = () => {
+        this.addCustomerMarkers(geojson)
+        this.fitMapToBounds(geojson)
+      }
+
+      // Check if map is already loaded
+      if (this.map.loaded()) {
+        addMarkers()
+      } else {
+        this.map.on('load', addMarkers)
+      }
+    } catch (error) {
+      console.error('Error loading customer map data:', error)
     }
   }
 
