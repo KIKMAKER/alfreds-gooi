@@ -1,0 +1,70 @@
+<div class="container mt-4">
+  <h1>New Quotation</h1>
+
+  <%= simple_form_for @quotation, html: { class: 'mt-4' } do |f| %>
+    <%= f.error_notification %>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Customer or Prospect</h3>
+
+        <%= f.association :user,
+            collection: @users,
+            label_method: lambda { |u| "#{u.first_name} #{u.last_name} (#{u.email})" },
+            prompt: "Select existing customer (optional)",
+            input_html: { class: 'select2' } %>
+
+        <div class="mt-3">
+          <p class="text-muted">OR enter prospect details:</p>
+          <%= f.input :prospect_name, label: "Prospect Name" %>
+          <%= f.input :prospect_email, label: "Prospect Email" %>
+          <%= f.input :prospect_phone, label: "Prospect Phone" %>
+          <%= f.input :prospect_company, label: "Company Name (optional)" %>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Quotation Details</h3>
+        <%= f.input :created_date, as: :date, input_html: { value: Date.today } %>
+        <%= f.input :expires_at, as: :date, label: "Expires On",
+            input_html: { value: Date.today + 30.days } %>
+        <%= f.input :status, collection: Quotation.statuses.keys,
+            selected: 'draft', include_blank: false %>
+        <%= f.input :notes, as: :text, input_html: { rows: 3 } %>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h3>Products</h3>
+    <p class="text-muted">Enter quantities for products to include in this quotation:</p>
+
+    <div class="row mb-2">
+      <% @products.each_with_index do |product, index| %>
+        <div class="col-md-6 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><%= product.title %></h5>
+              <p class="card-text">R<%= product.price.to_i %></p>
+              <%= hidden_field_tag "quotation[quotation_items_attributes][#{index}][product_id]", product.id %>
+              <div class="mb-3">
+                <%= label_tag "quotation[quotation_items_attributes][#{index}][quantity]", "Quantity", class: "form-label" %>
+                <%= number_field_tag "quotation[quotation_items_attributes][#{index}][quantity]",
+                    nil,
+                    class: "form-control",
+                    min: 0,
+                    step: 0.1,
+                    placeholder: "0" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-4">
+      <%= f.button :submit, 'Create Quotation', class: 'btn btn-primary' %>
+      <%= link_to 'Cancel', quotations_path, class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

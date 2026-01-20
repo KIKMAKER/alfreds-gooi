@@ -1,0 +1,100 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Edit Quotation #<%= @quotation.number %></h1>
+    <%= link_to "← Back to Quotation", quotation_path(@quotation), class: "btn btn-sm btn-outline-secondary" %>
+  </div>
+
+  <%= simple_form_for @quotation do |f| %>
+    <%= f.error_notification %>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h3>Customer or Prospect</h3>
+
+        <%= f.association :user,
+            collection: @users,
+            label_method: lambda { |u| "#{u.first_name} #{u.last_name} (#{u.email})" },
+            prompt: "Select existing customer (optional)",
+            input_html: { class: 'select2' } %>
+
+        <div class="mt-3">
+          <p class="text-muted">OR enter prospect details:</p>
+          <%= f.input :prospect_name, label: "Prospect Name" %>
+          <%= f.input :prospect_email, label: "Prospect Email" %>
+          <%= f.input :prospect_phone, label: "Prospect Phone" %>
+          <%= f.input :prospect_company, label: "Company Name (optional)" %>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Quotation Details</h3>
+        <%= f.input :created_date, as: :date %>
+        <%= f.input :expires_at, as: :date, label: "Expires On" %>
+        <%= f.input :status, collection: Quotation.statuses.keys, include_blank: false %>
+        <%= f.input :notes, as: :text, input_html: { rows: 3 } %>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Quotation Items</h3>
+    </div>
+
+    <div id="quotation-items-container">
+      <%= f.simple_fields_for :quotation_items do |item_form| %>
+        <div class="quotation-item mb-3 p-3 border rounded" data-quotation-item>
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="flex-grow-1 w-50">
+              <label class="form-label"><strong><%= item_form.object.product&.title || "Product" %></strong></label>
+              <p class="text-muted small mb-0">R<%= item_form.object.amount&.to_i || 0 %> each</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <%= item_form.input :quantity,
+                  label: false,
+                  input_html: { class: "form-control text-center", style: "width: 80px;" },
+                  wrapper_html: { class: "mb-0" } %>
+              <%= item_form.input :_destroy,
+                  as: :boolean,
+                  label: "Remove",
+                  wrapper_html: { class: "mb-0" } %>
+            </div>
+          </div>
+          <%= item_form.input :product_id, as: :hidden %>
+          <%= item_form.input :amount, as: :hidden %>
+        </div>
+      <% end %>
+
+      <hr class="my-4">
+
+      <h4 class="mb-3">Add New Items</h4>
+      <% @products.each_with_index do |product, index| %>
+        <% next if @quotation.quotation_items.map(&:product_id).include?(product.id) %>
+        <div class="quotation-item mb-3 p-3 border rounded bg-light w-100">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="w-50">
+              <label class="form-label"><strong><%= product.title %></strong></label>
+              <p class="text-muted small mb-0">R<%= product.price.to_i %> each</p>
+            </div>
+            <div>
+              <%= number_field_tag "quotation[quotation_items_attributes][new_#{index}][quantity]",
+                  nil,
+                  class: "form-control text-center",
+                  style: "width: 80px;",
+                  min: 0,
+                  step: 0.1,
+                  placeholder: "0" %>
+              <%= hidden_field_tag "quotation[quotation_items_attributes][new_#{index}][product_id]", product.id %>
+              <%= hidden_field_tag "quotation[quotation_items_attributes][new_#{index}][amount]", product.price %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="mt-4">
+        <%= f.button :submit, "Update Quotation", class: 'btn btn-primary' %>
+        <%= link_to 'Cancel', quotation_path(@quotation), class: 'btn btn-secondary' %>
+      </div>
+    </div>
+  <% end %>
+</div>
