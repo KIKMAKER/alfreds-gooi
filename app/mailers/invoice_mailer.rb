@@ -8,6 +8,10 @@ class InvoiceMailer < ApplicationMailer
 
     recipient = @user&.email.presence || "howzit@gooi.me"
 
+    # Generate and attach PDF invoice
+    pdf = InvoicePdfGenerator.new(@invoice).generate
+    attachments["invoice_#{@invoice.number || @invoice.id}.pdf"] = pdf.render
+
     mail(
       to: recipient,
       bcc: "howzit@gooi.me",

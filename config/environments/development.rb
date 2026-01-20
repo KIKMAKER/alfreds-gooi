@@ -3,21 +3,18 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   Rails.application.configure do
     config.action_mailer.asset_host = 'http://localhost:3000'
-    config.action_mailer.delivery_method     = :postmark
-    config.action_mailer.postmark_settings   = { api_token: ENV['POSTMARK_API_TOKEN'] }
-    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+    # Use letter_opener to preview emails in browser during development
+    config.action_mailer.delivery_method = :letter_opener
     config.action_mailer.perform_deliveries = true
+
+    # Uncomment below to actually send emails via Postmark in development
+    # config.action_mailer.delivery_method     = :postmark
+    # config.action_mailer.postmark_settings   = { api_token: ENV['POSTMARK_API_TOKEN'] }
+
+    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.default_options = { from: 'howzit@gooi.me' }
-    config.action_mailer.smtp_settings = {
-      address:              'smtp.gmail.com',
-      port:                 587,
-      domain:               'www.gooi.me', # Ensure this matches the sender's email domain
-      user_name:            ENV['SMTP_USERNAME'], # e.g., 'your-email@gmail.com'
-      password:             ENV['SMTP_PASSWORD'],
-      authentication:       'plain',
-      enable_starttls_auto: true
-    }
   end
 
 
@@ -57,9 +54,6 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :cloudinary
-
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
 

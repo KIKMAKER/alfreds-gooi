@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send apply_discount_code]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code]
 
   def index
     if current_user.admin?
@@ -125,7 +125,21 @@ class InvoicesController < ApplicationController
     @subscription = @invoice.subscription
     create_invoice_items(@invoice)
     @invoice.save!
-    redirect_to send_invoice_path(@invoice)
+    redirect_to send_email_invoice_path(@invoice)
+  end
+
+  def send_email
+    unless current_user.admin?
+      redirect_to invoice_path(@invoice), alert: "Only admins can send invoices"
+      return
+    end
+
+    begin
+      InvoiceMailer.with(invoice: @invoice).invoice_created.deliver_now
+      redirect_to invoice_path(@invoice), notice: "Invoice email sent successfully to #{@invoice.subscription.user.email}"
+    rescue StandardError => e
+      redirect_to invoice_path(@invoice), alert: "Error sending invoice: #{e.message}"
+    end
   end
 
   def apply_discount_code

@@ -62,7 +62,7 @@ Rails.application.routes.draw do
     member do
       get :paid
       patch :issued_bags, to: "invoices#issued_bags"
-      get :send, to: "invoices#send"
+      get :send_email, to: "invoices#send_email"
       post :apply_discount_code
     end
     collection do
