@@ -252,9 +252,9 @@ class DriversDaysController < ApplicationController
     # Fetch all drivers_days and their stats for the year
     @drivers_days = DriversDay
       .includes(:day_statistic, :collections)
-      .where('extract(year from date) = ?', year)
+      .where('extract(year from drivers_days.date) = ?', year)
       .where.not(day_statistic: { id: nil })
-      .order(date: :asc)
+      .order('drivers_days.date': :asc)
 
     if @drivers_days.empty?
       flash[:alert] = "No data found for #{year}"
