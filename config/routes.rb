@@ -129,6 +129,7 @@ Rails.application.routes.draw do
   resources :drivers_days do
     collection do
       get :route
+      get :yearly_snapshot
     end
     member do
       get :vamos

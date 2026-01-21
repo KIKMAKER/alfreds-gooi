@@ -1,0 +1,118 @@
+<%# Yearly Impact Snapshot Card %>
+<div class="daily-snapshot-card">
+  <div class="snapshot-header">
+    <div class="logo-date-row">
+      <div class="gooi-logo-snapshot">gooi report<span class="sparkle">✨</span></div>
+      <div class="snapshot-date"><%= @year %> YEAR IN REVIEW</div>
+    </div>
+  </div>
+
+  <div class="snapshot-body">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value"><%= @customers_served %></div>
+        <div class="stat-label">Unique Customers</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-value"><%= number_with_delimiter(@kg_diverted) %></div>
+        <div class="stat-label">Total Collected (kg)</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-value"><%= @new_customers %></div>
+        <div class="stat-label">New Households</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-value"><%= number_with_delimiter(@compost_kg) %></div>
+        <div class="stat-label">Compost Created (kg)</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-value"><%= @total_days %></div>
+        <div class="stat-label">Collection Days</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-value"><%= number_with_delimiter(@buckets_diverted) %></div>
+        <div class="stat-label">Buckets Collected</div>
+      </div>
+    </div>
+
+    <div class="impact-section">
+      <div class="impact-title">Environmental Impact for <%= @year %></div>
+      <div class="impact-stats">
+        <div class="impact-item">
+          <div class="impact-value"><%= number_with_delimiter(@co2_avoided) %> kg</div>
+          <div class="impact-desc">CO₂ emissions avoided</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-value"><%= number_with_delimiter(@trees_equivalent) %></div>
+          <div class="impact-desc">tree seedlings grown for 10 years</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-value"><%= @landfill_m3 %> m³</div>
+          <div class="impact-desc">landfill space saved</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-section mt-4">
+      <div class="impact-title">Monthly Breakdown</div>
+      <div class="monthly-breakdown">
+        <% @monthly_data.each do |month_data| %>
+          <div class="month-row">
+            <div class="month-name"><%= month_data[:month].strftime('%B') %></div>
+            <div class="month-stats">
+              <span><%= month_data[:days_count] %> days</span>
+              <span><%= number_with_delimiter(month_data[:kg_collected]) %> kg</span>
+              <span><%= month_data[:households] %> households</span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="snapshot-footer">
+    <p>Together we built <strong>a healthier planet</strong> in <%= @year %>.</p>
+  </div>
+</div>
+
+<style>
+.monthly-breakdown {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.month-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.month-row:last-child {
+  border-bottom: none;
+}
+
+.month-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #F5B11A;
+  min-width: 120px;
+}
+
+.month-stats {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.month-stats span {
+  white-space: nowrap;
+}
+</style>

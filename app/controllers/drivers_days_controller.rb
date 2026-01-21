@@ -245,6 +245,58 @@ class DriversDaysController < ApplicationController
     render layout: 'snapshot'
   end
 
+  def yearly_snapshot
+    # Get year from params or default to 2025
+    year = params[:year]&.to_i || 2025
+
+    # Fetch all drivers_days and their stats for the year
+    @drivers_days = DriversDay
+      .includes(:day_statistic, :collections)
+      .where('extract(year from date) = ?', year)
+      .where.not(day_statistic: { id: nil })
+      .order(date: :asc)
+
+    if @drivers_days.empty?
+      flash[:alert] = "No data found for #{year}"
+      redirect_to drivers_days_path and return
+    end
+
+    # Aggregate statistics
+    stats = @drivers_days.map(&:day_statistic).compact
+
+    @year = year
+    @total_days = @drivers_days.count
+    @kg_diverted = stats.sum(&:net_kg).round
+    @compost_kg = (@kg_diverted * 0.35).round
+    @landfill_m3 = (@kg_diverted / 400.0).round(1)
+    @co2_avoided = stats.sum(&:avoided_co2e_kg).round
+    @trees_equivalent = stats.sum(&:trees_net).round
+    @buckets_diverted = stats.sum(&:full_equiv).round
+
+    # Calculate unique customers served throughout the year
+    all_subscription_ids = @drivers_days.flat_map { |dd| dd.collections.pluck(:subscription_id) }.uniq
+    @customers_served = all_subscription_ids.count
+
+    # Calculate new customers (first collection in the year)
+    @new_customers = @drivers_days.flat_map do |dd|
+      dd.collections.where(new_customer: true).pluck(:subscription_id)
+    end.uniq.count
+
+    # Monthly breakdown
+    @monthly_data = @drivers_days.group_by { |dd| dd.date.beginning_of_month }.map do |month, days|
+      month_stats = days.map(&:day_statistic).compact
+      {
+        month: month,
+        days_count: days.count,
+        kg_collected: month_stats.sum(&:net_kg).round,
+        households: days.flat_map { |d| d.collections.pluck(:subscription_id) }.uniq.count,
+        co2_avoided: month_stats.sum(&:avoided_co2e_kg).round
+      }
+    end.sort_by { |m| m[:month] }
+
+    render layout: 'snapshot'
+  end
+
   def edit; end
 
   def update
