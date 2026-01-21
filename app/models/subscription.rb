@@ -21,6 +21,9 @@ class Subscription < ApplicationRecord
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
+  # Mailchimp sync callbacks
+  after_commit :sync_to_mailchimp, if: :should_sync_to_mailchimp?
+
 
 
   # accepts_nested_attributes_for :contacts
@@ -402,5 +405,18 @@ class Subscription < ApplicationRecord
   #   self.update!(customer_id: new_customer_id)
   #   self.user.update!(customer_id: new_customer_id) if self.user.customer_id.nil?
   # end
+
+  # Mailchimp sync methods
+  def should_sync_to_mailchimp?
+    return false unless user.present?
+    return false unless ENV['MAILCHIMP_LIST_ID'].present?
+
+    # Sync when status changes or when record is created
+    saved_change_to_status? || saved_change_to_plan? || saved_change_to_collection_day? || previously_new_record?
+  end
+
+  def sync_to_mailchimp
+    MailchimpSyncJob.perform_later(user.id)
+  end
 
 end

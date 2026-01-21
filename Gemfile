@@ -64,6 +64,7 @@ gem "geocoder"
 gem 'faker'
 gem "acts_as_list"
 gem "postmark-rails"
+gem "gibbon"
 gem "rack-cors"
 gem "cloudinary"
 gem "prawn"

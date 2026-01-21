@@ -127,7 +127,11 @@ export default class extends Controller {
           'Thursday', '#F5B041',
           '#BDC3C7'
         ],
-        'circle-radius': ['get', 'marker_size'],
+        'circle-radius': [
+          'coalesce',
+          ['get', 'marker_size'],
+          6  // Fallback to minimum size if marker_size is null
+        ],
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff',
         'circle-opacity': 0.8

@@ -127,6 +127,10 @@ class Admin::LogisticsController < ApplicationController
   end
 
   def calculate_marker_size(subscription, avg_bags, avg_buckets)
+    # Ensure we have valid numbers
+    avg_bags = (avg_bags || 0).to_f
+    avg_buckets = (avg_buckets || 0).to_f
+
     if subscription.plan == "Standard"
       normalized = [avg_bags / 6.0, 1.0].min  # 0-6 bags typical
     elsif subscription.plan == "XL"
@@ -138,6 +142,8 @@ class Admin::LogisticsController < ApplicationController
       normalized = 0
     end
 
-    (6 + (normalized * 14)).round(1)  # 6px-20px range
+    # Ensure we always return a valid number
+    size = (6 + (normalized * 14)).round(1)
+    size.finite? ? size : 6.0  # Fallback to minimum size if NaN/Infinity
   end
 end
