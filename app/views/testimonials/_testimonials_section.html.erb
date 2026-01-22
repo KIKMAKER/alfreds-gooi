@@ -1,0 +1,71 @@
+<% if testimonials.any? %>
+  <section class="testimonials-section py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">What Our Gooiers Say 💚</h2>
+
+      <div class="row g-4">
+        <% testimonials.each do |testimonial| %>
+          <div class="col-md-6 col-lg-4">
+            <div class="testimonial-card h-100">
+              <% if testimonial.photo.attached? %>
+                <div class="testimonial-photo mb-3">
+                  <%= image_tag testimonial.photo, class: "img-fluid rounded", alt: "#{testimonial.user.first_name}'s photo" %>
+                </div>
+              <% end %>
+
+              <div class="testimonial-content">
+                <p class="testimonial-text">"<%= testimonial.content %>"</p>
+
+                <div class="testimonial-author mt-3">
+                  <strong><%= testimonial.user.first_name || "Anonymous" %></strong>
+                  <% if testimonial.user.subscriptions.active.any? %>
+                    <span class="badge bg-success ms-2">Active Gooier</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testimonials-section {
+      background: linear-gradient(135deg, rgba(245, 177, 26, 0.05) 0%, rgba(245, 177, 26, 0.1) 100%);
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .testimonial-photo img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      color: #555;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .testimonial-author {
+      border-top: 2px solid #F5B11A;
+      padding-top: 12px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+<% end %>

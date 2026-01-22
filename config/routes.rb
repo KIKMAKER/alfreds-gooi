@@ -163,6 +163,9 @@ Rails.application.routes.draw do
 
   resources :interests, only: :create
 
+  # testimonials
+  resources :testimonials, only: [:new, :create, :index, :destroy, :update]
+
   # customers
   get "my_subscriptions", to: "customers#subscriptions"
   get "manage", to: "customers#manage"

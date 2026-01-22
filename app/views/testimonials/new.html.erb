@@ -1,0 +1,60 @@
+<div class="user-wrapper">
+  <h1>Share Your Gooi Experience 💚</h1>
+  <br>
+  <p class="mb-4">Your feedback helps us improve and inspires others to join the composting movement!</p>
+
+  <div class="user-form">
+    <%= simple_form_for @testimonial do |f| %>
+      <%= f.error_notification %>
+
+      <div class="mb-4">
+        <%= f.input :content,
+            label: "Your Testimonial",
+            hint: "<span id='char-count'>0</span> / 500 characters".html_safe,
+            input_html: {
+              rows: 6,
+              placeholder: "Share your experience with Gooi... What do you love about composting with us?",
+              maxlength: 500,
+              class: 'form-control'
+            } %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.input :photo,
+            as: :file,
+            label: "Add a Photo (optional)",
+            hint: "Share a photo of your compost setup, green space, or anything related! (Max 5MB)",
+            input_html: { accept: "image/*" } %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.input :public,
+            as: :boolean,
+            label: "Make this testimonial public",
+            hint: "Public testimonials may appear on our website or socials to inspire others. If unchecked, your feedback will only be visible to Gooi team members." %>
+      </div>
+
+      <div class="d-flex gap-3 mt-4">
+        <%= f.button :submit, "Submit Testimonial", class: "small-yellow-btn" %>
+        <%= link_to "Cancel", manage_path, class: "link-title mt-1" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  // Character counter
+  document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('textarea[name="testimonial[content]"]');
+    const counter = document.getElementById('char-count');
+
+    if (textarea && counter) {
+      textarea.addEventListener('input', function() {
+        counter.textContent = this.value.length;
+      });
+
+      // Set initial count
+      counter.textContent = textarea.value.length;
+    }
+  });
+</script>

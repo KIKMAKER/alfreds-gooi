@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_22_114649) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -483,6 +483,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_22_114649) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "testimonials", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.boolean "public", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -542,4 +551,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_22_114649) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "testimonials", "users"
 end

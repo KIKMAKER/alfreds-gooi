@@ -267,33 +267,36 @@
   <section class="testimonial-section">
     <h1>Testimonials</h1>
     <div class="content-wrapper mb-4">
-      <div class="testimonials-container">
-        <div class="testimonial-card">
-          <p>"We love composting our waste, and Alfred is the sweetest man."</p>
-          <!--          <div class="testimonial-image">-->
-          <%#= image_tag('gooi_logo_CR.png') %>
-          <!--          </div>-->
-          <!-- <h4>name</h4>-->
+      <% if @testimonials.count >= 3 %>
+        <!-- Show 3 random new testimonials with images -->
+        <div class="testimonials-container">
+          <% @testimonials.sample(3).each do |testimonial| %>
+            <div class="testimonial-card">
+              <p>"<%= testimonial.content %>"</p>
+              <% if testimonial.photo.attached? %>
+                <div class="testimonial-image">
+                  <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
+                </div>
+              <% end %>
+              <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
+            </div>
+          <% end %>
         </div>
-        <div class="testimonial-card">
-          <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
-          <!--          <div class="testimonial-image">-->
-          <%#= image_tag('gooi_logo_CR.png') %>
-          <!--          </div>
-          <h4>name</h4>-->
+      <% else %>
+        <!-- Show old static testimonials until we have 3 new ones -->
+        <div class="testimonials-container">
+          <div class="testimonial-card">
+            <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+          </div>
+          <div class="testimonial-card">
+            <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+          </div>
+          <div class="testimonial-card">
+            <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+          </div>
         </div>
-        <div class="testimonial-card">
-          <p>"Alfred is always on time and always so kind and with a happy smile."</p>
-          <!--          <div class="testimonial-image">-->
-          <%#= image_tag('gooi_logo_CR.png') %>
-          <!--          </div>
-          <h4>name</h4>-->
-        </div>
-      </div>
+      <% end %>
     </div>
-    <%# if user_signed_in? %>
-    <%#= link_to "share yours", "#", class: "btn-gooi" %>
-    <%# end %>
   </section>
   <!-- What is compostable -->
   <section class="compostable-section">

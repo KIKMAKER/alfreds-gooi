@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :payments, dependent: :destroy
   has_many :drop_off_sites, dependent: :nullify
   has_many :orders, dependent: :destroy
+  has_many :testimonials, dependent: :destroy
 
   # Referrer: The user who referred others
   has_many :referrals_as_referrer,
