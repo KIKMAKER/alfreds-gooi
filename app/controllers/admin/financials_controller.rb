@@ -6,12 +6,21 @@ class Admin::FinancialsController < ApplicationController
     @date_range = parse_date_range(params[:range] || 'this_month')
 
     # Get financial metrics for the date range
-    @metrics = FinancialMetric
-      .where("(year = ? AND month >= ?) OR (year = ? AND month <= ?) OR (year > ? AND year < ?)",
-             @date_range.first.year, @date_range.first.month,
-             @date_range.last.year, @date_range.last.month,
-             @date_range.first.year, @date_range.last.year)
-      .order(:year, :month)
+    start_year = @date_range.first.year
+    start_month = @date_range.first.month
+    end_year = @date_range.last.year
+    end_month = @date_range.last.month
+
+    @metrics = if start_year == end_year
+                 # Same year - simple month range
+                 FinancialMetric.where(year: start_year, month: start_month..end_month)
+               else
+                 # Spans multiple years
+                 FinancialMetric.where(
+                   "(year = ? AND month >= ?) OR (year > ? AND year < ?) OR (year = ? AND month <= ?)",
+                   start_year, start_month, start_year, end_year, end_year, end_month
+                 )
+               end.order(:year, :month)
 
     # Aggregate totals
     @total_revenue = @metrics.sum(:recognized_revenue)
