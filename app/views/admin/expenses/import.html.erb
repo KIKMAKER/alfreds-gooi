@@ -1,0 +1,20 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Upload Bank Statement</h1>
+    <%= link_to "← Back to Expenses", admin_expenses_path, class: "link-title mb-3 d-block" %>
+
+    <p class="text-muted mb-3">Upload a CSV export from your bank statement to automatically import expenses.</p>
+
+    <%= form_with url: parse_csv_admin_expenses_path, method: :post, multipart: true, data: { turbo: false } do %>
+      <div class="mb-3">
+        <%= file_field_tag :csv_file, accept: ".csv", required: true, class: "form-control" %>
+        <small class="form-text text-muted">Supported: Standard Bank, Nedbank, FNB, ABSA, Capitec</small>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= submit_tag "Parse CSV", class: "btn-today-green" %>
+        <%= link_to "Cancel", admin_expenses_path, class: "link-title" %>
+      </div>
+    <% end %>
+  </div>
+</div>

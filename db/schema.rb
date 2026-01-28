@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_27_154848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -147,6 +147,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
     t.integer "end_kms"
     t.string "message_from_alfred"
     t.float "total_net_kg"
+    t.bigint "current_drop_off_event_id"
+    t.index ["current_drop_off_event_id"], name: "index_drivers_days_on_current_drop_off_event_id"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 
@@ -162,6 +164,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "arrival_time"
+    t.datetime "departure_time"
+    t.integer "duration_minutes"
+    t.index ["arrival_time"], name: "index_drop_off_events_on_arrival_time"
     t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
     t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"
   end
@@ -186,8 +192,74 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
     t.string "website"
     t.string "instagram_handle"
     t.string "facebook_url"
+    t.float "average_duration_minutes"
+    t.integer "total_duration_minutes", default: 0
+    t.integer "completed_dropoffs_count", default: 0
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
+  end
+
+  create_table "expense_imports", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "filename", null: false
+    t.string "bank_name"
+    t.date "statement_start_date"
+    t.date "statement_end_date"
+    t.integer "total_rows"
+    t.integer "imported_rows"
+    t.integer "skipped_rows"
+    t.text "import_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_expense_imports_on_user_id"
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.date "transaction_date", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "category", null: false
+    t.string "description"
+    t.string "vendor"
+    t.string "payment_method"
+    t.string "reference_number"
+    t.text "notes"
+    t.integer "accounting_month", null: false
+    t.integer "accounting_year", null: false
+    t.bigint "expense_import_id"
+    t.boolean "verified", default: false
+    t.bigint "verified_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accounting_year", "accounting_month"], name: "index_expenses_on_accounting_year_and_accounting_month"
+    t.index ["category"], name: "index_expenses_on_category"
+    t.index ["expense_import_id"], name: "index_expenses_on_expense_import_id"
+    t.index ["transaction_date"], name: "index_expenses_on_transaction_date"
+    t.index ["verified"], name: "index_expenses_on_verified"
+    t.index ["verified_by_id"], name: "index_expenses_on_verified_by_id"
+  end
+
+  create_table "financial_metrics", force: :cascade do |t|
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.decimal "cash_revenue", precision: 10, scale: 2, default: "0.0"
+    t.decimal "recognized_revenue", precision: 10, scale: 2, default: "0.0"
+    t.decimal "cogs_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "operational_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "fixed_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "marketing_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "admin_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "other_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_expenses", precision: 10, scale: 2, default: "0.0"
+    t.decimal "gross_profit", precision: 10, scale: 2, default: "0.0"
+    t.decimal "net_profit", precision: 10, scale: 2, default: "0.0"
+    t.integer "active_subscriptions"
+    t.integer "new_subscriptions"
+    t.integer "churned_subscriptions"
+    t.decimal "mrr", precision: 10, scale: 2, default: "0.0"
+    t.datetime "calculated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["year", "month"], name: "index_financial_metrics_on_year_and_month", unique: true
   end
 
   create_table "interests", force: :cascade do |t|
@@ -325,6 +397,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
     t.index ["referee_id"], name: "index_referrals_on_referee_id"
     t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
     t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
+  end
+
+  create_table "revenue_recognitions", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "subscription_id", null: false
+    t.date "period_start", null: false
+    t.date "period_end", null: false
+    t.integer "period_month", null: false
+    t.integer "period_year", null: false
+    t.decimal "recognized_amount", precision: 10, scale: 2, null: false
+    t.string "recognition_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_revenue_recognitions_on_invoice_id"
+    t.index ["period_year", "period_month"], name: "index_revenue_recognitions_on_period_year_and_period_month"
+    t.index ["subscription_id"], name: "index_revenue_recognitions_on_subscription_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -510,8 +598,28 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
     t.string "customer_id"
     t.string "referral_code"
     t.boolean "og", default: false
+    t.boolean "whatsapp_opt_out", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "whatsapp_messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "subscription_id"
+    t.string "message_type", null: false
+    t.text "message_body", null: false
+    t.string "twilio_sid"
+    t.string "status"
+    t.text "error_message"
+    t.date "collection_date"
+    t.boolean "used_template", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_date"], name: "index_whatsapp_messages_on_collection_date"
+    t.index ["message_type"], name: "index_whatsapp_messages_on_message_type"
+    t.index ["status"], name: "index_whatsapp_messages_on_status"
+    t.index ["subscription_id"], name: "index_whatsapp_messages_on_subscription_id"
+    t.index ["user_id"], name: "index_whatsapp_messages_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -522,10 +630,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "day_statistics", "drivers_days"
+  add_foreign_key "drivers_days", "drop_off_events", column: "current_drop_off_event_id"
   add_foreign_key "drivers_days", "users"
   add_foreign_key "drop_off_events", "drivers_days"
   add_foreign_key "drop_off_events", "drop_off_sites"
   add_foreign_key "drop_off_sites", "users"
+  add_foreign_key "expense_imports", "users"
+  add_foreign_key "expenses", "expense_imports"
+  add_foreign_key "expenses", "users", column: "verified_by_id"
   add_foreign_key "invoice_discount_codes", "discount_codes"
   add_foreign_key "invoice_discount_codes", "invoices"
   add_foreign_key "invoice_items", "invoices"
@@ -544,6 +656,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
   add_foreign_key "referrals", "subscriptions"
   add_foreign_key "referrals", "users", column: "referee_id"
   add_foreign_key "referrals", "users", column: "referrer_id"
+  add_foreign_key "revenue_recognitions", "invoices"
+  add_foreign_key "revenue_recognitions", "subscriptions"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -552,4 +666,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_21_131525) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
+  add_foreign_key "whatsapp_messages", "subscriptions"
+  add_foreign_key "whatsapp_messages", "users"
 end

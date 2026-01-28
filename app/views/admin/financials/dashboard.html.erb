@@ -1,0 +1,239 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Financial Dashboard</h1>
+
+    <!-- Date Range Selector -->
+    <div class="d-flex gap-2 align-items-center mb-4">
+      <%= form_with url: admin_financials_path, method: :get, class: "d-flex gap-2 align-items-center" do %>
+        <%= select_tag :range,
+            options_for_select([
+              ['This Month', 'this_month'],
+              ['Last Month', 'last_month'],
+              ['This Quarter', 'this_quarter'],
+              ['This Year', 'this_year'],
+              ['Last Year', 'last_year']
+            ], params[:range] || 'this_month'),
+            class: "form-select w-auto" %>
+        <%= submit_tag "Update", class: "btn-today-green" %>
+      <% end %>
+    </div>
+
+    <!-- KPI Summary -->
+    <div class="d-flex justify-content-around mb-4">
+      <div>
+        <p class="text-muted mb-1">Total Revenue</p>
+        <h2>R <%= number_with_delimiter(@total_revenue.to_i) %></h2>
+        <% if @mom_revenue_change %>
+          <small class="<%= @mom_revenue_change >= 0 ? 'text-success' : 'text-danger' %>">
+            <%= @mom_revenue_change >= 0 ? '↑' : '↓' %>
+            <%= number_to_percentage(@mom_revenue_change.abs, precision: 1) %> MoM
+          </small>
+        <% end %>
+      </div>
+
+      <div>
+        <p class="text-muted mb-1">Total Expenses</p>
+        <h2>R <%= number_with_delimiter(@total_expenses.to_i) %></h2>
+        <small class="text-muted">
+          <%= @metrics.count %> <%= @metrics.count == 1 ? 'month' : 'months' %>
+        </small>
+      </div>
+
+      <div>
+        <p class="text-muted mb-1">Gross Profit</p>
+        <h2>R <%= number_with_delimiter(@gross_profit.to_i) %></h2>
+        <% if @total_revenue > 0 %>
+          <small class="text-success">
+            <%= number_to_percentage(@gross_profit / @total_revenue * 100, precision: 1) %> margin
+          </small>
+        <% end %>
+      </div>
+
+      <div>
+        <p class="text-muted mb-1">Net Profit</p>
+        <h2 class="<%= @net_profit >= 0 ? 'text-success' : 'text-danger' %>">
+          R <%= number_with_delimiter(@net_profit.to_i) %>
+        </h2>
+        <% if @total_revenue > 0 %>
+          <small class="<%= @net_profit >= 0 ? 'text-success' : 'text-danger' %>">
+            <%= number_to_percentage(@net_profit / @total_revenue * 100, precision: 1) %> margin
+          </small>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- P&L Statement -->
+    <h3 class="mt-4 mb-3">Profit & Loss Statement</h3>
+    <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="text-end">Amount</th>
+                <th class="text-end">% of Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Revenue -->
+              <tr class="table-primary fw-bold">
+                <td>TOTAL REVENUE</td>
+                <td class="text-end">R <%= number_with_delimiter(@total_revenue.to_i) %></td>
+                <td class="text-end">100.0%</td>
+              </tr>
+
+              <!-- Cost of Goods Sold -->
+              <tr class="table-secondary">
+                <td colspan="3"><strong>COST OF GOODS SOLD</strong></td>
+              </tr>
+              <% if @expense_breakdown[:cogs] > 0 %>
+                <tr>
+                  <td class="ps-4">Cost of Goods Sold</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:cogs].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:cogs] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <!-- Gross Profit -->
+              <tr class="table-info fw-bold">
+                <td>GROSS PROFIT</td>
+                <td class="text-end">R <%= number_with_delimiter(@gross_profit.to_i) %></td>
+                <td class="text-end">
+                  <% if @total_revenue > 0 %>
+                    <%= number_to_percentage(@gross_profit / @total_revenue * 100, precision: 1) %>
+                  <% else %>
+                    0.0%
+                  <% end %>
+                </td>
+              </tr>
+
+              <!-- Operating Expenses -->
+              <tr class="table-secondary">
+                <td colspan="3"><strong>OPERATING EXPENSES</strong></td>
+              </tr>
+
+              <% if @expense_breakdown[:operational] > 0 %>
+                <tr>
+                  <td class="ps-4">Operational Costs</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:operational].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:operational] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <% if @expense_breakdown[:fixed] > 0 %>
+                <tr>
+                  <td class="ps-4">Fixed Costs</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:fixed].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:fixed] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <% if @expense_breakdown[:marketing] > 0 %>
+                <tr>
+                  <td class="ps-4">Marketing</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:marketing].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:marketing] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <% if @expense_breakdown[:admin] > 0 %>
+                <tr>
+                  <td class="ps-4">Administrative</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:admin].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:admin] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <% if @expense_breakdown[:other] > 0 %>
+                <tr>
+                  <td class="ps-4">Other Expenses</td>
+                  <td class="text-end">R <%= number_with_delimiter(@expense_breakdown[:other].to_i) %></td>
+                  <td class="text-end">
+                    <% if @total_revenue > 0 %>
+                      <%= number_to_percentage(@expense_breakdown[:other] / @total_revenue * 100, precision: 1) %>
+                    <% else %>
+                      0.0%
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+
+              <!-- Net Profit -->
+              <tr class="table-<%= @net_profit >= 0 ? 'success' : 'danger' %> fw-bold">
+                <td>NET PROFIT</td>
+                <td class="text-end">R <%= number_with_delimiter(@net_profit.to_i) %></td>
+                <td class="text-end">
+                  <% if @total_revenue > 0 %>
+                    <%= number_to_percentage(@net_profit / @total_revenue * 100, precision: 1) %>
+                  <% else %>
+                    0.0%
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+    <!-- Revenue Forecast -->
+    <% if @forecast && @forecast.any? %>
+      <h3 class="mt-4 mb-3">Revenue Forecast (Next 6 Months)</h3>
+      <p class="text-muted mb-3">
+        Based on <%= Subscription.active.count %> active subscriptions with 5% monthly churn assumption
+      </p>
+      <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th class="text-end">Committed Revenue</th>
+                  <th class="text-end">Expected Revenue</th>
+                  <th class="text-end">Projected Active Subs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @forecast.each do |f| %>
+                  <tr>
+                    <td><%= f[:month].strftime("%B %Y") %></td>
+                    <td class="text-end">R <%= number_with_delimiter(f[:committed_revenue].to_i) %></td>
+                    <td class="text-end">R <%= number_with_delimiter(f[:expected_revenue].to_i) %></td>
+                    <td class="text-end"><%= f[:projected_active_subs] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+    <% end %>
+
+    <!-- Quick Actions -->
+    <div class="d-flex gap-2 mt-4">
+      <%= link_to "Add Expense", new_admin_expense_path, class: "btn-today-green" %>
+      <%= link_to "Upload Bank Statement", import_admin_expenses_path, class: "btn-today-green" %>
+      <%= link_to "View All Expenses", admin_expenses_path, class: "link-title" %>
+    </div>
+  </div>
+</div>

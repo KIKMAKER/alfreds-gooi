@@ -1,0 +1,119 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Preview Import: <%= @expense_import.filename %></h1>
+    <%= link_to "← Back to Upload", import_admin_expenses_path, class: "link-title mb-3 d-block" %>
+
+    <% if flash[:alert] %>
+      <div class="alert alert-warning mb-3">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <p class="text-muted mb-3">
+      Review the parsed transactions below. Auto-categorization has been applied based on keywords. Uncheck any transactions you don't want to import.
+    </p>
+
+    <%= form_with url: confirm_import_admin_expenses_path, method: :post do %>
+      <%= hidden_field_tag 'expense_import[filename]', @expense_import.filename %>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Found <%= @parsed_expenses.count %> transactions</h5>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn-today-green btn-sm" onclick="selectAll()">Select All</button>
+          <button type="button" class="link-title btn-sm" onclick="deselectAll()">Deselect All</button>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">Import</th>
+                    <th style="width: 120px;">Date</th>
+                    <th>Description</th>
+                    <th style="width: 150px;">Vendor</th>
+                    <th style="width: 120px;" class="text-end">Amount</th>
+                    <th style="width: 200px;">Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @parsed_expenses.each_with_index do |exp, i| %>
+                    <tr>
+                      <td class="text-center">
+                        <%= check_box_tag "expenses[#{i}][include]", "1", true, class: "form-check-input" %>
+                        <%= hidden_field_tag "expenses[#{i}][transaction_date]", exp[:transaction_date] %>
+                        <%= hidden_field_tag "expenses[#{i}][amount]", exp[:amount] %>
+                        <%= hidden_field_tag "expenses[#{i}][description]", exp[:description] %>
+                        <%= hidden_field_tag "expenses[#{i}][vendor]", exp[:vendor] %>
+                        <%= hidden_field_tag "expenses[#{i}][reference_number]", exp[:reference_number] %>
+                      </td>
+                      <td><%= Date.parse(exp[:transaction_date]).strftime("%d %b %Y") rescue exp[:transaction_date] %></td>
+                      <td>
+                        <small><%= exp[:description] %></small>
+                      </td>
+                      <td><small><%= exp[:vendor] %></small></td>
+                      <td class="text-end">
+                        <strong>R <%= number_with_delimiter(exp[:amount]) %></strong>
+                      </td>
+                      <td>
+                        <%= select_tag "expenses[#{i}][category]",
+                            grouped_options_for_select([
+                              ['Cost of Goods Sold', [
+                                ['Buckets', 'buckets'],
+                                ['Bags', 'bags'],
+                                ['Starter Kits', 'starter_kits'],
+                                ['Packaging', 'packaging']
+                              ]],
+                              ['Operational', [
+                                ['Fuel', 'fuel'],
+                                ['Vehicle Maintenance', 'vehicle_maintenance'],
+                                ['Vehicle Insurance', 'vehicle_insurance'],
+                                ['Tolls & Parking', 'tolls_parking'],
+                                ['Staff Food & Refreshments', 'staff_food']
+                              ]],
+                              ['Fixed', [
+                                ['Salaries & Wages', 'salaries_wages'],
+                                ['Rent', 'rent'],
+                                ['Utilities', 'utilities'],
+                                ['Insurance', 'insurance_general'],
+                                ['Software', 'software_subscriptions']
+                              ]],
+                              ['Marketing', [
+                                ['Marketing', 'marketing'],
+                                ['Advertising', 'advertising']
+                              ]],
+                              ['Admin', [
+                                ['Office Supplies', 'office_supplies'],
+                                ['Professional Fees', 'professional_fees'],
+                                ['Bank Fees', 'bank_fees'],
+                                ['Airtime & Data', 'airtime_data']
+                              ]],
+                              ['Other', [
+                                ['Other', 'other']
+                              ]]
+                            ], exp[:suggested_category] || 'other'),
+                            { class: "form-select form-select-sm" } %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+                </tbody>
+              </table>
+
+      <div class="d-flex gap-2 mt-3">
+        <%= submit_tag "Confirm Import", class: "btn-today-green", data: { confirm: "Are you sure you want to import the selected expenses?" } %>
+        <%= link_to "Cancel", admin_expenses_path, class: "link-title" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  function selectAll() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+  }
+
+  function deselectAll() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  }
+</script>

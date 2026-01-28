@@ -31,9 +31,32 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       post :renew_last_subscription, on: :member
     end
+    resources :whatsapp_messages, only: [:index] do
+      collection do
+        post :trigger_reminders
+      end
+    end
+
+    # Financial Dashboard
+    get 'financials', to: 'financials#dashboard', as: :financials
+    get 'financials/chart_data', to: 'financials#chart_data', as: :chart_data_financials
+
+    resources :expenses do
+      member do
+        post :verify
+      end
+      collection do
+        get :import
+        post :parse_csv
+        post :confirm_import
+      end
+    end
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
+
+  # Twilio WhatsApp webhook
+  post 'twilio/whatsapp', to: 'twilio_webhooks#whatsapp_reply'
 
   # payments
   # resources :webhooks, only: :create
@@ -150,9 +173,12 @@ Rails.application.routes.draw do
     resources :drop_off_events, only: [:index, :show, :edit, :update] do
       member do
         post :complete
+        post :record_arrival
+        post :record_departure
       end
       resources :buckets, only: [:create, :destroy], controller: 'drop_off_events/buckets'
     end
+    post 'set_current_drop_off/:id', to: 'drop_off_events#set_current_drop_off', as: :set_current_drop_off
   end
 
   resources :collections do

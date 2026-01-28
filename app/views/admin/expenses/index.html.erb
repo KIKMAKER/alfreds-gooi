@@ -1,0 +1,111 @@
+<div class="gooi-container">
+  <div class="outline">
+    <div class="d-flex justify-content-between mb-4">
+      <h1>Expenses</h1>
+      <div class="d-flex gap-2">
+        <%= link_to "Add Expense", new_admin_expense_path, class: "btn-today-green" %>
+        <%= link_to "Upload CSV", import_admin_expenses_path, class: "btn-today-green" %>
+        <%= link_to "Back to Dashboard", admin_financials_path, class: "link-title" %>
+      </div>
+    </div>
+
+    <!-- Filters -->
+      <%= select_tag :category,
+          options_for_select(
+            [['All Categories', '']] + Expense.categories.keys.map { |k| [k.titleize, k] },
+            params[:category]
+          ),
+          class: "form-select" %>
+
+      <%= select_tag :verified,
+          options_for_select(
+            [['All', ''], ['Verified', 'true'], ['Unverified', 'false']],
+            params[:verified]
+          ),
+          class: "form-select" %>
+
+      <%= date_field_tag :start_date, params[:start_date], class: "form-control", placeholder: "Start Date" %>
+
+      <%= date_field_tag :end_date, params[:end_date], class: "form-control", placeholder: "End Date" %>
+
+      <%= submit_tag "Filter", class: "btn-today-green" %>
+    <% end %>
+
+    <!-- Expenses Table -->
+    <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Vendor</th>
+                  <th>Category</th>
+                  <th class="text-end">Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @expenses.any? %>
+                  <% @expenses.each do |expense| %>
+                    <tr>
+                      <td><%= expense.transaction_date.strftime("%d %b %Y") %></td>
+                      <td>
+                        <%= expense.description %>
+                        <% if expense.expense_import %>
+                          <br>
+                          <small class="text-muted">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                            Import: <%= expense.expense_import.filename %>
+                          </small>
+                        <% end %>
+                      </td>
+                      <td><%= expense.vendor %></td>
+                      <td>
+                        <%
+                          badge_class = case expense.category_group
+                          when :cogs then "bg-warning text-dark"
+                          when :operational then "bg-info text-dark"
+                          when :fixed then "bg-primary"
+                          when :marketing then "bg-success"
+                          when :admin then "bg-secondary"
+                          else "bg-dark"
+                          end
+                        %>
+                        <span class="badge <%= badge_class %>">
+                          <%= expense.category.humanize %>
+                        </span>
+                      </td>
+                      <td class="text-end">R <%= number_with_delimiter(expense.amount) %></td>
+                      <td>
+                        <% if expense.verified? %>
+                          <span class="badge bg-success">Verified</span>
+                          <% if expense.verified_by %>
+                            <br>
+                            <small class="text-muted">by <%= expense.verified_by.email %></small>
+                          <% end %>
+                        <% else %>
+                          <span class="badge bg-warning">Unverified</span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <%= link_to "Edit", edit_admin_expense_path(expense), class: "link-title" %>
+                        <% unless expense.verified? %>
+                          <%= button_to "Verify", verify_admin_expense_path(expense), method: :post, class: "btn-today-green btn-sm" %>
+                        <% end %>
+                        <%= button_to "Delete", admin_expense_path(expense), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-danger" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                      No expenses found. <%= link_to "Add your first expense", new_admin_expense_path %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+
+    <!-- Showing most recent 100 expenses -->
+  </div>
+</div>

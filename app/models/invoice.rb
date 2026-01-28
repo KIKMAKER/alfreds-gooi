@@ -8,9 +8,12 @@ class Invoice < ApplicationRecord
   has_many :payments, dependent: :nullify
   has_many :invoice_discount_codes, dependent: :destroy
   has_many :discount_codes, through: :invoice_discount_codes
+  has_many :revenue_recognitions, dependent: :destroy
 
   # validates :issued_date, :due_date, :total_amount, presence: true
   after_commit :set_number, on: :create
+  after_update :create_revenue_recognitions, if: :saved_change_to_paid?
+
   ## custom methods
 
   def set_number
@@ -43,4 +46,9 @@ class Invoice < ApplicationRecord
     end
   end
 
+  private
+
+  def create_revenue_recognitions
+    CreateRevenueRecognitionsJob.perform_later(id) if paid?
+  end
 end

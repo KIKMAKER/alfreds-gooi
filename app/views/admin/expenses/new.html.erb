@@ -1,0 +1,113 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Add New Expense</h1>
+    <%= link_to "← Back to Expenses", admin_expenses_path, class: "link-title mb-3 d-block" %>
+
+    <%= form_with model: @expense, url: admin_expenses_path, method: :post do |f| %>
+            <% if @expense.errors.any? %>
+              <div class="alert alert-danger">
+                <h4><%= pluralize(@expense.errors.count, "error") %> prohibited this expense from being saved:</h4>
+                <ul>
+                  <% @expense.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.label :transaction_date, "Transaction Date", class: "form-label" %>
+              <%= f.date_field :transaction_date, class: "form-control", required: true, value: Date.current %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :amount, "Amount (R)", class: "form-label" %>
+              <%= f.number_field :amount, class: "form-control", step: 0.01, required: true, placeholder: "0.00" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :category, "Category", class: "form-label" %>
+              <%= f.select :category,
+                  grouped_options_for_select([
+                    ['Cost of Goods Sold', [
+                      ['Buckets', 'buckets'],
+                      ['Bags', 'bags'],
+                      ['Starter Kits', 'starter_kits'],
+                      ['Packaging', 'packaging']
+                    ]],
+                    ['Operational Costs', [
+                      ['Fuel', 'fuel'],
+                      ['Vehicle Maintenance', 'vehicle_maintenance'],
+                      ['Vehicle Insurance', 'vehicle_insurance'],
+                      ['Tolls & Parking', 'tolls_parking'],
+                      ['Staff Food & Refreshments', 'staff_food']
+                    ]],
+                    ['Fixed Costs', [
+                      ['Salaries & Wages', 'salaries_wages'],
+                      ['Rent', 'rent'],
+                      ['Utilities', 'utilities'],
+                      ['Insurance (General)', 'insurance_general'],
+                      ['Software Subscriptions', 'software_subscriptions']
+                    ]],
+                    ['Marketing', [
+                      ['Marketing', 'marketing'],
+                      ['Advertising', 'advertising']
+                    ]],
+                    ['Administrative', [
+                      ['Office Supplies', 'office_supplies'],
+                      ['Professional Fees', 'professional_fees'],
+                      ['Bank Fees', 'bank_fees'],
+                      ['Airtime & Data', 'airtime_data']
+                    ]],
+                    ['Other', [
+                      ['Other', 'other']
+                    ]]
+                  ]),
+                  { include_blank: 'Select a category' },
+                  { class: "form-select", required: true } %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :description, "Description", class: "form-label" %>
+              <%= f.text_area :description, class: "form-control", rows: 3, placeholder: "Brief description of the expense" %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <%= f.label :vendor, "Vendor/Supplier", class: "form-label" %>
+                <%= f.text_field :vendor, class: "form-control", placeholder: "Company or person paid" %>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <%= f.label :payment_method, "Payment Method", class: "form-label" %>
+                <%= f.select :payment_method,
+                    options_for_select([
+                      'Bank Transfer',
+                      'Card Payment',
+                      'Cash',
+                      'Debit Order',
+                      'Cheque',
+                      'Other'
+                    ]),
+                    { include_blank: 'Select method' },
+                    { class: "form-select" } %>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :reference_number, "Reference Number", class: "form-label" %>
+              <%= f.text_field :reference_number, class: "form-control", placeholder: "Transaction or invoice reference" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :notes, "Notes (optional)", class: "form-label" %>
+              <%= f.text_area :notes, class: "form-control", rows: 2, placeholder: "Additional notes or context" %>
+            </div>
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Add Expense", class: "btn-today-green" %>
+              <%= link_to "Cancel", admin_expenses_path, class: "link-title" %>
+            </div>
+          <% end %>
+  </div>
+</div>
