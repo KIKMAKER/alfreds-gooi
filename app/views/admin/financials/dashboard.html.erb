@@ -201,11 +201,81 @@
             </tbody>
           </table>
 
+    <!-- Customer Churn Analysis -->
+    <% if @period_churn %>
+      <h3 class="mt-4 mb-3">Customer Churn Analysis</h3>
+
+      <div class="mb-3 p-3 bg-light rounded">
+        <p class="mb-2">
+          <strong>3-Month Period (<%= @period_churn[:period] %>):</strong>
+        </p>
+        <div class="row">
+          <div class="col-md-3">
+            <small class="text-muted">Active Users (Start)</small>
+            <div><strong><%= @period_churn[:users_at_start] %></strong></div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Active Users (End)</small>
+            <div><strong><%= @period_churn[:users_at_end] %></strong></div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Churned Users</small>
+            <div><strong class="<%= @period_churn[:churned_users] > 5 ? 'text-danger' : 'text-success' %>">
+              <%= @period_churn[:churned_users] %>
+            </strong></div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Period Churn Rate</small>
+            <div><strong class="<%= @period_churn[:churn_rate] > 10 ? 'text-danger' : @period_churn[:churn_rate] > 5 ? 'text-warning' : 'text-success' %>">
+              <%= number_to_percentage(@period_churn[:churn_rate], precision: 1) %>
+            </strong></div>
+          </div>
+        </div>
+        <p class="mb-0 mt-2">
+          <small class="text-muted">
+            Normalized monthly churn rate: <strong><%= number_to_percentage(@period_churn[:monthly_churn_rate], precision: 2) %></strong> (used in forecast)
+          </small>
+        </p>
+      </div>
+
+      <% if @churn_history && @churn_history.any? %>
+        <details class="mb-3">
+          <summary class="text-muted" style="cursor: pointer;">View month-by-month breakdown</summary>
+          <table class="table table-bordered table-sm mt-2">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="text-end">Active Users Start</th>
+                <th class="text-end">Active Users End</th>
+                <th class="text-end">Churned</th>
+                <th class="text-end">Churn Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @churn_history.each do |churn| %>
+                <tr>
+                  <td><%= churn[:month].strftime("%B %Y") %></td>
+                  <td class="text-end"><%= churn[:users_at_start] %></td>
+                  <td class="text-end"><%= churn[:users_at_end] %></td>
+                  <td class="text-end"><%= churn[:churned_users] %></td>
+                  <td class="text-end">
+                    <span class="<%= churn[:churn_rate] > 10 ? 'text-danger' : churn[:churn_rate] > 5 ? 'text-warning' : 'text-success' %>">
+                      <%= number_to_percentage(churn[:churn_rate], precision: 1) %>
+                    </span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </details>
+      <% end %>
+    <% end %>
+
     <!-- Revenue Forecast -->
     <% if @forecast && @forecast.any? %>
       <h3 class="mt-4 mb-3">Revenue Forecast (Next 6 Months)</h3>
       <p class="text-muted mb-3">
-        Based on <%= Subscription.active.count %> active subscriptions with 5% monthly churn assumption
+        Based on <%= Subscription.active.count %> active subscriptions with <%= number_to_percentage(@period_churn[:monthly_churn_rate], precision: 2) %> monthly churn rate
       </p>
       <table class="table table-bordered">
               <thead>

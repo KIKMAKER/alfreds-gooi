@@ -42,7 +42,16 @@ class Admin::FinancialsController < ApplicationController
     }
 
     # Revenue forecasting
-    @forecast = RevenueForecaster.new.forecast
+    forecaster = RevenueForecaster.new
+    @forecast = forecaster.forecast
+
+    # Churn metrics (3-month period)
+    @churn_calculator = ChurnCalculator.new(
+      start_date: 3.months.ago.beginning_of_month,
+      end_date: Date.current.end_of_month
+    )
+    @period_churn = @churn_calculator.period_churn_rate
+    @churn_history = @churn_calculator.churn_history
   end
 
   def chart_data

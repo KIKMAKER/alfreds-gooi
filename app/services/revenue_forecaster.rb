@@ -1,7 +1,8 @@
 class RevenueForecaster
-  def initialize(forecast_months: 6, churn_rate: 0.05)
+  def initialize(forecast_months: 6, churn_rate: nil)
     @forecast_months = forecast_months
-    @churn_rate = churn_rate  # Default 5% monthly churn
+    # Use actual calculated churn or fall back to 5% default
+    @churn_rate = churn_rate || calculate_actual_churn_rate
   end
 
   def forecast
@@ -66,5 +67,20 @@ class RevenueForecaster
       .count
 
     (new_subs_count / 3.0).round(1)
+  end
+
+  def calculate_actual_churn_rate
+    # Calculate churn over last 3 months as a period
+    # This is more forgiving - users who pause and come back aren't counted as churned
+    calculator = ChurnCalculator.new(
+      start_date: 3.months.ago.beginning_of_month,
+      end_date: Date.current.end_of_month
+    )
+
+    period_churn = calculator.period_churn_rate
+    monthly_churn = period_churn[:monthly_churn_rate]
+
+    # Convert percentage to decimal (e.g., 5.0% -> 0.05)
+    (monthly_churn / 100.0).round(4)
   end
 end
