@@ -238,6 +238,43 @@
         </p>
       </div>
 
+      <% if @period_churn[:churned_user_objects].any? %>
+        <details class="mb-3">
+          <summary class="text-danger fw-bold" style="cursor: pointer;">
+            View <%= @period_churn[:churned_users] %> churned <%= @period_churn[:churned_users] == 1 ? 'user' : 'users' %>
+          </summary>
+          <div class="mt-2 p-3 border rounded">
+            <table class="table table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Last Subscription End</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @period_churn[:churned_user_objects].each do |user| %>
+                  <tr>
+                    <td>
+                      <%= link_to user.name, admin_user_path(user), class: "text-decoration-none" %>
+                    </td>
+                    <td><small><%= user.email %></small></td>
+                    <td>
+                      <% last_sub = user.subscriptions.order(end_date: :desc).first %>
+                      <% if last_sub&.end_date %>
+                        <small class="text-muted"><%= last_sub.end_date.strftime("%d %b %Y") %></small>
+                      <% else %>
+                        <small class="text-muted">-</small>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      <% end %>
+
       <% if @churn_history && @churn_history.any? %>
         <details class="mb-3">
           <summary class="text-muted" style="cursor: pointer;">View month-by-month breakdown</summary>

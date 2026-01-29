@@ -16,17 +16,18 @@ class ChurnCalculator
     users_at_end = active_users_on_date(end_of_month)
 
     # Churned users = had active sub at start but not at end
-    churned_users = users_at_start - users_at_end
+    churned_user_ids = users_at_start - users_at_end
 
     return 0 if users_at_start.empty?
 
-    churn_rate = (churned_users.count.to_f / users_at_start.count * 100).round(2)
+    churn_rate = (churned_user_ids.count.to_f / users_at_start.count * 100).round(2)
 
     {
       month: start_of_month,
       users_at_start: users_at_start.count,
       users_at_end: users_at_end.count,
-      churned_users: churned_users.count,
+      churned_users: churned_user_ids.count,
+      churned_user_ids: churned_user_ids,
       churn_rate: churn_rate
     }
   end
@@ -53,17 +54,19 @@ class ChurnCalculator
     users_at_start = self.class.active_users_on_date(@start_date)
     users_at_end = self.class.active_users_on_date(@end_date)
 
-    churned_users = users_at_start - users_at_end
+    churned_user_ids = users_at_start - users_at_end
 
     return 0 if users_at_start.empty?
 
-    churn_rate = (churned_users.count.to_f / users_at_start.count * 100).round(2)
+    churn_rate = (churned_user_ids.count.to_f / users_at_start.count * 100).round(2)
 
     {
       period: "#{@start_date.strftime('%b %Y')} - #{@end_date.strftime('%b %Y')}",
       users_at_start: users_at_start.count,
       users_at_end: users_at_end.count,
-      churned_users: churned_users.count,
+      churned_users: churned_user_ids.count,
+      churned_user_ids: churned_user_ids,
+      churned_user_objects: User.where(id: churned_user_ids).order(:name),
       churn_rate: churn_rate,
       # Normalize to monthly rate for forecasting
       monthly_churn_rate: normalize_to_monthly_rate(churn_rate)
