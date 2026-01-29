@@ -66,7 +66,7 @@ class ChurnCalculator
       users_at_end: users_at_end.count,
       churned_users: churned_user_ids.count,
       churned_user_ids: churned_user_ids,
-      churned_user_objects: User.where(id: churned_user_ids).order(:name),
+      churned_user_objects: User.where(id: churned_user_ids).order(:first_name),
       churn_rate: churn_rate,
       # Normalize to monthly rate for forecasting
       monthly_churn_rate: normalize_to_monthly_rate(churn_rate)

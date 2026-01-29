@@ -256,7 +256,7 @@
                 <% @period_churn[:churned_user_objects].each do |user| %>
                   <tr>
                     <td>
-                      <%= link_to user.name, admin_user_path(user), class: "text-decoration-none" %>
+                      <%= link_to user.first_name, admin_user_path(user), class: "text-decoration-none" %>
                     </td>
                     <td><small><%= user.email %></small></td>
                     <td>
