@@ -40,13 +40,9 @@ class MonthlyInvoiceService
     buckets_per_collection = @subscription.buckets_per_collection
     collections_per_week = @subscription.collections_per_week || 1
 
-    # Create the invoice
-    invoice = Invoice.create!(
-      subscription: @subscription,
-      issued_date: Time.current,
-      due_date: Time.current + 2.weeks,
-      total_amount: 0
-    )
+    # Check if user already has an unpaid invoice from this invoicing cycle
+    # This allows combining multiple subscriptions into one invoice
+    invoice = find_or_create_invoice
 
     # Add monthly collection fee
     monthly_title = case @subscription.duration
@@ -100,18 +96,58 @@ class MonthlyInvoiceService
       next_invoice_date: @subscription.next_invoice_date + 4.weeks
     )
 
-    # Send invoice email to customer
-    InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
+    # Check if there are any OTHER subscriptions for this user that still need invoicing today
+    user = @subscription.user
+    other_subs_needing_invoice = user.subscriptions
+                                     .where(monthly_invoicing: true, status: :active)
+                                     .where.not(id: @subscription.id)
+                                     .where('next_invoice_date <= ?', Date.today)
+                                     .count
 
-    # Send admin notification
-    InvoiceMailer.with(
-      invoice: invoice,
-      installment_number: installment_number
-    ).invoice_created_alert.deliver_now
+    if other_subs_needing_invoice > 0
+      # Don't send email yet, other subscriptions still need to add their items
+      Rails.logger.info "Added subscription #{@subscription.id} to invoice ##{invoice.id}, but #{other_subs_needing_invoice} other subscription(s) still need processing"
+    else
+      # This is the last subscription to be processed, send the email now
+      Rails.logger.info "All subscriptions processed for invoice ##{invoice.id}, sending email"
 
-    Rails.logger.info "Generated monthly invoice ##{invoice.id} for subscription #{@subscription.id} (installment #{installment_number} of #{@subscription.duration})"
+      # Send invoice email to customer
+      InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
+
+      # Send admin notification
+      InvoiceMailer.with(
+        invoice: invoice,
+        installment_number: installment_number
+      ).invoice_created_alert.deliver_now
+    end
 
     invoice
+  end
+
+  def find_or_create_invoice
+    user = @subscription.user
+
+    # Look for an unpaid invoice for this user created in the last 24 hours
+    # This allows multiple subscriptions to be combined into one invoice
+    existing_invoice = Invoice.joins(:subscription)
+                              .where(subscriptions: { user_id: user.id })
+                              .where(paid: false)
+                              .where('invoices.issued_date >= ?', Time.current.beginning_of_day)
+                              .order('invoices.created_at DESC')
+                              .first
+
+    if existing_invoice
+      Rails.logger.info "Found existing unpaid invoice ##{existing_invoice.id} for user #{user.id}, adding subscription #{@subscription.id} to it"
+      existing_invoice
+    else
+      # Create new invoice
+      Invoice.create!(
+        subscription: @subscription,
+        issued_date: Time.current,
+        due_date: Time.current + 2.weeks,
+        total_amount: 0
+      )
+    end
   end
 
   def calculate_installment_number
