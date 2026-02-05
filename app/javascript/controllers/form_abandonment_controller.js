@@ -85,16 +85,27 @@ export default class extends Controller {
     if (this.formStarted && !this.formCompleted) {
       const timeSpent = Math.round((Date.now() - this.startTime) / 1000)
 
-      // Track abandonment event
-      if (window.ahoy) {
-        window.ahoy.track("Abandoned Registration Form", {
+      // Use sendBeacon for guaranteed delivery during page unload
+      // Get visit info from ahoy if available
+      const visitToken = window.ahoy && window.ahoy.getVisitId ? window.ahoy.getVisitId() : null
+      const visitorToken = window.ahoy && window.ahoy.getVisitorId ? window.ahoy.getVisitorId() : null
+
+      const eventData = {
+        visit_token: visitToken,
+        visitor_token: visitorToken,
+        name: "Abandoned Registration Form",
+        properties: {
           time_spent_seconds: timeSpent,
           fields_completed: this.fieldsCompleted.size,
           completed_fields: Array.from(this.fieldsCompleted).join(", "),
           plan: this.planValue,
           duration: this.durationValue
-        })
+        },
+        time: new Date().toISOString()
       }
+
+      const blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' })
+      navigator.sendBeacon('/ahoy/events', blob)
     }
   }
 
