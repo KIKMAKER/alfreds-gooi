@@ -26,6 +26,7 @@ class User < ApplicationRecord
            through: :referrals_as_referrer,
            source: :referee
 
+           
   # Referrals where this user is the referee (was referred by someone else)
   has_many :referrals_as_referee,
            class_name: 'Referral',
