@@ -2,8 +2,8 @@
 
 data_sources:
   main:
-    # Leave blank to use your application's database connection
-    # url: <%= ENV["BLAZER_DATABASE_URL"] %>
+    # Use DATABASE_URL in production (Heroku), blank in development
+    url: <%= ENV["BLAZER_DATABASE_URL"] || ENV["DATABASE_URL"] %>
 
     # statement timeout, in seconds
     # none by default
