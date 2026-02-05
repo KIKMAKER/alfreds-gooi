@@ -73,6 +73,7 @@
                 <td>
                   <%= link_to subscription_path(subscription) do %>
                     <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
+                    <% cols = subscription.collections.where(skip: false).count || 0 %>
                     <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
                   <% end %>
                 </td>
@@ -82,14 +83,14 @@
                 </td>
 
                 <td>
-                  <% total = (subscription.respond_to?(:total_collections) ? subscription.total_collections : subscription.collections.count) || "unpaid" %>
+                  <% total = cols || "unpaid" %>
                   <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
                 </td>
 
                 <td>
                   <% rem = (subscription.respond_to?(:remaining_collections) ? subscription.remaining_collections : nil) %>
                   <% if rem.present? %>
-                    <% if rem < -1 %>
+                    <% if rem < 0 %>
                       <%= button_to 'reassign preview',
                 reassign_collections_subscription_path(subscription, dry_run: 1),
                 method: :post, form: { data: { turbo: false } } %>

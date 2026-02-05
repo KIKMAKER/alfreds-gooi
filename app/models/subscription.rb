@@ -45,7 +45,7 @@ class Subscription < ApplicationRecord
   enum :collection_day, Date::DAYNAMES
 
   MONDAY_SUBURBS = ["Observatory", "Woodstock", "De Waterkant",  "Bo-Kaap", "Foreshore"]
-  TUESDAY_SUBURBS  = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
+  TUESDAY_SUBURBS = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Schotsche Kloof", "Constantia", "Witteboomen"].sort!.freeze
   THURSDAY_SUBURBS = ["Gardens", "Higgovale", "District Six", "Oranjezicht", "Cape Town", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Observatory" ].sort!.freeze
   FUTURE_SUBURBS = ["Sunnydale", "Sun Valley", "Noordhoek", "Glencairn", "Milnerton", "Tableview", "Grassy Park"]
@@ -65,7 +65,7 @@ class Subscription < ApplicationRecord
   end
 
   def total_collections
-    collections.count
+    collections.where(skip: false).count
   end
 
   def remaining_collections
@@ -139,7 +139,8 @@ class Subscription < ApplicationRecord
   end
 
   def end_date!
-    self.update!(end_date: (start_date + duration.months).to_date) if start_date
+    collections = self.collections.where(skip: false).count
+    self.update!(end_date: (start_date + collections.weeks).to_date) if start_date
   end
 
   def set_collection_day
@@ -222,13 +223,13 @@ class Subscription < ApplicationRecord
   def reassign_user_collections!(dry_run: false)
     raise "Subscription must have a user" unless user
     raise "Subscription must have a start_date" unless start_date
-
+    cols = collections.where(skip: false).count
     # Determine this sub's "end" for the purpose of finding the *next* sub
     this_end =
       if end_date.present?
         end_date.to_date
-      elsif duration.present?
-        (start_date + duration.months).to_date
+      elsif collections.any?
+        (start_date + cols.weeks).to_date
       else
         start_date.to_date
       end

@@ -73,8 +73,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
     user.subscriptions
         .where.not(id: subscription.id)
-        .where.not(start_date: nil)
-        .where(start_date: from..to)
+        .where(created_at: from..to)
         .exists?
   end
 end

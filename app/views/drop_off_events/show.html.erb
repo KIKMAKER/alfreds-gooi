@@ -14,6 +14,24 @@
     <% end %>
   </div>
 
+  <!-- Timing Info -->
+  <% if @drop_off_event.arrival_time || @drop_off_event.departure_time %>
+    <div class="alert alert-info mb-3">
+      <strong>⏱️ Timing:</strong>
+      <% if @drop_off_event.arrival_time %>
+        Arrived at <%= @drop_off_event.arrival_time.strftime("%I:%M %p") %>
+      <% end %>
+      <% if @drop_off_event.departure_time %>
+        • Left at <%= @drop_off_event.departure_time.strftime("%I:%M %p") %>
+      <% end %>
+      <% if @drop_off_event.timing_complete? %>
+        • <strong>Duration: <%= @drop_off_event.duration_display %></strong>
+      <% elsif @drop_off_event.in_progress? %>
+        • <em>In progress...</em>
+      <% end %>
+    </div>
+  <% end %>
+
   <div class="row g-3">
     <!-- Left: Entry form -->
     <div class="col-12 col-lg-6">

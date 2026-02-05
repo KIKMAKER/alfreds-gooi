@@ -185,7 +185,7 @@ class DriversDaysController < ApplicationController
     @message = <<~MSG.strip
       Hello #{@user.first_name}! You weren't on my list today because you haven't renewed your subscription yet, but I am collecting your gooi bag anyway!
       Please resubscribe before next week so that you will be on my list then :)
-      You can log in to alfred.gooi.me/manage with email #{@user.email} and your password should be 'password' unless you have changed it.
+      You can log in to alfred.gooi.me/manage with email #{@user.email}.
     MSG
 
     @whatsapp_url = @user.generate_whatsapp_link(@message)

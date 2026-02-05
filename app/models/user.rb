@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :testimonials, dependent: :destroy
   has_many :whatsapp_messages, dependent: :destroy
+  has_many :expense_imports, dependent: :destroy
+  has_many :verified_expenses, class_name: 'Expense', foreign_key: 'verified_by_id', dependent: :nullify
 
   # Referrer: The user who referred others
   has_many :referrals_as_referrer,
@@ -61,11 +63,11 @@ class User < ApplicationRecord
 
     message = case current_sub.remaining_collections.truncate
               when 0
-                "Hello! Your subscription with Gooi has come to an end. We hope you want to continue gooiiing. Log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+                "Hello! Your subscription with Gooi has come to an end. We hope you want to continue gooiiing. Log in to alfred.gooi.me with #{email} to resubscribe!"
               when -Float::INFINITY..-1
-                "Hello! Your subscription lapsed #{-current_sub.remaining_collections.truncate} weeks ago. Please log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+                "Hello! Your subscription lapsed #{-current_sub.remaining_collections.truncate} weeks ago. Please log in to alfred.gooi.me with #{email} to resubscribe!"
               else
-                "Hello! Your subscription will end soon (in about #{current_sub.remaining_collections.truncate} weeks). Log in to alfred.gooi.me with #{email} to resubscribe! Your password should be 'password' unless you already changed it."
+                "Hello! Your subscription will end soon (in about #{current_sub.remaining_collections.truncate} weeks). Log in to alfred.gooi.me with #{email} to resubscribe!"
               end
 
     "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"

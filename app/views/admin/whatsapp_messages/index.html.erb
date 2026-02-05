@@ -1,0 +1,132 @@
+<div class="user-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>WhatsApp Messages</h1>
+      <p class="text-muted">Collection day reminders and delivery status</p>
+    </div>
+    <div>
+      <%= form_with url: trigger_reminders_admin_whatsapp_messages_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
+        <div class="form-check">
+          <%= f.check_box :use_template, checked: true, class: "form-check-input" %>
+          <%= f.label :use_template, "Use template with skip button", class: "form-check-label" %>
+        </div>
+        <%= f.submit "Send Tomorrow's Reminders Now", class: "small-yellow-btn", data: { confirm: "Send WhatsApp reminders for tomorrow's collections?" } %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h3><%= @stats[:total_sent] %></h3>
+          <p class="text-muted mb-0">Total Sent</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h3 class="text-success"><%= @stats[:delivered] %></h3>
+          <p class="text-muted mb-0">Delivered</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h3 class="text-danger"><%= @stats[:failed] %></h3>
+          <p class="text-muted mb-0">Failed</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h3><%= @stats[:today] %></h3>
+          <p class="text-muted mb-0">Sent Today</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h3 class="text-info"><%= @stats[:template_used] %></h3>
+          <p class="text-muted mb-0">Using Template</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Table -->
+  <div class="card">
+    <div class="card-body">
+      <% if @whatsapp_messages.any? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Customer</th>
+              <th>Collection Date</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @whatsapp_messages.each do |msg| %>
+              <tr>
+                <td><%= msg.created_at.strftime('%b %d, %H:%M') %></td>
+                <td>
+                  <%= msg.user.first_name || msg.user.email %>
+                  <br>
+                  <small class="text-muted"><%= msg.user.phone_number %></small>
+                </td>
+                <td>
+                  <% if msg.collection_date %>
+                    <%= msg.collection_date.strftime('%A, %b %d') %>
+                  <% end %>
+                </td>
+                <td>
+                  <% if msg.used_template %>
+                    <span class="badge bg-primary">Template</span>
+                  <% else %>
+                    <span class="badge bg-secondary">Freeform</span>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="badge <%= case msg.status
+                    when 'delivered' then 'bg-success'
+                    when 'sent', 'queued' then 'bg-primary'
+                    when 'failed', 'undelivered' then 'bg-danger'
+                    else 'bg-secondary'
+                    end %>">
+                    <%= msg.status&.titleize || 'Pending' %>
+                  </span>
+                  <% if msg.error_message %>
+                    <br>
+                    <small class="text-danger"><%= msg.error_message %></small>
+                  <% end %>
+                </td>
+                <td>
+                  <small><%= truncate(msg.message_body, length: 100) %></small>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-center text-muted">No WhatsApp messages sent yet</p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+.card {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: none;
+  margin-bottom: 1rem;
+}
+</style>

@@ -31,7 +31,7 @@
         <% last_collection = subscription.collections.where(skip: false).order(date: :desc).first %>
         <% days_since_last = last_collection ? (Date.today - last_collection.date).to_i : nil %>
         <%
-          message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email} and your password should be 'password' unless you've changed it."
+          message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email}."
           whatsapp_url = user.generate_whatsapp_link(message)
         %>
 

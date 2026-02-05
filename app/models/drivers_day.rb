@@ -4,6 +4,7 @@ class DriversDay < ApplicationRecord
   has_many :drop_off_events, dependent: :nullify
   has_many :buckets, dependent: :destroy
   has_one :day_statistic, dependent: :destroy
+  belongs_to :current_drop_off_event, class_name: 'DropOffEvent', optional: true
 
     # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -23,6 +24,37 @@ class DriversDay < ApplicationRecord
 
   def note_nil_zero?
     note.nil? || note == ""
+  end
+
+  # Set the current drop-off being worked on
+  def set_current_drop_off(drop_off_event)
+    update(current_drop_off_event: drop_off_event)
+  end
+
+  # Calculate total time spent at drop-offs for this day
+  def total_dropoff_duration_minutes
+    drop_off_events.where.not(duration_minutes: nil).sum(:duration_minutes)
+  end
+
+  # Human-readable total drop-off duration
+  def total_dropoff_duration_display
+    total_mins = total_dropoff_duration_minutes
+    return "—" if total_mins.zero?
+
+    hours = total_mins / 60
+    mins = total_mins % 60
+    hours > 0 ? "#{hours}h #{mins}m" : "#{mins}m"
+  end
+
+  # Calculate total litres from all buckets
+  def total_litres
+    total = 0.0
+    buckets.each do |bucket|
+      size = bucket.bucket_size || 25
+      multiplier = bucket.half? ? 0.5 : 1.0
+      total += size * multiplier
+    end
+    total
   end
 
   def recalc_totals!

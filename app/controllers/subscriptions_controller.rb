@@ -440,6 +440,7 @@ class SubscriptionsController < ApplicationController
 
     # Combine collections and drop-off events, sorted by position
     @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
+    @current_drop_off = @drivers_day.current_drop_off_event
   end
 
   def recently_lapsed

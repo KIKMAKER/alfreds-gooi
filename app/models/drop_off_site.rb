@@ -37,6 +37,18 @@ class DropOffSite < ApplicationRecord
     )
   end
 
+  # Recalculate average duration from all completed drop-offs
+  def recalculate_average_duration
+    events = drop_off_events.where.not(duration_minutes: nil)
+
+    if events.any?
+      self.completed_dropoffs_count = events.count
+      self.total_duration_minutes = events.sum(:duration_minutes)
+      self.average_duration_minutes = (total_duration_minutes.to_f / completed_dropoffs_count).round(1)
+      save
+    end
+  end
+
   # Override to_param to use slug in URLs
   def to_param
     slug.presence || id.to_s

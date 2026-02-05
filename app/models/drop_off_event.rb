@@ -55,9 +55,34 @@ class DropOffEvent < ApplicationRecord
     buckets.where(bucket_size: 45).count
   end
 
+  # Timing methods for drop-off duration tracking
+  def calculate_duration
+    return unless arrival_time && departure_time
+    self.duration_minutes = ((departure_time - arrival_time) / 60).round
+  end
+
+  def in_progress?
+    arrival_time.present? && departure_time.blank?
+  end
+
+  def timing_complete?
+    arrival_time.present? && departure_time.present?
+  end
+
+  def duration_display
+    return "—" unless duration_minutes
+    hours = duration_minutes / 60
+    mins = duration_minutes % 60
+    hours > 0 ? "#{hours}h #{mins}m" : "#{mins}m"
+  end
+
   # After completing drop-off, recalculate site totals and send email
   after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? }
   after_update :send_completion_email, if: -> { saved_change_to_is_done? && is_done? }
+
+  # Timing callbacks
+  before_save :calculate_duration, if: -> { departure_time_changed? }
+  after_save :update_site_analytics, if: -> { saved_change_to_departure_time? && timing_complete? }
 
   private
 
@@ -68,5 +93,9 @@ class DropOffEvent < ApplicationRecord
   def send_completion_email
     return unless drop_off_site.user.present?
     DropOffEventMailer.completion_notification(self).deliver_later
+  end
+
+  def update_site_analytics
+    drop_off_site.recalculate_average_duration
   end
 end

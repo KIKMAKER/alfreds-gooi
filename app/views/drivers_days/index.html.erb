@@ -11,8 +11,9 @@
             <th scope="col">Start</th>
             <th scope="col">End</th>
             <th scope="col">KMs</th>
-            <th scope="col">Households</th>
-            <th scope="col">Buckets</th>
+            <th scope="col">Stops</th>
+            <th scope="col">Litres</th>
+            <th scope="col">⏱️ Drop-off Time</th>
             <th scope="col">Trees 🌳</th>
             <th scope="col">Actions</th>
           </tr>
@@ -43,7 +44,24 @@
                 <%= drivers_day.collections.where(skip: false).count %>
               </td>
               <td>
-                <%= drivers_day.total_buckets || '—' %>
+                <% if drivers_day.buckets.any? %>
+                  <%= number_with_precision(drivers_day.total_litres, precision: 0) %>L
+                  <small class="text-muted d-block">
+                    <%= drivers_day.buckets.where(bucket_size: 25).count %> × 25L,
+                    <%= drivers_day.buckets.where(bucket_size: 45).count %> × 45L
+                  </small>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td>
+                <%= drivers_day.total_dropoff_duration_display %>
+                <% timed_count = drivers_day.drop_off_events.where.not(duration_minutes: nil).count %>
+                <% if timed_count > 0 %>
+                  <small class="text-muted d-block">
+                    <%= timed_count %> <%= 'drop-off'.pluralize(timed_count) %>
+                  </small>
+                <% end %>
               </td>
               <td>
                 <% if drivers_day.day_statistic %>

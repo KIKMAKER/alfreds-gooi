@@ -32,6 +32,20 @@
         </small>
       <% end %>
     </div>
+    <div class="skipped p-4">
+      <h3>⏱️ Average Duration</h3>
+      <% if @drop_off_site.average_duration_minutes && @drop_off_site.completed_dropoffs_count > 0 %>
+        <p class="lh-lg text-warning">
+          <%= (@drop_off_site.average_duration_minutes / 60).floor %>h <%= (@drop_off_site.average_duration_minutes % 60).round %>m
+        </p>
+        <small class="text-muted">
+          Based on <%= @drop_off_site.completed_dropoffs_count %> timed <%= 'drop-off'.pluralize(@drop_off_site.completed_dropoffs_count) %>
+        </small>
+      <% else %>
+        <p class="lh-lg text-muted">No timing data yet</p>
+        <small class="text-muted">Record arrival/departure times to see average</small>
+      <% end %>
+    </div>
   </div>
 
   <h3 class="my-4">All Drop-Off Events</h3>
@@ -41,6 +55,7 @@
       <div class="name"><p class="lh-lg">Date</p></div>
       <div><p class="lh-lg">Weight</p></div>
       <div><p class="lh-lg me-4">Buckets</p></div>
+      <div><p class="lh-lg">Duration</p></div>
       <div class="status"><p class="lh-lg">Status</p></div>
       <div><p class="lh-lg">Actions</p></div>
     </div>
@@ -56,6 +71,19 @@
             </div>
             <div>
               <p class="lh-lg"><strong><%= event.bucket_count_25l %></strong> 25L, <strong><%= event.bucket_count_45l %></strong> 45L</p>
+            </div>
+            <div>
+              <p class="lh-lg">
+                <% if event.timing_complete? %>
+                  <span title="<%= event.arrival_time.strftime('%I:%M %p') %> - <%= event.departure_time.strftime('%I:%M %p') %>">
+                    ⏱️ <%= event.duration_display %>
+                  </span>
+                <% elsif event.in_progress? %>
+                  <span class="text-muted">In progress...</span>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </p>
             </div>
             <div class="status">
               <% if event.is_done %>
