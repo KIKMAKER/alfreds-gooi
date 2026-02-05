@@ -41,6 +41,11 @@ Rails.application.routes.draw do
     get 'financials', to: 'financials#dashboard', as: :financials
     get 'financials/chart_data', to: 'financials#chart_data', as: :chart_data_financials
 
+    # Analytics Dashboard (Blazer)
+    authenticate :user, ->(user) { user.admin? } do
+      mount Blazer::Engine, at: "analytics"
+    end
+
     resources :expenses do
       member do
         post :verify

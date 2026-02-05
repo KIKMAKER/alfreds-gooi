@@ -65,10 +65,13 @@ gem 'faker'
 gem "acts_as_list"
 gem "postmark-rails"
 gem "gibbon"
+gem "twilio-ruby"
 gem "rack-cors"
 gem "cloudinary"
 gem "prawn"
 gem "prawn-table"
+gem "ahoy_matey"
+gem "blazer"
 
 
 

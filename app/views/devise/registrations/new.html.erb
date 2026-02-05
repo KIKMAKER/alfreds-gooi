@@ -1,22 +1,26 @@
 <!--<div class="gooi-container">-->
 <div class="user-wrapper">
   <h1>Sign up</h1>
-  <div class="user-form mt-4">
-    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <div class="user-form mt-4"
+       data-controller="form-abandonment"
+       data-form-abandonment-form-name-value="registration"
+       data-form-abandonment-plan-value="<%= @plan %>"
+       data-form-abandonment-duration-value="<%= @duration %>">
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { data: { action: "submit->form-abandonment#formSubmit" } }) do |f| %>
       <%= f.error_notification %>
-      <%= f.input :first_name, required: true, autofocus: true, input_html: { autocomplete: "given-name" } %>
-      <%= f.input :last_name, required: true, autofocus: true, input_html: { autocomplete: "family-name" } %>
-      <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email" } %>
-      <%= f.input :phone_number, required: true, autofocus: true, input_html: { autocomplete: "tel" } %>
+      <%= f.input :first_name, required: true, autofocus: true, input_html: { autocomplete: "given-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+      <%= f.input :last_name, required: true, autofocus: true, input_html: { autocomplete: "family-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+      <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+      <%= f.input :phone_number, required: true, autofocus: true, input_html: { autocomplete: "tel", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
 
       <% if params[:simple] == 'true' %>
         <!-- SIMPLE MODE: No Mapbox, plain text input -->
         <%= f.simple_fields_for :subscriptions do |subscription_fields| %>
           <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
           <% if @plan != 'Commercial' %>
-            <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off" %>
+            <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
             <p class="mb-1">or</p>
-            <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code" %>
+            <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
           <% end %>
 
           <h3 class="mt-2"><%= @plan == 'Commercial' ? 'Commercial Collection Details' : 'Subscription details' %></h3>
@@ -75,9 +79,9 @@
 
           <h3 class="my-3">Pick Up Location</h3>
 
-          <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
-          <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
-          <%= subscription_fields.input :street_address, label: "Street Address", placeholder: "e.g., 123 Main Street, Gardens" %>
+          <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+          <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+          <%= subscription_fields.input :street_address, label: "Street Address", placeholder: "e.g., 123 Main Street, Gardens", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
         <% end %>
       <% else %>
         <!-- NORMAL MODE: Mapbox autocomplete -->
@@ -85,12 +89,12 @@
           <%= f.simple_fields_for :subscriptions do |subscription_fields| %>
             <%#= subscription_fields.input :suburb, collection: Subscription::SUBURBS %>
             <% if @plan != 'Commercial' %>
-              <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off" %>
+              <%= subscription_fields.input :referral_code, label: "Refered by a friend?", placeholder: "Enter their code to get 15% off", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
               <p class="mb-1">or</p>
-              <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code" %>
+              <%= subscription_fields.input :discount_code, label: "Got a discount code?", placeholder: "Enter your code", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
             <% end %>
 
-            <h3 class="mt-2"><%= @plan == 'Commercial' ? 'Commercial Collection Details' : 'Subscription details' %></h3>
+            <!--<h3 class="mt-2"><%#= @plan == 'Commercial' ? 'Commercial Collection Details' : 'Subscription details' %></h3>-->
 
             <% if @plan == 'Commercial' %>
               <!-- Commercial-specific fields -->
@@ -133,11 +137,11 @@
 
             <% else %>
               <!-- Residential-specific fields -->
-              <p>Tick the box below to add multiple subscriptions (in the next step).</p>
+              <!--<p>Tick the box below to add multiple subscriptions (in the next step).</p>
               <div class="mb-3">
-                <%= check_box_tag :multi_location, '1', false, id: 'multi_location' %>
-                <%= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
-              </div>
+                <%#= check_box_tag :multi_location, '1', false, id: 'multi_location' %>-->
+                <%#= label_tag :multi_location, "I'm signing up multiple locations (e.g., restaurant with multiple branches)", class: "form-check-label ms-2" %>
+<!--              </div>-->
 
               <%= subscription_fields.hidden_field :plan, value: @plan %>
               <%= subscription_fields.hidden_field :duration, value: @duration %>
@@ -146,15 +150,15 @@
 
             <h3 class="my-3">Pick Up Location</h3>
 
-            <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
-            <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
-            <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
+            <%= subscription_fields.input :suburb,  collection: Subscription::SUBURBS, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+            <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+            <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address", form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" },  class: "d-none"}, label_html: {class: "street-label"} %>
           <% end %>
         </div>
       <% end %>
 
-      <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password"}, label_html: { class: "after-address" } %>
-        <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
+      <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } }, label_html: { class: "after-address" } %>
+        <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
 
         <div class="form-actions">
           <%= f.button :submit, "Sign up", class: 'submit-btn' %>
