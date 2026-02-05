@@ -19,6 +19,11 @@
   gtag('js', new Date());
 
   gtag('config', 'G-6VB6N2RL6S');
+  <% if current_user %>
+    gtag('set', 'user_properties', {
+      user_role: '<%= current_user.role %>'
+    });
+  <% end %>
 </script>
     <!-- Google tag (gtag.js) -->
     <!--<script async src="https://www.googletagmanager.com/gtag/js?id=G-SVP5S6W8MY"></script>
