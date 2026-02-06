@@ -2,24 +2,18 @@ class SendWhatsappReminderJob < ApplicationJob
   queue_as :default
   retry_on TwilioWhatsappService::TwilioError, wait: 5.minutes, attempts: 3
 
-  def perform(user_id:, subscription_id:, collection_date:, use_template: true)
-    user = User.find(user_id)
+  def perform(subscription_id:, collection_date:, use_template: true)
     subscription = Subscription.find(subscription_id)
 
-    # Double-check eligibility (in case status changed since queuing)
-    unless user.can_receive_whatsapp?
-      Rails.logger.warn "SendWhatsappReminderJob: User #{user.email} no longer eligible"
-      return
-    end
-
+    # Check subscription still active
     unless subscription.active?
       Rails.logger.warn "SendWhatsappReminderJob: Subscription #{subscription.id} no longer active"
       return
     end
 
+    # Service handles sending to all contacts who can receive WhatsApp
     service = TwilioWhatsappService.new
     service.send_collection_reminder(
-      user: user,
       subscription: subscription,
       collection_date: collection_date,
       use_template: use_template

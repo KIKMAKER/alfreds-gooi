@@ -6,6 +6,8 @@ class Subscription < ApplicationRecord
   has_many :referrals, dependent: :nullify
   has_one :business_profile, dependent: :nullify
   has_many :revenue_recognitions, dependent: :destroy
+  has_many :contacts, dependent: :destroy
+  accepts_nested_attributes_for :contacts, allow_destroy: true, reject_if: :all_blank
 
   before_create do
     self.set_customer_id unless self.customer_id
@@ -310,6 +312,38 @@ class Subscription < ApplicationRecord
   def short_address
     return street_address if street_address.blank?
     street_address.split(',').first.strip
+  end
+
+  # Contact helper methods
+  def primary_contact
+    contacts.primary.first
+  end
+
+  def all_contacts_names
+    contacts.pluck(:first_name, :last_name).map { |f, l| [f, l].compact.join(' ') }.join(', ')
+  end
+
+  def whatsapp_recipients
+    contacts.can_receive_whatsapp
+  end
+
+  # Copy contacts from another subscription
+  def copy_contacts_from(other_subscription)
+    return if other_subscription.nil?
+
+    other_subscription.contacts.each do |other_contact|
+      # Don't duplicate if contact already exists with same phone
+      next if contacts.exists?(phone_number: other_contact.phone_number)
+
+      contacts.create(
+        first_name: other_contact.first_name,
+        last_name: other_contact.last_name,
+        phone_number: other_contact.phone_number,
+        relationship: other_contact.relationship,
+        whatsapp_opt_out: other_contact.whatsapp_opt_out,
+        is_primary: false # New subscription, new owner
+      )
+    end
   end
 
   def activate_subscription

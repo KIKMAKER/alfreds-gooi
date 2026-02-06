@@ -97,6 +97,15 @@ class SubscriptionsController < ApplicationController
 
   def new
     @subscription = Subscription.new
+
+    # Check for previous subscription at same address if address provided in params
+    if params[:street_address].present? && current_user
+      @previous_subscription = current_user.subscriptions
+                                           .where(street_address: params[:street_address])
+                                           .where(status: [:completed, :active, :pause])
+                                           .order(created_at: :desc)
+                                           .first
+    end
   end
 
   def create
@@ -106,6 +115,16 @@ class SubscriptionsController < ApplicationController
       @subscription.status = 'pending'
 
       if @subscription.save
+        # Create primary contact for owner
+        @subscription.contacts.create!(
+          first_name: @subscription.user.first_name,
+          last_name: @subscription.user.last_name,
+          phone_number: @subscription.user.phone_number || '',
+          relationship: 'owner',
+          is_primary: true,
+          whatsapp_opt_out: @subscription.user.whatsapp_opt_out || false
+        )
+
         # Create invoice for the new subscription
         @invoice = InvoiceBuilder.new(
           subscription: @subscription,
@@ -128,6 +147,23 @@ class SubscriptionsController < ApplicationController
 
       if result.success?
         @subscription = result.subscription
+
+        # Create primary contact for owner
+        @subscription.contacts.create!(
+          first_name: current_user.first_name,
+          last_name: current_user.last_name,
+          phone_number: current_user.phone_number || '',
+          relationship: 'owner',
+          is_primary: true,
+          whatsapp_opt_out: current_user.whatsapp_opt_out || false
+        )
+
+        # Copy contacts from previous subscription if requested
+        if params[:subscription][:copy_contacts_from_previous] == '1' &&
+           params[:subscription][:previous_subscription_id].present?
+          previous_sub = current_user.subscriptions.find_by(id: params[:subscription][:previous_subscription_id])
+          @subscription.copy_contacts_from(previous_sub) if previous_sub
+        end
 
         # Calculate referred friends for invoice builder
         referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
@@ -190,6 +226,16 @@ class SubscriptionsController < ApplicationController
     @subscription.status = :pending
 
     if @subscription.save
+      # Create primary contact for owner
+      @subscription.contacts.create!(
+        first_name: current_user.first_name,
+        last_name: current_user.last_name,
+        phone_number: current_user.phone_number || '',
+        relationship: 'owner',
+        is_primary: true,
+        whatsapp_opt_out: current_user.whatsapp_opt_out || false
+      )
+
       flash[:success] = "Location added!"
       redirect_to add_locations_subscriptions_path
     else

@@ -1,0 +1,21 @@
+<div class="container mt-4">
+  <h2>Add Contact</h2>
+
+  <%= simple_form_for [@subscription, @contact] do |f| %>
+    <%= f.input :first_name, required: true %>
+    <%= f.input :last_name %>
+    <%= f.input :phone_number, required: true,
+                hint: 'Include country code (e.g., +27821234567 or 0821234567)' %>
+    <%= f.input :relationship, collection: %w[spouse housemate family other],
+                include_blank: true %>
+    <%= f.input :whatsapp_opt_out, as: :boolean,
+                label: 'Opt out of WhatsApp reminders',
+                wrapper_html: { class: 'form-check' } %>
+
+    <div class="form-actions">
+      <%= f.submit 'Add Contact', class: 'btn btn-primary' %>
+      <%= link_to 'Cancel', subscription_contacts_path(@subscription),
+                  class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

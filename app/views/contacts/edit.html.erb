@@ -1,0 +1,19 @@
+<div class="container mt-4">
+  <h2>Edit Contact</h2>
+
+  <%= simple_form_for [@subscription, @contact] do |f| %>
+    <%= f.input :first_name, required: true, disabled: @contact.is_primary? %>
+    <%= f.input :last_name, disabled: @contact.is_primary? %>
+    <%= f.input :phone_number, required: true %>
+    <%= f.input :relationship, collection: %w[owner spouse housemate family other],
+                include_blank: true, disabled: @contact.is_primary? %>
+    <%= f.input :whatsapp_opt_out, as: :boolean,
+                label: 'Opt out of WhatsApp reminders' %>
+
+    <div class="form-actions">
+      <%= f.submit 'Update Contact', class: 'btn btn-primary' %>
+      <%= link_to 'Cancel', subscription_contacts_path(@subscription),
+                  class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

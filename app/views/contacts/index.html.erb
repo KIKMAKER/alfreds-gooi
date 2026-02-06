@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <h2>Contacts for <%= @subscription.street_address %></h2>
+
+  <%= link_to 'Add Contact', new_subscription_contact_path(@subscription),
+              class: 'btn btn-primary mb-3' %>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Relationship</th>
+          <th>WhatsApp</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @contacts.each do |contact| %>
+          <tr>
+            <td>
+              <%= contact.full_name %>
+              <% if contact.is_primary? %>
+                <span class="badge bg-primary">Owner</span>
+              <% end %>
+            </td>
+            <td><%= contact.phone_number %></td>
+            <td><%= contact.relationship&.titleize %></td>
+            <td>
+              <% if contact.whatsapp_opt_out? %>
+                <span class="badge bg-secondary">Opted Out</span>
+              <% else %>
+                <span class="badge bg-success">Active</span>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to 'Edit', edit_subscription_contact_path(@subscription, contact),
+                          class: 'btn btn-sm btn-secondary' %>
+
+              <% if contact.whatsapp_opt_out? %>
+                <%= button_to 'Enable WhatsApp', toggle_whatsapp_subscription_contact_path(@subscription, contact),
+                              method: :post, class: 'btn btn-sm btn-success' %>
+              <% else %>
+                <%= button_to 'Disable WhatsApp', toggle_whatsapp_subscription_contact_path(@subscription, contact),
+                              method: :post, class: 'btn btn-sm btn-warning' %>
+              <% end %>
+
+              <% unless contact.is_primary? %>
+                <%= button_to 'Remove', subscription_contact_path(@subscription, contact),
+                              method: :delete, class: 'btn btn-sm btn-danger',
+                              data: { confirm: 'Are you sure?' } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= link_to 'Back to Subscription', manage_path, class: 'btn btn-secondary' %>
+</div>

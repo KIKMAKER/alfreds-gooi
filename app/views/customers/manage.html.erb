@@ -61,6 +61,7 @@
                       <button type="button" class="tiny-yellow-btn mt-2" data-bs-toggle="modal" data-bs-target="#holidayModal<%= sub.id %>">
                         <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan Holiday" %>
                       </button>
+                      <%= link_to "Manage Contacts", subscription_contacts_path(sub), class: "tiny-yellow-btn mt-2" %>
                     </div>
                   </td>
                 </tr>
@@ -195,6 +196,14 @@
                   </div>
                 <% end %>
               </div>
+
+              <!-- Manage Contacts -->
+              <div class="mt-4 text-center">
+                <%= link_to 'Manage Contacts', subscription_contacts_path(@subscription),
+                            class: 'submit-btn' %>
+                <small class="d-block mt-2 text-muted">Add household members to receive WhatsApp reminders</small>
+              </div>
+
             <% else %>
               <p class="mb-3">Your last collection was on <%= @subscription.collections&.last&.date&.strftime("%A %d %B") || @subscription.start_date.strftime("%A %d %B") %></p>
             <% end %>

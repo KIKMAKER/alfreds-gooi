@@ -16,6 +16,24 @@
           <%= f.input :street_address, input_html: { data: { address_autocomplete_target: "address" }, class: "d-none" }, label_html: { class: "street-label" } %>
         </div>
 
+        <% if @previous_subscription.present? && @previous_subscription.contacts.any? %>
+          <div class="alert alert-info">
+            <h5>Copy Contacts?</h5>
+            <p>We found <%= @previous_subscription.contacts.count %> contact(s) from a previous subscription at <%= @previous_subscription.street_address %>:</p>
+            <ul>
+              <% @previous_subscription.contacts.each do |contact| %>
+                <li><%= contact.full_name %> (<%= contact.phone_number %>)</li>
+              <% end %>
+            </ul>
+
+            <%= f.input :copy_contacts_from_previous, as: :boolean,
+                        label: 'Copy these contacts to new subscription',
+                        wrapper_html: { class: 'form-check' },
+                        input_html: { checked: true } %>
+            <%= f.hidden_field :previous_subscription_id, value: @previous_subscription.id %>
+          </div>
+        <% end %>
+
         <%= f.input :collection_day, as: :select, collection: Subscription.collection_days.keys.to_a %>
         <%= f.input :start_date, as: :date, html5: true %>
         <%= f.input :plan, label: "Choose a plan", collection: Subscription.humanized_plans.keys, include_blank: false, label_method: lambda { |key| Subscription.humanized_plans[key] } %>

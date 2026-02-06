@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_03_083958) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -191,6 +191,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_03_083958) do
     t.integer "buckets_25l", default: 0
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.bigint "subscription_id", null: false
+    t.string "first_name", null: false
+    t.string "last_name"
+    t.string "phone_number", null: false
+    t.string "relationship"
+    t.boolean "whatsapp_opt_out", default: false, null: false
+    t.boolean "is_primary", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phone_number"], name: "index_contacts_on_phone_number"
+    t.index ["subscription_id", "is_primary"], name: "index_contacts_on_subscription_id_and_is_primary"
+    t.index ["subscription_id", "phone_number"], name: "index_contacts_on_subscription_id_and_phone_number", unique: true
+    t.index ["subscription_id"], name: "index_contacts_on_subscription_id"
   end
 
   create_table "day_statistics", force: :cascade do |t|
@@ -714,7 +730,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_03_083958) do
     t.boolean "used_template", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "contact_id"
     t.index ["collection_date"], name: "index_whatsapp_messages_on_collection_date"
+    t.index ["contact_id"], name: "index_whatsapp_messages_on_contact_id"
     t.index ["message_type"], name: "index_whatsapp_messages_on_message_type"
     t.index ["status"], name: "index_whatsapp_messages_on_status"
     t.index ["subscription_id"], name: "index_whatsapp_messages_on_subscription_id"
@@ -728,6 +746,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_03_083958) do
   add_foreign_key "business_profiles", "subscriptions"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
+  add_foreign_key "contacts", "subscriptions"
   add_foreign_key "day_statistics", "drivers_days"
   add_foreign_key "drivers_days", "drop_off_events", column: "current_drop_off_event_id"
   add_foreign_key "drivers_days", "users"
@@ -765,6 +784,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_03_083958) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
+  add_foreign_key "whatsapp_messages", "contacts"
   add_foreign_key "whatsapp_messages", "subscriptions"
   add_foreign_key "whatsapp_messages", "users"
 end

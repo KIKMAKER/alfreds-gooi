@@ -79,9 +79,17 @@
               <tr>
                 <td><%= msg.created_at.strftime('%b %d, %H:%M') %></td>
                 <td>
-                  <%= msg.user.first_name || msg.user.email %>
-                  <br>
-                  <small class="text-muted"><%= msg.user.phone_number %></small>
+                  <% if msg.contact %>
+                    <%= msg.contact.full_name %>
+                    <br>
+                    <small class="text-muted"><%= msg.contact.phone_number %></small>
+                  <% elsif msg.user %>
+                    <%= msg.user.first_name || msg.user.email %>
+                    <br>
+                    <small class="text-muted"><%= msg.user.phone_number %></small>
+                  <% else %>
+                    <em>Unknown</em>
+                  <% end %>
                 </td>
                 <td>
                   <% if msg.collection_date %>

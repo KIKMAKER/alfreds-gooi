@@ -118,6 +118,11 @@ Rails.application.routes.draw do
   resources :subscriptions do
     resource :business_profile, only: [:new, :create, :edit, :update]
     resources :collections, only: %i[new create]
+    resources :contacts do
+      member do
+        post :toggle_whatsapp
+      end
+    end
     # - here I am creating /subscriptions/today
     collection do
       get :add_locations

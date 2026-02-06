@@ -23,6 +23,50 @@
         <strong><p class="mt-3">Referral code: <%= @subscription.user.referral_code %></p></strong>
 
       </div>
+
+      <!-- Contacts Section -->
+      <div class="mt-3">
+        <h2>Contacts (<%= @subscription.contacts.count %>)</h2>
+        <% if @subscription.contacts.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>WhatsApp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @subscription.contacts.each do |contact| %>
+                <tr>
+                  <td>
+                    <%= contact.display_name %>
+                  </td>
+                  <td><%= contact.phone_number %></td>
+                  <td>
+                    <% if contact.can_receive_whatsapp? %>
+                      <span class="badge bg-success">✓</span>
+                    <% else %>
+                      <span class="badge bg-secondary">✗</span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= link_to 'Edit', edit_subscription_contact_path(@subscription, contact),
+                                class: 'btn btn-sm btn-secondary' %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No contacts</p>
+        <% end %>
+
+        <%= link_to 'Manage Contacts', subscription_contacts_path(@subscription),
+                    class: 'btn btn-primary btn-sm' %>
+      </div>
+
       <div>
         <br>
         <h2>Invoices</h2>
