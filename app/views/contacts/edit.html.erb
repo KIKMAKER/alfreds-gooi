@@ -1,19 +1,69 @@
-<div class="container mt-4">
-  <h2>Edit Contact</h2>
+<div class="user-wrapper">
+  <div class="gooi-container">
+    <div class="outline">
+      <div class="text-center mb-4">
+        <div class="contact-avatar mx-auto mb-3" style="width: 64px; height: 64px;">
+          <i class="fa-solid fa-user-pen" style="font-size: 1.75rem;"></i>
+        </div>
+        <h1>Edit Contact</h1>
+        <% if @contact.is_primary? %>
+          <p class="text-muted">
+            <span class="contact-badge primary-badge">Owner</span>
+            You can update phone number and WhatsApp preferences
+          </p>
+        <% end %>
+      </div>
 
-  <%= simple_form_for [@subscription, @contact] do |f| %>
-    <%= f.input :first_name, required: true, disabled: @contact.is_primary? %>
-    <%= f.input :last_name, disabled: @contact.is_primary? %>
-    <%= f.input :phone_number, required: true %>
-    <%= f.input :relationship, collection: %w[owner spouse housemate family other],
-                include_blank: true, disabled: @contact.is_primary? %>
-    <%= f.input :whatsapp_opt_out, as: :boolean,
-                label: 'Opt out of WhatsApp reminders' %>
+      <%= simple_form_for [@subscription, @contact] do |f| %>
+        <div class="row">
+          <div class="col-md-6">
+            <%= f.input :first_name, required: true,
+                        label: 'First Name',
+                        disabled: @contact.is_primary?,
+                        input_html: { class: 'form-control' } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :last_name,
+                        label: 'Last Name',
+                        disabled: @contact.is_primary?,
+                        input_html: { class: 'form-control' } %>
+          </div>
+        </div>
 
-    <div class="form-actions">
-      <%= f.submit 'Update Contact', class: 'btn btn-primary' %>
-      <%= link_to 'Cancel', subscription_contacts_path(@subscription),
-                  class: 'btn btn-secondary' %>
+        <%= f.input :phone_number, required: true,
+                    label: 'Phone Number',
+                    hint: 'Include country code (e.g., +27821234567 or 0821234567)',
+                    input_html: { class: 'form-control' } %>
+
+        <%= f.input :relationship,
+                    collection: %w[owner spouse housemate family other],
+                    include_blank: 'Select relationship (optional)',
+                    label: 'Relationship',
+                    disabled: @contact.is_primary?,
+                    input_html: { class: 'form-select' } %>
+
+        <div class="form-check mb-4 p-3" style="background-color: #f8f9fa; border-radius: 12px;">
+          <%= f.input :whatsapp_opt_out, as: :boolean,
+                      label: 'Opt this contact out of WhatsApp reminders',
+                      wrapper_html: { class: 'form-check' } %>
+          <small class="text-muted d-block mt-2">
+            <i class="fa-brands fa-whatsapp"></i>
+            <% if @contact.whatsapp_opt_out? %>
+              This contact will not receive collection reminders
+            <% else %>
+              This contact will receive collection reminders
+            <% end %>
+          </small>
+        </div>
+
+        <div class="form-actions text-center">
+          <%= f.submit 'Update Contact', class: 'submit-btn' %>
+          <%= link_to subscription_contacts_path(@subscription), class: 'submit-btn',
+                      style: 'background-color: #999; margin-left: 0.5rem;' do %>
+            Cancel
+          <% end %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

@@ -73,7 +73,6 @@
                 <td>
                   <%= link_to subscription_path(subscription) do %>
                     <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
-                    <% cols = subscription.collections.where(skip: false).count || 0 %>
                     <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
                   <% end %>
                 </td>
@@ -83,7 +82,7 @@
                 </td>
 
                 <td>
-                  <% total = cols || "unpaid" %>
+                  <% total = subscription.collections.where(skip: false).count || "unpaid" %>
                   <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
                 </td>
 

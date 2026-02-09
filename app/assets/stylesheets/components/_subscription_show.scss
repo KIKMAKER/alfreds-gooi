@@ -1,0 +1,455 @@
+// Subscription Show Page Styles
+.subscription-show-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+// Header Section
+.subscription-header {
+  background: $dark-green;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  h1 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1rem !important;
+    text-align: left !important;
+
+  }
+}
+
+.subscription-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  h1 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1rem !important;
+    text-align: left !important;
+
+  }
+}
+
+.subscription-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: white;
+    font-size: 2rem;
+  }
+}
+
+.subscription-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+
+  &.active {
+    background-color: #84cba3;
+    color: #023F3A;
+  }
+
+  &.completed {
+    background-color: #f0f0f0;
+    color: #666;
+  }
+
+  &.paused {
+    background-color: #FBB718;
+    color: white;
+  }
+
+  &.pending {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+}
+
+.subscription-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+// Info Cards Grid
+.subscription-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: rgba(100, 100, 111, 0.15) 0px 4px 16px 0px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: rgba(100, 100, 111, 0.25) 0px 7px 29px 0px;
+    transform: translateY(-2px);
+  }
+}
+
+.info-card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+
+  i {
+    color: #023F3A;
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #023F3A;
+  }
+}
+
+.info-card-body {
+  padding: 1.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .info-value {
+    font-weight: 600;
+    color: #023F3A;
+    text-align: right;
+  }
+}
+
+// Referral Card Special Styling
+.referral-card {
+  .info-card-body {
+    text-align: center;
+  }
+
+  .referral-code-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #023F3A;
+    background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1rem 0;
+    letter-spacing: 2px;
+  }
+}
+
+// Statistics Section
+.statistics-section {
+  h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #023F3A;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: rgba(100, 100, 111, 0.15) 0px 4px 16px 0px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: rgba(100, 100, 111, 0.25) 0px 7px 29px 0px;
+    transform: translateY(-2px);
+  }
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: white;
+    font-size: 1.5rem;
+  }
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #023F3A;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Invoices Section
+.invoices-section {
+  h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #023F3A;
+  }
+}
+
+.invoice-progress-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: rgba(100, 100, 111, 0.15) 0px 4px 16px 0px;
+
+  h5 {
+    color: #023F3A;
+    font-weight: 600;
+
+    i {
+      color: #3c8a63;
+    }
+  }
+
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+.invoice-progress-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.invoice-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .label {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #023F3A;
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+.invoice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.invoice-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: rgba(100, 100, 111, 0.1) 0px 2px 8px 0px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 4px 16px 0px;
+    transform: translateX(4px);
+    background: #f8f9fa;
+  }
+
+  .invoice-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+      color: white;
+      font-size: 1.25rem;
+    }
+  }
+
+  .invoice-details {
+    flex: 1;
+  }
+
+  .invoice-number {
+    font-weight: 600;
+    color: #023F3A;
+    font-size: 1rem;
+  }
+
+  .invoice-date {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .invoice-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #3c8a63;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  > i {
+    color: #ccc;
+    font-size: 1rem;
+  }
+}
+
+// Quick Actions
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.action-btn {
+  background: white;
+  border: 2px solid #023F3A;
+  color: #023F3A;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+
+  &:hover {
+    background: #023F3A;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: rgba(2, 63, 58, 0.3) 0px 4px 16px 0px;
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .subscription-show-container {
+    padding: 1rem;
+  }
+
+  .subscription-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .subscription-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .subscription-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-label {
+    white-space: normal;
+  }
+
+  .invoice-progress-details {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions {
+    flex-direction: column;
+
+    .action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
