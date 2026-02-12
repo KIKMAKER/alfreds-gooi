@@ -21,9 +21,21 @@ class CollectionsController < ApplicationController
   end
 
   def optimise_route
-    drivers_day = DriversDay.find_by(date: Date.today)
-    RouteOptimiser.optimise_route
-    redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
+    drivers_day = if params[:drivers_day_id].present?
+      DriversDay.find(params[:drivers_day_id])
+    else
+      DriversDay.find_by(date: Date.today)
+    end
+
+    result = OsrmRouteOptimiser.new(drivers_day).optimize!
+
+    if result[:success]
+      redirect_to route_drivers_days_path(date: drivers_day.date),
+                  notice: "Route optimized! #{result[:total_optimized]} collections across #{result[:segments]} segments."
+    else
+      redirect_to route_drivers_days_path(date: drivers_day.date),
+                  alert: "Route optimization failed: #{result[:error]}"
+    end
   end
 
   def import_csv

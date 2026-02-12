@@ -1,5 +1,6 @@
 <div class="driver-wrapper">
   <%= link_to "Someone missing from the list?", recently_lapsed_subscriptions_path, class: "btn btn-info mb-3" %>
+  <%= button_to "Optimize Route", optimise_route_path(drivers_day_id: @drivers_day.id), method: :patch, class: "btn btn-success mb-3", form: { data: { turbo: false } } %>
   <div class="collection-header">
     <div class="name">
       <p>Name</p>
