@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #023F3A 0%, #108A63 100%); color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; background: #f9f9f9; }
+    .summary { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #FBB718; }
+    .summary-row { display: flex; justify-content: space-between; margin: 8px 0; }
+    .balance { font-size: 1.2em; font-weight: bold; color: #BC4749; }
+    .paid { color: #108A63; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    .button { display: inline-block; padding: 12px 24px; background: #FBB718; color: white; text-decoration: none; border-radius: 5px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>GOOI</h1>
+      <p>compost collections</p>
+    </div>
+
+    <div class="content">
+      <h2>Hi <%= @user.first_name %>,</h2>
+
+      <p>Please find attached your account statement for your Gooi subscription<%= @user.subscriptions.count > 1 ? 's' : '' %>.</p>
+
+      <div class="summary">
+        <h3 style="margin-top: 0;">Account Summary</h3>
+        <div class="summary-row">
+          <span>Total Invoiced:</span>
+          <strong>R<%= number_with_delimiter(@total_invoiced.to_i) %></strong>
+        </div>
+        <div class="summary-row">
+          <span>Total Paid:</span>
+          <strong class="paid">R<%= number_with_delimiter(@total_paid.to_i) %></strong>
+        </div>
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
+        <div class="summary-row">
+          <span>Balance Owing:</span>
+          <strong class="<%= @balance_owing > 0 ? 'balance' : 'paid' %>">
+            R<%= number_with_delimiter(@balance_owing.to_i) %>
+          </strong>
+        </div>
+      </div>
+
+      <% if @balance_owing > 0 %>
+        <p><strong>Payment Details:</strong></p>
+        <ul>
+          <li><strong>Bank:</strong> FNB</li>
+          <li><strong>Account Name:</strong> Gooi</li>
+          <li><strong>Account Number:</strong> 63066225426</li>
+          <li><strong>Branch Code:</strong> 250655</li>
+          <li><strong>Reference:</strong> Customer ID: <%= @user.id %></li>
+        </ul>
+
+        <p>Or pay via SnapScan: <a href="https://pos.snapscan.io/qr/8jQ1QVVb">https://pos.snapscan.io/qr/8jQ1QVVb</a></p>
+      <% else %>
+        <p style="color: #108A63;"><strong>Your account is fully paid up. Thank you!</strong></p>
+      <% end %>
+
+      <p>If you have any questions about your statement, please don't hesitate to get in touch.</p>
+
+      <p>
+        Thanks for choosing Gooi!<br>
+        <em>The Gooi Team</em>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>
+        <strong>GOOI compost collections</strong><br>
+        Email: howzit@gooi.me | Web: www.gooi.me
+      </p>
+    </div>
+  </div>
+</body>
+</html>

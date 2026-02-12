@@ -11,8 +11,15 @@ module Snapscan
       @user = User.find_by(customer_id: @payload["merchantReference"])
       raise "User not found for merchantReference #{@payload['merchantReference']}" unless @user
 
-      @invoice = Invoice.find_by(id: @extra["invoice_id"].to_i)
-      raise "Invoice not found with id #{@extra['invoice_id']}" unless @invoice
+      # Handle statement payments without invoice_id - find oldest unpaid invoice
+      @invoice = if @extra["invoice_id"].present?
+        Invoice.find_by(id: @extra["invoice_id"].to_i)
+      else
+        # Statement payment - find oldest unpaid invoice for this user
+        @user.invoices.where(paid: false).order(issued_date: :asc).first
+      end
+
+      raise "Invoice not found for user #{@user.customer_id}" unless @invoice
 
       case @payload["status"]
       when "completed"
@@ -55,54 +62,76 @@ module Snapscan
           invoice: @invoice
         )
 
-        @invoice.update!(paid: true)
+        # Cascade payment through subscriptions in order
+        remaining_payment = payment_amount
+        activated_subscriptions = []
+        unactivated_subscriptions = []
+        paid_invoices = []
 
-        # Check if payment covers full invoice amount
-        if payment_amount >= invoice_total
-          # Full payment - activate all pending subscriptions
-          pending_subscriptions.each do |subscription|
+        pending_subscriptions.each do |subscription|
+          subscription_cost = calculate_subscription_cost(subscription)
+
+          if remaining_payment >= subscription_cost
+            # Fully covers this subscription - activate it
             subscription.activate_subscription
             first_collection = CreateFirstCollectionJob.perform_now(subscription)
             add_order_items_to_collection(first_collection)
-          end
-          Rails.logger.info "Full payment received. Activated #{pending_subscriptions.count} subscriptions."
-        else
-          # Partial payment - check if it covers first subscription
-          first_sub = pending_subscriptions.first
-          if first_sub
-            first_sub_cost = calculate_subscription_cost(first_sub)
 
-            if payment_amount >= first_sub_cost
-              # Activate first subscription
-              first_sub.activate_subscription
-              first_collection = CreateFirstCollectionJob.perform_now(first_sub)
-              add_order_items_to_collection(first_collection)
-              shortfall = invoice_total - payment_amount
+            remaining_payment -= subscription_cost
+            activated_subscriptions << subscription
 
-              # Send alert email
-              PaymentMailer.partial_payment_alert(
-                payment: payment,
-                invoice: @invoice,
-                user: @user,
-                activated_subscription: first_sub,
-                shortfall: shortfall,
-                pending_subscriptions: pending_subscriptions - [first_sub]
-              ).deliver_now
-
-              Rails.logger.info "Partial payment received. Activated 1 subscription. Shortfall: R#{shortfall}"
-            else
-              # Payment doesn't even cover first subscription
-              PaymentMailer.insufficient_payment_alert(
-                payment: payment,
-                invoice: @invoice,
-                user: @user,
-                required_amount: first_sub_cost,
-                shortfall: invoice_total - payment_amount
-              ).deliver_now
-
-              Rails.logger.error "Insufficient payment. Does not cover first subscription."
+            # Find and mark this subscription's invoice as paid
+            subscription_invoice = subscription.invoices.where(paid: false).order(issued_date: :asc).first
+            if subscription_invoice && subscription_invoice.total_amount <= subscription_cost
+              subscription_invoice.update!(paid: true)
+              paid_invoices << subscription_invoice
+              Rails.logger.info "Marked invoice #{subscription_invoice.id} as paid for subscription #{subscription.id}"
             end
+
+            Rails.logger.info "Activated subscription #{subscription.id} (cost: R#{subscription_cost}). Remaining: R#{remaining_payment}"
+          else
+            # Not enough to cover this subscription
+            unactivated_subscriptions << subscription
+            Rails.logger.info "Insufficient funds for subscription #{subscription.id} (needs: R#{subscription_cost}, have: R#{remaining_payment})"
           end
+        end
+
+        # Send appropriate notification
+        if activated_subscriptions.any?
+          if unactivated_subscriptions.empty?
+            # All subscriptions activated
+            Rails.logger.info "✅ Full payment received. Activated #{activated_subscriptions.count} subscription(s). Marked #{paid_invoices.count} invoice(s) as paid."
+          else
+            # Partial payment that activated some subscriptions
+            total_owed = pending_subscriptions.sum { |s| calculate_subscription_cost(s) }
+            shortfall = total_owed - payment_amount
+
+            PaymentMailer.partial_payment_alert(
+              payment: payment,
+              invoice: @invoice,
+              user: @user,
+              activated_subscriptions: activated_subscriptions,
+              shortfall: shortfall,
+              pending_subscriptions: unactivated_subscriptions
+            ).deliver_now
+
+            Rails.logger.warn "⚠️ Partial payment. Activated #{activated_subscriptions.count} subscription(s). Marked #{paid_invoices.count} invoice(s) as paid. Shortfall: R#{shortfall.round(2)}"
+          end
+        else
+          # Payment doesn't cover even first subscription
+          first_sub_cost = calculate_subscription_cost(pending_subscriptions.first) if pending_subscriptions.first
+          total_owed = pending_subscriptions.sum { |s| calculate_subscription_cost(s) }
+          shortfall = total_owed - payment_amount
+
+          PaymentMailer.insufficient_payment_alert(
+            payment: payment,
+            invoice: @invoice,
+            user: @user,
+            required_amount: first_sub_cost,
+            shortfall: shortfall
+          ).deliver_now
+
+          Rails.logger.error "❌ Insufficient payment. No subscriptions activated. Shortfall: R#{shortfall.round(2)}"
         end
       end
 

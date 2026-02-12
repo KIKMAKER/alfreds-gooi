@@ -24,6 +24,8 @@
 
       <div class="mb-3">
         <%= link_to "view invoices (#{@user.invoices.count})", invoices_path(user_id: @user.id), class: "link-title" %>
+        |
+        <%= link_to "view statement", statement_path(@user), class: "link-title" %>
       </div>
 
       <% if @lifetime_litres > 0 %>

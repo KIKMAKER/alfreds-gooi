@@ -107,6 +107,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :statements, only: [:show] do
+    member do
+      post :send_email
+    end
+  end
+
   resources :quotations do
     member do
       get :send_email

@@ -21,11 +21,11 @@
           <i class="fa-solid fa-pen"></i> Edit
         <% end %>
         <%= link_to admin_user_path(@subscription.user), class: 'tiny-yellow-btn' do %>
-          <i class="fa-solid fa-user"></i> User
+          <i class="fa-solid fa-user"></i> User's subs
         <% end %>
-        <%= link_to subscriptions_path, class: 'tiny-yellow-btn' do %>
-          <i class="fa-solid fa-list"></i> All Subs
-        <% end %>
+        <%#= link_to subscriptions_path, class: 'tiny-yellow-btn' do %>
+<!--          <i class="fa-solid fa-list"></i> All Subs-->
+        <%# end %>
       </div>
     </div>
 
@@ -305,7 +305,7 @@
       <% if @subscription.invoices.any? %>
         <div class="invoice-list">
           <% @subscription.invoices.each do |invoice| %>
-            <%= link_to invoice_path(invoice), class: 'invoice-item' do %>
+            <%= link_to invoice_path(invoice), class: 'invoice-item-card' do %>
               <div class="invoice-icon">
                 <i class="fa-solid fa-file-invoice-dollar"></i>
               </div>

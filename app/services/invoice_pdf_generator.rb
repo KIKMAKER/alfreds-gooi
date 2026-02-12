@@ -187,7 +187,7 @@ class InvoicePdfGenerator
     pdf.font 'Helvetica', size: 9, style: :italic
     pdf.text 'Please use the reference above when making payment.'
     pdf.move_down 5
-    pdf.text 'You can also pay via SnapScan at: https://pos.snapscan.io/qr/8jQ1QVVb'
+    pdf.text "You can also pay via SnapScan at: https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}"
   end
 
   def add_footer(pdf)

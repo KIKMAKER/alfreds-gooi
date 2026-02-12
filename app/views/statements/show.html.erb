@@ -1,0 +1,149 @@
+<div class="invoice-wrapper">
+  <div class="invoice-container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Account Statement</h1>
+      <% if current_user.admin? %>
+        <%= button_to 'Email Statement', send_email_statement_path(@user),
+            method: :post,
+            class: 'small-yellow-btn',
+            form: { data: { turbo_confirm: "Send statement to #{@user.email}?" } } %>
+      <% end %>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="user-details">
+      <div>
+        <p><strong>Account Holder:</strong> <%= @user.first_name %> <%= @user.last_name %></p>
+        <p><strong>Email:</strong> <%= @user.email %></p>
+        <p><strong>Customer ID:</strong> <%= @user.id %></p>
+      </div>
+      <div>
+        <p><strong>Statement Date:</strong> <%= Date.today.strftime('%e %B %Y') %></p>
+      </div>
+    </div>
+
+    <!-- Summary Totals -->
+    <div class="outline p-3 my-4" style="background: linear-gradient(135deg, rgba(16, 138, 99, 0.05) 0%, rgba(16, 138, 99, 0.15) 100%); border-left: 4px solid #108A63;">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="text-center flex-grow-1">
+          <p class="mb-1" style="font-size: 0.75rem; color: #666;">Total Invoiced</p>
+          <p class="mb-0" style="font-size: 1.2rem; font-weight: bold;">R<%= number_with_delimiter(@total_invoiced.to_i) %></p>
+        </div>
+        <div class="text-center flex-grow-1">
+          <p class="mb-1" style="font-size: 0.75rem; color: #666;">Total Paid</p>
+          <p class="mb-0" style="font-size: 1.2rem; font-weight: bold; color: #108A63;">R<%= number_with_delimiter(@total_paid.to_i) %></p>
+        </div>
+        <div class="text-center flex-grow-1">
+          <p class="mb-1" style="font-size: 0.75rem; color: #666;">Balance Owing</p>
+          <p class="mb-0" style="font-size: 1.2rem; font-weight: bold; color: <%= @balance_owing > 0 ? '#BC4749' : '#108A63' %>;">
+            R<%= number_with_delimiter(@balance_owing.to_i) %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <% if @invoices.any? %>
+      <div class="invoice-table">
+        <div class="header">
+          <div style="display: flex; width: 100%;">
+            <div style="min-width: 60px;"><h1>Inv #</h1></div>
+            <div style="flex: 1;"><h1>Address</h1></div>
+            <div style="min-width: 70px;"><h1>Plan</h1></div>
+            <div style="min-width: 50px;"><h1>L/Coll</h1></div>
+            <div style="min-width: 75px;"><h1>Date</h1></div>
+            <div style="min-width: 75px;"><h1>Due</h1></div>
+            <div style="min-width: 70px; text-align: right;"><h1>Amount</h1></div>
+            <div style="min-width: 60px; text-align: center;"><h1>Status</h1></div>
+            <div style="min-width: 50px;"><h1></h1></div>
+          </div>
+        </div>
+
+        <% @invoices.each do |invoice| %>
+          <% subscription = invoice.subscription %>
+          <%
+            # Calculate L/collection
+            liters = case subscription.plan
+            when "Standard"
+              10
+            when "XL"
+              25
+            when "Commercial"
+              subscription.bucket_size * subscription.buckets_per_collection
+            else
+              "N/A"
+            end
+          %>
+          <div class="invoice-item">
+            <div style="display: flex; width: 100%; align-items: center;">
+              <div style="min-width: 60px;">
+                <p><%= link_to "##{invoice.number || invoice.id}", invoice_path(invoice), class: "link-title" %></p>
+              </div>
+              <div style="flex: 1;">
+                <p><%= subscription.short_address %>, <%= subscription.suburb %></p>
+              </div>
+              <div style="min-width: 70px;">
+                <p><%= subscription.plan %></p>
+              </div>
+              <div style="min-width: 50px;">
+                <p><%= liters %>L</p>
+              </div>
+              <div style="min-width: 75px;">
+                <p><%= invoice.issued_date&.strftime('%e %b') || 'N/A' %></p>
+              </div>
+              <div style="min-width: 75px;">
+                <p><%= invoice.due_date&.strftime('%e %b') || 'N/A' %></p>
+              </div>
+              <div style="min-width: 70px; text-align: right;">
+                <p><strong>R<%= number_with_delimiter(invoice.total_amount.to_i) %></strong></p>
+              </div>
+              <div style="min-width: 60px; text-align: center;">
+                <% if invoice.paid? %>
+                  <span style="background: #108A63; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">Paid</span>
+                <% else %>
+                  <span style="background: #FBB718; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">Unpaid</span>
+                <% end %>
+              </div>
+              <div style="min-width: 50px; text-align: right;">
+                <p><%= link_to 'View', invoice_path(invoice), class: "link-title" %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="invoice-total">
+        <p>Total: R<%= number_with_delimiter(@total_invoiced.to_i) %></p>
+      </div>
+    <% else %>
+      <div class="outline p-4 text-center">
+        <p style="color: #999;">No invoices found for this account.</p>
+      </div>
+    <% end %>
+
+    <!-- Payment Details -->
+    <% if @balance_owing > 0 %>
+      <div class="payment-container">
+        <h2>Make a Payment</h2>
+        <div class="payment-options">
+          <div class="eft w-50 me-4">
+            <h3 class="mb-3">Bank Details</h3>
+            <p><strong>Bank:</strong> FNB</p>
+            <p><strong>Account Name:</strong> Gooi</p>
+            <p><strong>Account Number:</strong> 63066225426</p>
+            <p><strong>Branch Code:</strong> 250655</p>
+            <p><strong>Reference:</strong> Customer ID: <%= @user.id %></p>
+            <p>Please use your customer ID as the payment reference.</p>
+          </div>
+          <div class="snapscan">
+            <h3 class="mb-3">Snapscan</h3>
+            <p class="mb-5">Make payment via the secure SnapScan portal.<br>SnapScan accepts bank cards as well as payments through the SnapScan app.</p>
+            <%= link_to "Pay with snapscan", "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@user.customer_id}&amount=#{@balance_owing.to_i}00", target: "_blank", class: "small-yellow-btn" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
