@@ -1,0 +1,42 @@
+<!--compost section -->
+<section class="compost-section">
+  <h1>Why we compost</h1>
+  <div class="content-wrapper">
+    <div class="info-card-container">
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-1.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Reduce landfill waste</h3>
+          <p>Composting helps divert organic waste from landfills, reducing methane emissions and conserving space.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-2.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Enhance Soil Health</h3>
+          <p>Compost enriches soil, promoting healthier plant growth and improving water retention.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="image-container">
+          <div class="overlay"></div>
+          <%= image_tag('compost-s-3.png', class: 'compost-image') %>
+        </div>
+        <div class="text-container-compost">
+          <h3>Support Local Agriculture</h3>
+          <p>Our compost is donated to local farmers, helping to sustain and enhance agricultural practices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="text-center mt-5">
+      <p class="my-3">Want to learn more about our mission, what you can compost, and where your food scraps go?</p>
+      <%= link_to 'Learn More About Gooi', about_path, class: 'action-btn mt-2' %>
+    </div>
+</section>

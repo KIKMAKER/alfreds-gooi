@@ -1,0 +1,43 @@
+.breadcrumb-nav {
+  margin-bottom: 1rem;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.75rem 0;
+  margin-bottom: 0;
+  list-style: none;
+  background-color: transparent;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+
+  + .breadcrumb-item {
+    padding-left: 0.5rem;
+
+    &::before {
+      display: inline-block;
+      padding-right: 0.5rem;
+      color: #6c757d;
+      content: "/";
+    }
+  }
+
+  &.active {
+    color: #6c757d;
+  }
+
+  a {
+    color: #0d6efd;
+    text-decoration: none;
+
+    &:hover {
+      color: #0a58ca;
+      text-decoration: underline;
+    }
+  }
+}

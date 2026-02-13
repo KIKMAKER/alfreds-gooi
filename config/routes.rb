@@ -69,6 +69,12 @@ Rails.application.routes.draw do
   resources :payments, only: :index
 
   # users
+  # Multi-step signup flow
+  get 'signup/account', to: 'signups#new_account', as: :new_account_signup
+  post 'signup/account', to: 'signups#create_account', as: :create_account_signup
+  get 'signup/subscription', to: 'signups#new_subscription_details', as: :new_subscription_details
+  post 'signup/subscription', to: 'signups#create_subscription', as: :create_subscription
+
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
   # drop-off site managers
@@ -213,6 +219,7 @@ Rails.application.routes.draw do
 
   # static pages
   root "pages#home"
+  get "about", to: "pages#about"
   get "story", to: "pages#story"
 
   # farms (public-facing drop-off sites)

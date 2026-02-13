@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home, :story ]
+  skip_before_action :authenticate_user!, only: [ :home, :about, :story ]
 
   def home
     @discount_code = params[:discount_code]
@@ -30,6 +30,10 @@ class PagesController < ApplicationController
     # @subscriptions = Subscription.active_subs_for(@today)
     # Load collections ordered by position (don't modify positions on page load)
     @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
+  end
+
+  def about
+    @farms = DropOffSite.order(:name).limit(4)
   end
 
   def story

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Home Compost Collection Service in Cape Town,  South Africa | Gooi</title>
-    <meta name="description" content="Gooi offers home compost collection services across South Africa. Easy, affordable, and sustainable kitchen waste solutions for households and businesses.">
+    <title><%= content_for?(:meta_title) ? yield(:meta_title) : "Home Compost Collection Service in Cape Town, South Africa | Gooi" %></title>
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Gooi offers home compost collection services across South Africa. Easy, affordable, and sustainable kitchen waste solutions for households and businesses." %>">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="facebook-domain-verification" content="ssuecz856619xo4pujlmnsdcobca9y" />
@@ -43,6 +43,41 @@
     <%#= render 'shared/ios_pwa_links' %>
     <link rel="apple-touch-icon" href="<%= image_path 'icons/ios/180.png' %>">
     <link rel="apple-touch-startup-image" href="<%= image_path '/icons/ios/1024.png' %>">
+
+    <!-- Schema.org Organization markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Gooi",
+      "url": "<%= root_url %>",
+      "logo": "<%= image_url('gooi_logo_CR.png') %>",
+      "description": "Weekly doorstep collection of food scraps around Table Mountain. Join Cape Town's food waste revolution.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "27 Hare Street",
+        "addressLocality": "Mowbray",
+        "addressRegion": "Western Cape",
+        "postalCode": "7700",
+        "addressCountry": "ZA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "-33.9497",
+        "longitude": "18.4735"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Cape Town"
+      },
+      "sameAs": [
+        "https://facebook.com/gooicapetown",
+        "https://instagram.com/gooi_capetown"
+      ]
+    }
+    </script>
+
+    <%= yield :structured_data %>
   </head>
   <body class="background">
     <% if user_signed_in? %>

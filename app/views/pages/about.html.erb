@@ -1,0 +1,18 @@
+<% content_for :meta_title, "About Gooi - Making Composting Easy in Cape Town" %>
+<% content_for :meta_description, "Learn about Gooi's mission to reduce landfill waste, support local farmers, and make composting accessible to everyone in Cape Town. Discover what's compostable and where your food scraps go." %>
+
+<% breadcrumb_items = [
+  { name: "Home", url: root_url },
+  { name: "About", url: about_url }
+] %>
+<% breadcrumb_schema(breadcrumb_items) %>
+
+<div class="page-container">
+  <div class="container mt-3">
+    <%= render_breadcrumbs(breadcrumb_items) %>
+  </div>
+
+  <%= render 'shared/mission_section' %>
+  <%= render 'shared/compostable_section' %>
+  <%= render 'shared/partner_farms_section', farms: @farms %>
+</div>
