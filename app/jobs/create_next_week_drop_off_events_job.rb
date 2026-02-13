@@ -37,7 +37,18 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
           drivers_day: drivers_day,
           drop_off_site: this_event.drop_off_site,
           date: drop_off_date
+        ) do |event|
+          # Copy attributes from this week's event on creation
+          event.position = this_event.position
+          event.is_final_destination = this_event.is_final_destination
+        end
+
+        # Update attributes if event already exists
+        drop_off_event.update!(
+          position: this_event.position,
+          is_final_destination: this_event.is_final_destination
         )
+
         puts "Created drop-off event for #{this_week_drivers_day.drop_off_events.first.drop_off_site.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
       end
 
