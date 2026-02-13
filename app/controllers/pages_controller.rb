@@ -28,12 +28,8 @@ class PagesController < ApplicationController
     @drivers_day = DriversDay.find_or_create_by(date: today)
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    @collections = @drivers_day.collections.includes(:subscription, :user).order(:order)
-    @collections.joins(:subscription)
-                .order('subscriptions.collection_order')
-                .each_with_index do |collection, index|
-                  collection.update(position: index + 1) # Set position starting from 1
-                end
+    # Load collections ordered by position (don't modify positions on page load)
+    @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
   end
 
   def story
