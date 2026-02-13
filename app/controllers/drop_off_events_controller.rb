@@ -83,6 +83,6 @@ class DropOffEventsController < ApplicationController
   end
 
   def drop_off_event_params
-    params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes)
+    params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes, :is_final_destination)
   end
 end

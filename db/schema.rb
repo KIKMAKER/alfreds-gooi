@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_12_135746) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_13_081121) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -281,6 +281,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_12_135746) do
     t.datetime "arrival_time"
     t.datetime "departure_time"
     t.integer "duration_minutes"
+    t.boolean "is_final_destination", default: false, null: false
     t.index ["arrival_time"], name: "index_drop_off_events_on_arrival_time"
     t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
     t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"

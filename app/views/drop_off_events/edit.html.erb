@@ -67,16 +67,20 @@
         </div>
       <% end %>
 
-      <!-- Driver notes -->
+      <!-- Driver notes & Route Settings -->
       <div class="card p-3 mt-3" style="border-radius:1em">
-        <h5 class="mb-3">Drop-off notes</h5>
+        <h5 class="mb-3">Drop-off notes & settings</h5>
         <%= simple_form_for [@drivers_day, @drop_off_event] do |f| %>
           <%= f.input :driver_note,
                 as: :text,
                 input_html: { rows: 3 },
                 placeholder: "e.g. Left bucket by front door",
-                label: false %>
-          <%= f.button :submit, "Save Note", class: "small-yellow-btn" %>
+                label: "Driver notes" %>
+          <%= f.input :is_final_destination,
+                as: :boolean,
+                label: "Final destination (end route here instead of returning to business)",
+                wrapper_html: { class: 'form-check' } %>
+          <%= f.button :submit, "Save", class: "small-yellow-btn" %>
         <% end %>
       </div>
     </div>

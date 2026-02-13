@@ -4,6 +4,7 @@ class GeographicRouteOptimiser
   def initialize(drivers_day)
     @drivers_day = drivers_day
     @collections = drivers_day.collections.includes(subscription: :user).where(skip: false).to_a
+    @final_drop_off = drivers_day.drop_off_events.find_by(is_final_destination: true)
   end
 
   def optimize!
@@ -77,11 +78,18 @@ class GeographicRouteOptimiser
     end
 
     # Log final return distance
-    final_distance = distance_between(
-      current_lat, current_lng,
-      BUSINESS_LOCATION[:lat], BUSINESS_LOCATION[:lng]
-    )
-    Rails.logger.info "📍 Returning to business (#{(final_distance * 1000).round}m)"
+    if @final_drop_off
+      final_lat = @final_drop_off.drop_off_site.latitude
+      final_lng = @final_drop_off.drop_off_site.longitude
+      final_distance = distance_between(current_lat, current_lng, final_lat, final_lng)
+      Rails.logger.info "📍 Ending at #{@final_drop_off.drop_off_site.name} (#{(final_distance * 1000).round}m)"
+    else
+      final_distance = distance_between(
+        current_lat, current_lng,
+        BUSINESS_LOCATION[:lat], BUSINESS_LOCATION[:lng]
+      )
+      Rails.logger.info "📍 Returning to business (#{(final_distance * 1000).round}m)"
+    end
 
     Rails.logger.info "✅ Optimized #{optimized.count} collections geographically"
     optimized
@@ -129,7 +137,15 @@ class GeographicRouteOptimiser
       }
     end
 
-    waypoints << BUSINESS_LOCATION # Return to business
+    # End at final drop-off if exists, otherwise return to business
+    if @final_drop_off
+      waypoints << {
+        lat: @final_drop_off.drop_off_site.latitude,
+        lng: @final_drop_off.drop_off_site.longitude
+      }
+    else
+      waypoints << BUSINESS_LOCATION
+    end
 
     # Build Google Maps URL
     waypoint_strings = waypoints.compact.map { |wp| "#{wp[:lat]},#{wp[:lng]}" }
