@@ -39,26 +39,26 @@
 
   &.active {
     .step-number {
-      background-color: #28a745;
+      background-color: $dark-green;
       color: white;
-      border-color: #28a745;
+      border-color: $dark-green;
     }
 
     .step-label {
-      color: #28a745;
+      color: $dark-green;
       font-weight: 600;
     }
   }
 
   &.completed {
     .step-number {
-      background-color: #28a745;
+      background-color: $dark-green;
       color: white;
-      border-color: #28a745;
+      border-color: $dark-green;
     }
 
     .step-label {
-      color: #28a745;
+      color: $dark-green;
     }
   }
 }

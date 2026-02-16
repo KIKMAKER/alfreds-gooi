@@ -74,12 +74,16 @@ class SignupsController < ApplicationController
       password_confirmation: session[:signup_password]
     )
 
+    # Use discount/referral from form if provided, otherwise from session
+    discount_code = params[:discount_code].presence || session[:signup_discount_code]
+    referral_code = params[:referral_code].presence || session[:signup_referral_code]
+
     # Build subscription with address details
     @user.subscriptions.build(subscription_params.merge(
       plan: session[:signup_plan],
       duration: session[:signup_duration],
-      discount_code: session[:signup_discount_code],
-      referral_code: session[:signup_referral_code],
+      discount_code: discount_code,
+      referral_code: referral_code,
       buckets_per_collection: session[:signup_buckets_per_collection],
       is_paused: true
     ))

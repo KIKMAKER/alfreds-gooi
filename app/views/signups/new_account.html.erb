@@ -26,8 +26,12 @@
     </div>
   <% end %>
 
-  <div class="user-form mt-4">
-    <%= form_with model: @user, url: create_account_signup_path, method: :post, local: true do |f| %>
+  <div class="user-form mt-4"
+       data-controller="form-abandonment"
+       data-form-abandonment-form-name-value="signup-account"
+       data-form-abandonment-plan-value="<%= @plan %>"
+       data-form-abandonment-duration-value="<%= @duration %>">
+    <%= form_with model: @user, url: create_account_signup_path, method: :post, local: true, html: { data: { action: "submit->form-abandonment#formSubmit" } } do |f| %>
       <% if @user.errors.any? %>
         <div class="alert alert-danger">
           <h4><%= pluralize(@user.errors.count, "error") %> prohibited this account from being saved:</h4>
@@ -41,33 +45,33 @@
 
       <div class="mb-3">
         <%= f.label :first_name, class: "form-label" %>
-        <%= f.text_field :first_name, required: true, autofocus: true, class: "form-control", autocomplete: "given-name" %>
+        <%= f.text_field :first_name, required: true, autofocus: true, class: "form-control", autocomplete: "given-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <div class="mb-3">
         <%= f.label :last_name, class: "form-label" %>
-        <%= f.text_field :last_name, required: true, class: "form-control", autocomplete: "family-name" %>
+        <%= f.text_field :last_name, required: true, class: "form-control", autocomplete: "family-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <div class="mb-3">
         <%= f.label :email, class: "form-label" %>
-        <%= f.email_field :email, required: true, class: "form-control", autocomplete: "email" %>
+        <%= f.email_field :email, required: true, class: "form-control", autocomplete: "email", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <div class="mb-3">
         <%= f.label :phone_number, class: "form-label" %>
-        <%= f.telephone_field :phone_number, required: true, class: "form-control", autocomplete: "tel", placeholder: "e.g., 0821234567" %>
+        <%= f.telephone_field :phone_number, required: true, class: "form-control", autocomplete: "tel", placeholder: "e.g., 0821234567", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <div class="mb-3">
         <%= f.label :password, class: "form-label" %>
-        <%= f.password_field :password, required: true, class: "form-control", autocomplete: "new-password" %>
+        <%= f.password_field :password, required: true, class: "form-control", autocomplete: "new-password", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
         <small class="form-text text-muted">6 characters minimum</small>
       </div>
 
       <div class="mb-3">
         <%= f.label :password_confirmation, "Confirm password", class: "form-label" %>
-        <%= f.password_field :password_confirmation, required: true, class: "form-control", autocomplete: "new-password" %>
+        <%= f.password_field :password_confirmation, required: true, class: "form-control", autocomplete: "new-password", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <div class="form-actions mt-4">

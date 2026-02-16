@@ -26,8 +26,12 @@
     </div>
   <% end %>
 
-  <div class="user-form mt-4">
-    <%= form_with model: @subscription, url: create_subscription_path, method: :post, local: true do |f| %>
+  <div class="user-form mt-4"
+       data-controller="form-abandonment"
+       data-form-abandonment-form-name-value="signup-subscription"
+       data-form-abandonment-plan-value="<%= @plan %>"
+       data-form-abandonment-duration-value="<%= @duration %>">
+    <%= form_with model: @subscription, url: create_subscription_path, method: :post, local: true, html: { data: { action: "submit->form-abandonment#formSubmit" } } do |f| %>
       <% if @subscription && @subscription.errors.any? %>
         <div class="alert alert-danger">
           <h4><%= pluralize(@subscription.errors.count, "error") %> prohibited this subscription from being saved:</h4>
@@ -46,17 +50,20 @@
         <%= f.select :suburb,
             options_for_select(Subscription::SUBURBS, @subscription&.suburb),
             { prompt: "Select a suburb" },
-            { required: true, class: "form-select" } %>
+            { required: true, class: "form-select", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
       </div>
 
       <div class="mb-3">
         <%= f.label :apartment_unit_number, "Building name and unit number (if relevant)", class: "form-label" %>
-        <%= f.text_field :apartment_unit_number, class: "form-control", placeholder: "e.g Unit 1 Garden View" %>
+        <%= f.text_field :apartment_unit_number, class: "form-control", placeholder: "e.g Unit 1 Garden View", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :street_address, "Street Address", class: "form-label" %>
-        <%= f.text_field :street_address, required: true, class: "form-control", placeholder: "e.g., 123 Main Street, Gardens" %>
+      <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+        <%= f.label :street_address, "Street Address", class: "form-label street-label" %>
+        <%= f.text_field :street_address,
+            required: true,
+            class: "d-none",
+            data: { address_autocomplete_target: "address", form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
       </div>
 
       <% if @plan != 'Commercial' %>
@@ -65,14 +72,14 @@
 
           <div class="mb-3">
             <%= label_tag :referral_code, "Referral Code", class: "form-label" %>
-            <%= text_field_tag :referral_code, @referral_code, class: "form-control", placeholder: "Enter friend's code for 15% off" %>
+            <%= text_field_tag :referral_code, @referral_code, class: "form-control", placeholder: "Enter friend's code for 15% off", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
           </div>
 
           <p class="text-center mb-2">or</p>
 
           <div class="mb-0">
             <%= label_tag :discount_code, "Discount Code", class: "form-label" %>
-            <%= text_field_tag :discount_code, @discount_code, class: "form-control", placeholder: "Enter your discount code" %>
+            <%= text_field_tag :discount_code, @discount_code, class: "form-control", placeholder: "Enter your discount code", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } %>
           </div>
         </div>
       <% end %>
