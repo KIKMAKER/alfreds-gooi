@@ -26,7 +26,7 @@
 
 // }
 
-/* Always show burger */
+/* Always show burger (for logged-in users) */
 .hamburger-menu {
   display: block;
   margin-right: 5vw;
@@ -52,9 +52,20 @@
   }
 }
 
-/* Hide the inline link row everywhere */
+/* Hide hamburger for logged-out users (new-navbar) */
+.new-navbar .hamburger-menu {
+  display: none !important;
+}
+
+/* Responsive link container */
 .links-container {
-  // display: none !important;
+  display: flex;
+  align-items: center;
+
+  /* Hide on smaller screens, show on desktop */
+  // @media screen and (max-width: 1200px) {
+  //   display: none !important;
+  // }
 }
 
 .alt-logo {
@@ -119,6 +130,11 @@
 .links-container {
   display: flex;
   align-items: center;
+}
+
+/* Hide links-container in all navbars EXCEPT new-navbar */
+.navbar-container:not(.new-navbar) .links-container {
+  display: none !important;
 }
 
 .link-title {
