@@ -45,45 +45,6 @@
                 </div>
                 ) %>
   </section>
-
-  <%= render 'shared/why_compost_section' %>
-
-  <!--testimonial section-->
-  <section class="testimonial-section">
-    <h1>Testimonials</h1>
-    <div class="content-wrapper mb-5">
-      <% if @testimonials.count >= 3 %>
-        <!-- Show 3 random new testimonials with images -->
-        <div class="testimonials-container">
-          <% @testimonials.sample(3).each do |testimonial| %>
-            <div class="testimonial-card">
-              <p>"<%= testimonial.content %>"</p>
-              <% if testimonial.photo.attached? %>
-                <div class="testimonial-image">
-                  <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
-                </div>
-              <% end %>
-              <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        <!-- Show old static testimonials until we have 3 new ones -->
-        <div class="testimonials-container">
-          <div class="testimonial-card">
-            <p>"We love composting our waste, and Alfred is the sweetest man."</p>
-          </div>
-          <div class="testimonial-card">
-            <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
-          </div>
-          <div class="testimonial-card">
-            <p>"Alfred is always on time and always so kind and with a happy smile."</p>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </section>
-
   <!-- Pricing -->
   <section data-controller="pricing" class="pricing-section" id="pricing">
     <h1 class="mt-5">How it works</h1>
@@ -434,7 +395,8 @@
       <% end %>
     </div>
 
-    <!-- Commercial signup section -->
+  <!-- Commercial signup section -->
+
     <div class="commercial-signup-section mt-5">
       <div class="commercial-card">
         <h3>Commercial Collection</h3>
@@ -445,13 +407,52 @@
           <li>Flexible contract lengths (3, 6, or 12 months)</li>
         </ul>
         <div class="mt-3">
-          <%= link_to 'Get Started', new_account_signup_path(plan: 'Commercial'), class: 'btn-gooi' %>
+          <%= link_to 'Get Started', new_commercial_inquiry_account_path, class: 'btn-gooi' %>
         </div>
       </div>
     </div>
 
     <br>
     <br>
+
+  </section>
+
+
+
+  <!--testimonial section-->
+  <section class="testimonial-section">
+    <h1>Testimonials</h1>
+    <div class="content-wrapper mb-5">
+      <% if @testimonials.count >= 3 %>
+        <!-- Show 3 random new testimonials with images -->
+        <div class="testimonials-container">
+          <% @testimonials.sample(3).each do |testimonial| %>
+            <div class="testimonial-card">
+              <p>"<%= testimonial.content %>"</p>
+              <% if testimonial.photo.attached? %>
+                <div class="testimonial-image">
+                  <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
+                </div>
+              <% end %>
+              <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Show old static testimonials until we have 3 new ones -->
+        <div class="testimonials-container">
+          <div class="testimonial-card">
+            <p>"We love composting our waste, and Alfred is the sweetest man."</p>
+          </div>
+          <div class="testimonial-card">
+            <p>"It's been so helpful and has really made composting so much easier and more convenient!"</p>
+          </div>
+          <div class="testimonial-card">
+            <p>"Alfred is always on time and always so kind and with a happy smile."</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </section>
 
   <!--where we collect section-->
@@ -557,5 +558,9 @@
     </div>
 
   </section>
+  <div class="text-center mt-5 gooi-container">
+      <p class="my-3">Want to learn more about our mission, what you can compost, and where your food scraps go?</p>
+      <%= link_to 'Learn More About Gooi', about_path, class: 'action-btn mt-2' %>
+    </div>
 
 </div>

@@ -1,0 +1,23 @@
+<h2>Thanks for your interest in Gooi Commercial Collection!</h2>
+
+<p>Hi <%= @user.first_name %>,</p>
+
+<p>Thanks for reaching out about commercial collection services for <strong><%= @inquiry.business_name %></strong>.</p>
+
+<p>We've received your inquiry and will be in touch within 1-2 business days to discuss:</p>
+<ul>
+  <li>Your specific collection needs (<%= @inquiry.estimated_buckets %> buckets, <%= @inquiry.collection_frequency.downcase %>)</li>
+  <li>Customized pricing for your <%= @inquiry.preferred_duration %>-month contract</li>
+  <li>Collection schedule and logistics</li>
+</ul>
+
+<p>In the meantime, if you have any urgent questions, feel free to reply to this email or call us.</p>
+
+<p>Looking forward to working with you!</p>
+
+<p>
+All the best,<br>
+Kiki<br>
++27836353126
+Gooi
+</p>

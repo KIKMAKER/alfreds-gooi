@@ -54,7 +54,7 @@
 
 /* Hide the inline link row everywhere */
 .links-container {
-  display: none !important;
+  // display: none !important;
 }
 
 .alt-logo {
@@ -125,7 +125,7 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   text-decoration: none;
-  color: #18191F;
+  color: $dark-green;
   margin: 0 16px;
   transition: all 0.3s ease;
 
@@ -155,7 +155,7 @@
 
   .links-container {
     // margin-right: 5vw;
-    display: none;
+    // display: none;
   }
 
   .hamburger-menu {

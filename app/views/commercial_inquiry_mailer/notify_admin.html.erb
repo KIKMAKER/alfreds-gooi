@@ -1,0 +1,22 @@
+<h2>New Commercial Inquiry</h2>
+
+<h3>Contact Information</h3>
+<p><strong>Name:</strong> <%= @user.first_name %> <%= @user.last_name %></p>
+<p><strong>Email:</strong> <%= @user.email %></p>
+<p><strong>Phone:</strong> <%= @user.phone_number %></p>
+
+<h3>Business Details</h3>
+<p><strong>Business Name:</strong> <%= @inquiry.business_name %></p>
+<p><strong>Business Address:</strong><br><%= simple_format(@inquiry.business_address) %></p>
+
+<h3>Requirements</h3>
+<p><strong>Estimated Buckets per Collection:</strong> <%= @inquiry.estimated_buckets %> x 45L buckets</p>
+<p><strong>Collection Frequency:</strong> <%= @inquiry.collection_frequency %></p>
+<p><strong>Preferred Contract Duration:</strong> <%= @inquiry.preferred_duration %> months</p>
+
+<% if @inquiry.additional_notes.present? %>
+  <h3>Additional Notes</h3>
+  <p><%= simple_format(@inquiry.additional_notes) %></p>
+<% end %>
+
+<p><a href="mailto:<%= @user.email %>">Reply to <%= @user.first_name %></a></p>

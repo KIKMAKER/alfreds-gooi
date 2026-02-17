@@ -141,16 +141,17 @@ button.submit-btn-circle {
   padding: 16px 56px;
   background-color: #fff;
   color: #023F3A;
-  border: none;
+  // border: none;
+  border: 1px solid $dark-green;
   border-radius: 50px;
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #ffffff00;
-    color: #fff;
-    border: 1px solid #fff;
+    // background-color: #ffffff00;
+    color: $dark-green;
+    border: 1px solid $dark-green;
     padding: 16px 80px;
   }
 

@@ -146,7 +146,9 @@ class Subscription < ApplicationRecord
   end
 
   def set_collection_day
-    if TUESDAY_SUBURBS.include?(suburb)
+    if MONDAY_SUBURBS.include?(suburb)
+      self.collection_day = "Monday"
+    elsif TUESDAY_SUBURBS.include?(suburb)
       self.collection_day = "Tuesday"
     elsif WEDNESDAY_SUBURBS.include?(suburb)
       self.collection_day = "Wednesday"

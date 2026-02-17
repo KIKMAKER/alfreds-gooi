@@ -1,6 +1,51 @@
 <div class="user-wrapper link-decoration">
   <div>
-    <% if @unpaid_invoice %>
+    <% if @no_subscription %>
+      <!-- User has no subscription yet -->
+      <div class="container text-center">
+        <h1>Welcome <%= current_user.first_name %>!</h1>
+        <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large my-3' %>
+
+        <% if @commercial_inquiries.any? %>
+          <!-- Has commercial inquiry -->
+          <h2>Commercial Inquiry Submitted</h2>
+          <div class="alert alert-info mt-4 text-start" style="max-width: 600px; margin: 0 auto;">
+            <% inquiry = @commercial_inquiries.first %>
+            <p><strong>Business:</strong> <%= inquiry.business_name %></p>
+            <p><strong>Status:</strong>
+              <span class="badge bg-<%= inquiry.pending? ? 'warning' : inquiry.contacted? ? 'info' : inquiry.converted? ? 'success' : 'secondary' %>">
+                <%= inquiry.status.titleize %>
+              </span>
+            </p>
+            <% if inquiry.pending? %>
+              <p class="mb-0">We'll be in touch within 1-2 business days to discuss your custom pricing and collection schedule.</p>
+            <% elsif inquiry.contacted? %>
+              <p class="mb-0">We've been in touch about your inquiry. Check your email for details!</p>
+            <% elsif inquiry.converted? %>
+              <p class="mb-0">Your commercial subscription has been set up. We'll start collections soon!</p>
+            <% end %>
+          </div>
+
+          <div class="mt-4">
+            <p>Questions? Call us or reply to your confirmation email.</p>
+          </div>
+        <% else %>
+          <!-- Started account but never completed subscription -->
+          <h2>Complete Your Subscription</h2>
+          <p class="mb-4">It looks like you started signing up but didn't complete your subscription details.</p>
+
+          <div class="mt-4">
+            <%= link_to "Complete Subscription", root_path(anchor: "pricing"), class: "btn-gooi" %>
+          </div>
+
+          <div class="mt-4">
+            <p class="text-muted">
+              Need help? <%= link_to "Contact us", "mailto:howzit@gooi.me" %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    <% elsif @unpaid_invoice %>
       <div class="container text-center">
         <h1>Hello <%= current_user.first_name %></h1>
         <%= image_tag'Alfred Sticker.svg', class: 'avatar-large my-3' %>
@@ -254,8 +299,9 @@
   </div>
 
   <!-- Floating Testimonial Button -->
-  <%= link_to new_testimonial_path, class: "floating-testimonial-btn", title: "Share your Gooi experience" do %>
-    <span class="btn-icon">💚</span>
-    <span class="btn-text">Share Feedback</span>
+  <% if current_user.subscriptions.any? %>
+    <%= link_to new_testimonial_path, class: "floating-testimonial-btn", title: "Share your Gooi experience" do %>
+      <span class="btn-icon">💚</span>
+      <span class="btn-text">Share Feedback</span>
+    <% end %>
   <% end %>
-

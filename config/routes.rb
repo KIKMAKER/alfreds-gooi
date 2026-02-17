@@ -75,6 +75,13 @@ Rails.application.routes.draw do
   get 'signup/subscription', to: 'signups#new_subscription_details', as: :new_subscription_details
   post 'signup/subscription', to: 'signups#create_subscription', as: :create_subscription
 
+  # Commercial inquiry flow
+  get 'commercial/account', to: 'commercial_inquiries#new_account', as: :new_commercial_inquiry_account
+  post 'commercial/account', to: 'commercial_inquiries#create_account', as: :create_commercial_inquiry_account
+  get 'commercial/details', to: 'commercial_inquiries#new_details', as: :new_commercial_inquiry_details
+  post 'commercial/inquiries', to: 'commercial_inquiries#create', as: :create_commercial_inquiries
+  get 'commercial/confirmation', to: 'commercial_inquiries#confirmation', as: :commercial_inquiry_confirmation
+
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
   # drop-off site managers
