@@ -32,14 +32,115 @@
         <% else %>
           <!-- Started account but never completed subscription -->
           <h2>Complete Your Subscription</h2>
-          <p class="mb-4">It looks like you started signing up but didn't complete your subscription details.</p>
+          <p class="mb-4">Choose your plan below to get started.</p>
 
-          <div class="mt-4">
-            <%= link_to "Complete Subscription", root_path(anchor: "pricing"), class: "btn-gooi" %>
+          <div class="pricing-content-wrapper mt-4" data-controller="pricing">
+            <div class="description-container">
+              <p>We offer weekly collection of your Gooi waste with two subscription models.</p>
+              <p>Standard, which covers the average small household and accommodates up to two 5L bags of kitchen scraps per week.</p>
+              <p>Bigger families, or just a very avid juicer, may need to move up to the XL package. With this model you can fill a 25L bucket each week!</p>
+            </div>
+
+            <div class="toggle-subscription mt-4">
+              <h2>Subscription rates</h2>
+              <div class="toggle">
+                <h5 data-pricing-target="title">Standard</h5>
+                <div class="toggle-container">
+                  <input type="checkbox" id="check-manage" class="toggle d-none" data-action="click->pricing#toggle">
+                  <label for="check-manage" class="toggle-label"></label>
+                </div>
+                <h5>XL</h5>
+              </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="standard-months-container" data-pricing-target="standard">
+              <div class="month-card">
+                <h3>1 month</h3>
+                <p class="pricing-text">
+                  <strong>R260</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R260</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'Standard', duration: 1), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+
+              <div class="month-card">
+                <h3>3 months</h3>
+                <p class="pricing-text">
+                  <strong>R220</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R660</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'Standard', duration: 3), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+
+              <div class="month-card popular">
+                <h4>Most popular</h4>
+                <h3>6 months</h3>
+                <p class="pricing-text">
+                  <strong>R180</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R1080</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'Standard', duration: 6), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+            </div>
+
+            <!-- XL Plan -->
+            <div class="standard-months-container hide" data-pricing-target="extra">
+              <div class="month-card">
+                <h3>1 month</h3>
+                <p class="pricing-text">
+                  <strong>R300</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R300</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'XL', duration: 1), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+
+              <div class="month-card">
+                <h3>3 months</h3>
+                <p class="pricing-text">
+                  <strong>R270</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R810</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'XL', duration: 3), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+
+              <div class="month-card">
+                <h3>6 months</h3>
+                <p class="pricing-text">
+                  <strong>R240</strong> per month
+                </p>
+                <p class="pricing-text">
+                  <strong>Total: R1440</strong>
+                </p>
+                <%= button_to select_plan_path(plan: 'XL', duration: 6), class: "link-title-light", form: { class: "sign-up-btn" } do %>
+                  Select
+                <% end %>
+              </div>
+            </div>
           </div>
 
           <div class="mt-4">
-            <p class="text-muted">
+            <p class="text-muted text-center">
               Need help? <%= link_to "Contact us", "mailto:howzit@gooi.me" %>
             </p>
           </div>

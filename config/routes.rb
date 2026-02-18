@@ -72,6 +72,7 @@ Rails.application.routes.draw do
   # Multi-step signup flow
   get 'signup/account', to: 'signups#new_account', as: :new_account_signup
   post 'signup/account', to: 'signups#create_account', as: :create_account_signup
+  post 'signup/google', to: 'signups#signup_with_google', as: :signup_with_google
   get 'signup/subscription', to: 'signups#new_subscription_details', as: :new_subscription_details
   post 'signup/subscription', to: 'signups#create_subscription', as: :create_subscription
 
@@ -222,6 +223,7 @@ Rails.application.routes.draw do
   # customers
   get "my_subscriptions", to: "customers#subscriptions"
   get "manage", to: "customers#manage"
+  post "select_plan", to: "customers#select_plan"
   get "account", to: "customers#account"
   get "collections_history", to: "customers#collections_history"
   get "skipme", to: "customers#skipme"

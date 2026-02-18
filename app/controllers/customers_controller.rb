@@ -92,6 +92,17 @@ class CustomersController < ApplicationController
     @whatsapp_link = "https://wa.me/?text=#{encoded_message}"
   end
 
+  def select_plan
+    # Store plan and duration in session
+    session[:signup_plan] = params[:plan]
+    session[:signup_duration] = params[:duration]
+    session[:signup_discount_code] = params[:discount_code]
+    session[:signup_referral_code] = params[:referral]
+
+    # Redirect to subscription details (step 2)
+    redirect_to new_subscription_details_path
+  end
+
   def skipme
     @subscription = current_user.subscriptions.where(status: 'active').order(:created_at).last
 

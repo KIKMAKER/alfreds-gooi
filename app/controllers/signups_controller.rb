@@ -45,10 +45,24 @@ class SignupsController < ApplicationController
     end
   end
 
+  # OAuth signup: Store params and redirect to Google
+  def signup_with_google
+    # Store signup params in session
+    session[:signup_plan] = params[:plan]
+    session[:signup_duration] = params[:duration]
+    session[:signup_discount_code] = params[:discount_code]
+    session[:signup_referral_code] = params[:referral_code]
+    session[:signup_buckets_per_collection] = params[:buckets_per_collection]
+    session[:oauth_signup_flow] = true # Flag to indicate this is a signup
+
+    # Redirect to Google OAuth
+    redirect_to user_google_oauth2_omniauth_authorize_path, allow_other_host: true
+  end
+
   # Step 2: Subscription details (address)
   def new_subscription_details
-    # Redirect back if no account info in session
-    unless session[:signup_email].present?
+    # Allow if user is already signed in (OAuth flow) OR has email in session (traditional flow)
+    unless user_signed_in? || session[:signup_email].present?
       redirect_to root_path, alert: "Please start the signup process again"
       return
     end
@@ -64,15 +78,26 @@ class SignupsController < ApplicationController
 
   # Step 2: Create user + subscription
   def create_subscription
-    # Build user from session data
-    @user = User.new(
-      first_name: session[:signup_first_name],
-      last_name: session[:signup_last_name],
-      email: session[:signup_email],
-      phone_number: session[:signup_phone_number],
-      password: session[:signup_password],
-      password_confirmation: session[:signup_password]
-    )
+    # Check if user is already signed in (OAuth flow)
+    if user_signed_in?
+      @user = current_user
+
+      # Update phone number if provided (for OAuth users)
+      if params[:phone_number].present? && @user.phone_number.blank?
+        @user.phone_number = params[:phone_number]
+        @user.save
+      end
+    else
+      # Build user from session data (traditional signup flow)
+      @user = User.new(
+        first_name: session[:signup_first_name],
+        last_name: session[:signup_last_name],
+        email: session[:signup_email],
+        phone_number: session[:signup_phone_number],
+        password: session[:signup_password],
+        password_confirmation: session[:signup_password]
+      )
+    end
 
     # Use discount/referral from form if provided, otherwise from session
     discount_code = params[:discount_code].presence || session[:signup_discount_code]

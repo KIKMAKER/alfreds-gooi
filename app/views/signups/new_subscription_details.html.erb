@@ -43,6 +43,17 @@
         </div>
       <% end %>
 
+      <% if user_signed_in? && current_user.phone_number.blank? %>
+        <div class="alert alert-info mb-4">
+          <strong>Welcome <%= current_user.first_name %>!</strong> We need your phone number to send collection reminders.
+        </div>
+
+        <div class="mb-3">
+          <%= label_tag :phone_number, "Phone Number", class: "form-label" %>
+          <%= telephone_field_tag :phone_number, nil, required: true, class: "form-control", autocomplete: "tel", placeholder: "e.g., 0821234567" %>
+        </div>
+      <% end %>
+
       <h3 class="mb-3">Pick Up Location</h3>
 
       <div class="mb-3">

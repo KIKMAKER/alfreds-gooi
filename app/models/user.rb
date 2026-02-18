@@ -65,14 +65,34 @@ class User < ApplicationRecord
 
   # OAuth: Create or find user from OAuth data
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0, 20]
-      user.first_name = auth.info.first_name || auth.info.name&.split&.first || 'User'
-      user.last_name = auth.info.last_name || auth.info.name&.split&.last || ''
-      # Phone will be collected during subscription creation
-      user.phone_number = '' # Make it optional for OAuth users
+    # First, check if user already exists with this OAuth provider/uid
+    user = where(provider: auth.provider, uid: auth.uid).first
+
+    # If not, check if user exists with this email (existing account)
+    if user.nil?
+      user = find_by(email: auth.info.email)
+
+      if user
+        # Link OAuth to existing account
+        user.update(
+          provider: auth.provider,
+          uid: auth.uid
+        )
+      else
+        # Create new user
+        user = create!(
+          provider: auth.provider,
+          uid: auth.uid,
+          email: auth.info.email,
+          password: Devise.friendly_token[0, 20],
+          first_name: auth.info.first_name || auth.info.name&.split&.first || 'User',
+          last_name: auth.info.last_name || auth.info.name&.split&.last || '',
+          phone_number: '' # Optional for OAuth users
+        )
+      end
     end
+
+    user
   end
 
   def oauth_user?
