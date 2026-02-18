@@ -16,6 +16,17 @@
         </div>
       </div>
     <% end %>
+
+    <div class="text-center my-4">
+      <p class="text-muted">Or</p>
+      <%= button_to user_google_oauth2_omniauth_authorize_path,
+          method: :post,
+          class: "btn btn-outline-dark w-100",
+          data: { turbo: false } do %>
+        <i class="fab fa-google me-2"></i> Sign in with Google
+      <% end %>
+    </div>
+
     <%= render "devise/shared/links" %>
   </div>
 </div>

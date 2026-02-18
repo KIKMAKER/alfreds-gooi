@@ -82,7 +82,11 @@ Rails.application.routes.draw do
   post 'commercial/inquiries', to: 'commercial_inquiries#create', as: :create_commercial_inquiries
   get 'commercial/confirmation', to: 'commercial_inquiries#confirmation', as: :commercial_inquiry_confirmation
 
-  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+  devise_for :users, controllers: {
+    registrations: 'users/registrations',
+    sessions: 'users/sessions',
+    omniauth_callbacks: 'users/omniauth_callbacks'
+  }
 
   # drop-off site managers
   resources :drop_off_site_managers, only: [:index, :show, :edit, :update]

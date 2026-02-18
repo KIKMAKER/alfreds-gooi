@@ -43,7 +43,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Validation context for multi-step signup
   validates :first_name, :last_name, :email, :phone_number, :password, presence: true, on: :account_step
@@ -61,6 +62,22 @@ class User < ApplicationRecord
   # validates :customer_id, uniqueness: true
   validates :referral_code, uniqueness: true, allow_nil: true
   # custom methods
+
+  # OAuth: Create or find user from OAuth data
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0, 20]
+      user.first_name = auth.info.first_name || auth.info.name&.split&.first || 'User'
+      user.last_name = auth.info.last_name || auth.info.name&.split&.last || ''
+      # Phone will be collected during subscription creation
+      user.phone_number = '' # Make it optional for OAuth users
+    end
+  end
+
+  def oauth_user?
+    provider.present? && uid.present?
+  end
 
   def whatsapp_notification_link
     return unless subscriptions.any?
@@ -275,6 +292,7 @@ class User < ApplicationRecord
 
   ## phone number validation
   def make_international
+    return if phone_number.blank? # Skip for OAuth users without phone
     puts "Before: #{self.phone_number}"
     # return if valid_international_phone_number()
 
@@ -283,12 +301,13 @@ class User < ApplicationRecord
   end
 
   def starts_0?
-    phone_number.start_with?('0')
+    phone_number.present? && phone_number.start_with?('0')
   end
 
   # Validations
 
   def valid_international_phone_number
+    return if phone_number.blank? # Allow blank for OAuth users
     return if /\A\+27\d{9}\z/.match?(phone_number)
 
     if /\A\+\d{9,13}\z/.match?(phone_number)
