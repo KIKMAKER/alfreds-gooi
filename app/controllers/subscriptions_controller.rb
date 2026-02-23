@@ -473,15 +473,11 @@ class SubscriptionsController < ApplicationController
 
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    # @collections = @drivers_day.collections.includes(:subscription, :user).order(:position)
-
+    # Load collections ordered by position (don't modify positions on page load)
     collections = @drivers_day.collections
                 .includes(:subscription, :user)
-                .joins(:subscription)
-                .order('subscriptions.collection_order')
-                .each_with_index do |collection, index|
-                  collection.update(position: index + 1) # Set position starting from 1
-                end
+                .order(:position)
+
     drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
 
     # Combine collections and drop-off events, sorted by position
@@ -598,7 +594,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date,
+    params.require(:subscription).permit(:customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date, :end_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
                   :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
   end

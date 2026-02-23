@@ -74,7 +74,7 @@ Jobs are processed by Solid Queue (not Sidekiq).
 ## Important Services
 
 Located in `app/services/`:
-- `RouteOptimiser` - Optimizes collection routes for efficiency
+- `OsrmRouteOptimiser` - Optimizes collection routes using OSRM Trip API (solves Traveling Salesman Problem)
 - `InvoiceBuilder` - Creates invoices with proper item calculation
 - `WeeklyStats` - Generates weekly statistics reports
 - `Subscriptions::*` - Subscription-specific business logic
@@ -136,7 +136,7 @@ Admin routes are namespaced under `/admin`:
 ## Key Controller Actions
 
 ### Collections
-- `optimise_route` - Uses RouteOptimiser service to order collections
+- `optimise_route` - Uses OsrmRouteOptimiser to optimize collection routes via OSRM Trip API (drop-offs remain manual)
 - `perform_create_today_collections` - Manually trigger today's collection creation
 - `perform_create_next_week_collections` - Manually trigger next week's collection creation
 - `skip_today` - Skip collections for the day (uses mark_skipped!)

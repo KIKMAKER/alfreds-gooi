@@ -21,8 +21,8 @@
     </div>
     <div class="col-6 col-md-3">
       <div class="card p-3" style="border-radius:1em">
-        <div class="text-muted">Capacity (buckets)</div>
-        <div class="fs-3 fw-bold"><%= @capacity %></div>
+        <div class="text-muted">Capacity</div>
+        <div class="fs-3 fw-bold"><%= @capacity %>L</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
@@ -50,7 +50,7 @@
         <th>Day</th>
         <th class="text-center">Avg BPH</th>
         <th class="text-center">Avg HH per bucket</th>
-        <th class="text-center">Avg buckets/day</th>
+        <th class="text-center">Avg litres/day</th>
         <th class="text-center">Avg households/day</th>
       </tr>
     </thead>
@@ -61,7 +61,7 @@
           <td><%= day %></td>
           <td class="text-center"><%= row[:avg_bph] || 0 %></td>
           <td class="text-center"><%= row[:avg_hpb] || 0 %></td>
-          <td class="text-center"><%= row[:avg_buckets] || 0 %></td>
+          <td class="text-center"><%= (row[:avg_litres] || 0).round %>L</td>
           <td class="text-center"><%= row[:avg_hh] || 0 %></td>
         </tr>
       <% end %>
@@ -75,6 +75,7 @@
         <th>Date</th>
         <th>Day</th>
         <th class="text-center">Buckets</th>
+        <th class="text-center">Litres</th>
         <th class="text-center">Households</th>
         <th class="text-center">BPH</th>
         <th class="text-center">HH / bucket</th>
@@ -88,6 +89,7 @@
           <td><%= r[:date]&.strftime('%m/%d/%Y') %></td>
           <td><%= r[:dow] %></td>
           <td class="text-center"><%= r[:buckets] %></td>
+          <td class="text-center"><%= r[:litres] %>L</td>
           <td class="text-center"><%= r[:households] %></td>
           <td class="text-center"><%= (r[:bph] || 0).round(2) %></td>
           <td class="text-center"><%= (r[:hpb] || 0).round(2) %></td>

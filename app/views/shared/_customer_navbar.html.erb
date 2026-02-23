@@ -5,36 +5,40 @@
     <% end %>
 
     <!-- Hamburger always visible -->
-    <div class="hamburger-menu dropdown ms-auto">
-      <%= link_to shop_index_path do %>
-        <i class="fa-solid fa-cart-shopping"></i>
-      <% end %>
-      <button class="btn p-2 border-0 bg-transparent" id="navMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open menu">
-        <i class="fa-solid fa-bars fa-2x" style="color:#023f3a;"></i>
-      </button>
+    <div class="d-flex align-items-baseline">
+      <%= link_to 'About', about_path, class:"link-title" %>
 
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navMenuButton">
-        <li><%= link_to 'Manage', manage_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Account', account_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Subscriptions', my_subscriptions_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Referrals', referrals_path, class: "dropdown-item" %></li>
-        <% if current_user.respond_to?(:invoices) && current_user.invoices.any? %>
-          <li><%= link_to "Invoices", invoices_path, class: "dropdown-item" %></li>
+      <div class="hamburger-menu dropdown ms-auto">
+        <%= link_to shop_index_path do %>
+          <i class="fa-solid fa-cart-shopping"></i>
         <% end %>
+        <button class="btn p-2 border-0 bg-transparent" id="navMenuButton"
+              data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open menu">
+          <i class="fa-solid fa-bars fa-2x" style="color:#023f3a;"></i>
+        </button>
 
-        <li><hr class="dropdown-divider"></li>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navMenuButton">
+          <li><%= link_to 'Manage', manage_path, class: "dropdown-item" %></li>
+          <li><%= link_to 'Account', account_path, class: "dropdown-item" %></li>
+          <li><%= link_to 'Subscriptions', my_subscriptions_path, class: "dropdown-item" %></li>
+          <li><%= link_to 'Referrals', referrals_path, class: "dropdown-item" %></li>
+          <% if current_user.respond_to?(:invoices) && current_user.invoices.any? %>
+            <li><%= link_to "Invoices", invoices_path, class: "dropdown-item" %></li>
+          <% end %>
 
-        <% if user_signed_in? %>
-          <li>
-            <%= link_to "Log out", destroy_user_session_path,
+          <li><hr class="dropdown-divider"></li>
+
+          <% if user_signed_in? %>
+            <li>
+              <%= link_to "Log out", destroy_user_session_path,
                         class: "dropdown-item text-danger",
                         data: { turbo_method: :delete } %>
-          </li>
-        <% else %>
-          <li><%= link_to "Log in", new_user_session_path, class: "dropdown-item" %></li>
-        <% end %>
-      </ul>
+            </li>
+          <% else %>
+            <li><%= link_to "Log in", new_user_session_path, class: "dropdown-item" %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

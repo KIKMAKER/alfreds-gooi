@@ -1,30 +1,54 @@
 <div class="user-wrapper">
-  <h1 class="my-3 fs-1">Refer a friend!</h1>
-  <h3 class="mb-1 text-center">Get R50 off your next subscription</h3>
-  <h3 class="mb-1 text-center">for <em>each</em> person who uses</h3>
-  <h3 class="text-center">your referral code.</h3>
-  <p class="my-3 fs-2">Your code is:</p>
-  <h1 class="fs-1 mb-3"><%= @referral_code %></h1>
-  <div class="text-center my-4">
-    <%#= link_to "Share on WhatsApp", @whatsapp_link, class: "btn btn-success fs-4 px-4 py-2", target: "_blank", rel: "noopener" %>
-    <p><strong>Click the whatsapp icon below to share this message with your neighbours:</strong></p>
-    <p>"<%= @message %>"</p>
-    <%= link_to @whatsapp_link, target: "_blank" do %>
-      <i class="fa-brands fa-whatsapp mt-3" style="font-size: 50px"></i>
-    <% end %>
-  </div>
-  <% if @referral_count > 0 %>
-    <p>So far <%= pluralize(@referral_count, 'person is', 'people are') %> gooiing with your help!</p>
-    <ol>
-      <% @referrals.each do |referral| %>
-        <li class='fs-3'><%= referral.referee.first_name %></li>
+  <% if @no_subscription %>
+    <div class="container text-center">
+      <h1 class="my-3 fs-1">Refer a friend!</h1>
+      <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large my-3' %>
+      <h3 class="mb-4">Complete your subscription to gain access to your referral code</h3>
+      <p class="mb-4">Once you're gooiing, you can earn R50 off your next subscription for each friend you refer!</p>
+      
+      <div class="mt-4">
+        <p class="text-muted">
+          Need help? <br><br>
+          <%= link_to "Email us", "mailto:howzit@gooi.me", class: 'link-title' %>
+          <br>
+          <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
+                   target: "_blank", class: 'link-title' do %>
+            <i class="fa-brands fa-whatsapp"></i>
+            Chat on whatsapp
+          <% end %>
+        </p>
+      </div>
+    </div>
+  <% else %>
+    <h1 class="my-3 fs-1">Refer a friend!</h1>
+    <h3 class="mb-1 text-center">Get R50 off your next subscription</h3>
+    <h3 class="mb-1 text-center">for <em>each</em> person who uses</h3>
+    <h3 class="text-center">your referral code.</h3>
+    <p class="my-3 fs-2">Your code is:</p>
+    <h1 class="fs-1 mb-3"><%= @referral_code %></h1>
+    <div class="text-center my-4">
+      <%#= link_to "Share on WhatsApp", @whatsapp_link, class: "btn btn-success fs-4 px-4 py-2", target: "_blank", rel: "noopener" %>
+      <p><strong>Click the whatsapp icon below to share this message with your neighbours:</strong></p>
+      <p>"<%= @message %>"</p>
+      <%= link_to @whatsapp_link, target: "_blank" do %>
+        <i class="fa-brands fa-whatsapp mt-3" style="font-size: 50px"></i>
       <% end %>
-    </ol>
-    <p>You get <strong>R<%= @referral_count * 50 %></strong> off your next gooi subscription</p>
+    </div>
+    <% if @referral_count > 0 %>
+      <p>So far <%= pluralize(@referral_count, 'person is', 'people are') %> gooiing with your help!</p>
+      <ol>
+        <% @referrals.each do |referral| %>
+          <li class='fs-3'><%= referral.referee.first_name %></li>
+        <% end %>
+      </ol>
+      <p>You get <strong>R<%= @referral_count * 50 %></strong> off your next gooi subscription</p>
+    <% end %>
   <% end %>
 </div>
 
-<div class="yellow-block">
-  <h3 class="text-center">Thank you for sharing!</h3>
-  <h3 class="text-center">Together we can repair Cape Town's food system.</h3>
-</div>
+<% unless @no_subscription %>
+  <div class="yellow-block">
+    <h3 class="text-center">Thank you for sharing!</h3>
+    <h3 class="text-center">Together we can repair Cape Town's food system.</h3>
+  </div>
+<% end %>

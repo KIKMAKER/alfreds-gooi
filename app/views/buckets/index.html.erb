@@ -71,6 +71,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Farm</th>
           <th>Size</th>
           <th>Net kg</th>
           <th>Half?</th>
@@ -82,6 +83,7 @@
         <% @buckets.each_with_index do |b, i| %>
           <tr class="align-middle">
             <td><%= i + 1 %></td>
+            <td><%= b.drop_off_event&.drop_off_site&.name || "—" %></td>
             <td><%= b.bucket_size %>L</td>
             <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
             <td><%= b.half? ? "Yes" : "No" %></td>
@@ -96,7 +98,7 @@
           </tr>
         <% end %>
         <% if @buckets.empty? %>
-          <tr><td colspan="5" class="text-center text-muted">No buckets recorded yet.</td></tr>
+          <tr><td colspan="7" class="text-center text-muted">No buckets recorded yet.</td></tr>
         <% end %>
       </tbody>
     </table>

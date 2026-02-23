@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_16_102503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -183,7 +183,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
     t.float "buckets", default: 0.0
     t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
-    t.integer "order", default: 0
     t.boolean "wants_veggies"
     t.string "customer_note"
     t.integer "position"
@@ -191,6 +190,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
     t.integer "buckets_25l", default: 0
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
+  end
+
+  create_table "commercial_inquiries", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "business_name"
+    t.text "business_address"
+    t.integer "estimated_buckets"
+    t.integer "preferred_duration"
+    t.string "collection_frequency"
+    t.text "additional_notes"
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_commercial_inquiries_on_user_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -282,6 +295,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
     t.datetime "arrival_time"
     t.datetime "departure_time"
     t.integer "duration_minutes"
+    t.boolean "is_final_destination", default: false, null: false
     t.index ["arrival_time"], name: "index_drop_off_events_on_arrival_time"
     t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
     t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"
@@ -746,6 +760,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_06_115348) do
   add_foreign_key "business_profiles", "subscriptions"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
+  add_foreign_key "commercial_inquiries", "users"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "day_statistics", "drivers_days"
   add_foreign_key "drivers_days", "drop_off_events", column: "current_drop_off_event_id"

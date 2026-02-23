@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :whatsapp_messages, dependent: :destroy
   has_many :expense_imports, dependent: :destroy
   has_many :verified_expenses, class_name: 'Expense', foreign_key: 'verified_by_id', dependent: :nullify
+  has_many :commercial_inquiries, dependent: :destroy
 
   # Referrer: The user who referred others
   has_many :referrals_as_referrer,
@@ -42,7 +43,10 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :timeoutable
+         :recoverable, :rememberable, :validatable
+
+  # Validation context for multi-step signup
+  validates :first_name, :last_name, :email, :phone_number, :password, presence: true, on: :account_step
 
   # Callbacks
 

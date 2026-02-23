@@ -1,0 +1,72 @@
+.signup-progress {
+  padding: 1.5rem 0;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1;
+
+  .step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background-color: #e9ecef;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+
+  .step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  &.active {
+    .step-number {
+      background-color: $dark-green;
+      color: white;
+      border-color: $dark-green;
+    }
+
+    .step-label {
+      color: $dark-green;
+      font-weight: 600;
+    }
+  }
+
+  &.completed {
+    .step-number {
+      background-color: $dark-green;
+      color: white;
+      border-color: $dark-green;
+    }
+
+    .step-label {
+      color: $dark-green;
+    }
+  }
+}
+
+.progress-connector {
+  flex: 1;
+  height: 2px;
+  background-color: #e9ecef;
+  margin: 0 0.5rem;
+  margin-bottom: 24px; // Align with step numbers
+}

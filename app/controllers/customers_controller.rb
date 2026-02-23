@@ -6,12 +6,20 @@ class CustomersController < ApplicationController
   def manage
     @subscriptions = current_user.subscriptions.where(status: [:active, :pending]).order(created_at: :asc)
     @subscription = @subscriptions.first || current_user.current_sub
+    @commercial_inquiries = current_user.commercial_inquiries.order(created_at: :desc)
+
+    # Check if user has no subscriptions at all
+    if current_user.subscriptions.empty?
+      # User created account but never completed signup
+      @no_subscription = true
+      return
+    end
 
     # Check for unpaid invoices across all subscriptions
     @unpaid_invoice = current_user.invoices.find_by(paid: false)
 
     # For single subscription (legacy flow)
-    if @subscriptions.count == 1
+    if @subscriptions.count == 1 && @subscription
       if @subscription.start_date
         @days_left = @subscription.remaining_collections.to_i
       else
@@ -20,13 +28,15 @@ class CustomersController < ApplicationController
       end
       @next_collection = @subscription.collections.where('date >= ?', Date.today).order(date: :asc).first
       @start_date = @subscription.start_date.strftime('%b %Y')
+    elsif @subscriptions.any?
+      @days_left = 0
+      @start_date = current_user.subscriptions.order(created_at: :asc).first&.start_date&.strftime('%b %Y')
     else
       @days_left = 0
-      @start_date = current_user.subscriptions.order(created_at: :asc).first.start_date.strftime('%b %Y')
-
+      @start_date = nil
     end
 
-    @recent_collections = current_user.collections.order(date: :desc).limit(5)
+    @recent_collections = current_user.collections.order(date: :desc).limit(5) if current_user.subscriptions.any?
   end
 
   def account
@@ -66,6 +76,12 @@ class CustomersController < ApplicationController
   end
 
   def referrals
+    # Check if user has a subscription - need one to access referrals
+    if current_user.subscriptions.empty?
+      @no_subscription = true
+      return
+    end
+
     @referral_code = current_user.referral_code
     @referrals = current_user.referrals_as_referrer.where(status: "completed")
     @referral_count = @referrals.count

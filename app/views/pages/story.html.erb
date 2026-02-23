@@ -1,5 +1,18 @@
-  <!--header-->
+<% content_for :meta_title, "Our Story - How Gooi Started | Cape Town's Food Waste Revolution" %>
+<% content_for :meta_description, "Learn how Gooi began in 2019 with a simple idea: make composting as easy as throwing scraps in the bin. From one household to hundreds, we're transforming Cape Town's food waste into nourishment for the earth." %>
+
+<% breadcrumb_items = [
+  { name: "Home", url: root_url },
+  { name: "Story", url: story_url }
+] %>
+<% breadcrumb_schema(breadcrumb_items) %>
+
+<!--header-->
 <div class="blog-container">
+  <div class="container mt-3">
+    <%= render_breadcrumbs(breadcrumb_items) %>
+  </div>
+
   <section class="blog-header">
     <div class="inner-header-container">
       <h1 class="blog-header-header">Turning Scraps into Soil</h1>

@@ -21,9 +21,21 @@ class CollectionsController < ApplicationController
   end
 
   def optimise_route
-    drivers_day = DriversDay.find_by(date: Date.today)
-    RouteOptimiser.optimise_route
-    redirect_to start_drivers_day_path(drivers_day), notice: 'Route optimized successfully'
+    drivers_day = if params[:drivers_day_id].present?
+      DriversDay.find(params[:drivers_day_id])
+    else
+      DriversDay.find_by(date: Date.today)
+    end
+
+    result = GeographicRouteOptimiser.new(drivers_day).optimize!
+
+    if result[:success]
+      redirect_to route_drivers_days_path(date: drivers_day.date),
+                  notice: "Route optimized! #{result[:total_optimized]} collections sorted by proximity."
+    else
+      redirect_to route_drivers_days_path(date: drivers_day.date),
+                  alert: "Route optimization failed: #{result[:error]}"
+    end
   end
 
   def import_csv
@@ -138,8 +150,8 @@ class CollectionsController < ApplicationController
 
   def this_week
     @day = Date.today.strftime("%A")
-    @unskipped_collections = Collection.where(date: Date.today , skip: false)
-    @skipped_collections = Collection.where(date: Date.today , skip: true)
+    @unskipped_collections = Collection.where(date: Date.today, skip: false)
+    @skipped_collections = Collection.where(date: Date.today, skip: true)
   end
 
   def destroy
@@ -186,8 +198,6 @@ class CollectionsController < ApplicationController
     @compost_bags = Product.find_by(title: "Compost bin bags")
     @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
   end
-
-
 
   def add_customer_note
     if @collection.update(customer_note: params[:collection][:customer_note])

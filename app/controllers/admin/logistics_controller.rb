@@ -1,5 +1,5 @@
 class Admin::LogisticsController < ApplicationController
-  CAPACITY_BUCKETS = 17
+  CAPACITY_LITRES = 900
   RECENT_LIMIT     = 30
 
   def index
@@ -18,9 +18,18 @@ class Admin::LogisticsController < ApplicationController
       buckets   = d.total_buckets.to_i
       skipped   = [planned - hh, 0].max
 
+      # Calculate litres for this day from collections
+      collections = d.collections.where(skip: false)
+      litres = collections.sum do |c|
+        (c.bags || 0) * 5.0 +
+        (c.buckets || 0) * 25.0 +
+        (c.buckets_25l || 0) * 25.0 +
+        (c.buckets_45l || 0) * 45.0
+      end.round
+
       bph = hh.positive?      ? (buckets.to_f / hh) : nil           # buckets per household
       hpb = buckets.positive? ? (hh.to_f / buckets) : nil           # households per bucket
-      cap = CAPACITY_BUCKETS.positive? ? (buckets.to_f / CAPACITY_BUCKETS) : nil
+      cap = CAPACITY_LITRES.positive? ? (litres.to_f / CAPACITY_LITRES) : nil
       rate = planned.positive? ? (skipped.to_f / planned) : nil     # skipped %
 
       {
@@ -28,6 +37,7 @@ class Admin::LogisticsController < ApplicationController
         date: d.date,
         dow: d.date.strftime("%A"),
         buckets: buckets,
+        litres: litres,
         households: hh,
         planned: planned,
         skipped: skipped,
@@ -53,13 +63,14 @@ class Admin::LogisticsController < ApplicationController
         avg_bph:      avg(arr.map { |r| r[:bph] }),
         avg_hpb:      avg(arr.map { |r| r[:hpb] }),
         avg_buckets:  avg(arr.map { |r| r[:buckets] }),
+        avg_litres:   avg(arr.map { |r| r[:litres] }),
         avg_hh:       avg(arr.map { |r| r[:households] })
       }
     end
 
     @recent_rows = @rows.sort_by { |r| r[:date] || Date.new(1900) }
                         .last(RECENT_LIMIT).reverse
-    @capacity = CAPACITY_BUCKETS
+    @capacity = CAPACITY_LITRES
   end
 
   def customer_map_data
