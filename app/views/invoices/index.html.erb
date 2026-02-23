@@ -13,6 +13,11 @@
       <% end %>
     <% end %>
   </div>
+  <% unless current_user.admin? %>
+    <div class="mb-3">
+      <%= link_to 'View as Statement', statement_path(current_user), class:"link-title" %>
+    </div>
+  <% end %>
   <% @invoices.each do |invoice| %>
     <% if current_user.admin? %>
       <%= link_to invoice_path(invoice) do %>

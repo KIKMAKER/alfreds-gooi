@@ -1,6 +1,9 @@
 <div class="driver-wrapper">
   <h1 class="my-4">My Subscriptions</h1>
-  <%= link_to "← Back to Dashboard", manage_path, class: "d-block mb-3" %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <%= link_to "← Back to Dashboard", manage_path %>
+    <%= link_to "View Account Statement", statement_path(current_user), class: "btn btn-outline-primary" %>
+  </div>
 
   <% if @subscriptions.any? %>
     <!-- Desktop table view -->
@@ -89,6 +92,9 @@
 
     <!-- Mobile card view -->
     <div class="d-md-none">
+      <div class="mb-3">
+        <%= link_to "View Account Statement", statement_path(current_user), class: "btn btn-outline-primary w-100" %>
+      </div>
       <% @subscriptions.each do |subscription| %>
         <div class="card-white mb-3">
           <div class="d-flex justify-content-between align-items-start mb-2">
