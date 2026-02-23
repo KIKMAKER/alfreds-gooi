@@ -4,7 +4,7 @@ class BucketsController < ApplicationController
   before_action :authorize_driver!
 
   def index
-    @buckets = @drivers_day.buckets.order(created_at: :desc)
+    @buckets = @drivers_day.buckets.includes(drop_off_event: :drop_off_site).order(created_at: :desc)
     @bucket  = @drivers_day.buckets.build
     @totals = {
       total_buckets: @drivers_day.total_buckets.to_i,
