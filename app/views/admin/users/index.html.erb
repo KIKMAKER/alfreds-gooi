@@ -26,7 +26,7 @@
               <td><%= user.email %></td>
               <td><%= link_to "#{user.subscriptions.size} subs", admin_user_path(user), class: "btn-today-green"  %></td>
               <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :short) : "Never" %></td>
-              <td><%= user.customer? ? user.subscriptions.last.status : 'none'  %></td>
+              <td><%= user.customer? ? user.subscriptions.last&.status : 'none'  %></td>
 
 
             </tr>
