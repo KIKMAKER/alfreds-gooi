@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Quotations</h1>
-    <%= link_to 'New Quotation', new_quotation_path, class: 'btn btn-primary' %>
+    <%= link_to 'New Quotation', new_quotation_path, class: 'btn-yellow' %>
   </div>
 
   <div class="row">
@@ -42,10 +42,10 @@
                 </span>
               </td>
               <td>
-                <%= link_to 'View', quotation_path(quotation), class: 'btn btn-sm btn-outline-primary' %>
-                <%= link_to 'Edit', edit_quotation_path(quotation), class: 'btn btn-sm btn-outline-secondary' %>
+                <%= link_to 'View', quotation_path(quotation), class: 'btn-secondary-outline btn-sm' %>
+                <%= link_to 'Edit', edit_quotation_path(quotation), class: 'btn-secondary-outline btn-sm' %>
                 <%= button_to 'Delete', quotation_path(quotation), method: :delete,
-                    data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-outline-danger' %>
+                    data: { turbo_confirm: 'Are you sure?' }, class: 'btn-secondary-outline btn-sm' %>
               </td>
             </tr>
           <% end %>

@@ -11,7 +11,7 @@
       <p>The end kms didn't save or weren't entered</p>
       <%= simple_form_for @drivers_day do |f| %>
         <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
-        <%= f.submit "Save kms", class: "gooi-button" %>
+        <%= f.submit "Save kms", class: "btn-yellow" %>
       <% end %>
     <% else %>
       <p>We planted the equivalent of <%= number_with_precision(@stat.trees_net, precision: 2) %> trees</p>
@@ -30,7 +30,7 @@
       <%= simple_form_for @drivers_day do |f| %>
         <%= f.input :start_time, label: "Start time", required: true %>
         <%= f.input :end_time, label: "End time", required: true %>
-        <%= f.submit "Save times", class: "gooi-button" %>
+        <%= f.submit "Save times", class: "btn-yellow" %>
       <% end %>
     <% end %>
 

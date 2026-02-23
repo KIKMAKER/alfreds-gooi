@@ -74,11 +74,11 @@
                 <% end %>
               </td>
               <td>
-                <%= link_to "View", drivers_day_path(drivers_day), class: "btn btn-sm btn-outline-primary" %>
-                <%= link_to "Edit", edit_drivers_day_path(drivers_day), class: "btn btn-sm btn-outline-secondary" %>
+                <%= link_to "View", drivers_day_path(drivers_day), class: "btn-secondary-outline btn-sm" %>
+                <%= link_to "Edit", edit_drivers_day_path(drivers_day), class: "btn-secondary-outline btn-sm" %>
                 <%= link_to "Delete", drivers_day_path(drivers_day),
                     data: {turbo_method: :delete, turbo_confirm: "Are you sure? This will remove the driver's day but collections will remain."},
-                    class: "btn btn-sm btn-outline-danger" %>
+                    class: "btn-secondary-outline btn-sm" %>
               </td>
             </tr>
           <% end %>

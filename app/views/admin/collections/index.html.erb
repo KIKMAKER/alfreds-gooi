@@ -17,10 +17,10 @@
     </div>
     <div>
       <% if @page > 1 %>
-        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-outline-secondary btn-sm me-2" %>
+        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-secondary-outline btn-sm me-2" %>
       <% end %>
       <% if @page < @pages %>
-        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-outline-secondary btn-sm" %>
+        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-secondary-outline btn-sm" %>
       <% end %>
     </div>
   </div>
@@ -77,10 +77,10 @@
     </div>
     <div>
       <% if @page > 1 %>
-        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-outline-secondary btn-sm me-2", style:"border-radius:1em" %>
+        <%= link_to "« Prev", admin_collections_path(request.query_parameters.merge(page: @page - 1)), class: "btn btn-secondary-outline btn-sm me-2", style:"border-radius:1em" %>
       <% end %>
       <% if @page < @pages %>
-        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-outline-secondary btn-sm", style:"border-radius:1em" %>
+        <%= link_to "Next »", admin_collections_path(request.query_parameters.merge(page: @page + 1)), class: "btn btn-secondary-outline btn-sm", style:"border-radius:1em" %>
       <% end %>
     </div>
   </div>

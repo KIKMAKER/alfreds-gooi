@@ -88,6 +88,9 @@ class MonthlyInvoiceService
       amount: volume_amount
     )
 
+    # Add starter kit installment if applicable
+    add_starter_kit_installment(invoice)
+
     # Calculate and save total
     invoice.calculate_total
 
@@ -155,5 +158,22 @@ class MonthlyInvoiceService
 
     # Count how many invoices have been created so far
     @subscription.invoices.count + 1
+  end
+
+  def add_starter_kit_installment(invoice)
+    return unless @subscription.starter_kit_installment.present?
+
+    # Find the starter kit product to link to
+    bucket_size = @subscription.bucket_size || 45
+    kit_title = "Commercial Starter Buckets (#{bucket_size}L)"
+
+    kit = Product.find_by(title: kit_title)
+    return unless kit
+
+    invoice.invoice_items.create!(
+      product: kit,
+      quantity: 1,
+      amount: @subscription.starter_kit_installment
+    )
   end
 end

@@ -5,7 +5,7 @@
       <% if current_user&.admin? %>
         <div class="d-flex gap-2">
           <%= link_to "Edit Quotation", edit_quotation_path(@quotation), class: "link-text me-3" %>
-          <%= link_to "View PDF", pdf_quotation_path(@quotation), class: "btn btn-outline-secondary", target: "_blank" %>
+          <%= link_to "View PDF", pdf_quotation_path(@quotation), class: "btn btn-secondary-outline", target: "_blank" %>
           <%= link_to "Send Quotation Email", send_email_quotation_path(@quotation), class: "small-yellow-btn", data: { turbo_method: :get, turbo_confirm: "Send quotation email to #{@quotation.customer_email}?" } %>
         </div>
       <% end %>

@@ -3,6 +3,6 @@
   <%= simple_form_for :csv_upload, url: import_csv_collections_path, method: :post, multipart: true do |f| %>
     <%= f.input :file, as: :file %>
     <%= f.input :drivers_note, as: :text %>
-    <%= f.button :submit, "Upload CSV", class: "gooi-button" %>
+    <%= f.button :submit, "Upload CSV", class: "btn-yellow" %>
   <% end %>
 </div>
