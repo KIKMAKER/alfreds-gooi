@@ -57,6 +57,8 @@ class DropOffSite < ApplicationRecord
   # Class method to get suburbs for a given collection day
   def self.suburbs_for_day(day)
     case day.to_s.capitalize
+      when "Monday"
+      Subscription::MONDAY_SUBURBS
     when "Tuesday"
       Subscription::TUESDAY_SUBURBS
     when "Wednesday"
