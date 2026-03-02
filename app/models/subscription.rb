@@ -46,6 +46,9 @@ class Subscription < ApplicationRecord
   enum :plan, %i[once_off Standard XL Commercial]
   enum :collection_day, Date::DAYNAMES
 
+  # Constants
+  GRACE_BACK_DAYS = 7  # Grace period for subscription continuity when resubscribing
+
   MONDAY_SUBURBS = ["Observatory", "Woodstock", "De Waterkant",  "Bo-Kaap", "Foreshore"]
   TUESDAY_SUBURBS = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   WEDNESDAY_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Schotsche Kloof", "Constantia", "Witteboomen"].sort!.freeze
@@ -179,11 +182,21 @@ class Subscription < ApplicationRecord
   # Returns a Date.
   def suggested_start_date(payment_date: Date.current, align_to_collection_day: true)
     paid_on  = payment_date.to_date
-    last_sub = user.subscriptions.completed.where.not(id: id).order(end_date: :desc).first
+    # FIXED: Find most recent subscription regardless of status (not just completed)
+    last_sub = user.subscriptions.where.not(id: id).order(created_at: :desc).first
 
     base =
-      if last_sub&.end_date.present?
-        last_end = last_sub.end_date.to_date
+      if last_sub&.start_date.present?
+        # Calculate expected end based on subscription details
+        last_end = if last_sub.end_date.present?
+          # If end_date exists, use it
+          last_sub.end_date.to_date
+        else
+          # Calculate expected end based on required collections
+          required_collections = (4 * last_sub.duration).ceil
+          # Expected end = start + total_required_collections.weeks
+          (last_sub.start_date + required_collections.weeks).to_date
+        end
 
         # FAILSAFE: if you actually collected in the gap, force continuity
         had_pickups_in_gap = user.collections
@@ -207,14 +220,28 @@ class Subscription < ApplicationRecord
   end
 
   # Reattach any future collections to this subscription once it has a start_date.
+  # FIXED: Only adopts from completed subscriptions or orphaned collections
+  # (won't steal from active/paused subscriptions)
   # Safe to run multiple times.
   def adopt_future_collections!
     raise ArgumentError, "start_date required" unless start_date
 
     self.class.transaction do
+      # Only adopt collections that:
+      # 1. Are >= our start_date AND
+      # 2. Either have no subscription_id (orphaned), OR
+      # 3. Belong to a COMPLETED subscription
+
+      # Find completed subscription IDs
+      completed_sub_ids = user.subscriptions.completed.pluck(:id)
+
       user.collections
           .where("date >= ?", start_date.to_date)
           .where.not(subscription_id: id)
+          .where(
+            "subscription_id IS NULL OR subscription_id IN (?)",
+            completed_sub_ids
+          )
           .update_all(subscription_id: id)
     end
   end

@@ -1,7 +1,5 @@
 class CheckSubscriptionsForCompletionJob < ApplicationJob
   queue_as :default
-  OVERLAP_BACK_DAYS   = 27
-  FUTURE_FORWARD_DAYS = 45
 
   def perform
     # NOTE: if collection_day is an enum (integer), change this filter accordingly.
@@ -10,14 +8,25 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
     Subscription.active.where(collection_day: today_name).find_each do |subscription|
       next if subscription.start_date.blank?
 
-      required_collections   = (4 * subscription.duration).ceil
+      required_collections   = (4 * subscription.duration).ceil + 1
       completed_collections  = subscription.collections.where(skip: false).count
       remaining_collections  = required_collections - completed_collections
 
+      # Calculate alert threshold based on subscription duration
+      # 1-month: alert with 1 left, 3-month: 2 left, 6+ months: 3 left
+      alert_threshold = case subscription.duration
+                        when 1
+                          1
+                        when 3
+                          2
+                        when 6, 12
+                          3
+                        else
+                          2
+                        end
+
       # Is there an overlapping or upcoming subscription for this user?
-      has_next = user_has_overlapping_or_upcoming_subscription?(subscription,
-                                                back_days: OVERLAP_BACK_DAYS,
-                                                forward_days: FUTURE_FORWARD_DAYS)
+      has_next = user_has_overlapping_or_upcoming_subscription?(subscription)
 
       if completed_collections >= required_collections
         # 1) COMPLETE regardless of future subs
@@ -35,7 +44,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
         end
         Rails.logger.info "Marked sub ##{subscription.id} as complete (future_sub=#{has_next})"
 
-      elsif remaining_collections <= 2
+      elsif remaining_collections <= alert_threshold
         # 2) Ending soon nudges (only if no future sub to avoid spam)
         if has_next
           Rails.logger.info "Muted ending-soon emails for sub ##{subscription.id} (future_sub=true)"
@@ -57,23 +66,23 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
   private
 
-  # “Future sub” means:
+  # "Future sub" means:
   # - another subscription for the same user (not this one)
-  # - that either overlaps *now* (start_date in the last few days), or starts within the next N days
+  # - that is pending/active status, OR has a future start_date
   #
-  # This avoids looking too far back (your original `from: Date.today - 14`),
-  # but still catches overlap that began very recently (3-day grace).
+  # FIXED: No longer uses created_at date range (was missing recent resubscribes)
+  # Now checks actual subscription status and start_date
 
-  def user_has_overlapping_or_upcoming_subscription?(subscription,
-                                                back_days: OVERLAP_BACK_DAYS,
-                                                forward_days: FUTURE_FORWARD_DAYS)
+  def user_has_overlapping_or_upcoming_subscription?(subscription)
     user = subscription.user
-    from = Date.today - back_days
-    to   = Date.today + forward_days
 
     user.subscriptions
         .where.not(id: subscription.id)
-        .where(created_at: from..to)
+        .where(
+          "status IN (?) OR (start_date IS NOT NULL AND start_date > ?)",
+          ['pending', 'active'],
+          Date.today
+        )
         .exists?
   end
 end
