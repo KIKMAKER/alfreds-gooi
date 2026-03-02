@@ -70,7 +70,7 @@ class MonthlyInvoiceService
                    when 12
                      "Volume Processing per #{bucket_size}L (12-month rate)"
                    when 6
-                     "Volume Processing per #{bucket_size}L (6-month rate)"
+                     "Volume Processing per #{bucket_size}L (Premium 6-month rate)"
                    when 3
                      "Volume Processing per #{bucket_size}L (3-month rate)"
                    else
