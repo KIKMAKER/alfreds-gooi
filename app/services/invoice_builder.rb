@@ -147,14 +147,17 @@ class InvoiceBuilder
       volume_processing_product_id: volume_product.id
     )
 
-    volume_amount = subscription.buckets_per_collection * volume_product.price
-
     collections_per_week = subscription.collections_per_week || 1
 
     if subscription.monthly_invoicing?
-      # Calculate and store the full contract total
-      full_monthly_cost = monthly_product.price * subscription.duration * collections_per_week
-      full_volume_cost = volume_amount * total_collections * collections_per_week
+      # For monthly invoicing, calculate total contract cost and monthly amounts
+      # Monthly collection cost: flat monthly fee × duration
+      full_monthly_cost = monthly_product.price * subscription.duration
+
+      # Volume cost: total for all buckets over entire contract
+      total_volume_cost = subscription.buckets_per_collection * volume_product.price
+      full_volume_cost = total_volume_cost
+
       contract_total = full_monthly_cost + full_volume_cost
 
       subscription.update!(
@@ -162,21 +165,24 @@ class InvoiceBuilder
         next_invoice_date: Date.today + 4.weeks
       )
 
+      # Calculate monthly volume amount (divide total by months for consistent invoices)
+      monthly_volume_cost = total_volume_cost / subscription.duration
+
       # Only invoice for the FIRST month
       invoice.invoice_items.create!(
         product: monthly_product,
-        quantity: 1 * collections_per_week,
+        quantity: 1,  # 1 month
         amount: monthly_product.price
       )
 
       invoice.invoice_items.create!(
         product: volume_product,
-        quantity: collections_per_month * collections_per_week,
-        amount: volume_amount
+        quantity: 1,  # 1 month
+        amount: monthly_volume_cost
       )
     else
       # Standard behavior: invoice full duration upfront
-      # Find or create invoice item for monthly fee
+      # Monthly fee is per-month, so quantity = number of months
       existing_monthly = invoice.invoice_items.find_by(
         product: monthly_product,
         amount: monthly_product.price
@@ -184,31 +190,33 @@ class InvoiceBuilder
 
       if existing_monthly
         # Add to existing quantity
-        existing_monthly.update!(quantity: existing_monthly.quantity + (subscription.duration * collections_per_week))
+        existing_monthly.update!(quantity: existing_monthly.quantity + subscription.duration)
       else
         # Create new invoice item
         invoice.invoice_items.create!(
           product: monthly_product,
-          quantity: subscription.duration * collections_per_week,
+          quantity: subscription.duration,  # Number of months
           amount: monthly_product.price
         )
       end
 
-      # Find or create invoice item for volume charge
+      # Volume charge: total cost for all buckets over entire contract
+      total_volume_cost = subscription.buckets_per_collection * volume_product.price
+
       existing_volume = invoice.invoice_items.find_by(
         product: volume_product,
-        amount: volume_amount
+        amount: total_volume_cost
       )
 
       if existing_volume
-        # Add to existing quantity
-        existing_volume.update!(quantity: existing_volume.quantity + (total_collections * collections_per_week))
+        # Add to existing quantity (though this is unlikely for commercial)
+        existing_volume.update!(quantity: existing_volume.quantity + 1)
       else
         # Create new invoice item
         invoice.invoice_items.create!(
           product: volume_product,
-          quantity: total_collections * collections_per_week,
-          amount: volume_amount
+          quantity: 1,  # Total for contract
+          amount: total_volume_cost
         )
       end
     end

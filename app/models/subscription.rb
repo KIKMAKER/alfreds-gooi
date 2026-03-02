@@ -167,8 +167,6 @@ class Subscription < ApplicationRecord
     self.customer_id = user.customer_id
   end
 
-  GRACE_BACK_DAYS = 28
-
   # Suggest a start date for THIS subscription.
   #
   # Rules:
