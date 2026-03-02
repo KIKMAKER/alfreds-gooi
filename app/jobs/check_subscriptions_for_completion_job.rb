@@ -78,10 +78,11 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
 
     user.subscriptions
         .where.not(id: subscription.id)
-        .where(
-          "status IN (?) OR (start_date IS NOT NULL AND start_date > ?)",
-          ['pending', 'active'],
-          Date.today
+        .where(status: [:pending, :active])
+        .or(
+          user.subscriptions
+              .where.not(id: subscription.id)
+              .where("start_date IS NOT NULL AND start_date > ?", Date.today)
         )
         .exists?
   end
