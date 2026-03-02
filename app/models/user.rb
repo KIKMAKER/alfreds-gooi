@@ -50,6 +50,7 @@ class User < ApplicationRecord
 
   # Callbacks
 
+  before_validation :normalize_phone_number
   before_validation :make_international
   before_validation :generate_referral_code, on: :create
   before_validation :set_customer_id, on: :create
@@ -274,6 +275,15 @@ class User < ApplicationRecord
   end
 
   ## phone number validation
+
+  # Strip spaces, dashes, parentheses, and dots from phone number
+  def normalize_phone_number
+    return if phone_number.blank?
+
+    # Remove common formatting characters but keep the + for international format
+    self.phone_number = phone_number.gsub(/[\s\-\(\)\.]/, '')
+  end
+
   def make_international
     puts "Before: #{self.phone_number}"
     # return if valid_international_phone_number()

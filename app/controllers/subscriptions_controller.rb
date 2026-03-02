@@ -98,6 +98,11 @@ class SubscriptionsController < ApplicationController
   def new
     @subscription = Subscription.new
 
+    # Pre-select user if user_id param provided (from admin user creation flow)
+    if params[:user_id].present? && current_user.admin?
+      @subscription.user_id = params[:user_id]
+    end
+
     # Check for previous subscription at same address if address provided in params
     if params[:street_address].present? && current_user
       @previous_subscription = current_user.subscriptions

@@ -3,7 +3,10 @@
   <div class="outline">
     <div>
       <br>
-      <h1>All Users</h1>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>All Users</h1>
+        <%= link_to "Create New User", new_admin_user_path, class: "btn-yellow" %>
+      </div>
 
       <table class="table table-bordered">
         <thead>

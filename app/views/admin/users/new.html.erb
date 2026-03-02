@@ -1,7 +1,7 @@
 <div class="user-wrapper">
-  <h1 class="my-4">Create Drop-Off Manager</h1>
+  <h1 class="my-4">Create New User</h1>
 
-  <%= simple_form_for [:admin, @user] do |f| %>
+  <%= simple_form_for [:admin, @user], html: { id: 'user-form' } do |f| %>
     <%= f.input :first_name, placeholder: "e.g. Sarah" %>
 
     <%= f.input :last_name, placeholder: "e.g. Johnson" %>
@@ -14,15 +14,72 @@
 
     <%= f.input :role,
           as: :select,
-          collection: [['Drop-Off Manager', 'drop_off']],
-          prompt: "Select role" %>
+          collection: [['Customer', 'customer'], ['Drop-Off Manager', 'drop_off']],
+          prompt: "Select role",
+          input_html: { id: 'user_role_select' } %>
 
     <p class="text-muted">
-      Their password is password. The user can reset their password via email.
+      Password will be set to "password". User can reset their password via email.
     </p>
 
-    <%= f.button :submit, "Create Drop-Off Manager", class: "small-yellow-btn" %>
+    <%= hidden_field_tag :next_action, 'subscription', id: 'next_action_field' %>
+
+    <div class="d-flex gap-2">
+      <%= f.button :submit, "Create & Add Subscription",
+          class: "btn-yellow",
+          onclick: "document.getElementById('next_action_field').value = 'subscription'; return true;" %>
+      <%= f.button :submit, "Create & Add Drop-off",
+          class: "btn-secondary-outline",
+          onclick: "document.getElementById('next_action_field').value = 'drop_off'; return true;" %>
+    </div>
   <% end %>
 
-  <%= link_to "← Back to drop-off sites", admin_drop_off_sites_path, class: "mt-3 d-block" %>
+  <%= link_to "← Back to users", admin_users_path, class: "mt-3 d-block" %>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.getElementById('user_role_select');
+    const nextActionField = document.getElementById('next_action_field');
+    const form = document.getElementById('user-form');
+    const buttons = form.querySelectorAll('button[type="submit"]');
+
+    // Set default next_action based on role
+    if (roleSelect) {
+      roleSelect.addEventListener('change', function() {
+        if (this.value === 'drop_off') {
+          nextActionField.value = 'drop_off';
+        } else {
+          nextActionField.value = 'subscription';
+        }
+      });
+    }
+
+    // Show/hide buttons based on role
+    function updateButtonVisibility() {
+      const selectedRole = roleSelect.value;
+
+      buttons.forEach(button => {
+        if (selectedRole === 'drop_off') {
+          // For drop-off managers, only show drop-off button
+          if (button.textContent.includes('Drop-off')) {
+            button.style.display = '';
+          } else {
+            button.style.display = 'none';
+          }
+        } else if (selectedRole === 'customer') {
+          // For customers, show both buttons
+          button.style.display = '';
+        } else {
+          // No role selected, hide both
+          button.style.display = 'none';
+        }
+      });
+    }
+
+    if (roleSelect) {
+      roleSelect.addEventListener('change', updateButtonVisibility);
+      updateButtonVisibility(); // Initial check
+    }
+  });
+</script>

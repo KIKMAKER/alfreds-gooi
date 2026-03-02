@@ -14,10 +14,21 @@ class Admin::UsersController < ApplicationController
 
   def create
     @user = User.new(user_create_params)
-    @user.password = "password" # Generate random password
+    @user.password = "password" # Default password
 
     if @user.save
-      redirect_to admin_drop_off_sites_path, notice: "Drop-off manager created! They can reset their password via email."
+      # Determine where to redirect based on next_action parameter
+      case params[:next_action]
+      when 'subscription'
+        redirect_to new_subscription_path(user_id: @user.id),
+                    notice: "User created! Now create their subscription."
+      when 'drop_off'
+        redirect_to admin_drop_off_sites_path,
+                    notice: "Drop-off manager created! They can reset their password via email."
+      else
+        redirect_to admin_user_path(@user),
+                    notice: "User created successfully."
+      end
     else
       render :new, status: :unprocessable_entity
     end
