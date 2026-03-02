@@ -45,19 +45,30 @@ class MonthlyInvoiceService
     invoice = find_or_create_invoice
 
     # Add monthly collection fee
-    monthly_title = case @subscription.duration
-                    when 12
-                      "Commercial weekly collection per month (12-month rate)"
-                    when 6
-                      "Commercial weekly collection per month (6-month rate)"
-                    when 3
-                      "Commercial weekly collection per month (3-month rate)"
-                    else
-                      raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
-                    end
+    # Try to use stored product_id first (preferred for consistency)
+    monthly_product = if @subscription.monthly_collection_product_id
+                        Product.find_by(id: @subscription.monthly_collection_product_id)
+                      end
 
-    monthly_product = Product.find_by(title: monthly_title)
-    raise "Product not found: #{monthly_title}" unless monthly_product
+    # Fallback to title lookup if product_id not stored or product was deleted
+    unless monthly_product
+      monthly_title = case @subscription.duration
+                      when 12
+                        "Commercial weekly collection per month (12-month rate)"
+                      when 6
+                        "Commercial weekly collection per month (6-month rate)"
+                      when 3
+                        "Commercial weekly collection per month (3-month rate)"
+                      else
+                        raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
+                      end
+
+      monthly_product = Product.find_by(title: monthly_title)
+      raise "Product not found: #{monthly_title}" unless monthly_product
+
+      # Store the product_id for future use
+      @subscription.update_column(:monthly_collection_product_id, monthly_product.id)
+    end
 
     invoice.invoice_items.create!(
       product: monthly_product,
@@ -66,19 +77,30 @@ class MonthlyInvoiceService
     )
 
     # Add volume processing charge
-    volume_title = case @subscription.duration.to_i
-                   when 12
-                     "Volume Processing per #{bucket_size}L (12-month rate)"
-                   when 6
-                     "Volume Processing per #{bucket_size}L (Premium 6-month rate)"
-                   when 3
-                     "Volume Processing per #{bucket_size}L (3-month rate)"
-                   else
-                     raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
-                   end
+    # Try to use stored product_id first (preferred for consistency)
+    volume_product = if @subscription.volume_processing_product_id
+                       Product.find_by(id: @subscription.volume_processing_product_id)
+                     end
 
-    volume_product = Product.find_by(title: volume_title)
-    raise "Product not found: #{volume_title}" unless volume_product
+    # Fallback to title lookup if product_id not stored or product was deleted
+    unless volume_product
+      volume_title = case @subscription.duration.to_i
+                     when 12
+                       "Volume Processing per #{bucket_size}L (12-month rate)"
+                     when 6
+                       "Volume Processing per #{bucket_size}L (Premium 6-month rate)"
+                     when 3
+                       "Volume Processing per #{bucket_size}L (3-month rate)"
+                     else
+                       raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
+                     end
+
+      volume_product = Product.find_by(title: volume_title)
+      raise "Product not found: #{volume_title}" unless volume_product
+
+      # Store the product_id for future use
+      @subscription.update_column(:volume_processing_product_id, volume_product.id)
+    end
 
     volume_amount = buckets_per_collection * volume_product.price
 

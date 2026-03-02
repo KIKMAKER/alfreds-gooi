@@ -99,6 +99,9 @@ class InvoiceBuilder
       product = Product.find_by(title: title)
       raise "Product not found: #{title}" unless product
 
+      # Store product_id on subscription for future reference
+      subscription.update_column(:subscription_product_id, product.id)
+
       invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
     end
   end
@@ -137,6 +140,12 @@ class InvoiceBuilder
 
     volume_product = Product.find_by(title: volume_title)
     raise "Product not found: #{volume_title}" unless volume_product
+
+    # Store product_ids on subscription for future monthly invoicing
+    subscription.update_columns(
+      monthly_collection_product_id: monthly_product.id,
+      volume_processing_product_id: volume_product.id
+    )
 
     volume_amount = subscription.buckets_per_collection * volume_product.price
 
