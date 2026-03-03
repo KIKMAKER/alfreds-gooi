@@ -230,6 +230,7 @@ Rails.application.routes.draw do
   get "skipme", to: "customers#skipme"
   get "welcome", to: "customers#welcome"
   get "referrals", to: "customers#referrals"
+  get "my_stats", to: "customers#my_stats"
 
   # static pages
   root "pages#home"

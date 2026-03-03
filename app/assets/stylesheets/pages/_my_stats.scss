@@ -1,0 +1,85 @@
+.my-stats-page {
+  max-width: 37.5rem;
+  margin: 0 auto;
+  padding: 2rem 0;
+
+  @media (max-width: 36rem) {
+    padding: 1rem 0;
+  }
+}
+
+.my-stats-title {
+  font-family: 'Libre Baskerville', serif;
+  color: $dark-green;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stats-streak-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: rgba(100, 100, 111, 0.15) 0px 7px 29px 0px;
+  padding: 2rem;
+  border-left: 5px solid $dark-green;
+
+  @media (max-width: 36rem) {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+}
+
+.stats-streak-number {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  color: $dark-green;
+  line-height: 1;
+
+  @media (max-width: 36rem) {
+    font-size: 3rem;
+  }
+}
+
+.stats-streak-label {
+  font-size: 0.875rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.stats-streak-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #555;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1rem;
+
+  @media (max-width: 36rem) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
+
+.stats-streak-consistency {
+  font-weight: 600;
+  color: $dark-green;
+}
+
+.stats-section-heading {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.1rem;
+  color: $dark-green;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.my-stats-page {
+  .collections-card {
+    width: 100%;
+  }
+}

@@ -1,0 +1,49 @@
+<div class="gooi-container">
+  <div class="my-stats-page">
+    <h1 class="my-stats-title">My Stats</h1>
+    <% if @lifetime_litres > 0 %>
+      <div class="daily-snapshot-card mt-4">
+        <div class="snapshot-body">
+          <div>
+            <div class="impact-title">Lifetime Impact</div>
+            <div class="impact-stats">
+              <div class="impact-item">
+                <div class="impact-value"><%= @lifetime_litres.to_i %>L</div>
+                <div class="impact-desc">kitchen scraps diverted from landfill</div>
+              </div>
+              <div class="impact-item">
+                <div class="impact-value"><%= @lifetime_compost_kg %>kg</div>
+                <div class="impact-desc">finished compost for local soil</div>
+              </div>
+              <div class="impact-item">
+                <div class="impact-value"><%= @lifetime_co2e_kg %>kg</div>
+                <div class="impact-desc">CO₂e emissions avoided</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <% if current_user.current_streak > 0 %>
+      <div class="stats-streak-card">
+        <div class="stats-streak-number"><%= current_user.current_streak %></div>
+        <div class="stats-streak-label">week streak</div>
+        <div class="stats-streak-meta">
+          <span>Gooiing since <%= @start_date %></span>
+          <span class="stats-streak-consistency"><%= current_user.consistency_rate %>% consistent</span>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="card-white mt-4">
+      <h3 class="stats-section-heading">Recent Collections</h3>
+      <% if @recent_collections.any? %>
+        <%= render "past_collections", collections: @recent_collections %>
+        <%= link_to "View all collections", collections_history_path, class: "d-block text-center mt-3" %>
+      <% else %>
+        <p class="text-center text-muted">No collections yet.</p>
+      <% end %>
+    </div>
+
+  </div>
+</div>

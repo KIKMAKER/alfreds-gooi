@@ -75,6 +75,14 @@ class CustomersController < ApplicationController
     end
   end
 
+  def my_stats
+    @start_date = current_user.subscriptions.order(created_at: :asc).first&.start_date&.strftime('%b %Y')
+    @recent_collections = current_user.collections.order(date: :desc).limit(5)
+    @lifetime_litres = current_user.lifetime_litres.round(0)
+    @lifetime_compost_kg = current_user.lifetime_compost_kg
+    @lifetime_co2e_kg = current_user.lifetime_co2e_kg
+  end
+
   def referrals
     # Check if user has a subscription - need one to access referrals
     if current_user.subscriptions.empty?
