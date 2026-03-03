@@ -92,9 +92,6 @@
 
     <!-- Mobile card view -->
     <div class="d-md-none">
-      <div class="mb-3">
-        <%= link_to "View Account Statement", statement_path(current_user), class: "btn-secondary-outline w-100" %>
-      </div>
       <% @subscriptions.each do |subscription| %>
         <div class="card-white mb-3">
           <div class="d-flex justify-content-between align-items-start mb-2">
