@@ -2,12 +2,13 @@
   <div class="invoice-container">
     <div class="d-flex justify-content-between align-items-center mb-4 link-decoration">
       <h1 class="mb-0">Invoice</h1>
-      <% if current_user.admin? %>
-        <div class="d-flex gap-2">
+      <div class="d-flex gap-2 align-items-center">
+        <%= link_to "Download PDF", pdf_invoice_path(@invoice), class: "link-text", target: "_blank" %>
+        <% if current_user.admin? %>
           <%= link_to "Edit Invoice", edit_invoice_path(@invoice), class: "link-text me-3" %>
           <%= link_to "Send Invoice Email", send_email_invoice_path(@invoice), class: "small-yellow-btn", data: { turbo_method: :get, turbo_confirm: "Send invoice email to #{@subscription.user.email}?" } %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
 
     <% if current_user.admin? %>

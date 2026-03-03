@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code pdf]
 
   def index
     if current_user.admin?
@@ -126,6 +126,19 @@ class InvoicesController < ApplicationController
     create_invoice_items(@invoice)
     @invoice.save!
     redirect_to send_email_invoice_path(@invoice)
+  end
+
+  def pdf
+    unless current_user.admin? || @invoice.subscription.user == current_user
+      redirect_to invoice_path(@invoice), alert: "Not authorised"
+      return
+    end
+
+    pdf = InvoicePdfGenerator.new(@invoice).generate
+    send_data pdf.render,
+              filename: "invoice-#{@invoice.number || @invoice.id}.pdf",
+              type: "application/pdf",
+              disposition: "inline"
   end
 
   def send_email
