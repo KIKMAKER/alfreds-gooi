@@ -1,0 +1,48 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1><%= @user.first_name %> <%= @user.last_name %> — All Collections (<%= @collections.size %>)</h1>
+
+    <p style="margin-bottom: 1rem;">
+      <%= link_to "← Back to User", admin_user_path(@user), class: "link-title" %>
+    </p>
+
+    <% if @collections.any? %>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Sub ID</th>
+            <th>Sub Status</th>
+            <th>Skip</th>
+            <th>Done</th>
+            <th>Bags</th>
+            <th>Buckets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @collections.each do |c| %>
+            <tr class="<%= c.skip ? 'table-secondary' : '' %>">
+              <td><%= c.id %></td>
+              <td><%= c.date&.strftime('%e %b %Y') %></td>
+              <td>
+                <% if c.subscription %>
+                  <%= link_to c.subscription_id, subscription_path(c.subscription) %>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td><%= c.subscription&.status || "—" %></td>
+              <td><%= c.skip ? "yes" : "" %></td>
+              <td><%= c.is_done ? "yes" : "" %></td>
+              <td><%= c.bags&.positive? ? c.bags : "" %></td>
+              <td><%= c.buckets&.positive? ? c.buckets : "" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted">No collections found.</p>
+    <% end %>
+  </div>
+</div>

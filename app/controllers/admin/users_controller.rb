@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections]
 
   def index
     @users = User.includes(:subscriptions).order(:first_name)
@@ -78,6 +78,12 @@ class Admin::UsersController < ApplicationController
   rescue StandardError => e
     redirect_to admin_user_path(@user),
       alert: "Error creating subscription/invoice: #{e.message}"
+  end
+
+  def collections
+    @collections = @user.collections
+                        .includes(subscription: :user)
+                        .order(date: :desc)
   end
 
   def fix_subscription_boundaries

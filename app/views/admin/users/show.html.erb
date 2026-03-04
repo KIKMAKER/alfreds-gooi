@@ -38,6 +38,8 @@
         <%= link_to "view invoices (#{@user.invoices.count})", invoices_path(user_id: @user.id), class: "link-title" %>
         |
         <%= link_to "view statement", statement_path(@user), class: "link-title" %>
+        |
+        <%= link_to "view collections (#{@user.collections.count})", collections_admin_user_path(@user), class: "link-title" %>
       </div>
 
       <% if @lifetime_litres > 0 %>
@@ -66,7 +68,7 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-
+              <th scope="col">ID</th>
               <th scope="col">Status</th>
               <th scope="col">Start Date</th>
               <th scope="col">Duration</th>
@@ -81,7 +83,7 @@
 
               <% completed = subscription.respond_to?(:completed?) && subscription.completed? %>
               <tr>
-
+                <td><%= subscription.id %></td>
                 <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
 
                 <td>

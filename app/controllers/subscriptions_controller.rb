@@ -150,7 +150,7 @@ class SubscriptionsController < ApplicationController
         new_params: subscription_params
       ).call
 
-      if result.success?
+      if result.success
         @subscription = result.subscription
 
         # Create primary contact for owner

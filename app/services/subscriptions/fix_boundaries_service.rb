@@ -1,5 +1,7 @@
 class Subscriptions::FixBoundariesService
-  Result = Struct.new(:success, :changes, :error, keyword_init: true)
+  Result = Struct.new(:success, :changes, :error, keyword_init: true) do
+    def success? = success
+  end
 
   def initialize(user:, dry_run: false)
     @user = user

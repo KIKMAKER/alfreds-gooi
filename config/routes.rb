@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       post :renew_last_subscription, on: :member
       post :fix_subscription_boundaries, on: :member
+      get :collections, on: :member
     end
     resources :whatsapp_messages, only: [:index] do
       collection do
