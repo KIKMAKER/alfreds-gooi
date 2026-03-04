@@ -8,7 +8,7 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
     Subscription.active.where(collection_day: today_name).find_each do |subscription|
       next if subscription.start_date.blank?
 
-      required_collections   = (4 * subscription.duration).ceil + 1
+      required_collections   = (4.2 * subscription.duration).ceil + 1
       completed_collections  = subscription.collections.where(skip: false).count
       remaining_collections  = required_collections - completed_collections
 

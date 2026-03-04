@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries]
 
   def index
     @users = User.includes(:subscriptions).order(:first_name)
@@ -78,6 +78,24 @@ class Admin::UsersController < ApplicationController
   rescue StandardError => e
     redirect_to admin_user_path(@user),
       alert: "Error creating subscription/invoice: #{e.message}"
+  end
+
+  def fix_subscription_boundaries
+    dry_run = params[:dry_run] == "1"
+    result = Subscriptions::FixBoundariesService.new(user: @user, dry_run: dry_run).call
+
+    if result.success?
+      summary = result.changes.map do |c|
+        "Sub ##{c[:subscription_id]} (#{c[:start_date]}): end_date → #{c[:new_end_date]}, #{c[:reassigning]} collections reassigned" \
+        "#{c[:next_sub_id] ? ", sub ##{c[:next_sub_id]} start_date → #{c[:next_sub_new_start_date]}" : ""}"
+      end.join(" | ")
+      msg = dry_run ? "[DRY RUN] #{summary}" : summary
+      redirect_to admin_user_path(@user), notice: msg.presence || "Nothing to fix."
+    else
+      redirect_to admin_user_path(@user), alert: result.error
+    end
+  rescue StandardError => e
+    redirect_to admin_user_path(@user), alert: "Error: #{e.message}"
   end
 
   private

@@ -209,11 +209,22 @@ class CollectionsController < ApplicationController
   def update_position
     @collection = Collection.find(params[:id])
     new_position = params[:position].to_i
+    drivers_day = @collection.drivers_day
+    return head :no_content unless drivers_day
 
-    # Use acts_as_list to reorder
-    @collection.insert_at(new_position)
+    # Get all collections ordered by current position (nulls last = new collections at end)
+    ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
 
-    update_collection_order(@collection.drivers_day)
+    # Move dragged item to new 1-based position
+    ordered.delete(@collection)
+    ordered.insert(new_position - 1, @collection)
+
+    # Reassign positions
+    ordered.each_with_index do |c, i|
+      c.update_column(:position, i + 1)
+    end
+
+    update_collection_order(drivers_day)
 
     head :no_content
   end

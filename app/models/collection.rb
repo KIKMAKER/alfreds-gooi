@@ -3,7 +3,6 @@ class Collection < ApplicationRecord
   belongs_to :drivers_day, optional: true
   has_one :user, through: :subscription
   has_many :orders, dependent: :nullify
-  acts_as_list scope: :drivers_day
 
   # Scopes
   scope :recent, -> { order(date: :desc) }

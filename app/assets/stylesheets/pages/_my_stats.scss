@@ -71,6 +71,54 @@
   color: $dark-green;
 }
 
+.stats-impact-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: rgba(100, 100, 111, 0.15) 0px 7px 29px 0px;
+  padding: 2rem;
+  border: 2px solid $dark-green;
+  text-align: center;
+
+  @media (max-width: 36rem) {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+}
+
+.stats-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.stats-impact-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stats-impact-number {
+  font-family: 'Fraunces', serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: $dark-green;
+  line-height: 1;
+
+  @media (max-width: 36rem) {
+    font-size: 1.75rem;
+  }
+}
+
+.stats-impact-desc {
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.3;
+}
+
 .stats-section-heading {
   font-family: 'Libre Baskerville', serif;
   font-size: 1.1rem;

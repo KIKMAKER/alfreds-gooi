@@ -14,6 +14,26 @@ class CreateCollectionsJob < ApplicationJob
 
   private
 
+  # For users with multiple active subs in the same suburb, keep only the one
+  # furthest along (most completed collections). This handles the early-resub case
+  # without doubling Alfred's stops. Commercial customers at different suburbs
+  # on the same day are unaffected since they group separately.
+  def deduplicate_by_suburb(subscriptions)
+    grouped = subscriptions.to_a.group_by { |s| [s.user_id, s.street_address] }
+
+    winner_ids = grouped.flat_map do |(_user_id, address), subs|
+      if subs.size == 1
+        [subs.first.id]
+      else
+        winner = subs.min_by(&:created_at)
+        Rails.logger.info "Overlap: user #{winner.user_id} has #{subs.size} active subs at #{address}, using sub ##{winner.id}"
+        [winner.id]
+      end
+    end
+
+    subscriptions.where(id: winner_ids)
+  end
+
   def process_day(collection_date, day_name)
     driver = User.find_by(role: 'driver')
     unless driver
@@ -27,7 +47,9 @@ class CreateCollectionsJob < ApplicationJob
     )
     Rails.logger.info "Driver's Day created for #{collection_date}: #{drivers_day.user.first_name} (ID: #{drivers_day.id})"
 
-    subscriptions = Subscription.where(collection_day: day_name, status: "active")
+    subscriptions = deduplicate_by_suburb(
+      Subscription.where(collection_day: day_name, status: "active")
+    )
 
     subscriptions.find_each do |subscription|
 
@@ -36,6 +58,7 @@ class CreateCollectionsJob < ApplicationJob
         subscription: subscription,
         date: collection_date
       )
+      collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
       if subscription.holiday_start && subscription.holiday_end && collection.date.between?(subscription.holiday_start, subscription.holiday_end)
         collection.mark_skipped!(by: nil, reason: "holiday")
       end

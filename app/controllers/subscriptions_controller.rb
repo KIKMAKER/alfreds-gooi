@@ -478,15 +478,15 @@ class SubscriptionsController < ApplicationController
 
     # Fetch subscriptions for the day and eager load related collections (thanks chat)
     # @subscriptions = Subscription.active_subs_for(@today)
-    # Load collections ordered by position (don't modify positions on page load)
+    # Load collections ordered by position (nulls last = newly added collections appear at end)
     collections = @drivers_day.collections
                 .includes(:subscription, :user)
-                .order(:position)
+                .order(Arel.sql("position ASC NULLS LAST"))
 
     drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
 
-    # Combine collections and drop-off events, sorted by position
-    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
+    # Combine collections and drop-off events, sorted by position (nil sorts to end)
+    @route_items = (collections.to_a + drop_off_events.to_a).sort_by { |item| item.position || Float::INFINITY }
     @current_drop_off = @drivers_day.current_drop_off_event
   end
 

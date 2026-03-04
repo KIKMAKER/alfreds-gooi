@@ -59,7 +59,7 @@ class OsrmRouteOptimiser
     current_position = 1
 
     # Combine all route items and sort by position
-    all_items = (@collections + @drop_offs).sort_by(&:position)
+    all_items = (@collections + @drop_offs).sort_by { |item| item.position || Float::INFINITY }
 
     all_items.each do |item|
       if item.is_a?(DropOffEvent)

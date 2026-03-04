@@ -20,6 +20,18 @@
               class: "btn-today-green my-2",
               form: { data: { turbo_confirm: "Create a new subscription from the user's last one and generate an invoice?" } } %>
 
+      <%= button_to "Fix boundaries (preview)",
+              fix_subscription_boundaries_admin_user_path(@user, dry_run: 1),
+              method: :post,
+              class: "btn-today-green my-2",
+              form: { data: { turbo: false } } %>
+
+      <%= button_to "Fix boundaries",
+              fix_subscription_boundaries_admin_user_path(@user),
+              method: :post,
+              class: "btn-today-green my-2",
+              form: { data: { turbo_confirm: "This will set end_date and reassign collections for all completed subs. Continue?" } } %>
+
       <hr>
 
       <div class="mb-3">

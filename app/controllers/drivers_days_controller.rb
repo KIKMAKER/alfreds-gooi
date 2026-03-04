@@ -6,15 +6,15 @@ class DriversDaysController < ApplicationController
 
     @drivers_day = DriversDay.find_or_create_by!(date: selected_date, user_id: User.find_by(first_name: "Alfred").id)
 
-    # Load collections ordered by position (don't modify positions on page load)
+    # Load collections ordered by position (nulls last = newly added collections appear at end)
     collections = @drivers_day.collections
                                 .includes(:subscription, :user)
-                                .order(:position)
+                                .order(Arel.sql("position ASC NULLS LAST"))
 
     drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
 
-    # Combine collections and drop-off events, sorted by position
-    @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
+    # Combine collections and drop-off events, sorted by position (nil sorts to end)
+    @route_items = (collections.to_a + drop_off_events.to_a).sort_by { |item| item.position || Float::INFINITY }
   end
 
 
@@ -79,7 +79,7 @@ class DriversDaysController < ApplicationController
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
-    @subscriptions = Subscription.where(collection_day: @today, status: 'active').order(:collection_order)
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active')
     @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
     @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
     @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
