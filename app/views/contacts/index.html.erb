@@ -1,16 +1,15 @@
-<div class="user-wrapper">
-  <div class="gooi-container">
-    <div class="text-center mb-4">
-      <h1>Household Contacts</h1>
-      <p class="text-muted"><%= @subscription.short_address %>, <%= @subscription.suburb %></p>
-    </div>
+<div class="driver-wrapper">
+  <h1 class="my-4">Household Contacts</h1>
+  <p class="text-muted text-center mb-3"><%= @subscription.short_address %>, <%= @subscription.suburb %></p>
 
-    <div class="text-center mb-4">
-      <%= link_to new_subscription_contact_path(@subscription), class: 'small-yellow-btn' do %>
-        <i class="fa-solid fa-user-plus"></i> Add New Contact
-      <% end %>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <%= link_to "← Back to Dashboard", manage_path, class: "me-3" %>
+    <%= link_to new_subscription_contact_path(@subscription), class: 'small-yellow-btn' do %>
+      <i class="fa-solid fa-user-plus"></i> Add New Contact
+    <% end %>
+  </div>
 
+  <div class="contacts-page">
     <div class="contacts-grid">
       <% @contacts.each do |contact| %>
         <div class="contact-card-detailed">
@@ -70,12 +69,6 @@
             <% end %>
           </div>
         </div>
-      <% end %>
-    </div>
-
-    <div class="text-center mt-4">
-      <%= link_to manage_path, class: 'submit-btn' do %>
-        <i class="fa-solid fa-arrow-left"></i> Back to My Subscription
       <% end %>
     </div>
   </div>

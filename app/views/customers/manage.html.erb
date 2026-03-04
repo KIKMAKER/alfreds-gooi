@@ -162,15 +162,6 @@
           </p>
         </div>
 
-        <div class="mt-5">
-          <h2 class="text-center">Recent Collections</h2>
-          <% if @recent_collections.any? %>
-            <%= render "past_collections", collections: @recent_collections %>
-            <%= link_to "View All Collections", collections_history_path, class: "d-block text-center mt-3" %>
-          <% else %>
-            <p class="text-center">You haven't had any collections yet</p>
-          <% end %>
-        </div>
       </div>
     <% else %>
       <div class="text-center my-2">
@@ -207,15 +198,24 @@
                 <i class="fa-brands fa-whatsapp"></i>
               <% end %>
               <p class="link-text">Chat to Alfred</p>
-              <%# unless @subscription.collections.empty? %>
-              <!--                <div class="mt-4">
-                  <p class="mb-2">Need to pass on a message?</p>
-                  <%#= simple_form_for @subscription.collections&.last, url: add_customer_note_collection_path(@subscription.collections&.last), method: :post do |f| %>-->
-              <%#= f.input :customer_note, value: @subscription.collections&.last.customer_note, label: false, placeholder: "Add a note for Alfred..." %>
-              <%#= f.button :submit, "Save Note", class: "submit-btn mt-2" %>
-              <%# end %>
-              <!--                </div>-->
-              <%# end %>
+
+              <% if @days_left <= 0 %>
+                <div class="mt-4 container-flex flex-column text-center align-items-center">
+                  <p>Your subscription has come to an end (<%= @days_left %> pick ups).</p>
+                  <p>Click below to continue gooiing</p>
+                  <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
+                </div>
+              <% elsif @days_left < 2 %>
+                <div class="mt-4 container-flex flex-column text-center align-items-center">
+                  <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
+                  <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
+                </div>
+              <% else %>
+                <div class="mt-4 container-flex flex-column text-center align-items-center">
+                  <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
+                </div>
+              <% end %>
+
               <div class="user-holiday-container my-4" data-controller="toggle">
                 <% if @subscription.holiday_end.nil? || @subscription.holiday_end < Date.today %>
                   <h3>Need to skip more than one week?</h3>
@@ -242,11 +242,11 @@
                 <% end %>
               </div>
 
-              <!-- Manage Contacts -->
-              <div class="mt-4 text-center">
-                <%= link_to 'Manage Contacts', subscription_contacts_path(@subscription),
-                            class: 'submit-btn' %>
-                <small class="d-block mt-2 text-muted">Add household members to receive WhatsApp reminders</small>
+              <!-- Household Contacts -->
+              <div class="card-white mt-5 text-center">
+                <h3 class="mb-2">Household Contacts</h3>
+                <p class="text-muted mb-3">Add your spouse, housemates, or family members so everyone in your home gets collection reminders — not just you.</p>
+                <%= link_to 'Manage Contacts', subscription_contacts_path(@subscription), class: 'submit-btn' %>
               </div>
 
             <% else %>
@@ -254,44 +254,6 @@
             <% end %>
           <% end %>
 
-        </div>
-        <% if @days_left <= 0 %>
-          <div class="mt-4 container-flex flex-column text-center align-items-center">
-            <p>Your subscription has come to an end (<%= @days_left %> pick ups).</p>
-            <p>Click below to continue gooiing</p>
-            <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-          </div>
-        <% elsif @days_left < 2 %>
-          <div class="mt-4 container-flex flex-column text-center align-items-center">
-            <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
-            <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-          </div>
-        <% else %>
-          <div class="mt-4 container-flex flex-column text-center align-items-center">
-            <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
-          </div>
-        <% end %>
-        <div class="mt-5">
-          <!-- Streak Display -->
-          <% if current_user.current_streak > 0 %>
-            <div class="p-3 mb-4 streak">
-              <div class="d-flex align-items-center justify-content-start gap-3">
-                <span style="font-size: 2rem;">🔥</span>
-                <div>
-                  <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;"><%= current_user.current_streak %> Week Streak!</h4>
-                  <p class="mb-0 small">You've been gooiing since <%= @start_date %>.</p>
-                  <p class="mb-0 small">You've skipped <%= 100 - current_user.consistency_rate %>% of that time.</p>
-                </div>
-              </div>
-            </div>
-          <% end %>
-          <h2 class="text-center">Recent Collections</h2>
-          <% if @recent_collections.any? %>
-            <%= render "past_collections", collections: @recent_collections %>
-            <%= link_to "View All Collections", collections_history_path, class: "d-block text-center mt-3" %>
-          <% else %>
-            <p class="text-center">You haven't had any collections yet</p>
-          <% end %>
         </div>
       <% end %>
 
