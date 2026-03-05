@@ -13,6 +13,9 @@
       <% if @user.respond_to?(:customer_id) && @user.customer_id.present? %>
         <p><strong>Customer ID:</strong> <%= @user.customer_id %></p>
       <% end %>
+      <% if @referred_by %>
+        <p><strong>Referred by:</strong> <%= link_to @referred_by.first_name + " " + @referred_by.last_name.to_s, admin_user_path(@referred_by), class: "link-title" %></p>
+      <% end %>
 
       <%= button_to "Duplicate last sub",
               renew_last_subscription_admin_user_path(@user),

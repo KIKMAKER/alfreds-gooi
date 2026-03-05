@@ -39,6 +39,10 @@ class Admin::UsersController < ApplicationController
                           .includes(:collections, :invoices)
                           .order(start_date: :desc)
 
+    # Find who referred this user — prefer Referral record, fall back to subscription referral_code
+    @referred_by = @user.referrals_as_referee.includes(:referrer).first&.referrer ||
+                   User.find_by(referral_code: @user.subscriptions.where.not(referral_code: [nil, '']).order(:created_at).first&.referral_code)
+
     # Calculate lifetime environmental impact stats
     @lifetime_litres = @user.lifetime_litres.round(0)
     @lifetime_compost_kg = @user.lifetime_compost_kg
