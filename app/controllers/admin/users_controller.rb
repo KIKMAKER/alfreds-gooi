@@ -91,12 +91,16 @@ class Admin::UsersController < ApplicationController
     result = Subscriptions::FixBoundariesService.new(user: @user, dry_run: dry_run).call
 
     if result.success?
-      summary = result.changes.map do |c|
-        "Sub ##{c[:subscription_id]} (#{c[:start_date]}): end_date → #{c[:new_end_date]}, #{c[:reassigning]} collections reassigned" \
-        "#{c[:next_sub_id] ? ", sub ##{c[:next_sub_id]} start_date → #{c[:next_sub_new_start_date]}" : ""}"
-      end.join(" | ")
-      msg = dry_run ? "[DRY RUN] #{summary}" : summary
-      redirect_to admin_user_path(@user), notice: msg.presence || "Nothing to fix."
+      if dry_run
+        @changes = result.changes
+        render :fix_boundaries_preview
+      else
+        summary = result.changes.map do |c|
+          "Sub ##{c[:subscription_id]}: end_date → #{c[:new_end_date].strftime('%d %b %Y')}, #{c[:reassigning]} collections reassigned" +
+          (c[:next_sub_id] ? ", sub ##{c[:next_sub_id]} start → #{c[:next_sub_new_start_date]&.strftime('%d %b %Y')}" : "")
+        end.join(" | ")
+        redirect_to admin_user_path(@user), notice: summary.presence || "Nothing to fix."
+      end
     else
       redirect_to admin_user_path(@user), alert: result.error
     end

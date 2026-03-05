@@ -98,8 +98,10 @@
                 </td>
 
                 <td>
-                  <% total = subscription.collections.where(skip: false).count || "unpaid" %>
-                  <% if completed %><s><%= total %></s><% else %><%= total %><% end %>
+                  <% total = subscription.collections.where(skip: false).count %>
+                  <% skipped = subscription.collections.where(skip: true).count %>
+                  <% display = "#{total}#{skipped > 0 ? " (#{skipped} skipped)" : ""}" %>
+                  <% if completed %><s><%= display %></s><% else %><%= display %><% end %>
                 </td>
 
                 <td>

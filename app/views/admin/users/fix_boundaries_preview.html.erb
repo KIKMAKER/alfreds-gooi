@@ -1,0 +1,45 @@
+<div class="gooi-container">
+  <div class="outline">
+    <h1>Fix Boundaries Preview — <%= @user.first_name %> <%= @user.last_name %></h1>
+    <p class="text-muted">No changes have been made. Review below and click "Run Fix" to apply.</p>
+
+    <% if @changes.any? %>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sub ID</th>
+            <th>Start Date</th>
+            <th>Claimed (skipped)</th>
+            <th>New End Date</th>
+            <th>Collections Reassigned</th>
+            <th>Next Sub</th>
+            <th>Next Sub New Start</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @changes.each do |c| %>
+            <tr>
+              <td>#<%= c[:subscription_id] %></td>
+              <td><%= c[:start_date]&.strftime('%d %b %Y') %></td>
+              <td><%= c[:n] %> (<%= c[:skipped_in_range] %> skipped)</td>
+              <td><%= c[:new_end_date]&.strftime('%d %b %Y') %></td>
+              <td><%= c[:reassigning] %></td>
+              <td><%= c[:next_sub_id] ? "##{c[:next_sub_id]}" : "—" %></td>
+              <td><%= c[:next_sub_new_start_date]&.strftime('%d %b %Y') || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%= button_to "Run Fix",
+          fix_subscription_boundaries_admin_user_path(@user),
+          method: :post,
+          class: "btn-today-green",
+          form: { data: { turbo_confirm: "Apply these changes? This cannot be undone." } } %>
+    <% else %>
+      <p>Nothing to fix.</p>
+    <% end %>
+
+    <p class="mt-3"><%= link_to "← Back", admin_user_path(@user), class: "link-title" %></p>
+  </div>
+</div>
