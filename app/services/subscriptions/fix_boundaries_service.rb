@@ -28,12 +28,13 @@ class Subscriptions::FixBoundariesService
                             .order(date: :asc)
 
       unskipped = all_from_start.where(skip: false).to_a
-      nth_collection = unskipped[n - 1]
+      nth_collection = unskipped[n - 1] || unskipped.last  # fall back to last available if sub ran short
       next unless nth_collection
 
       new_end_date = nth_collection.date + 1.day
       in_range = all_from_start.where("date <= ?", nth_collection.date)
       in_range_count = in_range.count
+      unskipped_claimed = [unskipped.length, n].min
 
       next_sub = completed_subs_array[completed_subs_array.index(sub) + 1] ||
                  @user.subscriptions.where(status: [:pending, :active, :pause]).order(:start_date).first
@@ -50,7 +51,7 @@ class Subscriptions::FixBoundariesService
         start_date: effective_start,
         new_end_date: new_end_date,
         n: n,
-        skipped_in_range: in_range_count - n,
+        skipped_in_range: in_range_count - unskipped_claimed,
         reassigning: in_range_count,
         next_sub_id: next_sub&.id,
         next_sub_new_start_date: next_collection_after&.date
