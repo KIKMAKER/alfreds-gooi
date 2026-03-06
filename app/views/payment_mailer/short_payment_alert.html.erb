@@ -1,0 +1,14 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h2>⚠️ Short payment received</h2>
+
+  <p><strong>Customer:</strong> <%= @user.first_name %> <%= @user.last_name %> (<%= @user.customer_id %>)<br>
+     <strong>Email:</strong> <%= @user.email %></p>
+
+  <p><strong>Invoice #<%= @invoice.number || @invoice.id %>:</strong> R<%= '%.2f' % @invoice_total %><br>
+     <strong>Amount paid:</strong> R<%= '%.2f' % @payment_amount %><br>
+     <strong>Shortfall:</strong> R<%= '%.2f' % @shortfall %></p>
+
+  <p>The invoice has been marked as paid and the subscription has been activated. Please follow up with the customer to collect the outstanding amount.</p>
+
+  <p><a href="<%= admin_user_url(@user) %>">View customer in admin</a></p>
+</div>
