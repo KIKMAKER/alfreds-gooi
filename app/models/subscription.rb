@@ -379,10 +379,18 @@ class Subscription < ApplicationRecord
     referrer = User.find_by(referral_code: referral_code)
     return unless referrer
     return if referrer == user
-    return if user.referrals_as_referee.exists?
 
-    status = active? ? :completed : :pending
-    Referral.create!(subscription: self, referee: user, referrer: referrer, status: status)
+    existing = user.referrals_as_referee.first
+
+    if existing
+      return if existing.used?           # credit already applied, too late to change
+      return if existing.referrer == referrer  # nothing to change
+      existing.update!(referrer: referrer, subscription: self)
+    else
+      status = active? ? :completed : :pending
+      Referral.create!(subscription: self, referee: user, referrer: referrer, status: status)
+    end
+
     user.update_column(:referred_by_code, referral_code)
   end
 
