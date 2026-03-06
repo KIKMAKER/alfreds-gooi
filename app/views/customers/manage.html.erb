@@ -45,6 +45,18 @@
           </div>
         <% end %>
       </div>
+    <% elsif @lapsed %>
+      <!-- User has only completed/legacy subscriptions -->
+      <div class="container text-center">
+        <h1>Welcome back, <%= current_user.first_name %>!</h1>
+        <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large my-3' %>
+        <h2>Ready to start gooiing again?</h2>
+        <p class="mb-4">Your previous subscription has ended. Click below to resubscribe.</p>
+        <%= link_to "Resubscribe", new_subscription_path, class: "btn-gooi" %>
+        <div class="mt-4">
+          <p class="text-muted">Questions? <%= link_to "Chat to Alfred", "https://wa.me/27785325513", target: "_blank" %></p>
+        </div>
+      </div>
     <% elsif @unpaid_invoice %>
       <div class="container text-center">
         <h1>Hello <%= current_user.first_name %></h1>

@@ -15,6 +15,12 @@ class CustomersController < ApplicationController
       return
     end
 
+    # Has past subscriptions but none active or pending
+    if @subscriptions.none?
+      @lapsed = true
+      return
+    end
+
     # Check for unpaid invoices across all subscriptions
     @unpaid_invoice = current_user.invoices.find_by(paid: false)
 
