@@ -1,13 +1,5 @@
 // Specific CSS for your home-page
 
-// Chris Styles
-
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
-section {
-  text-align: center;
-}
-
 .page-container {
   margin-bottom: 4rem;
 }
@@ -300,21 +292,6 @@ section {
 }
 
 
-
-.info-card {
-  position: relative;
-  margin: 8px;
-  text-align: left;
-
-  h3 {
-    font-size: 1.3rem
-  }
-
-  p {
-    font-size: 1.2rem;
-    color: white
-  }
-}
 
 .text-container-compost {
   position: absolute;
@@ -660,19 +637,6 @@ input[type="checkbox"].toggle:checked+label::before {
 
 }
 
-button {
-  background-color: #FBB718;
-  border: none;
-  border-radius: 50px;
-  padding: 8px 24px;
-  margin-left: 16px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #e29e00;
-  }
-}
-
 .hide {
   display: none;
 }
@@ -765,16 +729,6 @@ button {
 
     p {
       font-size: 2vh;
-    }
-  }
-
-  .info-card {
-    h3 {
-      font-size: 1rem
-    }
-
-    p {
-      font-size: 0.8rem
     }
   }
 

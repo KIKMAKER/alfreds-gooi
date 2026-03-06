@@ -111,7 +111,7 @@
   }
 }
 
-.stats-grid {
+.snapshot-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem; // 24px
@@ -124,7 +124,7 @@
   }
 }
 
-.stat-item {
+.snapshot-stat-item {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(0.625rem); // 10px
   padding: 1.25rem; // 20px
@@ -143,7 +143,7 @@
   }
 }
 
-.stat-value {
+.snapshot-stat-value {
   font-family: 'Fraunces', serif;
   font-size: 2.25rem; // 36px
   font-weight: 700;
@@ -156,7 +156,7 @@
   }
 }
 
-.stat-label {
+.snapshot-stat-label {
   font-size: 0.8125rem; // 13px
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
