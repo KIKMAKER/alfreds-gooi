@@ -237,12 +237,14 @@ class InvoiceBuilder
       discount = Product.find_by(title: title)
       invoice.invoice_items.create!(product: discount, quantity: 1, amount: discount.price)
 
-      Referral.create!(
-        subscription: @subscription,
-        referee: @subscription.user,
-        referrer: @referee,
-        status: :pending
-      )
+      unless @subscription.user.referrals_as_referee.exists?
+        Referral.create!(
+          subscription: @subscription,
+          referee: @subscription.user,
+          referrer: @referee,
+          status: :pending
+        )
+      end
     end
 
   end
