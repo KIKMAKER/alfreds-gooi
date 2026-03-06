@@ -6,6 +6,7 @@
 
 .gooi-header {
   position: relative;
+  text-align: center;
   background-image: url('header-gooi-3.png');
   background-size: cover;
   height: 100vh;
@@ -165,11 +166,12 @@
 }
 
 .gooi-video {
-  margin-top: 16px;
+  margin: 16px auto 0;
   width: 70%;
   position: relative;
   border-radius: 30px;
   z-index: 100;
+  display: block;
 }
 
 // Mission Section
@@ -270,6 +272,7 @@
 
 .compost-section {
   margin: 80px 0px;
+  text-align: center;
 
   h1 {
     font-family: 'Libre Baskerville', serif;
@@ -348,6 +351,7 @@
   padding: 44px 0px;
   margin-top: 44px;
   background-color: #023f3a82;
+  text-align: center;
 
   h1 {
     font-family: 'Libre Baskerville', serif;
@@ -417,6 +421,7 @@
 .compostable-section {
   margin-top: 16px;
   padding: 44px 0px;
+  text-align: center;
 
   h1 {
     font-family: 'Libre Baskerville', 'serif';
@@ -558,6 +563,7 @@ input[type="checkbox"].toggle:checked+label::before {
 }
 
 .pricing-section {
+  text-align: center;
 
   h1 {
     font-family: 'Libre Baskerville', serif;
