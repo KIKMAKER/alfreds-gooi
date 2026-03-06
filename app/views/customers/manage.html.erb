@@ -1,292 +1,370 @@
-<div class="user-wrapper link-decoration">
-  <div>
-    <% if @no_subscription %>
-      <!-- User has no subscription yet -->
-      <div class="container text-center">
-        <h1>Welcome <%= current_user.first_name %>!</h1>
-        <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large my-3' %>
+<div class="subscription-show-container">
 
-        <% if @commercial_inquiries.any? %>
-          <!-- Has commercial inquiry -->
-          <h2>Commercial Inquiry Submitted</h2>
-          <div class="alert alert-info mt-4 text-start" style="max-width: 600px; margin: 0 auto;">
-            <% inquiry = @commercial_inquiries.first %>
-            <p><strong>Business:</strong> <%= inquiry.business_name %></p>
-            <p><strong>Status:</strong>
-              <span class="badge bg-<%= inquiry.pending? ? 'warning' : inquiry.contacted? ? 'info' : inquiry.converted? ? 'success' : 'secondary' %>">
-                <%= inquiry.status.titleize %>
-              </span>
-            </p>
-            <% if inquiry.pending? %>
-              <p class="mb-0">We'll be in touch within 1-2 business days to discuss your custom pricing and collection schedule.</p>
-            <% elsif inquiry.contacted? %>
-              <p class="mb-0">We've been in touch about your inquiry. Check your email for details!</p>
-            <% elsif inquiry.converted? %>
-              <p class="mb-0">Your commercial subscription has been set up. We'll start collections soon!</p>
+  <%# ─── PAGE HEADER ─── %>
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-house"></i>
+      </div>
+      <div>
+        <h1>Hey <%= current_user.first_name %>!</h1>
+        <% if @subscriptions&.count == 1 && @subscription&.collection_day.present? %>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            <%= @subscription.collection_day %>s &middot; <%= @subscription.suburb %>
+          </p>
+        <% elsif @subscriptions&.count > 1 %>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            <%= @subscriptions.count %> locations
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @subscription %>
+      <% if @subscription.active? %>
+        <span class="subscription-status-badge active">Active</span>
+      <% elsif @subscription.pause? %>
+        <span class="subscription-status-badge paused">On Holiday</span>
+      <% elsif @subscription.pending? %>
+        <span class="subscription-status-badge pending">Pending</span>
+      <% else %>
+        <span class="subscription-status-badge completed"><%= @subscription.status.titleize %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# ─── ORPHANED REFERRAL CODE PROMPT ─── %>
+  <% if @orphaned_referral_code %>
+    <div class="alert alert-warning mb-3" role="alert">
+      <strong>Did someone refer you?</strong>
+      <p class="mb-2 mt-1 small">Code <strong><%= @orphaned_referral_code %></strong> was saved but not yet linked to your account.</p>
+      <%= form_with url: submit_referral_code_path, method: :post, local: true, class: "d-flex gap-2 flex-wrap align-items-center" do |f| %>
+        <%= f.text_field :referral_code, value: @orphaned_referral_code, class: "form-control form-control-sm w-auto", placeholder: "Code" %>
+        <%= f.submit "Apply", class: "btn btn-sm btn-warning" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# ──────────────────────────────────────────── %>
+  <%# NO SUBSCRIPTION — account started, no subs  %>
+  <%# ──────────────────────────────────────────── %>
+  <% if @no_subscription %>
+
+    <% if @commercial_inquiries.any? %>
+      <div class="info-card">
+        <div class="info-card-header">
+          <i class="fa-solid fa-building"></i>
+          <h3>Commercial Inquiry</h3>
+        </div>
+        <div class="info-card-body">
+          <% inquiry = @commercial_inquiries.first %>
+          <div class="info-row">
+            <span class="info-label">Business</span>
+            <span class="info-value"><%= inquiry.business_name %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-value"><%= inquiry.status.titleize %></span>
+          </div>
+          <% if inquiry.pending? %>
+            <p class="text-muted mt-3 mb-0 small">We'll be in touch within 1–2 business days to discuss your custom pricing and schedule.</p>
+          <% elsif inquiry.contacted? %>
+            <p class="text-muted mt-3 mb-0 small">We've been in touch — check your email for next steps.</p>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="info-card text-center">
+        <div class="info-card-body" style="padding: 2.5rem 1.5rem;">
+          <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large mb-3' %>
+          <h3>Complete Your Subscription</h3>
+          <p class="text-muted mb-4">It looks like you started signing up but didn't finish.</p>
+          <%= link_to "Get Started", root_path(anchor: "pricing"), class: "action-btn" %>
+          <p class="text-muted mt-3 mb-0 small">
+            Need help? <%= link_to "Contact us", "mailto:howzit@gooi.me" %>
+          </p>
+        </div>
+      </div>
+    <% end %>
+
+    <%# ──────────────────────────────────────────── %>
+    <%# LAPSED — all subs completed               %>
+    <%# ──────────────────────────────────────────── %>
+  <% elsif @lapsed %>
+
+    <div class="info-card text-center">
+      <div class="info-card-body" style="padding: 2.5rem 1.5rem;">
+        <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large mb-3' %>
+        <h3>Ready to start gooiing again?</h3>
+        <p class="text-muted mb-4">Your previous subscription has ended.</p>
+        <%= link_to "Resubscribe", new_subscription_path, class: "action-btn" %>
+        <p class="text-muted mt-3 mb-0 small">
+          Questions? <%= link_to "Chat to Alfred", "https://wa.me/27785325513", target: "_blank" %>
+        </p>
+      </div>
+    </div>
+
+    <%# ──────────────────────────────────────────── %>
+    <%# UNPAID INVOICE                              %>
+    <%# ──────────────────────────────────────────── %>
+  <% elsif @unpaid_invoice %>
+
+    <div class="info-card">
+      <div class="info-card-header" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); border-bottom-color: #fde68a;">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #856404;"></i>
+        <h3 style="color: #856404;">Unpaid Invoice</h3>
+      </div>
+      <div class="info-card-body text-center" style="padding: 2rem;">
+        <p class="mb-4">Please settle your account to continue gooiing.</p>
+        <%= link_to "View Invoice", invoice_path(@unpaid_invoice), class: "action-btn" %>
+      </div>
+    </div>
+
+    <%# ──────────────────────────────────────────── %>
+    <%# MULTI-LOCATION                              %>
+    <%# ──────────────────────────────────────────── %>
+  <% elsif @subscriptions.count > 1 %>
+
+    <% @subscriptions.each do |sub| %>
+      <% next_col = sub.collections.where('date >= ?', Date.today).order(date: :asc).first %>
+      <div class="info-card mb-3">
+        <div class="info-card-header" style="flex-wrap: wrap; gap: 0.5rem;">
+          <i class="fa-solid fa-location-dot"></i>
+          <div style="flex: 1; min-width: 0; overflow: hidden;">
+            <h3 style="margin: 0; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= sub.short_address %></h3>
+            <small class="text-muted" style="white-space: nowrap;"><%= sub.suburb %> &middot; <%= sub.collection_day %>s</small>
+          </div>
+          <% if sub.active? %>
+            <span class="subscription-status-badge active">Active</span>
+          <% elsif sub.pause? %>
+            <span class="subscription-status-badge paused">Holiday</span>
+          <% else %>
+            <span class="subscription-status-badge pending"><%= sub.status.titleize %></span>
+          <% end %>
+        </div>
+        <div class="info-card-body">
+          <div class="info-row">
+            <span class="info-label">Next collection</span>
+            <span class="info-value">
+              <% if next_col %>
+                <% if next_col.skip %>
+                  <span style="color: #FBB718;"><i class="fa-solid fa-pause-circle"></i> <%= next_col.date.strftime("%d %b") %> skipped</span>
+                <% else %>
+                  <% if next_col.orders.pending_delivery.exists? %>
+                    <i class="fa-solid fa-hat-cowboy" style="color: #FBB718; margin-right: 0.25rem;"
+                       data-bs-toggle="tooltip" title="Your order is on the way"></i>
+                  <% end %>
+                  <%= next_col.date.strftime("%A, %d %b") %>
+                <% end %>
+              <% elsif sub.is_new_customer %>
+                Starter kit delivery
+              <% else %>
+                <span class="text-muted">No upcoming</span>
+              <% end %>
+            </span>
+          </div>
+
+          <div class="d-flex gap-2 mt-3 flex-wrap">
+            <% btn = 'tiny-yellow-btn' %>
+            <% btn_style = 'font-size: 0.75rem; padding: 0.25rem 0.6rem;' %>
+            <% if next_col && !next_col.skip %>
+              <%= button_to "Skip", pause_subscription_path(sub), class: btn, style: btn_style, method: :post, data: { turbo: false } %>
+            <% elsif next_col&.skip %>
+              <%= button_to "Unskip", unpause_subscription_path(sub), class: btn, style: btn_style, method: :post, data: { turbo: false } %>
+            <% end %>
+            <button type="button" class="<%= btn %>" style="<%= btn_style %>" data-bs-toggle="modal" data-bs-target="#holidayModal<%= sub.id %>">
+              <i class="fa-solid fa-umbrella-beach"></i>
+              <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Holiday" %>
+            </button>
+            <%= link_to subscription_contacts_path(sub), class: btn, style: btn_style do %>
+              <i class="fa-solid fa-users"></i> Contacts
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Holiday Modal -->
+      <div class="modal fade" id="holidayModal<%= sub.id %>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header">
+              <h5 class="modal-title"><%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan a Holiday" %></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <% if sub.holiday_end && sub.holiday_end >= Date.today %>
+                <p><strong>Current:</strong> <%= sub.holiday_start.strftime("%d %b") %> – <%= sub.holiday_end.strftime("%d %b") %></p>
+                <%= button_to "Cancel Holiday", clear_holiday_subscription_path(sub), class: "btn btn-sm btn-danger mb-3", method: :post, data: { turbo: false } %>
+                <hr>
+              <% end %>
+              <p class="text-muted small mb-3">We'll skip your collections automatically while you're away.</p>
+              <%= simple_form_for sub, url: holiday_dates_subscription_path(sub), method: :patch do |f| %>
+                <%= f.input :holiday_start, as: :string, input_html: { data: { controller: "datepicker" } }, label: "Start:" %>
+                <%= f.input :holiday_end, as: :string, input_html: { data: { controller: "datepicker" } }, label: "End:" %>
+                <%= f.submit "Save Holiday", class: "small-yellow-btn" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <%# ──────────────────────────────────────────── %>
+    <%# SINGLE ACTIVE SUBSCRIPTION (main flow)     %>
+    <%# ──────────────────────────────────────────── %>
+  <% else %>
+
+    <%# Next Collection Card %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-calendar-check"></i>
+        <h3>Next Collection</h3>
+      </div>
+      <div class="info-card-body">
+
+        <% if @subscription.is_new_customer %>
+          <div class="text-center py-2">
+            <p class="mb-1"><strong>Your starter kit is on its way!</strong></p>
+            <p class="text-muted mb-4 small">Alfred will deliver your first bag and bucket <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
+                        target: "_blank", class: "action-btn" do %>
+              <i class="fa-brands fa-whatsapp"></i> Say hi to Alfred
             <% end %>
           </div>
 
-          <div class="mt-4">
-            <p>Questions? Call us or reply to your confirmation email.</p>
+        <% elsif @next_collection.nil? %>
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-value text-muted">No upcoming collections</span>
+          </div>
+          <% if @days_left && @days_left <= 0 %>
+            <div class="mt-3 p-3" style="background: #fffbeb; border-radius: 12px; border: 1px solid #fde68a;">
+              <p class="mb-2 small"><strong>Your subscription has ended.</strong></p>
+              <%= link_to "Resubscribe", new_subscription_path, class: "action-btn" %>
+            </div>
+          <% end %>
+
+        <% elsif @next_collection.skip %>
+          <div class="info-row">
+            <span class="info-label">Next date</span>
+            <span class="info-value"><%= @next_collection.date.strftime("%A, %d %b") %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-value">
+              <span class="subscription-status-badge paused">Skipped</span>
+            </span>
+          </div>
+          <div class="mt-3">
+            <%= button_to "Unskip me!", unpause_subscription_path(@subscription),
+                          class: "action-btn", method: :post, data: { turbo: false } %>
+          </div>
+
+        <% else %>
+          <div class="info-row">
+            <span class="info-label">Next date</span>
+            <span class="info-value">
+              <% if @next_collection.orders.pending_delivery.exists? %>
+                <i class="fa-solid fa-hat-cowboy" style="color: #FBB718; margin-right: 0.25rem;"
+                   data-bs-toggle="tooltip" title="Your order is on the way"></i>
+              <% end %>
+              <%= @next_collection.date.strftime("%A, %d %b") %>
+            </span>
+          </div>
+          <% if @days_left %>
+            <div class="info-row">
+              <span class="info-label">Collections remaining</span>
+              <span class="info-value"><%= @days_left %></span>
+            </div>
+          <% end %>
+          <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
+            <%= button_to "Skip next week", pause_subscription_path(@subscription),
+                          class: "action-btn", method: :post, data: { turbo: false } %>
+            <%= link_to "https://wa.me/27785325513", target: "_blank", class: "action-btn" do %>
+              <i class="fa-brands fa-whatsapp"></i>
+            <% end %>
+          </div>
+          <% if @days_left && @days_left <= 2 %>
+            <div class="mt-3 p-3" style="background: #fffbeb; border-radius: 12px; border: 1px solid #fde68a;">
+              <p class="mb-2 small"><strong>Your subscription is ending soon!</strong> Keep the gooiing going.</p>
+              <%= link_to "Resubscribe", new_subscription_path, class: "action-btn" %>
+            </div>
+          <% end %>
+        <% end %>
+
+      </div>
+    </div>
+
+    <%# Holiday Card %>
+    <div class="info-card mb-3" data-controller="toggle">
+      <div class="info-card-header">
+        <i class="fa-solid fa-umbrella-beach"></i>
+        <h3>Holiday</h3>
+        <% if @subscription.holiday_end.nil? || @subscription.holiday_end < Date.today %>
+          <button class="action-btn ms-auto"
+                  style="padding: 0.35rem 0.875rem; font-size: 0.8rem;"
+                  data-action="toggle#fire"
+                  data-toggle-target="button"
+                  type="button">
+            Plan a holiday
+          </button>
+        <% end %>
+      </div>
+      <div class="info-card-body">
+
+        <% if @subscription.holiday_end && @subscription.holiday_end >= Date.today %>
+          <div class="info-row">
+            <span class="info-label">Away from</span>
+            <span class="info-value"><%= @subscription.holiday_start.strftime("%d %b %Y") %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Back on</span>
+            <span class="info-value"><%= @subscription.holiday_end.strftime("%d %b %Y") %></span>
+          </div>
+
+          <div class="mt-3">
+            <%= button_to "Cancel Holiday", clear_holiday_subscription_path(@subscription),
+                          class: "action-btn", method: :post, data: { turbo: false } %>
           </div>
         <% else %>
-          <!-- Started account but never completed subscription -->
-          <h2>Complete Your Subscription</h2>
-          <p class="mb-4">It looks like you started signing up but didn't complete your subscription details.</p>
-
-          <div class="mt-4">
-            <%= link_to "Complete Subscription", root_path(anchor: "pricing"), class: "btn-gooi" %>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-muted">
-              Need help? <%= link_to "Contact us", "mailto:howzit@gooi.me" %>
-            </p>
+          <p class="text-muted mb-0 small" style="line-height: 1.5;" data-toggle-target="button">
+            No holiday planned.
+          </p>
+          <div class="d-none" data-toggle-target="form">
+            <button type="button"
+                    class="btn-close position-absolute top-0 end-0 m-3"
+                    data-action="click->toggle#fire"
+              aria-label="Close"></button>
+            <p class="text-muted small mb-3">Enter your holiday dates and we'll handle the rest.</p>
+            <%= simple_form_for @subscription, url: holiday_dates_subscription_path(@subscription), method: :patch do |f| %>
+              <%= f.input :holiday_start, as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "Start:" %>
+              <%= f.input :holiday_end, as: :string,
+                          input_html: { data: { controller: "datepicker" } }, label: "End:" %>
+              <%= f.submit "Save Holiday", class: "small-yellow-btn" %>
+            <% end %>
           </div>
         <% end %>
       </div>
-    <% elsif @lapsed %>
-      <!-- User has only completed/legacy subscriptions -->
-      <div class="container text-center">
-        <h1>Welcome back, <%= current_user.first_name %>!</h1>
-        <%= image_tag 'Alfred Sticker.svg', class: 'avatar-large my-3' %>
-        <h2>Ready to start gooiing again?</h2>
-        <p class="mb-4">Your previous subscription has ended. Click below to resubscribe.</p>
-        <%= link_to "Resubscribe", new_subscription_path, class: "btn-gooi" %>
-        <div class="mt-4">
-          <p class="text-muted">Questions? <%= link_to "Chat to Alfred", "https://wa.me/27785325513", target: "_blank" %></p>
-        </div>
-      </div>
-    <% elsif @unpaid_invoice %>
-      <div class="container text-center">
-        <h1>Hello <%= current_user.first_name %></h1>
-        <%= image_tag'Alfred Sticker.svg', class: 'avatar-large my-3' %>
-        <h2>You have an unpaid invoice</h2>
-        <p class="mb-4">Please settle your account to continue gooiing</p>
-        <%= link_to "View invoice", invoice_path(@unpaid_invoice), class:"small-yellow-btn" %>
-      </div>
-    <% elsif @subscriptions.count > 1 %>
-      <!-- Multi-location management -->
-      <div class="container">
-        <h1 class="text-center my-4">Manage Your Locations</h1>
-
-        <div class="table-responsive">
-          <table class="white-table table table-hover">
-            <thead>
-              <tr>
-                <th>Location</th>
-                <th>Next Collection</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @subscriptions.each do |sub| %>
-                <% next_collection = sub.collections.where('date >= ?', Date.today).order(date: :asc).first %>
-                <tr>
-                  <td>
-                    <strong><%= sub.short_address %></strong><br>
-                    <small class="text-muted"><%= sub.suburb %></small>
-                    <% if sub.holiday_end && sub.holiday_end >= Date.today %>
-                      <span class="badge bg-info">On Holiday</span><br>
-                      <small>Until <%= sub.holiday_end.strftime("%d %b") %></small>
-                    <% elsif next_collection&.skip %>
-                      <span class="badge bg-warning text-dark">Skip Next</span>
-                    <% else %>
-                      <span class="badge bg-success">Active</span>
-                    <% end %>
-                  </td>
-                  <td>
-                    <% if next_collection %>
-                      <%= next_collection.date.strftime("%a %d %b") %>
-                      <% if next_collection.skip %>
-                        <br>
-                        <span class="badge bg-warning text-dark">Skipped</span>
-                      <% end %>
-                    <% elsif sub.is_new_customer %>
-                      <span class="text-muted">Starter kit delivery</span>
-                    <% else %>
-                      <span class="text-muted">No upcoming</span>
-                    <% end %>
-                  </td>
-                  <td>
-                    <div class="btn-group-vertical btn-group-sm" role="group">
-                      <% if next_collection && !next_collection.skip %>
-                        <%= button_to "Skip Next", pause_subscription_path(sub), class: "tiny-yellow-btn", method: :post, data: {turbo: false} %>
-                      <% elsif next_collection&.skip %>
-                        <%= button_to "Unskip", unpause_subscription_path(sub), class: "tiny-yellow-btn", method: :post, data: {turbo: false} %>
-                      <% end %>
-                      <button type="button" class="tiny-yellow-btn mt-2" data-bs-toggle="modal" data-bs-target="#holidayModal<%= sub.id %>">
-                        <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan Holiday" %>
-                      </button>
-                      <%= link_to "Manage Contacts", subscription_contacts_path(sub), class: "tiny-yellow-btn mt-2" %>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Holiday Modal for this subscription -->
-                <div class="modal fade" id="holidayModal<%= sub.id %>" tabindex="-1" aria-labelledby="holidayModalLabel<%= sub.id %>" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="holidayModalLabel<%= sub.id %>">
-                          <%= sub.holiday_end && sub.holiday_end >= Date.today ? "Edit Holiday" : "Plan Holiday" %>
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <% if sub.holiday_end && sub.holiday_end >= Date.today %>
-                          <div class="mb-3">
-                            <p><strong>Current Holiday:</strong></p>
-                            <p><%= sub.holiday_start.strftime("%a %d %b") %> - <%= sub.holiday_end.strftime("%a %d %b") %></p>
-                            <%= button_to "Cancel Holiday", clear_holiday_subscription_path(sub), class: "btn btn-danger btn-sm mb-3", method: :post, data: {turbo: false} %>
-                          </div>
-                          <hr>
-                        <% end %>
-
-                        <p class="text-muted">We will automatically skip collections while you're away.</p>
-                        <%= simple_form_for sub, url: holiday_dates_subscription_path(sub), method: :patch do |f| %>
-                          <%= f.input :holiday_start,
-                              as: :string,
-                              input_html: { data: { controller: "datepicker" } },
-                              label: "Start Date:" %>
-                          <%= f.input :holiday_end,
-                              as: :string,
-                              input_html: { data: { controller: "datepicker" } },
-                              label: "End Date:" %>
-                          <%= f.submit "Save Holiday", class: "small-yellow-btn" %>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="mt-4 text-center">
-          <p class="my-2 link-decoration align-center">
-            <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
-                   target: "_blank" do %>
-              <i class="fa-brands fa-whatsapp"></i>
-              Chat to Alfred
-            <% end %>
-          </p>
-        </div>
-
-      </div>
-    <% else %>
-      <% if @orphaned_referral_code %>
-        <div class="alert alert-warning mx-3 mt-3" role="alert">
-          <h5 class="alert-heading">Did someone refer you?</h5>
-          <p class="mb-2">We have a referral code saved for you (<strong><%= @orphaned_referral_code %></strong>) but it wasn't linked to your account yet. Confirm it below and your friend will get their reward.</p>
-          <%= form_with url: submit_referral_code_path, method: :post, local: true, class: "d-flex gap-2 align-items-center flex-wrap" do |f| %>
-            <%= f.text_field :referral_code, value: @orphaned_referral_code, class: "form-control w-auto", placeholder: "Referral code" %>
-            <%= f.submit "Apply", class: "btn btn-warning" %>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class="text-center my-2">
-        <h2 class="mb-4">Upcoming Collection</h2>
-        <% if @next_collection&.skip %>
-          <p class="mb-3">Alfred will skip you <%= Date.today.wday < 5 ? "this" : "next" %> week</p>
-          <%= button_to "Unskip Me!", unpause_subscription_path(@subscription), class: "submit-btn", data: {turbo: false}  %>
-        <% elsif @subscription.is_new_customer %>
-          <div class="contact-section">
-            <h3>Get ready to start gooiing!</h3>
-            <div class="contact-links">
-              <p class="mb-3">Alfred will deliver your starter kit <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
-              <p>Please add us to your contacts list and feel free to get in touch with any comments or questions.</p>
-              <p class="my-2 link-decoration align-center">
-                <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
-                   target: "_blank" do %>
-                  <i class="fa-brands fa-whatsapp"></i>
-                  Start the conversation
-                <% end %>
-              </p>
-            </div>
-          </div>
-        <% else %>
-          <p class="my-2 link-decoration align-center">
-
-            <% if @next_collection && @next_collection.date >= Date.today %>
-              <h3 class="mb-3">Your next collection is on <%= @subscription.collections&.last.date&.strftime("%A %d %B") %></h3>
-              <p>Don't need collection? <br>
-                Help Alfred plan by clicking skip below</p>
-              <%= button_to "Skip me", pause_subscription_path(@subscription), class: "submit-btn align-self-start my-3", data: {turbo: false} %>
-
-              <%= link_to "https://wa.me/27785325513",
-                   target: "_blank" do %>
-                <i class="fa-brands fa-whatsapp"></i>
-              <% end %>
-              <p class="link-text">Chat to Alfred</p>
-
-              <% if @days_left <= 0 %>
-                <div class="mt-4 container-flex flex-column text-center align-items-center">
-                  <p>Your subscription has come to an end (<%= @days_left %> pick ups).</p>
-                  <p>Click below to continue gooiing</p>
-                  <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-                </div>
-              <% elsif @days_left < 2 %>
-                <div class="mt-4 container-flex flex-column text-center align-items-center">
-                  <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
-                  <%= link_to "Resubscribe", new_subscription_path, class: "submit-btn mt-2 w-50" %>
-                </div>
-              <% else %>
-                <div class="mt-4 container-flex flex-column text-center align-items-center">
-                  <p>Your subscription will come to an end in <%= pluralize((@days_left/4.2).ceil, 'month') %> (<%= @days_left %> pick ups).</p>
-                </div>
-              <% end %>
-
-              <div class="user-holiday-container my-4" data-controller="toggle">
-                <% if @subscription.holiday_end.nil? || @subscription.holiday_end < Date.today %>
-                  <h3>Need to skip more than one week?</h3>
-                  <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a holiday</button>
-                  <div class="card-white d-none position-relative" data-toggle-target="form">
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-action="click->toggle#fire" aria-label="Close"></button>
-                    <p class="m-2">Enter your holiday dates and we will skip automatically skip you while you are away.</p>
-                    <%= simple_form_for @subscription do |f| %>
-                      <%= f.input :holiday_start,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "Start:" %>
-                      <%= f.input :holiday_end,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "End:" %>
-                      <%= f.submit "save", class: "submit-btn" %>
-                    <% end %>
-                  </div>
-                <% else %>
-                  <h2>Upcoming Holiday</h2>
-                  <div class="mt-4 container-flex flex-column">
-                    <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
-                    <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
-                  </div>
-                <% end %>
-              </div>
-
-              <!-- Household Contacts -->
-              <div class="card-white mt-5 text-center">
-                <h3 class="mb-2">Household Contacts</h3>
-                <p class="text-muted mb-3">Add your spouse, housemates, or family members so everyone in your home gets collection reminders — not just you.</p>
-                <%= link_to 'Manage Contacts', subscription_contacts_path(@subscription), class: 'submit-btn' %>
-              </div>
-
-            <% else %>
-              <p class="mb-3">Your last collection was on <%= @subscription.collections&.last&.date&.strftime("%A %d %B") || @subscription.start_date.strftime("%A %d %B") %></p>
-            <% end %>
-          <% end %>
-
-        </div>
-      <% end %>
-
     </div>
-  </div>
 
-  <!-- Floating Testimonial Button -->
-  <% if current_user.subscriptions.any? %>
-    <%= link_to new_testimonial_path, class: "floating-testimonial-btn", title: "Share your Gooi experience" do %>
-      <span class="btn-icon">💚</span>
-      <span class="btn-text">Share Feedback</span>
-    <% end %>
+    <%# Household Contacts Card %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-users"></i>
+        <h3>Household Contacts</h3>
+        <%= link_to subscription_contacts_path(@subscription), class: "action-btn ms-auto",
+                    style: "padding: 0.35rem 0.875rem; font-size: 0.8rem;" do %>
+          <i class="fa-solid fa-pen"></i> Manage
+        <% end %>
+      </div>
+      <div class="info-card-body">
+        <p class="text-muted mb-0 small" style="line-height: 1.5;">
+          Add your housemates or family so everyone gets collection reminders — not just you.
+        </p>
+      </div>
+    </div>
+
   <% end %>
+
+</div>

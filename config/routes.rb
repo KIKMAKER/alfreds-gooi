@@ -221,7 +221,11 @@ Rails.application.routes.draw do
   resources :interests, only: :create
 
   # testimonials
-  resources :testimonials, only: [:new, :create, :index, :destroy, :update]
+  resources :testimonials, only: [:new, :create, :index, :destroy, :update] do
+    collection do
+      get :my_testimonials
+    end
+  end
 
   # customers
   get "my_subscriptions", to: "customers#subscriptions"

@@ -1,45 +1,157 @@
-<div class="gooi-container">
-  <div class="my-stats-page">
-    <h1 class="my-stats-title">My Stats</h1>
-    <% if @lifetime_litres > 0 %>
-      <div class="stats-impact-card">
-        <div class="stats-streak-label">Lifetime Impact</div>
-        <div class="stats-impact-grid">
-          <div class="stats-impact-item">
-            <div class="stats-impact-number"><%= @lifetime_litres.to_i %>L</div>
-            <div class="stats-impact-desc">kitchen scraps diverted from landfill</div>
-          </div>
-          <div class="stats-impact-item">
-            <div class="stats-impact-number"><%= @lifetime_compost_kg %>kg</div>
-            <div class="stats-impact-desc">finished compost for local soil</div>
-          </div>
-          <div class="stats-impact-item">
-            <div class="stats-impact-number"><%= @lifetime_co2e_kg %>kg</div>
-            <div class="stats-impact-desc">CO₂e avoided</div>
-          </div>
-        </div>
-      </div>
-    <% end %>
-    <% if current_user.current_streak > 0 %>
-      <div class="stats-streak-card">
-        <div class="stats-streak-number"><%= current_user.current_streak %></div>
-        <div class="stats-streak-label">week streak</div>
-        <div class="stats-streak-meta">
-          <span>Gooiing since <%= @start_date %></span>
-          <span class="stats-streak-consistency"><%= current_user.consistency_rate %>% consistent</span>
-        </div>
-      </div>
-    <% end %>
+<div class="subscription-show-container">
 
-    <div class="card-white mt-4">
-      <h3 class="stats-section-heading">Recent Collections</h3>
-      <% if @recent_collections.any? %>
-        <%= render "past_collections", collections: @recent_collections %>
-        <%= link_to "View all collections", collections_history_path, class: "d-block text-center mt-3" %>
-      <% else %>
-        <p class="text-center text-muted">No collections yet.</p>
-      <% end %>
+  <!-- Header -->
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-leaf"></i>
+      </div>
+      <div>
+        <h1>My Impact</h1>
+        <% if @start_date %>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            Gooiing since <%= @start_date %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @lifetime_litres > 0 %>
+    <!-- Lifetime Impact -->
+    <div class="stats-grid mb-3">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #108A63 100%);">
+          <i class="fa-solid fa-droplet"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@lifetime_litres.to_i) %>L</div>
+          <div class="stat-label">scraps diverted from landfill</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #3c8a63 100%);">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@lifetime_compost_kg) %>kg</div>
+          <div class="stat-label">compost for local soil</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
+          <i class="fa-solid fa-cloud"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@lifetime_co2e_kg) %>kg</div>
+          <div class="stat-label">CO₂e avoided</div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Activity stats -->
+  <div class="stats-grid mb-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #108A63 100%);">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= @total_collections %></div>
+        <div class="stat-label">total collections</div>
+      </div>
     </div>
 
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #bc4749 0%, #8b3537 100%);">
+        <i class="fa-solid fa-calendar-xmark"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= @skipped_count %></div>
+        <div class="stat-label">skipped</div>
+      </div>
+    </div>
+
+    <% if @total_bags > 0 %>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= @total_bags %></div>
+          <div class="stat-label">bags collected</div>
+        </div>
+      </div>
+
+      <% if @total_collections > 0 %>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
+            <i class="fa-solid fa-chart-simple"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= (@total_bags.to_f / @total_collections).round(1) %></div>
+            <div class="stat-label">avg bags per collection</div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
   </div>
+
+  <!-- Streak — subtle info-card -->
+  <% if @streak > 0 || @consistency > 0 %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-fire" style="color: #FBB718;"></i>
+        <h3>Consistency</h3>
+      </div>
+      <div class="info-card-body">
+        <% if @streak > 0 %>
+          <div class="info-row">
+            <span class="info-label">Current streak</span>
+            <span class="info-value"><%= @streak %> week<%= @streak == 1 ? '' : 's' %></span>
+          </div>
+        <% end %>
+        <% if @consistency > 0 %>
+          <div class="info-row">
+            <span class="info-label">Consistency rate</span>
+            <span class="info-value"><%= @consistency %>%</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Recent Collections -->
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <h3>Recent Collections</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @recent_collections.any? %>
+        <% @recent_collections.each do |c| %>
+          <div class="info-row">
+            <span class="info-label"><%= c.date&.strftime('%d %b %Y') %></span>
+            <span class="info-value" style="<%= c.skip ? 'color: #aaa; font-weight: 400;' : '' %>">
+              <% if c.skip %>
+                Skipped
+              <% elsif c.subscription.XL? %>
+                <%= c.buckets %> bucket<%= c.buckets == 1 ? '' : 's' %>
+              <% else %>
+                <%= c.bags %> bag<%= c.bags == 1 ? '' : 's' %>
+              <% end %>
+            </span>
+          </div>
+        <% end %>
+        <%= link_to collections_history_path, class: "action-btn mt-3" do %>
+          <i class="fa-solid fa-list"></i> View all collections
+        <% end %>
+      <% else %>
+        <p class="text-muted text-center mb-0">No collections yet.</p>
+      <% end %>
+    </div>
+  </div>
+
 </div>

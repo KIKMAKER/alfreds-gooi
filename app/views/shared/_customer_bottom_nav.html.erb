@@ -1,0 +1,88 @@
+<nav class="customer-bottom-nav d-md-none" id="customer-bottom-nav" aria-label="Main navigation" data-turbo-permanent>
+  <%= link_to manage_path, class: "bottom-nav-item", data: { nav_path: manage_path } do %>
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  <% end %>
+
+  <%= link_to my_stats_path, class: "bottom-nav-item", data: { nav_path: my_stats_path } do %>
+    <i class="fa-solid fa-leaf"></i>
+    <span>Impact</span>
+  <% end %>
+
+  <%= link_to referrals_path, class: "bottom-nav-item", data: { nav_path: referrals_path } do %>
+    <i class="fa-solid fa-gift"></i>
+    <span>Refer</span>
+  <% end %>
+
+  <%= link_to account_path, class: "bottom-nav-item", data: { nav_path: account_path } do %>
+    <i class="fa-solid fa-user"></i>
+    <span>Account</span>
+  <% end %>
+
+  <button class="bottom-nav-item" type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#moreDrawer"
+          aria-controls="moreDrawer">
+    <i class="fa-solid fa-ellipsis"></i>
+    <span>More</span>
+  </button>
+</nav>
+
+<!-- More drawer (mobile only) -->
+<div class="offcanvas offcanvas-bottom d-md-none"
+     tabindex="-1"
+     id="moreDrawer"
+     data-turbo-permanent
+     aria-labelledby="moreDrawerLabel"
+     style="border-radius: 20px 20px 0 0; max-height: 70vh;">
+  <div class="offcanvas-header" style="border-bottom: 1px solid #f0f0f0; padding: 1.25rem 1.5rem;">
+    <h5 class="offcanvas-title" id="moreDrawerLabel"
+        style="font-family: 'Montserrat', sans-serif; color: #023F3A; font-size: 1rem; font-weight: 700; margin: 0;">
+      More
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body" style="padding: 0.5rem 1.5rem 1.5rem;">
+    <%= link_to shop_index_path, class: "more-drawer-item" do %>
+      <span class="drawer-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+      <span class="drawer-label">Order</span>
+      <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+    <% end %>
+
+    <%= link_to my_subscriptions_path, class: "more-drawer-item" do %>
+      <span class="drawer-icon"><i class="fa-solid fa-file-contract"></i></span>
+      <span class="drawer-label">My Subscriptions</span>
+      <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+    <% end %>
+
+    <% if current_user.invoices.any? %>
+      <%= link_to invoices_path, class: "more-drawer-item" do %>
+        <span class="drawer-icon"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+        <span class="drawer-label">Invoices</span>
+        <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+      <% end %>
+    <% end %>
+
+    <%= link_to my_testimonials_testimonials_path, class: "more-drawer-item" do %>
+      <span class="drawer-icon"><i class="fa-solid fa-star"></i></span>
+      <span class="drawer-label">My Feedback</span>
+      <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+    <% end %>
+
+    <%= link_to new_testimonial_path, class: "more-drawer-item" do %>
+      <span class="drawer-icon"><i class="fa-regular fa-comment"></i></span>
+      <span class="drawer-label">Leave Feedback</span>
+      <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+    <% end %>
+
+    <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
+
+    <%= link_to destroy_user_session_path,
+                class: "more-drawer-item danger",
+                data: { turbo_method: :delete } do %>
+      <span class="drawer-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+      <span class="drawer-label">Log out</span>
+    <% end %>
+  </div>
+</div>
