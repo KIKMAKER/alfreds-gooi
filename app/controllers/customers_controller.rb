@@ -37,6 +37,11 @@ class CustomersController < ApplicationController
     end
 
     @recent_collections = current_user.collections.order(date: :desc).limit(5) if current_user.subscriptions.any?
+
+    # Show referral code prompt if code was captured but no Referral record was created
+    if current_user.referred_by_code.present? && current_user.referrals_as_referee.none?
+      @orphaned_referral_code = current_user.referred_by_code
+    end
   end
 
   def account
@@ -121,6 +126,40 @@ class CustomersController < ApplicationController
     else
       @note = "Something went wrong, please manually skip, or whatsapp Alfred"
     end
+  end
+
+  def submit_referral_code
+    code = params[:referral_code]&.strip&.upcase
+
+    if code.blank?
+      redirect_to manage_path, alert: "Please enter a referral code." and return
+    end
+
+    if code == current_user.referral_code
+      redirect_to manage_path, alert: "You can't use your own referral code." and return
+    end
+
+    referrer = User.find_by(referral_code: code)
+    unless referrer
+      redirect_to manage_path, alert: "We couldn't find anyone with that referral code. Double-check and try again." and return
+    end
+
+    if current_user.referrals_as_referee.exists?
+      redirect_to manage_path, notice: "Your referral is already registered." and return
+    end
+
+    current_user.update!(referred_by_code: code)
+
+    # If subscription is already active, complete the referral immediately
+    status = current_user.subscriptions.active.any? ? :completed : :pending
+    Referral.create!(
+      subscription: current_user.current_sub,
+      referee: current_user,
+      referrer: referrer,
+      status: status
+    )
+
+    redirect_to manage_path, notice: "Referral code applied! #{referrer.first_name} will get their reward on their next subscription."
   end
 
   private

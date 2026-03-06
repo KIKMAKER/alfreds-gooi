@@ -15,6 +15,7 @@ class Subscription < ApplicationRecord
   end
   before_validation :set_collection_day, if: -> { will_save_change_to_street_address? || will_save_change_to_suburb? }
   before_validation :canonicalize_suburb
+  before_validation :normalize_referral_code
   SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   validates :suburb, inclusion: { in: SUBURBS }
   validates :street_address, presence: true
@@ -373,6 +374,18 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def create_referral_from_code
+    return if referral_code.blank?
+    referrer = User.find_by(referral_code: referral_code)
+    return unless referrer
+    return if referrer == user
+    return if user.referrals_as_referee.exists?
+
+    status = active? ? :completed : :pending
+    Referral.create!(subscription: self, referee: user, referrer: referrer, status: status)
+    user.update_column(:referred_by_code, referral_code)
+  end
+
   def activate_subscription
     update!(
       status: :active,
@@ -380,11 +393,17 @@ class Subscription < ApplicationRecord
       is_paused: false
     )
 
-    referral = Referral.find_by(
-      referee_id: user_id,
-      referrer_id: User.find_by(referral_code: referral_code)&.id
-    )
-    referral&.completed!
+    effective_referral_code = referral_code.presence || user.referred_by_code
+    if effective_referral_code.present?
+      referrer = User.find_by(referral_code: effective_referral_code)
+      if referrer
+        referral = Referral.find_by(referee_id: user_id, referrer_id: referrer.id)
+        if referral
+          referral.completed!
+          SubscriptionMailer.with(referrer: referrer, referee: user).referral_completed.deliver_later
+        end
+      end
+    end
 
     # Send payment received confirmation email
     SubscriptionMailer.with(subscription: self).payment_received.deliver_now
@@ -393,6 +412,10 @@ class Subscription < ApplicationRecord
 
 
   private
+
+  def normalize_referral_code
+    self.referral_code = referral_code.strip.upcase if referral_code.present?
+  end
 
   # infer starter kit based on sub plan
 

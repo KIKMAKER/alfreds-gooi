@@ -1,0 +1,31 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Your referral worked! 🎉</h1>
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @referrer.first_name %>,
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Great news — <strong><%= @referee.first_name %></strong> just paid for their gooi subscription using your referral code.
+    You've earned <strong>R50 off</strong> your next subscription renewal.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Your discount will be applied automatically next time you resubscribe — no code needed.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Know anyone else who'd love to gooi? Share your referral code: <strong><%= @referrer.referral_code %></strong>
+  </p>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= referrals_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View My Referrals
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">Thanks for spreading the word! 🌱</p>
+
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+</div>

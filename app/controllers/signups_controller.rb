@@ -76,7 +76,8 @@ class SignupsController < ApplicationController
 
     # Use discount/referral from form if provided, otherwise from session
     discount_code = params[:discount_code].presence || session[:signup_discount_code]
-    referral_code = params[:referral_code].presence || session[:signup_referral_code]
+    referral_code = (params[:referral_code].presence || session[:signup_referral_code])&.strip&.upcase
+    @user.referred_by_code = referral_code if referral_code.present?
 
     # Build subscription with address details
     @user.subscriptions.build(subscription_params.merge(
@@ -95,8 +96,17 @@ class SignupsController < ApplicationController
       # Sign in the user
       sign_in(@user)
 
-      # Send welcome emails
       subscription = @user.subscriptions.first
+      referee = referral_code.present? ? User.find_by(referral_code: referral_code) : nil
+
+      InvoiceBuilder.new(
+        subscription: subscription,
+        og: nil,
+        is_new: true,
+        referee: referee
+      ).call
+
+      # Send welcome emails
       UserMailer.with(subscription: subscription).welcome.deliver_now
       UserMailer.with(subscription: subscription).sign_up_alert.deliver_now
 

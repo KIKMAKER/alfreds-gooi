@@ -164,6 +164,17 @@
 
       </div>
     <% else %>
+      <% if @orphaned_referral_code %>
+        <div class="alert alert-warning mx-3 mt-3" role="alert">
+          <h5 class="alert-heading">Did someone refer you?</h5>
+          <p class="mb-2">We have a referral code saved for you (<strong><%= @orphaned_referral_code %></strong>) but it wasn't linked to your account yet. Confirm it below and your friend will get their reward.</p>
+          <%= form_with url: submit_referral_code_path, method: :post, local: true, class: "d-flex gap-2 align-items-center flex-wrap" do |f| %>
+            <%= f.text_field :referral_code, value: @orphaned_referral_code, class: "form-control w-auto", placeholder: "Referral code" %>
+            <%= f.submit "Apply", class: "btn btn-warning" %>
+          <% end %>
+        </div>
+      <% end %>
+
       <div class="text-center my-2">
         <h2 class="mb-4">Upcoming Collection</h2>
         <% if @next_collection&.skip %>

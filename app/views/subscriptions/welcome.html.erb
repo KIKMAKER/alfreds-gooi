@@ -34,7 +34,7 @@
       <p>On week one we will deliver your starter kit. Once you have some compost for us to collect you can be ready with your full bag, or stash it outside before we arrive, and we can collect it on our way past.</p>
     <% end %>
     <p>To ensure that you receive your starter kit on time, kindly settle the invoice as soon as possible.</p>
-    <%= link_to "view invoice", welcome_invoice_subscription_path(@subscription, new: true), class: "submit-btn my-2" %>
+    <%= link_to "view invoice", invoice_path(@invoice), class: "submit-btn my-2" if @invoice %>
     <p>We are excited to have you on board and look forward to being your go-to organic waste collection service. Let's work together to create a cleaner, healthier planet for us all.</p>
   </div>
 </div>

@@ -224,14 +224,14 @@ class InvoiceBuilder
 
   def apply_referrals(invoice)
     if @referred_friends&.positive?
-      discount = Product.find_by(title: "Referred a friend discount")
+      discount = Product.find_by(title: "Referred a friend discount (R50)")
       invoice.invoice_items.create!(
         product: discount,
         quantity: @referred_friends,
         amount: discount.price
       )
       mark_referrals_used
-    elsif @referee
+    elsif @referee && @referee != @subscription.user
       plan_name = @subscription.plan == "XL" ? "XL" : @subscription.plan.downcase
       title = "Referral discount #{plan_name} #{@subscription.duration} month"
       discount = Product.find_by(title: title)

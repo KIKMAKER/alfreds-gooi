@@ -164,7 +164,6 @@ Rails.application.routes.draw do
       get :want_bags
       get :collections
       get :welcome
-      get :welcome_invoice
       post :pause
       # route to unpause subscription
       post :unpause
@@ -232,6 +231,7 @@ Rails.application.routes.draw do
   get "skipme", to: "customers#skipme"
   get "welcome", to: "customers#welcome"
   get "referrals", to: "customers#referrals"
+  post "submit_referral_code", to: "customers#submit_referral_code"
   get "my_stats", to: "customers#my_stats"
 
   # static pages

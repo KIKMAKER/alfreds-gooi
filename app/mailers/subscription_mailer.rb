@@ -53,6 +53,12 @@ class SubscriptionMailer < ApplicationMailer
     mail(to: @user.email, subject: "Payment received - your gooi subscription is now active!")
   end
 
+  def referral_completed
+    @referrer = params[:referrer]
+    @referee  = params[:referee]
+    mail(to: @referrer.email, subject: "#{@referee.first_name} just joined gooi — you've earned R50!")
+  end
+
   def payment_received_alert
     @subscription = params[:subscription]
 

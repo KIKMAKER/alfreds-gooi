@@ -27,6 +27,7 @@
       <%= f.input :status, collection: Subscription.statuses.keys, include_blank: false %>
       <%= f.input :is_paused %>
       <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>
+      <%= f.input :referral_code, label: "Referral code (referrer's code)", placeholder: "e.g. A3F9C2", hint: "Saving a new code will create the referral record automatically." %>
     <% end %>
     <div class="centre mt-3">
       <%= f.button :submit, "Update", class: "sign-up-btn" %>

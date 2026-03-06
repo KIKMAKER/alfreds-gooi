@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome welcome_invoice]
+  before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome]
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
@@ -150,7 +150,7 @@ class SubscriptionsController < ApplicationController
         new_params: subscription_params
       ).call
 
-      if result.success
+      if result.success?
         @subscription = result.subscription
 
         # Create primary contact for owner
@@ -272,6 +272,9 @@ class SubscriptionsController < ApplicationController
       if @subscription.completed? && @subscription.end_date.nil?
         @subscription.end_date!
       end
+
+      @subscription.create_referral_from_code
+
       if @subscription.user == current_user
         if subscription_params[:street_address].present?
           @subscription.set_collection_day
@@ -279,14 +282,12 @@ class SubscriptionsController < ApplicationController
         else
           redirect_to manage_path, notice: "Subscription updated."
         end
-
       else
         redirect_to subscription_path(@subscription)
       end
     else
       render :edit, status: :unprocessable_entity
     end
-
   end
 
   def collections
@@ -337,6 +338,7 @@ class SubscriptionsController < ApplicationController
   def welcome
     @subscription = Subscription.find(params[:id])
     @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
+    @invoice = @subscription.invoices.order(created_at: :asc).first
 
     # Check if this is a multi-location signup
     @user_subscriptions = @subscription.user.subscriptions
@@ -354,45 +356,6 @@ class SubscriptionsController < ApplicationController
         end
       end
     end
-  end
-
-  def welcome_invoice
-    @subscription = Subscription.find(params[:id])
-    @discount_code = DiscountCode.find_by(code: @subscription.discount_code&.upcase)
-
-    is_new = params[:new] == "true"
-
-    # referal code of the referrer (so you know who referred them)
-    referral_code = @subscription.referral_code
-    # find the referee by the referral code
-    referee = User.find_by(referral_code: referral_code)
-
-    if @subscription.invoices.empty?
-      # Check if this is a multi-location signup
-      # Find all pending subscriptions for this user (multi-location case)
-      user_pending_subs = current_user.subscriptions.where(status: :pending)
-
-      if user_pending_subs.count > 1
-        # Multi-location: create one invoice for all subscriptions
-        @invoice = InvoiceBuilder.new(
-          subscriptions: user_pending_subs,
-          og: nil,
-          is_new: is_new,
-          referee: referee
-        ).call
-      else
-        # Single location: create invoice for just this subscription
-        @invoice = InvoiceBuilder.new(
-          subscription: @subscription,
-          og: nil,
-          is_new: is_new,
-          referee: referee
-        ).call
-      end
-    end
-
-    @invoice = @subscription.invoices.order(created_at: :asc).last
-    redirect_to invoice_path(@invoice)
   end
 
   def pause
