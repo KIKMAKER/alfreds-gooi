@@ -132,6 +132,9 @@ class DriversDaysController < ApplicationController
       # Calculate and save statistics
       @drivers_day.calculate_and_save_statistics!
 
+      # Send daily snapshot email now that stats exist
+      DailySnapshotMailer.report(drivers_day_id: @drivers_day.id).deliver_now
+
       # Run background jobs
       CreateCollectionsJob.perform_now
       CreateNextWeekDropOffEventsJob.perform_now
