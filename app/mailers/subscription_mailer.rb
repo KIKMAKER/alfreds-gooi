@@ -50,6 +50,7 @@ class SubscriptionMailer < ApplicationMailer
   def payment_received
     @subscription = params[:subscription]
     @user = @subscription.user
+    @is_new = params[:is_new]
     mail(to: @user.email, subject: "Payment received - your gooi subscription is now active!")
   end
 

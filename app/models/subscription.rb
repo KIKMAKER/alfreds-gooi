@@ -329,6 +329,7 @@ class Subscription < ApplicationRecord
   #   delta = 7 if delta.zero?
   def align_to_wday(date, ruby_wday)
     delta = (ruby_wday - date.wday) % 7
+    delta = 7 if delta.zero?
     date + delta
   end
 
@@ -414,7 +415,7 @@ class Subscription < ApplicationRecord
     end
 
     # Send payment received confirmation email
-    SubscriptionMailer.with(subscription: self).payment_received.deliver_now
+    SubscriptionMailer.with(subscription: self, is_new: is_new_customer).payment_received.deliver_now
     SubscriptionMailer.with(subscription: self).payment_received_alert.deliver_now
   end
 
