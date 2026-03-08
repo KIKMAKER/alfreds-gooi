@@ -12,4 +12,5 @@ class DailySnapshotMailer < ApplicationMailer
       subject: "Daily Impact Snapshot: #{@drivers_day.date.strftime('%A, %B %d, %Y')}"
     )
   end
+  #recommit
 end
