@@ -109,7 +109,15 @@
         <div class="col-md-3 d-flex align-items-end">
           <div class="form-check mb-2">
             <%= f.check_box :primary_only, checked: params[:primary_only] == '1', class: "form-check-input" %>
-            <%= f.label :primary_only, "Primary contact only (one per subscription)", class: "form-check-label" %>
+            <%= f.label :primary_only, "Owner only (one per subscription)", class: "form-check-label" %>
+          </div>
+        </div>
+
+        <!-- Non-primary only -->
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <%= f.check_box :non_primary_only, checked: params[:non_primary_only] == '1', class: "form-check-input" %>
+            <%= f.label :non_primary_only, "Non-owner contacts only", class: "form-check-label" %>
           </div>
         </div>
       </div>
@@ -176,7 +184,7 @@
               <% sub = contact.subscription %>
               <tr>
                 <td>
-                  <%= link_to admin_user_path(sub.user) do %>
+                  <%= link_to subscription_contact_path(sub, contact), class: "link-title" do %>
                     <%= contact.full_name %>
                     <% if contact.is_primary? %>
                       <span class="badge bg-success ms-1" style="font-size: 0.65rem;">Owner</span>

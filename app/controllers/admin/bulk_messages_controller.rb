@@ -67,6 +67,7 @@ class Admin::BulkMessagesController < ApplicationController
     # Contact-level filters
     contacts = contacts.can_receive_whatsapp if params[:opted_in_only] == '1'
     contacts = contacts.primary if params[:primary_only] == '1'
+    contacts = contacts.where(is_primary: false) if params[:non_primary_only] == '1'
 
     if params[:relationship].present? && params[:relationship] != 'all'
       if params[:relationship] == 'owner'
