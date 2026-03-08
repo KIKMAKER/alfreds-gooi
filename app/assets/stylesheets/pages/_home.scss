@@ -31,10 +31,11 @@
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 1.3rem;
-    color: white;
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
     text-align: center;
+    line-height: 1.7;
   }
 }
 
@@ -54,14 +55,15 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
     margin: 24px 0px;
   }
 
   p {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 2vh;
+    font-size: 1.0625rem;
+    line-height: 1.75;
   }
 }
 
@@ -69,7 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 1.5vh;
+  font-size: 0.75rem;
 }
 
 .swatch {
@@ -183,13 +185,14 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
   }
 
   p {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
   }
 }
 
@@ -277,20 +280,21 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
     margin: 44px 0px;
   }
 
   p {
     font-family: 'Montserrat', sans-serif;
-    color: #000000;
-    font-size: 2vh;
+    color: white;
+    font-size: 1.0625rem;
+    line-height: 1.75;
   }
 
   h3 {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
-    font-size: 3vh;
+    font-size: 1.25rem;
   }
 }
 
@@ -312,6 +316,17 @@
 .info-card-container {
   display: flex;
   justify-content: space-around;
+  gap: 12px;
+
+  // Reset subscription card styles for compost image cards
+  .info-card {
+    background: none;
+    border-radius: 14px;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+  }
 }
 
 .image-container {
@@ -348,59 +363,79 @@
 // Testimonial styles
 
 .testimonial-section {
-  padding: 44px 0px;
+  padding: 56px 5%;
   margin-top: 44px;
-  background-color: #023f3a82;
+  background-color: #f5faf9;
   text-align: center;
 
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    margin-bottom: 0.25rem;
   }
 
+  .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    color: #525560;
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
 }
 
 .testimonial-card {
-  background-color: #023f3a00;
+  background: white;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem 1.5rem;
   width: 33%;
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin: 0px 8px;
+  margin: 0 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
 
-  &:hover {
-    background-color: #023f3a57;
+  &::before {
+    content: '\201C';
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3.5rem;
+    color: #FBB718;
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.25rem;
   }
 
   p {
-    font-family: 'Montserrat', 'sans-serif';
-    font-size: 2vh;
-    margin-bottom: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #525560;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+    font-style: italic;
   }
 
   h4 {
     font-family: 'Libre Baskerville', serif;
-    font-size: 22px;
-    margin-top: 12px;
+    font-size: 1rem;
+    color: #023F3A;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
   }
-
 }
 
 .testimonial-image {
-  border: solid 4px #FBB718;
-  background-color: #525560;
-  width: 72px;
-  height: 72px;
-  border-radius: 200px;
+  border: solid 3px #FBB718;
+  background-color: #e8f4f3;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 0.5rem;
 
   img {
     width: 100%;
@@ -410,10 +445,12 @@
 }
 
 .testimonials-container {
-  margin-top: 32px;
+  margin: 2rem auto 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
+  max-width: 900px;
+  gap: 1rem;
 }
 
 // Compostable Styles
@@ -427,7 +464,7 @@
     font-family: 'Libre Baskerville', 'serif';
     color: #023F3A;
     margin: 16px;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
   }
 }
 
@@ -470,7 +507,7 @@
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    font-size: 0.75rem;
     padding: 0px 8px;
     text-align: left;
     position: absolute;
@@ -480,12 +517,15 @@
 }
 
 .description-container {
-  width: 85%;
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2vh;
-    color: #000000;
+    font-size: 1rem;
+    color: #525560;
+    line-height: 1.75;
   }
 }
 
@@ -559,7 +599,9 @@ input[type="checkbox"].toggle:checked+label::before {
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  margin: 24px 5%;
+  margin: 24px auto;
+  max-width: 1140px;
+  padding: 0 5%;
 }
 
 .pricing-section {
@@ -568,7 +610,7 @@ input[type="checkbox"].toggle:checked+label::before {
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
   }
 
   h5 {
@@ -586,10 +628,10 @@ input[type="checkbox"].toggle:checked+label::before {
 }
 
 .pricing-text {
-  font-family: 'Montserrat', serif;
-  font-size: 16px;
-  color: #023F3A;
-
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #525560;
+  line-height: 1.5;
 }
 
 .popular {
@@ -660,7 +702,8 @@ input[type="checkbox"].toggle:checked+label::before {
   border: 2px solid $dark-green;
   border-radius: 12px;
   padding: 2rem 3rem;
-  max-width: 80vw;
+  max-width: 600px;
+  width: 100%;
   text-align: center;
 
   h3 {
@@ -672,7 +715,8 @@ input[type="checkbox"].toggle:checked+label::before {
 
   p {
     color: $dark-green;
-    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.65;
     margin-bottom: 1.5rem;
   }
 
@@ -685,7 +729,7 @@ input[type="checkbox"].toggle:checked+label::before {
     li {
       color: $dark-green;
       padding: 0.5rem 0;
-      font-size: 15px;
+      font-size: 1rem;
 
       &:before {
         content: "✓ ";
@@ -723,19 +767,11 @@ input[type="checkbox"].toggle:checked+label::before {
       font-size: 5vh;
     }
 
-    p {
-      font-size: 2.3vh;
-    }
-
     height: 100vh;
   }
 
   .mission-section {
     margin-top: 40vh;
-
-    p {
-      font-size: 2vh;
-    }
   }
 
 }
@@ -921,12 +957,6 @@ input[type="checkbox"].toggle:checked+label::before {
     }
   }
 
-  .compost-section {
-    h1 {
-      font-size: 32px;
-    }
-  }
-
   .btn-gooi {
     padding: 8px 32px;
     width: 100%;
@@ -980,10 +1010,8 @@ input[type="checkbox"].toggle:checked+label::before {
 
 .compostable-section {
   h1 {
-    font-size: 32px;
     margin-bottom: 32px;
   }
-
 }
 
 .standard-months-container {
@@ -1043,14 +1071,15 @@ input[type="checkbox"].toggle:checked+label::before {
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: #023F3A;
-    font-size: 48px;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
     margin-bottom: 16px;
   }
 
   .section-description {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 18px;
+    font-size: 1.0625rem;
+    line-height: 1.75;
     max-width: 800px;
     margin: 0 auto 48px;
   }
@@ -1174,12 +1203,8 @@ input[type="checkbox"].toggle:checked+label::before {
   .partner-farms-section {
     margin: 60px 5%;
 
-    h1 {
-      font-size: 32px;
-    }
-
     .section-description {
-      font-size: 16px;
+      font-size: 1rem;
     }
   }
 
