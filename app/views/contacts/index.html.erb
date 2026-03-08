@@ -1,75 +1,87 @@
-<div class="driver-wrapper">
-  <h1 class="my-4">Household Contacts</h1>
-  <p class="text-muted text-center mb-3"><%= @subscription.short_address %>, <%= @subscription.suburb %></p>
+<div class="subscription-show-container">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <%= link_to "← Back to Dashboard", manage_path, class: "me-3" %>
-    <%= link_to new_subscription_contact_path(@subscription), class: 'small-yellow-btn' do %>
-      <i class="fa-solid fa-user-plus"></i> Add New Contact
+  <!-- Header -->
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div>
+        <h1>Household Contacts</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          <%= @subscription.short_address %>, <%= @subscription.suburb %>
+        </p>
+      </div>
+    </div>
+    <%= link_to new_subscription_contact_path(@subscription), class: "action-btn",
+                style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white;" do %>
+      <i class="fa-solid fa-user-plus"></i> Add
     <% end %>
   </div>
 
-  <div class="contacts-page">
-    <div class="contacts-grid">
-      <% @contacts.each do |contact| %>
-        <div class="contact-card-detailed">
-          <div class="contact-card-header">
-            <div class="contact-avatar">
-              <i class="fa-solid fa-user"></i>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name"><%= contact.full_name %></h4>
-              <% if contact.is_primary? %>
-                <span class="contact-badge primary-badge">Owner</span>
-              <% elsif contact.relationship.present? %>
-                <span class="contact-badge"><%= contact.relationship.titleize %></span>
-              <% end %>
-            </div>
-          </div>
-
-          <div class="contact-details">
-            <div class="contact-detail-row">
-              <i class="fa-solid fa-phone"></i>
-              <span><%= contact.phone_number %></span>
-            </div>
-            <div class="contact-detail-row">
-              <i class="fa-brands fa-whatsapp"></i>
-              <% if contact.can_receive_whatsapp? %>
-                <span class="whatsapp-active"><i class="fa-solid fa-circle-check"></i> Receiving reminders</span>
-              <% else %>
-                <span class="whatsapp-inactive"><i class="fa-solid fa-circle-xmark"></i> Opted out</span>
-              <% end %>
-            </div>
-          </div>
-
-          <div class="contact-actions">
-            <%= link_to edit_subscription_contact_path(@subscription, contact), class: 'tiny-yellow-btn' do %>
-              <i class="fa-solid fa-pen"></i> Edit
-            <% end %>
-
-            <% if contact.whatsapp_opt_out? %>
-              <%= button_to toggle_whatsapp_subscription_contact_path(@subscription, contact),
-                            method: :post, class: 'tiny-yellow-btn' do %>
-                <i class="fa-brands fa-whatsapp"></i> Enable WhatsApp
-              <% end %>
-            <% else %>
-              <%= button_to toggle_whatsapp_subscription_contact_path(@subscription, contact),
-                            method: :post, class: 'tiny-yellow-btn', style: 'background-color: #999;' do %>
-                <i class="fa-brands fa-whatsapp"></i> Disable WhatsApp
-              <% end %>
-            <% end %>
-
-            <% unless contact.is_primary? %>
-              <%= button_to subscription_contact_path(@subscription, contact),
-                            method: :delete, class: 'tiny-yellow-btn',
-                            style: 'background-color: #bc4749;',
-                            data: { turbo_confirm: 'Remove this contact? They will stop receiving WhatsApp reminders.' } do %>
-                <i class="fa-solid fa-trash"></i> Remove
-              <% end %>
-            <% end %>
-          </div>
+  <!-- Contacts -->
+  <% @contacts.each do |contact| %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <div class="subscription-avatar" style="width: 40px; height: 40px; background: rgba(2,63,58,0.1);">
+          <i class="fa-solid fa-user" style="color: #023F3A; font-size: 1rem;"></i>
         </div>
-      <% end %>
+        <div style="flex: 1;">
+          <h3 style="margin: 0; font-size: 1rem;"><%= contact.full_name %></h3>
+        </div>
+        <% if contact.is_primary? %>
+          <span class="subscription-status-badge active">Owner</span>
+        <% elsif contact.relationship.present? %>
+          <span class="subscription-status-badge completed"><%= contact.relationship.titleize %></span>
+        <% end %>
+      </div>
+
+      <div class="info-card-body">
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-phone me-1"></i> Phone</span>
+          <span class="info-value"><%= contact.phone_number %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-brands fa-whatsapp me-1"></i> WhatsApp</span>
+          <span class="info-value">
+            <% if contact.can_receive_whatsapp? %>
+              <span style="color: #3c8a63;"><i class="fa-solid fa-circle-check"></i> Receiving reminders</span>
+            <% else %>
+              <span class="text-muted"><i class="fa-solid fa-circle-xmark"></i> Opted out</span>
+            <% end %>
+          </span>
+        </div>
+
+        <div class="d-flex gap-2 mt-3 flex-wrap">
+          <%= link_to edit_subscription_contact_path(@subscription, contact), class: "action-btn" do %>
+            <i class="fa-solid fa-pen"></i> Edit
+          <% end %>
+
+          <% if contact.whatsapp_opt_out? %>
+            <%= button_to toggle_whatsapp_subscription_contact_path(@subscription, contact),
+                          method: :post, class: "action-btn" do %>
+              <i class="fa-brands fa-whatsapp"></i> Enable WhatsApp
+            <% end %>
+          <% else %>
+            <%= button_to toggle_whatsapp_subscription_contact_path(@subscription, contact),
+                          method: :post,
+                          class: "action-btn",
+                          style: "border-color: #999; color: #999;" do %>
+              <i class="fa-brands fa-whatsapp"></i> Disable WhatsApp
+            <% end %>
+          <% end %>
+
+          <% unless contact.is_primary? %>
+            <%= button_to subscription_contact_path(@subscription, contact),
+                          method: :delete,
+                          class: "action-btn",
+                          style: "border-color: #bc4749; color: #bc4749;",
+                          data: { turbo_confirm: "Remove this contact? They will stop receiving WhatsApp reminders." } do %>
+              <i class="fa-solid fa-trash"></i> Remove
+            <% end %>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

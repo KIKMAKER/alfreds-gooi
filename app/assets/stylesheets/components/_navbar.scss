@@ -92,9 +92,6 @@
   width: 60vw;
 }
 
-// Chris Styles
-
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .navbar-container {
   z-index: 1000;
@@ -106,10 +103,9 @@
 }
 
 .gooi-logo {
-  width: 8em;
-  padding: 24px 16px;
+  width: 7em;
+  padding: 8px 16px;
   margin-left: 3vw;
-  margin-top: 1vh;
 }
 
 .inner-container {
@@ -159,10 +155,17 @@
 
 @media screen and (max-width:623px) {
 
+  .navbar-container {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+  }
+
   .inner-container {
     justify-content: space-between;
     align-items: center;
     margin: 0%;
+    width: 100%;
 
     button {
       padding: 8px 16px;
@@ -180,7 +183,7 @@
     color: #023f3a;
     display: block;
     margin-right: 5vw;
-    margin-top: 1rem;
+    margin-top: 0;
 
     li {
       list-style-type: none;
@@ -197,6 +200,69 @@
 
 .menu-icon {
   width: 32px;
+}
+
+.customer-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: $dark-green;
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(2, 63, 58, 0.08);
+    color: $dark-green;
+  }
+}
+
+.customer-nav-dropdown {
+  min-width: 220px;
+  border: none;
+  border-radius: 16px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 8px 24px 0px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.customer-nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #222;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  i {
+    width: 16px;
+    text-align: center;
+    color: $dark-green;
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    background: #f0f6f4;
+    color: #222;
+    text-decoration: none;
+  }
+
+  &.danger {
+    color: #bc4749;
+    i { color: #bc4749; }
+    &:hover { background: #fdf0f0; }
+  }
 }
 
 #menu-icon {

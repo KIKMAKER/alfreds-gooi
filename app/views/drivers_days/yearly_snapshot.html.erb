@@ -8,35 +8,35 @@
   </div>
 
   <div class="snapshot-body">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-value"><%= @customers_served %></div>
-        <div class="stat-label">Unique Customers</div>
+    <div class="snapshot-stats-grid">
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= @customers_served %></div>
+        <div class="snapshot-stat-label">Unique Customers</div>
       </div>
 
-      <div class="stat-item">
-        <div class="stat-value"><%= number_with_delimiter(@kg_diverted) %></div>
-        <div class="stat-label">Total Collected (kg)</div>
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= number_with_delimiter(@kg_diverted) %></div>
+        <div class="snapshot-stat-label">Total Collected (kg)</div>
       </div>
 
-      <div class="stat-item">
-        <div class="stat-value"><%= @new_customers %></div>
-        <div class="stat-label">New Households</div>
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= @new_customers %></div>
+        <div class="snapshot-stat-label">New Households</div>
       </div>
 
-      <div class="stat-item">
-        <div class="stat-value"><%= number_with_delimiter(@compost_kg) %></div>
-        <div class="stat-label">Compost Created (kg)</div>
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= number_with_delimiter(@compost_kg) %></div>
+        <div class="snapshot-stat-label">Compost Created (kg)</div>
       </div>
 
-      <div class="stat-item">
-        <div class="stat-value"><%= @total_days %></div>
-        <div class="stat-label">Collection Days</div>
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= @total_days %></div>
+        <div class="snapshot-stat-label">Collection Days</div>
       </div>
 
-      <div class="stat-item">
-        <div class="stat-value"><%= number_with_delimiter(@buckets_diverted) %></div>
-        <div class="stat-label">Buckets Collected</div>
+      <div class="snapshot-stat-item">
+        <div class="snapshot-stat-value"><%= number_with_delimiter(@buckets_diverted) %></div>
+        <div class="snapshot-stat-label">Buckets Collected</div>
       </div>
     </div>
 

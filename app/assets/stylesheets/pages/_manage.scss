@@ -1,34 +1,3 @@
-.bg-green {
-  background-color: rgba(15, 74, 58, 0.78);
-  color: white
-}
-
-.card-white {
-  background-color: white;
-  border-radius: 8px;
-  padding: 24px;
-  width: 100%;
-  color: black;
-  margin-top: 0.5rem;
-  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}
-
-.streak {
-  // background: linear-gradient(135deg, $dark-green 0%, $dark-yellow 100%);
-  background: $dark-green;
-  // color: white;
-  border-radius: 12px;
-  h4, p {
-    color: white;
-  }
-}
-
-.container-flex {
-  display: flex;
-  justify-content: space-between;
-  // align-items: center;
-}
-
 .collections-carousel {
   text-align: center;
   padding-bottom: 2vh;
@@ -98,11 +67,6 @@
     bottom: 0.3rem;
     right: 60%;
   }
-}
-
-.bucket-img {
-  width: 2rem;
-  margin-left: 0.5rem;
 }
 
 

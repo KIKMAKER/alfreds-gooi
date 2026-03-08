@@ -4,40 +4,53 @@
       <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo', alt: 'Gooi') %>
     <% end %>
 
-    <!-- Hamburger always visible -->
-    <div class="d-flex align-items-baseline">
-      <%= link_to 'About', about_path, class:"link-title" %>
+    <div class="d-flex align-items-center gap-2 me-3">
+      <% if current_page?(root_path) %>
+        <%= link_to 'About', about_path, class: "link-title d-none d-md-inline" %>
+      <% end %>
 
-      <div class="hamburger-menu dropdown ms-auto">
-        <%= link_to shop_index_path do %>
-          <i class="fa-solid fa-cart-shopping"></i>
-        <% end %>
-        <button class="btn p-2 border-0 bg-transparent" id="navMenuButton"
-              data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open menu">
-          <i class="fa-solid fa-bars fa-2x" style="color:#023f3a;"></i>
+      <%= link_to shop_index_path, class: "customer-nav-icon", aria: { label: "Shop" } do %>
+        <i class="fa-solid fa-cart-shopping"></i>
+      <% end %>
+
+      <!-- Hamburger: always visible on md+ -->
+      <div class="dropdown d-none d-md-block">
+        <button class="customer-nav-icon" id="navMenuButton"
+                data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
         </button>
 
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navMenuButton">
-          <li><%= link_to 'Manage', manage_path, class: "dropdown-item" %></li>
-          <li><%= link_to 'Account', account_path, class: "dropdown-item" %></li>
-          <li><%= link_to 'Subscriptions', my_subscriptions_path, class: "dropdown-item" %></li>
-          <li><%= link_to 'Stats', my_stats_path, class: "dropdown-item" %></li>
-          <li><%= link_to 'Referrals', referrals_path, class: "dropdown-item" %></li>
-          <% if current_user.respond_to?(:invoices) && current_user.invoices.any? %>
-            <li><%= link_to "Invoices", invoices_path, class: "dropdown-item" %></li>
+        <ul class="dropdown-menu dropdown-menu-end customer-nav-dropdown" aria-labelledby="navMenuButton">
+          <li><%= link_to manage_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-house"></i> Home
+          <% end %></li>
+          <li><%= link_to my_stats_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-leaf"></i> Impact
+          <% end %></li>
+          <li><%= link_to referrals_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-gift"></i> Refer a Friend
+          <% end %></li>
+          <li><%= link_to account_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-user"></i> Account
+          <% end %></li>
+          <li><hr class="dropdown-divider mx-3 my-1"></li>
+          <li><%= link_to my_subscriptions_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-file-contract"></i> Subscriptions
+          <% end %></li>
+          <% if current_user.invoices.any? %>
+            <li><%= link_to invoices_path, class: "customer-nav-dropdown-item" do %>
+              <i class="fa-solid fa-file-invoice-dollar"></i> Invoices
+            <% end %></li>
           <% end %>
-
-          <li><hr class="dropdown-divider"></li>
-
-          <% if user_signed_in? %>
-            <li>
-              <%= link_to "Log out", destroy_user_session_path,
-                        class: "dropdown-item text-danger",
-                        data: { turbo_method: :delete } %>
-            </li>
-          <% else %>
-            <li><%= link_to "Log in", new_user_session_path, class: "dropdown-item" %></li>
-          <% end %>
+          <li><%= link_to shop_index_path, class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-cart-shopping"></i> Order
+          <% end %></li>
+          <li><hr class="dropdown-divider mx-3 my-1"></li>
+          <li><%= link_to destroy_user_session_path,
+                          class: "customer-nav-dropdown-item danger",
+                          data: { turbo_method: :delete } do %>
+            <i class="fa-solid fa-right-from-bracket"></i> Log out
+          <% end %></li>
         </ul>
       </div>
     </div>

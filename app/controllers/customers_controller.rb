@@ -15,6 +15,12 @@ class CustomersController < ApplicationController
       return
     end
 
+    # Has past subscriptions but none active or pending
+    if @subscriptions.none?
+      @lapsed = true
+      return
+    end
+
     # Check for unpaid invoices across all subscriptions
     @unpaid_invoice = current_user.invoices.find_by(paid: false)
 
@@ -86,6 +92,11 @@ class CustomersController < ApplicationController
     @lifetime_litres = current_user.lifetime_litres.round(0)
     @lifetime_compost_kg = current_user.lifetime_compost_kg
     @lifetime_co2e_kg = current_user.lifetime_co2e_kg
+    @total_collections = current_user.collections.where(skip: false).count
+    @skipped_count = current_user.collections.where(skip: true).count
+    @total_bags = current_user.lifetime_bags.to_i
+    @streak = current_user.current_streak
+    @consistency = current_user.consistency_rate
   end
 
   def referrals
@@ -98,9 +109,8 @@ class CustomersController < ApplicationController
     @referral_code = current_user.referral_code
     @referrals = current_user.referrals_as_referrer.where(status: "completed")
     @referral_count = @referrals.count
-    collection_day = current_user.current_sub.collection_day
-    share_url = "alfred.gooi.me/?referral=#{@referral_code}"
-    @message = "Hey! I've been using a service called gooi to send my food scraps to a farm instead of to the landfill. It's such a simple change with a huge impact on the planet. The team is trying to grow in this neighbourhood (they collect every #{collection_day}), and I have a referral code that will get you 15% off - just sign up using this link: #{share_url}"
+    share_url = "www.gooi.me/?referral=#{@referral_code}"
+    @message = "Hey! I've been using a service called gooi to send my food scraps to a farm instead of to the landfill. It's a simple change with a huge impact on the planet. The team is trying to grow , and I have a referral code that will get you 15% off - just sign up using this link: #{share_url}"
     encoded_message = URI.encode_www_form_component(@message)
     @whatsapp_link = "https://wa.me/?text=#{encoded_message}"
   end
