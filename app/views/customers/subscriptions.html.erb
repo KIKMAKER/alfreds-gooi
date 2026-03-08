@@ -1,188 +1,133 @@
-<div class="driver-wrapper">
-  <h1 class="my-4">My Subscriptions</h1>
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <%= link_to "← Back to Dashboard", manage_path, class: "me-3" %>
-    <%= link_to "View Account Statement", statement_path(current_user), class: "btn-secondary-outline" %>
+<div class="subscription-show-container">
+
+  <!-- Header -->
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-file-contract"></i>
+      </div>
+      <div>
+        <h1>My Subscriptions</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          <%= @subscriptions.count %> subscription<%= @subscriptions.count == 1 ? '' : 's' %>
+        </p>
+      </div>
+    </div>
+    <%= link_to statement_path(current_user), class: "tiny-yellow-btn",
+                style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-file-lines"></i> Statement
+    <% end %>
   </div>
 
   <% if @subscriptions.any? %>
-    <!-- Desktop table view -->
-    <div class="table-responsive d-none d-md-block">
-      <table class="white-table table">
-        <thead>
-          <tr>
-            <th>Location</th>
-            <th>Plan</th>
-            <th>Duration</th>
-            <th>Dates</th>
-            <th>Collections</th>
-            <th>Invoices</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @subscriptions.each do |subscription| %>
-            <tr>
-              <td>
-                <strong><%= subscription.short_address %></strong><br>
-                <small class="text-muted"><%= subscription.suburb %></small>
-                <% if subscription.status == 'active' %>
-                  <span class="badge bg-success">Active</span>
-                <% elsif subscription.status == 'pending' %>
-                  <span class="badge bg-warning text-dark">Pending</span>
-                <% elsif subscription.status == 'paused' %>
-                  <span class="badge bg-secondary">Paused</span>
-                <% elsif subscription.status == 'completed' %>
-                  <span class="badge bg-info">Completed</span>
-                <% else %>
-                  <span class="badge bg-secondary"><%= subscription.status.titleize %></span>
-                <% end %>
-              </td>
-              <td>
-                <strong><%= subscription.plan %></strong>
-              </td>
-              <td>
-                <%= subscription.duration %> month<%= subscription.duration > 1 ? 's' : '' %><br>
-                <small class="text-muted"><%= subscription.total_collections %> collections</small>
-              </td>
-              <td>
-                <%= subscription.start_date ? subscription.start_date.strftime("%d %b %Y") : "TBD" %><br>
-                <small class="text-muted">to <%= subscription.end_date ? subscription.end_date.strftime("%d %b %Y") : "TBD" %></small>
-              </td>
-              <td>
-                <%= subscription.XL? ? "#{subscription.total_bags} buckets" : "#{subscription.total_bags} bags" %>
-              </td>
-              <td>
-                <% if subscription.monthly_invoicing? %>
-                  <div class="mb-2">
-                    <small class="text-muted d-block mb-1">Contract Progress</small>
-                    <div class="progress" style="height: 20px;">
-                      <div class="progress-bar" role="progressbar"
-                           style="width: <%= subscription.invoicing_progress_percentage %>%;"
-                           aria-valuenow="<%= subscription.invoicing_progress_percentage %>"
-                           aria-valuemin="0"
-                           aria-valuemax="100">
-                        <%= subscription.invoicing_progress_percentage %>%
-                      </div>
-                    </div>
-                    <small class="text-muted">R<%= number_with_delimiter(subscription.amount_invoiced.to_i, delimiter: ' ') %> / R<%= number_with_delimiter(subscription.contract_total.to_i, delimiter: ' ') %></small>
-                  </div>
-                <% end %>
-                <% if subscription.invoices.any? %>
-                  <% subscription.invoices.order(issued_date: :desc).each do |invoice| %>
-                    <%= link_to "Invoice ##{invoice.number || invoice.id}",
-                                invoice_path(invoice),
-                                class: "d-block small mb-1" %>
-                    <small class="text-muted">R<%= invoice.total_amount.to_i %></small>
-                    <% if invoice.paid %>
-                      <span class="badge bg-success">Paid</span>
-                    <% else %>
-                      <span class="badge bg-danger">Unpaid</span>
-                    <% end %>
-                    <br>
-                  <% end %>
-                <% else %>
-                  <small class="text-muted">No invoices</small>
-                <% end %>
-              </td>
-            </tr>
+    <% @subscriptions.each do |sub| %>
+      <div class="info-card mb-3">
+        <div class="info-card-header">
+          <i class="fa-solid fa-location-dot"></i>
+          <div style="flex: 1; min-width: 0;">
+            <h3 style="margin: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              <%= sub.short_address %>
+            </h3>
+            <div style="font-size: 0.8rem; color: #666; font-family: 'Montserrat', sans-serif;">
+              <%= sub.suburb %>
+            </div>
+          </div>
+          <%
+            badge_class = case sub.status
+                          when 'active'    then 'active'
+                          when 'pending'   then 'pending'
+                          when 'pause'     then 'paused'
+                          when 'completed' then 'completed'
+                          else 'completed'
+                          end
+          %>
+          <span class="subscription-status-badge <%= badge_class %>"><%= sub.status.titleize %></span>
+        </div>
+
+        <div class="info-card-body">
+          <div class="info-row">
+            <span class="info-label">Plan</span>
+            <span class="info-value"><%= sub.plan %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Duration</span>
+            <span class="info-value"><%= sub.duration %> month<%= sub.duration > 1 ? 's' : '' %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Period</span>
+            <span class="info-value">
+              <%= sub.start_date ? sub.start_date.strftime("%d %b %Y") : "TBD" %> –
+              <%= sub.end_date   ? sub.end_date.strftime("%d %b %Y")   : "TBD" %>
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Collections</span>
+            <span class="info-value"><%= sub.total_collections %> done</span>
+          </div>
+          <% if sub.XL? || sub.Commercial? %>
+            <div class="info-row">
+              <span class="info-label">Buckets collected</span>
+              <span class="info-value"><%= sub.total_bags %></span>
+            </div>
+          <% else %>
+            <div class="info-row">
+              <span class="info-label">Bags collected</span>
+              <span class="info-value"><%= sub.total_bags %></span>
+            </div>
           <% end %>
-        </tbody>
-      </table>
-    </div>
 
-    <!-- Mobile card view -->
-    <div class="d-md-none">
-      <% @subscriptions.each do |subscription| %>
-        <div class="card-white mb-3">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <div>
-              <strong><%= subscription.short_address %></strong><br>
-              <small class="text-muted"><%= subscription.suburb %></small>
-            </div>
-            <% if subscription.status == 'active' %>
-              <span class="badge bg-success">Active</span>
-            <% elsif subscription.status == 'pending' %>
-              <span class="badge bg-warning text-dark">Pending</span>
-            <% elsif subscription.status == 'paused' %>
-              <span class="badge bg-secondary">Paused</span>
-            <% elsif subscription.status == 'completed' %>
-              <span class="badge bg-info">Completed</span>
-            <% else %>
-              <span class="badge bg-secondary"><%= subscription.status.titleize %></span>
-            <% end %>
-          </div>
-
-          <div class="row mb-2">
-            <div class="col-6">
-              <small class="text-muted">Plan</small><br>
-              <strong><%= subscription.plan %></strong>
-            </div>
-            <div class="col-6">
-              <small class="text-muted">Duration</small><br>
-              <%= subscription.duration %> month<%= subscription.duration > 1 ? 's' : '' %>
-            </div>
-          </div>
-
-          <div class="row mb-2">
-            <div class="col-12">
-              <small class="text-muted">Period</small><br>
-              <%= subscription.start_date ? subscription.start_date.strftime("%d %b %Y") : "TBD" %> - <%= subscription.end_date ? subscription.end_date.strftime("%d %b %Y") : "TBD" %>
-            </div>
-          </div>
-
-          <div class="row mb-2">
-            <div class="col-6">
-              <small class="text-muted">Collections</small><br>
-              <%= subscription.total_collections %>
-            </div>
-            <div class="col-6">
-              <small class="text-muted">Total</small><br>
-              <%= subscription.XL? ? "#{subscription.total_bags} buckets" : "#{subscription.total_bags} bags" %>
-            </div>
-          </div>
-
-          <% if subscription.monthly_invoicing? || subscription.invoices.any? %>
-            <hr>
-            <% if subscription.monthly_invoicing? %>
-              <small class="text-muted d-block mb-2">Contract Progress</small>
-              <div class="progress mb-2" style="height: 20px;">
+          <% if sub.monthly_invoicing? %>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="info-label">Contract progress</span>
+                <span class="info-label">R<%= number_with_delimiter(sub.amount_invoiced.to_i) %> / R<%= number_with_delimiter(sub.contract_total.to_i) %></span>
+              </div>
+              <div class="progress" style="height: 8px; border-radius: 50px;">
                 <div class="progress-bar" role="progressbar"
-                     style="width: <%= subscription.invoicing_progress_percentage %>%;"
-                     aria-valuenow="<%= subscription.invoicing_progress_percentage %>"
-                     aria-valuemin="0"
-                     aria-valuemax="100">
-                  <%= subscription.invoicing_progress_percentage %>%
+                     style="width: <%= sub.invoicing_progress_percentage %>%; background: linear-gradient(90deg, #3c8a63, #108A63);"
+                     aria-valuenow="<%= sub.invoicing_progress_percentage %>"
+                     aria-valuemin="0" aria-valuemax="100">
                 </div>
               </div>
-              <small class="text-muted d-block mb-3">R<%= number_with_delimiter(subscription.amount_invoiced.to_i, delimiter: ' ') %> / R<%= number_with_delimiter(subscription.contract_total.to_i, delimiter: ' ') %></small>
-            <% end %>
-            <% if subscription.invoices.any? %>
-              <small class="text-muted">Invoices</small>
-              <div class="mt-2">
-                <% subscription.invoices.order(issued_date: :desc).each do |invoice| %>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <%= link_to "Invoice ##{invoice.number || invoice.id}",
-                                invoice_path(invoice),
-                                class: "small" %>
-                    <div>
-                      <small class="text-muted">R<%= invoice.total_amount.to_i %></small>
-                      <% if invoice.paid %>
-                        <span class="badge bg-success">Paid</span>
-                      <% else %>
-                        <span class="badge bg-danger">Unpaid</span>
-                      <% end %>
-                    </div>
+            </div>
+          <% end %>
+
+          <% if sub.invoices.any? %>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+              <% sub.invoices.order(issued_date: :desc).each do |invoice| %>
+                <%= link_to invoice_path(invoice), class: "d-flex justify-content-between align-items-center mb-2", style: "text-decoration: none;" do %>
+                  <span style="font-size: 0.875rem; color: #023F3A; font-weight: 500;">
+                    Invoice #<%= invoice.number || invoice.id %>
+                  </span>
+                  <div class="d-flex align-items-center gap-2">
+                    <span style="font-size: 0.875rem; color: #666;">R<%= number_with_delimiter(invoice.total_amount.to_i) %></span>
+                    <% if invoice.paid %>
+                      <span class="subscription-status-badge active" style="font-size: 0.75rem; padding: 2px 8px;">Paid</span>
+                    <% else %>
+                      <span class="subscription-status-badge paused" style="font-size: 0.75rem; padding: 2px 8px;">Unpaid</span>
+                    <% end %>
                   </div>
                 <% end %>
-              </div>
-            <% end %>
+              <% end %>
+            </div>
           <% end %>
         </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
+
+    <%= link_to new_subscription_path, class: "action-btn" do %>
+      <i class="fa-solid fa-plus"></i> Add subscription
+    <% end %>
+
   <% else %>
-    <div class="outline my-5">
-      <p class="text-center">You don't have any subscriptions yet</p>
+    <div class="info-card text-center">
+      <div class="info-card-body" style="padding: 2.5rem 1.5rem;">
+        <i class="fa-solid fa-file-contract" style="font-size: 3rem; color: #ccc; display: block; margin-bottom: 1rem;"></i>
+        <h3>No subscriptions yet</h3>
+        <p class="text-muted mb-4">Get started with a weekly compost collection.</p>
+        <%= link_to "View Plans", new_subscription_path, class: "action-btn" %>
+      </div>
     </div>
   <% end %>
+
 </div>

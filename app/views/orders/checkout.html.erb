@@ -1,36 +1,86 @@
-<div class="user-wrapper link-decoration">
-  <h1 class="my-4">Checkout</h1>
+<div class="subscription-show-container">
 
-  <div class="outline p-3 mb-4">
-    <h3>Order Summary</h3>
-    <% @order.order_items.each do |item| %>
-      <div class="d-flex justify-content-between mb-2">
-        <p><%= item.product.title %> x <%= item.quantity %></p>
-        <p>R<%= item.subtotal.to_i %></p>
+  <!-- Header -->
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-basket-shopping"></i>
       </div>
+      <div>
+        <h1>Checkout</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          Review and confirm your order
+        </p>
+      </div>
+    </div>
+    <%= link_to shop_index_path, class: "tiny-yellow-btn",
+                style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
     <% end %>
-    <hr>
-    <div class="d-flex justify-content-between">
-      <p><strong>Total:</strong></p>
-      <p><strong>R<%= @order.total_amount.to_i %></strong></p>
+  </div>
+
+  <!-- Order summary -->
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-receipt"></i>
+      <h3>Order Summary</h3>
+    </div>
+    <div class="info-card-body">
+      <% @order.order_items.each do |item| %>
+        <div class="info-row">
+          <span class="info-label"><%= item.product.title %></span>
+          <span class="info-value">
+            <%= item.quantity %> × R<%= item.price.to_i %>
+            <span style="color: #023F3A; margin-left: 0.5rem;">R<%= item.subtotal.to_i %></span>
+          </span>
+        </div>
+      <% end %>
+      <div style="border-top: 2px solid #f0f0f0; padding-top: 1rem; margin-top: 0.25rem;"
+           class="d-flex justify-content-between align-items-center">
+        <span style="font-weight: 700; font-family: 'Montserrat', sans-serif; color: #023F3A; font-size: 1rem;">Total</span>
+        <span style="font-weight: 700; font-family: 'Montserrat', sans-serif; color: #3c8a63; font-size: 1.1rem;">
+          R<%= @order.total_amount.to_i %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery -->
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-truck"></i>
+      <h3>Delivery</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @next_collection %>
+        <div class="info-row">
+          <span class="info-label">Date</span>
+          <span class="info-value"><%= @next_collection.date.strftime('%a, %d %b %Y') %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <span class="info-value" style="text-align: right;">
+            <%= @next_collection.subscription.short_address %>,
+            <%= @next_collection.subscription.suburb %>
+          </span>
+        </div>
+        <p class="text-muted small mb-0 mt-3" style="line-height: 1.5;">
+          Your order will be dropped off during your regular collection. No extra trip needed.
+        </p>
+      <% else %>
+        <p style="color: #bc4749; font-size: 0.875rem; margin: 0;">
+          No upcoming collections scheduled. Please contact us to arrange delivery.
+        </p>
+      <% end %>
     </div>
   </div>
 
   <% if @next_collection %>
-    <div class="outline p-3 mb-4 lh-lg">
-      <h3>Delivery</h3>
-      <p>Your order will be delivered with your next collection:</p>
-      <p><strong><%= @next_collection.date.strftime('%A, %B %e, %Y') %></strong></p>
-      <p class="text-muted"><%= @next_collection.subscription.street_address %>, <%= @next_collection.subscription.suburb %></p>
-    </div>
-
-    <%= button_to "Confirm Order", attach_to_collection_order_path(@order, collection_id: @next_collection.id),
-                  method: :post, class: "submit-btn w-100" %>
-  <% else %>
-    <div class="outline p-3 mb-4">
-      <p class="text-danger">You don't have any upcoming collections scheduled. Please contact us to arrange delivery.</p>
-    </div>
+    <%= button_to attach_to_collection_order_path(@order, collection_id: @next_collection.id),
+                  method: :post, class: "tiny-yellow-btn w-100",
+                  style: "justify-content: center; font-size: 1rem; padding: 0.875rem;" do %>
+      <i class="fa-solid fa-check"></i> Confirm Order
+    <% end %>
   <% end %>
 
-  <%= link_to "← Back to Shop", shop_index_path, class: "d-block mt-3" %>
 </div>

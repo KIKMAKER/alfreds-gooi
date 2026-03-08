@@ -1,0 +1,124 @@
+// ===================================
+// Customer Mobile Bottom Navigation
+// ===================================
+
+.customer-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  border-top: 1px solid #e8e8e8;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: stretch;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: #aaa;
+  font-size: 0.6rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  padding: 8px 4px;
+
+  i {
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+
+  &.active {
+    color: $dark-green;
+
+    i {
+      transform: scale(1.1);
+    }
+  }
+
+  &:hover {
+    color: $dark-green;
+    text-decoration: none;
+  }
+}
+
+// More drawer items
+.more-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 0.25rem;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.975rem;
+  transition: background 0.15s ease;
+  font-family: 'Montserrat', sans-serif;
+  border-bottom: 1px solid #f5f5f5;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .drawer-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f0f6f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+      color: $dark-green;
+      font-size: 0.95rem;
+    }
+  }
+
+  .drawer-label {
+    flex: 1;
+    color: #222;
+    font-weight: 500;
+  }
+
+  .drawer-chevron {
+    color: #ccc;
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    background: #f9f9f9;
+    text-decoration: none;
+  }
+
+  &.danger .drawer-icon {
+    background: #fdf0f0;
+    i { color: #bc4749; }
+  }
+
+  &.danger .drawer-label {
+    color: #bc4749;
+  }
+}
+
+// Push content above fixed nav on mobile
+@media (max-width: 767px) {
+  body:has(.customer-bottom-nav) {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+}

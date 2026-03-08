@@ -95,6 +95,11 @@
     <%  end %>
     <%= render "shared/flashes" %>
     <%= yield %>
-    <%= render "shared/footer" %>
+    <% unless user_signed_in? && !current_user.driver? && !current_user.admin? && !current_user.drop_off? && !current_page?(root_path) %>
+      <%= render "shared/footer" %>
+    <% end %>
+    <% if user_signed_in? && !current_user.driver? && !current_user.admin? && !current_user.drop_off? %>
+      <%= render "shared/customer_bottom_nav" %>
+    <% end %>
   </body>
 </html>
