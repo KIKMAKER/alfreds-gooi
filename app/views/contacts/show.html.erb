@@ -1,0 +1,165 @@
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-person"></i>
+      </div>
+      <div>
+        <h1><%= @contact.full_name %></h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          <% if @contact.is_primary? %>
+            Owner &mdash; primary contact
+          <% elsif @contact.relationship.present? %>
+            <%= @contact.relationship.titleize %> &mdash; household contact
+          <% else %>
+            Household contact
+          <% end %>
+        </p>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <%= link_to subscription_path(@subscription), class: "tiny-yellow-btn",
+          style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+        <i class="fa-solid fa-recycle"></i> Subscription
+      <% end %>
+      <% if current_user.admin? %>
+        <%= link_to admin_user_path(@subscription.user), class: "tiny-yellow-btn",
+            style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+          <i class="fa-solid fa-user"></i> User
+        <% end %>
+      <% end %>
+      <%= link_to edit_subscription_contact_path(@subscription, @contact), class: "tiny-yellow-btn",
+          style: "white-space: nowrap;" do %>
+        <i class="fa-solid fa-pen"></i> Edit
+      <% end %>
+    </div>
+  </div>
+
+  <div class="subscription-grid">
+
+    <!-- Contact Details Card -->
+    <div class="info-card">
+      <div class="info-card-header">
+        <i class="fa-solid fa-address-card"></i>
+        <h3>Contact Details</h3>
+      </div>
+      <div class="info-card-body">
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value"><%= @contact.full_name %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value"><%= @contact.phone_number %></span>
+        </div>
+        <% if @contact.relationship.present? || @contact.is_primary? %>
+          <div class="info-row">
+            <span class="info-label">Relationship</span>
+            <span class="info-value">
+              <%= @contact.is_primary? ? 'Owner' : @contact.relationship.titleize %>
+            </span>
+          </div>
+        <% end %>
+        <div class="info-row">
+          <span class="info-label">WhatsApp</span>
+          <span class="info-value">
+            <% if @contact.whatsapp_opt_out? %>
+              <span class="text-danger"><i class="fa-solid fa-ban"></i> Opted out</span>
+            <% else %>
+              <span class="text-success"><i class="fa-brands fa-whatsapp"></i> Receiving reminders</span>
+            <% end %>
+          </span>
+        </div>
+        <% if @contact.phone_number.present? %>
+          <div class="info-row">
+            <span class="info-label">Message</span>
+            <span class="info-value">
+              <%= link_to "https://wa.me/#{@contact.formatted_phone&.delete('+')}",
+                          target: "_blank", class: "link-title" do %>
+                <i class="fa-brands fa-whatsapp"></i> Open WhatsApp
+              <% end %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Subscription Card -->
+    <div class="info-card">
+      <div class="info-card-header">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <h3>Subscription</h3>
+      </div>
+      <div class="info-card-body">
+        <div class="info-row">
+          <span class="info-label">Account holder</span>
+          <span class="info-value">
+            <%= @subscription.user.first_name %> <%= @subscription.user.last_name %>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Plan</span>
+          <span class="info-value"><%= @subscription.plan %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          <span class="info-value">
+            <span class="subscription-status-badge <%= @subscription.status %>">
+              <%= @subscription.status.titleize %>
+            </span>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Collection day</span>
+          <span class="info-value"><%= @subscription.collection_day&.titleize %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Suburb</span>
+          <span class="info-value"><%= @subscription.suburb %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <span class="info-value"><%= @subscription.street_address %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Started</span>
+          <span class="info-value"><%= @subscription.start_date&.strftime("%d %b %Y") %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Collections</span>
+          <span class="info-value"><%= @subscription.total_collections %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Contacts Card -->
+    <% other_contacts = @subscription.contacts.where.not(id: @contact.id).order(is_primary: :desc, created_at: :asc) %>
+    <% if other_contacts.any? %>
+      <div class="info-card">
+        <div class="info-card-header">
+          <i class="fa-solid fa-users"></i>
+          <h3>Other Contacts at This Address</h3>
+        </div>
+        <div class="info-card-body">
+          <% other_contacts.each do |c| %>
+            <div class="info-row">
+              <span class="info-label">
+                <%= link_to subscription_contact_path(@subscription, c), class: "link-title" do %>
+                  <%= c.full_name %>
+                <% end %>
+                <% if c.is_primary? %>
+                  <span class="badge bg-success ms-1" style="font-size: 0.65rem;">Owner</span>
+                <% elsif c.relationship.present? %>
+                  <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;"><%= c.relationship.titleize %></span>
+                <% end %>
+              </span>
+              <span class="info-value text-muted" style="font-size: 0.875rem;"><%= c.phone_number %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>

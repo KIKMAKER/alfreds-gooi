@@ -1,4 +1,5 @@
 class DriversDaysController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot]
   before_action :set_drivers_day, only: %i[drop_off edit update destroy collections]
 
   def route
@@ -136,7 +137,7 @@ class DriversDaysController < ApplicationController
       DailySnapshotMailer.report(drivers_day_id: @drivers_day.id).deliver_now
 
       # Run background jobs
-      CreateCollectionsJob.perform_now
+      CreateCollectionsJob.perform_now(@drivers_day.date.to_s)
       CreateNextWeekDropOffEventsJob.perform_now
       CheckSubscriptionsForCompletionJob.perform_now
 

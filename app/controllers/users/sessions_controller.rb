@@ -77,7 +77,7 @@ class Users::SessionsController < Devise::SessionsController
   # simple safety: only allow relative, non-auth paths
   def safe_redirect_path?(path)
     uri = URI.parse(path) rescue nil
-    uri && uri.host.nil? && !path.start_with?("/users/")
+    uri && uri.host.nil? && !path.start_with?("/users/") && path != '/'
   end
 
 

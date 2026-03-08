@@ -1,10 +1,10 @@
 <div class="user-wrapper">
   <h1>Bulk WhatsApp Messaging</h1>
-  <p class="text-muted">Filter customers and generate WhatsApp links to send messages</p>
+  <p class="text-muted">Filter customers and generate personalised WhatsApp links for each contact</p>
 
   <%= form_with url: admin_bulk_messages_path, method: :get, local: true do |f| %>
     <div class="card p-4 mb-4" style="border-radius: 1em;">
-      <h3 class="mb-3">Filters</h3>
+      <h3 class="mb-3">Subscription Filters</h3>
 
       <div class="row g-3">
         <!-- Status Filter -->
@@ -12,9 +12,16 @@
           <%= f.label :status_filter, "Status", class: "form-label" %>
           <%= f.select :status_filter,
                        options_for_select([
-                         ['All Active Subscriptions', 'all_active'],
-                         ['Recently Completed (Last 2 Weeks)', 'recently_completed'],
-                         ['Pending', 'all_pending']
+                         ['— Active —', nil, disabled: true],
+                         ['All Active', 'all_active'],
+                         ['New Customers (last 30 days)', 'new_customers'],
+                         ['Long-term (12+ months)', 'long_term'],
+                         ['— Other —', nil, disabled: true],
+                         ['Paused', 'paused'],
+                         ['Recently Completed (last 2 weeks)', 'recently_completed'],
+                         ['All Completed', 'all_completed'],
+                         ['Pending', 'all_pending'],
+                         ['Legacy', 'legacy']
                        ], params[:status_filter] || 'all_active'),
                        {},
                        class: "form-select" %>
@@ -24,7 +31,7 @@
         <div class="col-md-3">
           <%= f.label :collection_day, "Collection Day", class: "form-label" %>
           <%= f.select :collection_day,
-                       options_for_select([['All Days', 'all']] + Subscription.collection_days.keys.map { |day| [day, day] }, params[:collection_day]),
+                       options_for_select([['All Days', 'all']] + Subscription.collection_days.keys.map { |day| [day.titleize, day] }, params[:collection_day]),
                        {},
                        class: "form-select" %>
         </div>
@@ -72,15 +79,76 @@
 
       <hr class="my-4">
 
+      <h3 class="mb-3">Contact Filters</h3>
+      <div class="row g-3">
+        <!-- Relationship -->
+        <div class="col-md-3">
+          <%= f.label :relationship, "Relationship", class: "form-label" %>
+          <%= f.select :relationship,
+                       options_for_select([
+                         ['All Contacts', 'all'],
+                         ['Owner', 'owner'],
+                         ['Spouse', 'spouse'],
+                         ['Housemate', 'housemate'],
+                         ['Family', 'family'],
+                         ['Other', 'other']
+                       ], params[:relationship] || 'all'),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <!-- Opted-in only -->
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <%= f.check_box :opted_in_only, checked: params[:opted_in_only] == '1', class: "form-check-input" %>
+            <%= f.label :opted_in_only, "WhatsApp opted-in only", class: "form-check-label" %>
+          </div>
+        </div>
+
+        <!-- Primary only -->
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <%= f.check_box :primary_only, checked: params[:primary_only] == '1', class: "form-check-input" %>
+            <%= f.label :primary_only, "Owner only (one per subscription)", class: "form-check-label" %>
+          </div>
+        </div>
+
+        <!-- Non-primary only -->
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <%= f.check_box :non_primary_only, checked: params[:non_primary_only] == '1', class: "form-check-input" %>
+            <%= f.label :non_primary_only, "Non-owner contacts only", class: "form-check-label" %>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
       <h3 class="mb-3">Message</h3>
       <div class="mb-3">
         <%= f.label :message, "WhatsApp Message", class: "form-label" %>
         <%= f.text_area :message,
                         value: params[:message],
-                        rows: 5,
+                        rows: 6,
                         class: "form-control",
-                        placeholder: "Hi {first_name}! This is your friendly reminder..." %>
-        <small class="text-muted">Use {first_name} and {account_start} to personalize the message for each customer</small>
+                        placeholder: "Hi {first_name}! Just a reminder that your collection is on {collection_day}..." %>
+        <div class="mt-2">
+          <small class="text-muted d-block mb-1"><strong>Personalisation tokens:</strong></small>
+          <div class="d-flex flex-wrap gap-2">
+            <% [
+              ['{first_name}', "Contact's first name"],
+              ['{last_name}', "Contact's last name"],
+              ['{full_name}', "Contact's full name"],
+              ['{collection_day}', "Collection day (e.g. Tuesday)"],
+              ['{suburb}', "Suburb"],
+              ['{plan}', "Plan (Standard / XL)"],
+              ['{account_start}', "Subscription start date"],
+              ['{relationship}', "Contact's relationship (Owner, Spouse…)"]
+            ].each do |token, description| %>
+              <span class="badge bg-light text-dark border" title="<%= description %>"><%= token %></span>
+            <% end %>
+          </div>
+        </div>
       </div>
 
       <div class="d-flex gap-2">
@@ -90,52 +158,74 @@
     </div>
   <% end %>
 
-  <% if @users.present? %>
+  <% if @contacts.present? %>
+    <% subscription_count = @contacts.map { |c| c.subscription_id }.uniq.count %>
     <div class="card p-4" style="border-radius: 1em;">
-      <h3 class="mb-3">Results: <%= @users.count %> <%= 'customer'.pluralize(@users.count) %></h3>
+      <h3 class="mb-3">
+        Results: <%= @contacts.count %> <%= 'contact'.pluralize(@contacts.count) %>
+        <small class="text-muted fw-normal fs-6">across <%= subscription_count %> <%= 'subscription'.pluralize(subscription_count) %></small>
+      </h3>
 
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Contact</th>
               <th>Phone</th>
               <th>Suburb</th>
               <th>Day</th>
+              <th>Plan</th>
               <th>Collections</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <% @users.each do |user| %>
-              <% subscription = if params[:status_filter] == 'recently_completed'
-                                  user.subscriptions.where(status: :completed).order(updated_at: :desc).first
-                                elsif params[:status_filter] == 'all_pending'
-                                  user.subscriptions.where(status: :pending).order(updated_at: :desc).first
-                                else
-                                  user.subscriptions.active.first
-                                end %>
+            <% @contacts.each do |contact| %>
+              <% sub = contact.subscription %>
               <tr>
-                <td><%= link_to "#{user.first_name} #{user.last_name}", admin_user_path(user) %></td>
-                <td><%= user.phone_number %></td>
-                <td><%= subscription&.suburb %></td>
-                <td><%= subscription&.collection_day %></td>
-                <td><%= subscription&.total_collections || 0 %></td>
+                <td>
+                  <%= link_to subscription_contact_path(sub, contact), class: "link-title" do %>
+                    <%= contact.full_name %>
+                    <% if contact.is_primary? %>
+                      <span class="badge bg-success ms-1" style="font-size: 0.65rem;">Owner</span>
+                    <% elsif contact.relationship.present? %>
+                      <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;"><%= contact.relationship.titleize %></span>
+                    <% end %>
+                  <% end %>
+                  <% if contact.whatsapp_opt_out? %>
+                    <br><small class="text-danger"><i class="fa-brands fa-whatsapp"></i> opted out</small>
+                  <% end %>
+                </td>
+                <td><%= contact.phone_number %></td>
+                <td><%= sub&.suburb %></td>
+                <td><%= sub&.collection_day&.titleize %></td>
+                <td><%= sub&.plan&.titleize %></td>
+                <td><%= sub&.total_collections || 0 %></td>
                 <td>
                   <% if @message.present? %>
                     <% replacements = {
-                                        '{first_name}'    => user.first_name,
-                                        '{account_start}' => user.created_at.strftime("%b %d")
-                                      } %>
-                    <% personalized_message = replacements.reduce(@message) { |msg, (k, v)| msg.gsub(k, v.to_s) } %>
+                      '{first_name}'     => contact.first_name,
+                      '{last_name}'      => contact.last_name.to_s,
+                      '{full_name}'      => contact.full_name,
+                      '{collection_day}' => sub&.collection_day&.titleize.to_s,
+                      '{suburb}'         => sub&.suburb.to_s,
+                      '{plan}'           => sub&.plan&.titleize.to_s,
+                      '{account_start}'  => sub&.start_date&.strftime("%d %b %Y").to_s,
+                      '{relationship}'   => (contact.is_primary? ? 'Owner' : contact.relationship&.titleize).to_s
+                    } %>
+                    <% personalized_message = replacements.reduce(@message) { |msg, (k, v)| msg.gsub(k, v) } %>
                     <% encoded_message = ERB::Util.url_encode(personalized_message) %>
-<!---->
-                    <%# personalized_message = @message.gsub('{first_name}', user.first_name) %>
-                    <%# encoded_message = ERB::Util.url_encode(personalized_message) %>
-                    <%= link_to "https://wa.me/#{user.phone_number}?text=#{encoded_message}",
-                                target: "_blank",
-                                class: "link-title" do %>
-                      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    <% phone = contact.formatted_phone %>
+                    <% if phone.present? && !contact.whatsapp_opt_out? %>
+                      <%= link_to "https://wa.me/#{phone.delete('+')}?text=#{encoded_message}",
+                                  target: "_blank",
+                                  class: "link-title" do %>
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                      <% end %>
+                    <% elsif contact.whatsapp_opt_out? %>
+                      <span class="text-muted"><i class="fa-solid fa-ban"></i> Opted out</span>
+                    <% else %>
+                      <span class="text-muted">No phone</span>
                     <% end %>
                   <% else %>
                     <span class="text-muted">Enter message above</span>
@@ -147,9 +237,9 @@
         </table>
       </div>
     </div>
-  <% elsif params[:message].present? %>
+  <% elsif params.key?(:status_filter) %>
     <div class="alert alert-info">
-      No customers match your filter criteria.
+      No contacts match your filter criteria.
     </div>
   <% end %>
 </div>
