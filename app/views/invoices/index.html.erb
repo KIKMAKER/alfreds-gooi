@@ -1,60 +1,100 @@
-<div class="driver-wrapper link-decoration mb-2">
-  <div class="d-flex">
-    <% if @user.present? %>
-      <h1>Invoices for <%= @user.first_name %> <%= @user.last_name %></h1>
-    <% else %>
-      <h1>All invoices</h1>
-    <% end %>
-    <% if current_user.admin? %>
-      <%= link_to ' + invoice', new_invoice_path, class:"link-title" %>
-      <%= link_to 'view payments', payments_path, class:"link-title"  %>
-      <% if @user.present? %>
-        <%= link_to 'all invoices', invoices_path, class:"link-title" %>
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-file-invoice-dollar"></i>
+      </div>
+      <div>
+        <% if @user.present? %>
+          <h1>Invoices</h1>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            <%= @user.first_name %> <%= @user.last_name %>
+          </p>
+        <% else %>
+          <h1>Invoices</h1>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            <%= @invoices.count %> total
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <% if current_user.admin? %>
+        <%= link_to new_invoice_path, class: "tiny-yellow-btn",
+            style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+          <i class="fa-solid fa-plus"></i> New
+        <% end %>
+        <%= link_to payments_path, class: "tiny-yellow-btn",
+            style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+          Payments
+        <% end %>
+        <% if @user.present? %>
+          <%= link_to invoices_path, class: "tiny-yellow-btn",
+              style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+            All invoices
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= link_to statement_path(current_user), class: "tiny-yellow-btn",
+            style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+          <i class="fa-solid fa-scroll"></i> Statement
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
-  <% unless current_user.admin? %>
-    <div class="mb-3">
-      <%= link_to 'View as Statement', statement_path(current_user), class:"link-title" %>
+
+  <% if @invoices.any? %>
+    <div class="info-card">
+      <div class="info-card-body" style="padding: 0;">
+        <% @invoices.each do |invoice| %>
+          <%= link_to invoice_path(invoice), style: "text-decoration: none; color: inherit;" do %>
+            <div class="info-row" style="padding: 1rem 1.5rem; cursor: pointer;">
+              <div class="d-flex flex-column gap-1">
+                <span style="font-weight: 600; color: #023F3A; font-size: 0.9rem;">
+                  <%= invoice.issued_date.strftime('%d %b %Y') %>
+                </span>
+                <span style="font-size: 0.8rem; color: #888;">
+                  <% if current_user.admin? %>
+                    <%= invoice.user&.first_name || '?' %> &middot; #<%= invoice.number || invoice.id %>
+                  <% else %>
+                    <%= invoice.subscription&.short_address %>
+                  <% end %>
+                </span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <span style="font-weight: 700; font-family: 'Montserrat', sans-serif; color: #023F3A;">
+                  R<%= invoice.total_amount.truncate %>
+                </span>
+                <% if invoice.paid %>
+                  <i class="fa-solid fa-circle-check" style="color: #3c8a63; font-size: 1.1rem;"></i>
+                <% else %>
+                  <i class="fa-solid fa-circle-xmark" style="color: #bc4749; font-size: 1.1rem;"></i>
+                <% end %>
+                <% if current_user.admin? %>
+                  <%= button_to invoice_path(invoice),
+                      method: :delete,
+                      data: { turbo_confirm: "Delete this invoice?" },
+                      class: "btn btn-sm p-0 border-0 bg-transparent",
+                      style: "color: #bc4749; font-size: 0.8rem;",
+                      form: { style: "display: inline;" } do %>
+                    <i class="fa-solid fa-trash"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="info-card text-center">
+      <div class="info-card-body" style="padding: 2.5rem 1.5rem;">
+        <i class="fa-solid fa-file-invoice" style="font-size: 3rem; color: #ccc; display: block; margin-bottom: 1rem;"></i>
+        <p class="text-muted mb-0">No invoices yet.</p>
+      </div>
     </div>
   <% end %>
-  <% @invoices.each do |invoice| %>
-    <% if current_user.admin? %>
-      <%= link_to invoice_path(invoice) do %>
-        <div class="payment-card">
-          <p><%= invoice.issued_date.strftime('%b %d') %></p>
-          <div class="payment-card-user">
-            <%= invoice.user&.first_name || '?' %><br>
-            <small class="text-muted">#<%= invoice.number || invoice.id %></small>
-          </div>
-          <div class="payment-card-amount">
-            <h2>R<%= invoice.total_amount.truncate %></h2>
-            <%= link_to 'delete', invoice_path(invoice), data: { turbo_method: :delete, turbo_confirm: "Are you sure?"}  %>
-          </div>
-          <% if invoice.paid %>
-            <i class="fa-regular fa-circle-check"></i>
-          <% else %>
-            <i class="fa-regular fa-circle-xmark"></i>
-          <% end %>
-        </div>
-      <% end %>
-    <% else %>
-      <%= link_to invoice_path(invoice) do %>
-        <div class="payment-card">
-          <p><%= invoice.issued_date.strftime('%b %d') %></p>
-          <div class="payment-card-user">
-            <%= invoice.subscription.street_address %>
-          </div>
-          <div class="payment-card-amount">
-            <h2>R<%= invoice.total_amount.truncate %></h2>
-          </div>
-          <% if invoice.paid %>
-            <i class="fa-regular fa-circle-check"></i>
-          <% else %>
-            <i class="fa-regular fa-circle-xmark"></i>
-          <% end %>
-        </div>
-      <% end %>
-    <% end %>
-  <% end %>
+
 </div>

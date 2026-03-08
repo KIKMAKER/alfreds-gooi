@@ -36,3 +36,10 @@ function updateBottomNavActive() {
 }
 
 document.addEventListener("turbo:load", updateBottomNavActive)
+
+// Close any open offcanvas (More drawer) before Turbo navigates
+document.addEventListener("turbo:before-visit", () => {
+  document.querySelectorAll(".offcanvas.show").forEach(el => {
+    bootstrap.Offcanvas.getInstance(el)?.hide()
+  })
+})

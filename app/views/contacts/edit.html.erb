@@ -1,69 +1,83 @@
-<div class="user-wrapper">
-  <div class="gooi-container">
-    <div class="outline">
-      <div class="text-center mb-4">
-        <div class="contact-avatar mx-auto mb-3" style="width: 64px; height: 64px;">
-          <i class="fa-solid fa-user-pen" style="font-size: 1.75rem;"></i>
-        </div>
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-user-pen"></i>
+      </div>
+      <div>
         <h1>Edit Contact</h1>
         <% if @contact.is_primary? %>
-          <p class="text-muted">
-            <span class="contact-badge primary-badge">Owner</span>
-            You can update phone number and WhatsApp preferences
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            Owner &mdash; phone &amp; WhatsApp only
+          </p>
+        <% else %>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            Update contact details
           </p>
         <% end %>
       </div>
+    </div>
+    <%= link_to subscription_contacts_path(@subscription), class: "tiny-yellow-btn",
+        style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+  </div>
 
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-address-card"></i>
+      <h3>Contact Details</h3>
+    </div>
+    <div class="info-card-body">
       <%= simple_form_for [@subscription, @contact] do |f| %>
-        <div class="row">
-          <div class="col-md-6">
-            <%= f.input :first_name, required: true,
-                        label: 'First Name',
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <%= f.input :first_name, required: true, label: 'First name',
                         disabled: @contact.is_primary?,
-                        input_html: { class: 'form-control' } %>
+                        input_html: { class: 'form-control' },
+                        wrapper_html: { class: 'mb-0' } %>
           </div>
-          <div class="col-md-6">
-            <%= f.input :last_name,
-                        label: 'Last Name',
+          <div class="col-6">
+            <%= f.input :last_name, label: 'Last name',
                         disabled: @contact.is_primary?,
-                        input_html: { class: 'form-control' } %>
+                        input_html: { class: 'form-control' },
+                        wrapper_html: { class: 'mb-0' } %>
           </div>
         </div>
 
-        <%= f.input :phone_number, required: true,
-                    label: 'Phone Number',
-                    hint: 'Include country code (e.g., +27821234567 or 0821234567)',
+        <%= f.input :phone_number, required: true, label: 'Phone number',
+                    hint: '+27821234567 or 0821234567',
                     input_html: { class: 'form-control' } %>
 
         <%= f.input :relationship,
                     collection: %w[owner spouse housemate family other],
-                    include_blank: 'Select relationship (optional)',
+                    include_blank: 'Select (optional)',
                     label: 'Relationship',
                     disabled: @contact.is_primary?,
                     input_html: { class: 'form-select' } %>
 
-        <div class="form-check mb-4 p-3" style="background-color: #f8f9fa; border-radius: 12px;">
+        <div class="p-3 mb-3" style="background: #f8f9fa; border-radius: 12px;">
           <%= f.input :whatsapp_opt_out, as: :boolean,
-                      label: 'Opt this contact out of WhatsApp reminders',
-                      wrapper_html: { class: 'form-check' } %>
-          <small class="text-muted d-block mt-2">
-            <i class="fa-brands fa-whatsapp"></i>
+                      label: 'Opt out of WhatsApp reminders',
+                      wrapper_html: { class: 'mb-1' } %>
+          <small class="text-muted">
+            <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i>
             <% if @contact.whatsapp_opt_out? %>
-              This contact will not receive collection reminders
+              This contact won't receive collection reminders
             <% else %>
               This contact will receive collection reminders
             <% end %>
           </small>
         </div>
 
-        <div class="form-actions text-center">
-          <%= f.submit 'Update Contact', class: 'submit-btn' %>
-          <%= link_to subscription_contacts_path(@subscription), class: 'submit-btn',
-                      style: 'background-color: #999; margin-left: 0.5rem;' do %>
-            Cancel
-          <% end %>
+        <div class="d-flex gap-2">
+          <%= f.submit 'Update Contact', class: 'action-btn' %>
+          <%= link_to 'Cancel', subscription_contacts_path(@subscription), class: 'action-btn',
+              style: 'border-color: #ccc; color: #666;' %>
         </div>
       <% end %>
     </div>
   </div>
+
 </div>

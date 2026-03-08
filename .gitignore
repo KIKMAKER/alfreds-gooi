@@ -38,3 +38,5 @@
 
 # Ignore CSV files with customer data
 /db/*.csv
+.screenshot-config
+scripts/screenshots/
