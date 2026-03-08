@@ -4,13 +4,11 @@
   max-width: 37.5rem; // 600px
   margin: 0 auto 2rem;
   background: linear-gradient(135deg, #1a4d3e 0%, #0d3329 100%);
-  border-radius: 1.5rem; // 24px
   position: relative;
 
   @media (max-width: 36rem) { // 576px
     max-width: 100%;
     margin: 0 0 1rem;
-    border-radius: 1rem; // 16px
   }
 
   // Decorative background pattern

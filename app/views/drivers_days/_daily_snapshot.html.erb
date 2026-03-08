@@ -53,7 +53,7 @@
   </div>
 
   <div class="snapshot-footer">
-    <p>Together we're building <strong><%= drivers_day.drop_off_events.first&.drop_off_site&.name || "a healthier planet" %></strong>.
-    </p>
+    <% site_names = drivers_day.drop_off_events.map { |e| e.drop_off_site&.name }.compact.uniq %>
+    <p>Together we're building <strong><%= site_names.any? ? site_names.to_sentence : "a healthier planet" %></strong>.</p>
   </div>
 </div>
