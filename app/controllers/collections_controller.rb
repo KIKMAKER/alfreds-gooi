@@ -159,21 +159,6 @@ class CollectionsController < ApplicationController
     redirect_to request.referer || amin_collections_path, notice: "Collection was successfully deleted."
   end
 
-  def skipme
-    target_dates = [Date.current, Date.current.tomorrow]
-    @subscription = current_user.subscriptions.where(is_paused: false, status: 'active').order(:created_at).last
-    collection = @subscription.collections.where(date: target_dates).order(:date).first
-
-    return redirect_to manage_path, notice: "No active subscription found." unless @subscription && collection
-
-    date = collection.date == Date.current ? 'today' : 'tomorrow'
-
-    if collection.mark_skipped!(by: current_user, reason: "skipme")
-      @note = "Success!\n We'll skip you #{date}"
-    else
-      @note = "Something went wrong, please manually skip, or whatsapp Alfred"
-    end
-  end
 
   def add_bags
     if @collection.needs_bags == 3

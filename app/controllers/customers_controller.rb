@@ -116,12 +116,13 @@ class CustomersController < ApplicationController
   end
 
   def skipme
+    # raise
     @subscription = current_user.subscriptions.where(status: 'active').order(:created_at).last
 
     # Find the next upcoming collection (any day from today onwards)
     collection = @subscription&.collections&.where('date >= ?', Date.current).order(:date).first
 
-    return redirect_to manage_path, notice: "No active subscription found." unless @subscription && collection
+    return redirect_to manage_path, notice: "No subscription with next collction found." unless @subscription && collection
 
     # Determine the message based on when the collection is
     days_until = (collection.date - Date.current).to_i

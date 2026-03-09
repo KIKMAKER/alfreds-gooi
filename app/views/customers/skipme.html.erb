@@ -1,28 +1,79 @@
-<div class="user-wrapper">
-  <h1><%= @note %></h1>
-  <div class="user-holiday-container" data-controller="toggle">
-    <% if @subscription.holiday_end < Date.current %>
-      <h2>Need to skip more than one week?</h2>
-      <button class="submit-btn mt-3" data-action="toggle#fire" data-toggle-target="button">Plan a Holiday</button>
-      <div class="card-white d-none" data-toggle-target="form">
-        <h2>Plan a holiday</h2>
-        <%= simple_form_for @subscription do |f| %>
-          <%= f.input :holiday_start,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "start:" %>
-          <%= f.input :holiday_end,
-                          as: :string,
-                          input_html: { data: { controller: "datepicker" } }, label: "end:" %>
-          <%= f.submit "save", class: "submit-btn" %>
-        <% end %>
-      </div>
-    <% else %>
-      <h2>Upcoming Holiday</h2>
-      <div class="mt-4 container-flex flex-column">
-        <p><%= @subscription.holiday_start.strftime("%a %d %b") %> - <%= @subscription.holiday_end.strftime("%a %d %b") %></p>
-        <%= button_to "Cancel", clear_holiday_subscription_path(@subscription), class: "submit-btn mt-2", data: {turbo: false} %>
-      </div>
-    <% end %>
+<div class="subscription-show-container">
 
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-circle-pause"></i>
+      </div>
+      <div>
+        <h1>Skip a Week</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          Manage your upcoming collections
+        </p>
+      </div>
+    </div>
+    <%= link_to manage_path, class: "tiny-yellow-btn",
+        style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
   </div>
+
+  <!-- Skip confirmation -->
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-<%= @note.start_with?('Success') ? 'circle-check' : 'triangle-exclamation' %>"></i>
+      <h3><%= @note.start_with?('Success') ? 'Collection Skipped' : 'Something Went Wrong' %></h3>
+    </div>
+    <div class="info-card-body">
+      <p style="font-size: 1rem; color: #525560; margin: 0;"><%= @note %></p>
+    </div>
+  </div>
+
+  <!-- Holiday / multi-week pause -->
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-umbrella-beach"></i>
+      <h3>Going Away for Longer?</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @subscription.holiday_end < Date.current %>
+        <p style="color: #525560; margin-bottom: 1.25rem;">
+          Set a holiday date range and we'll automatically skip all your collections while you're away.
+        </p>
+        <%= simple_form_for @subscription do |f| %>
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <%= f.input :holiday_start,
+                          as: :string,
+                          label: 'From',
+                          input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-6">
+              <%= f.input :holiday_end,
+                          as: :string,
+                          label: 'To',
+                          input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+          </div>
+          <%= f.submit "Save Holiday Dates", class: "action-btn" %>
+        <% end %>
+      <% else %>
+        <div class="info-row">
+          <span class="info-label">Holiday period</span>
+          <span class="info-value">
+            <%= @subscription.holiday_start.strftime("%a %d %b") %> &ndash; <%= @subscription.holiday_end.strftime("%a %d %b") %>
+          </span>
+        </div>
+        <div class="mt-3">
+          <%= button_to "Cancel Holiday", clear_holiday_subscription_path(@subscription),
+                        class: "action-btn",
+                        style: "border-color: #ccc; color: #666;",
+                        data: { turbo: false } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
 </div>
