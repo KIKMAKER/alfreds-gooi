@@ -1,41 +1,257 @@
-<div class="user-wrapper">
-  <h1 class="mb-3">Update your subscription</h1>
-  <%= simple_form_for(@subscription) do |f| %>
-    <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
-      <%= f.input :suburb, collection: Subscription::SUBURBS, prompt: "Select a suburb" %>
-      <%= f.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View" %>
-      <%= f.input :access_code, label: "Access code (if relevant)" %>
-      <%= f.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
-    </div>
-    <% if current_user.admin? %>
-      <%= f.input :customer_id %>
-      <%= f.input :duration %>
-      <%= f.input :start_date,
-              as: :string,
-              input_html: { data: { controller: "datepicker" } }, label: "Start Date:" %>
-      <%= f.input :end_date,
-              as: :string,
-              input_html: { data: { controller: "datepicker" } }, label: "End Date:" %>
-      <%= f.input :collection_order %>
-      <%= f.input :holiday_start, start_year: Date.today.year, end_year: Date.today.year + 5,
-              as: :string,
-              input_html: { data: { controller: "datepicker" } }, label: "Holiday start:" %>
-      <%= f.input :holiday_end, start_year: Date.today.year, end_year: Date.today.year + 5,
-              as: :string,
-              input_html: { data: { controller: "datepicker" } }, label: "Holiday end:" %>
+<div class="subscription-show-container">
 
-      <%= f.input :status, collection: Subscription.statuses.keys, include_blank: false %>
-      <%= f.input :is_paused %>
-      <%= f.input :collection_day, as: :select, collection: Date::DAYNAMES.map { |day| [day, day] } %>
-      <%= f.input :referral_code, label: "Referral code (referrer's code)", placeholder: "e.g. A3F9C2", hint: "Saving a new code will create the referral record automatically." %>
-    <% end %>
-    <div class="centre mt-3">
-      <%= f.button :submit, "Update", class: "sign-up-btn" %>
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </div>
+      <div>
+        <h1>Edit Subscription</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          <%= @subscription.user.first_name %> <%= @subscription.user.last_name %> &mdash; <%= @subscription.suburb %>
+        </p>
+      </div>
     </div>
+    <%= link_to subscription_path(@subscription), class: "tiny-yellow-btn",
+        style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+  </div>
+
+  <%= simple_form_for(@subscription) do |f| %>
+
+    <!-- Address -->
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-location-dot"></i>
+        <h3>Address</h3>
+      </div>
+      <div class="info-card-body" data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :suburb,
+                        collection: Subscription::SUBURBS,
+                        prompt: "Select a suburb",
+                        input_html: { class: 'form-select' },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :apartment_unit_number,
+                        label: "Unit / Building name",
+                        placeholder: "e.g. Unit 1 Garden View",
+                        input_html: { class: 'form-control' },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :street_address,
+                        input_html: { data: { address_autocomplete_target: "address" }, class: 'form-control' },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :access_code,
+                        label: "Access code",
+                        placeholder: "Gate / complex code",
+                        input_html: { class: 'form-control' },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if current_user.admin? %>
+
+      <!-- Plan & Schedule -->
+      <div class="info-card mb-3">
+        <div class="info-card-header">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <h3>Plan & Schedule</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <%= f.input :plan,
+                          collection: Subscription.plans.keys.map { |p| [p.titleize, p] },
+                          include_blank: false,
+                          input_html: { class: 'form-select' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-4">
+              <%= f.input :status,
+                          collection: Subscription.statuses.keys.map { |s| [s.titleize, s] },
+                          include_blank: false,
+                          input_html: { class: 'form-select' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-4">
+              <%= f.input :collection_day,
+                          collection: Date::DAYNAMES.map { |d| [d, d] },
+                          include_blank: false,
+                          input_html: { class: 'form-select' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-3">
+              <%= f.input :duration,
+                          label: "Duration (months)",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-3">
+              <%= f.input :start_date,
+                          as: :string,
+                          label: "Start date",
+                          input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-3">
+              <%= f.input :end_date,
+                          as: :string,
+                          label: "End date",
+                          input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-3">
+              <%= f.input :collection_order,
+                          label: "Route order",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-4 d-flex align-items-end pb-1">
+              <%= f.input :is_paused,
+                          as: :boolean,
+                          label: "Paused",
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commercial Settings -->
+      <% if @subscription.Commercial? %>
+        <div class="info-card mb-3">
+          <div class="info-card-header">
+            <i class="fa-solid fa-building"></i>
+            <h3>Commercial Settings</h3>
+          </div>
+          <div class="info-card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <%= f.input :bucket_size,
+                            label: "Bucket size (L)",
+                            collection: [[25, 25], [45, 45]],
+                            include_blank: false,
+                            input_html: { class: 'form-select' },
+                            wrapper_html: { class: 'mb-0' } %>
+              </div>
+              <div class="col-md-4">
+                <%= f.input :buckets_per_collection,
+                            label: "Buckets per collection",
+                            input_html: { class: 'form-control', min: 1, max: 20 },
+                            wrapper_html: { class: 'mb-0' } %>
+              </div>
+              <div class="col-md-4">
+                <%= f.input :collections_per_week,
+                            label: "Collections per week",
+                            input_html: { class: 'form-control', min: 1 },
+                            wrapper_html: { class: 'mb-0' } %>
+              </div>
+              <div class="col-md-6 d-flex align-items-end pb-1">
+                <%= f.input :monthly_invoicing,
+                            as: :boolean,
+                            label: "Monthly invoicing",
+                            wrapper_html: { class: 'mb-0' } %>
+              </div>
+            </div>
+            <% if @subscription.bucket_size.present? && @subscription.buckets_per_collection.present? %>
+              <div class="mt-3 p-3 rounded" style="background: #f8f9fa; font-size: 0.875rem; color: #525560;">
+                <strong>Current setup:</strong>
+                <%= @subscription.buckets_per_collection %> &times; <%= @subscription.bucket_size %>L buckets
+                = <%= @subscription.buckets_per_collection * @subscription.bucket_size %>L per collection
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Codes & Admin -->
+      <div class="info-card mb-3">
+        <div class="info-card-header">
+          <i class="fa-solid fa-key"></i>
+          <h3>Codes & Admin</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <%= f.input :customer_id,
+                          label: "Customer ID",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-4">
+              <%= f.input :referral_code,
+                          label: "Referral code (referrer's)",
+                          placeholder: "e.g. A3F9C2",
+                          hint: "Saving a new code creates the referral record.",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+            <div class="col-md-4">
+              <%= f.input :discount_code,
+                          label: "Discount code",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+
+    <!-- Holiday -->
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-umbrella-beach"></i>
+        <h3>Holiday</h3>
+      </div>
+      <div class="info-card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :holiday_start,
+                        as: :string,
+                        label: "Holiday from",
+                        input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :holiday_end,
+                        as: :string,
+                        label: "Holiday to",
+                        input_html: { class: 'form-control', data: { controller: 'datepicker' } },
+                        wrapper_html: { class: 'mb-0' } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+      <%= f.submit "Save Changes", class: "action-btn" %>
+      <%= link_to "Cancel", subscription_path(@subscription), class: "action-btn",
+          style: "border-color: #ccc; color: #666;" %>
+    </div>
+
   <% end %>
-  <% if current_user.admin? %>
-    <p class="my-3">Click <%= link_to 'here', edit_admin_user_path(@subscription.user)  %> to edit the users name, email, or phone number</p>
-  <% else %>
-    <p class="my-3">Click <%= link_to 'here', edit_user_registration_path  %> to edit your name, email, or phone number</p>
-  <% end %>
+
+  <div class="info-card">
+    <div class="info-card-body">
+      <p style="margin: 0; font-size: 0.875rem; color: #525560;">
+        <i class="fa-solid fa-user me-1"></i>
+        To edit the customer's name, email, or phone &mdash;
+        <% if current_user.admin? %>
+          <%= link_to "edit their user account", edit_admin_user_path(@subscription.user), class: "link-title" %>
+        <% else %>
+          <%= link_to "edit your account", edit_user_registration_path, class: "link-title" %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
 </div>
