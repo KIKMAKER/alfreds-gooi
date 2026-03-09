@@ -65,26 +65,6 @@ class CustomersController < ApplicationController
     @total_pages = (@total.to_f / @per).ceil
   end
 
-  def welcome
-    @subscription = current_user.current_sub
-    merchant_reference = params[:merchantReference]
-    if merchant_reference.present?
-      # Fetch payments (this can be refactored into a service)
-      payments = fetch_snapscan_payments(merchant_reference)
-
-      # Check for a successful payment
-      successful_payment = payments.find { |payment| payment["status"] == "completed" }
-
-      if successful_payment
-        handle_successful_payment(successful_payment)
-        flash[:notice] = "Payment received! Your subscription is now active."
-      else
-        flash[:alert] = "No successful payment found for this subscription."
-      end
-    else
-      flash[:alert] = "No merchant reference provided."
-    end
-  end
 
   def my_stats
     @start_date = current_user.subscriptions.order(created_at: :asc).first&.start_date&.strftime('%b %Y')

@@ -236,7 +236,6 @@ Rails.application.routes.draw do
   get "account", to: "customers#account"
   get "collections_history", to: "customers#collections_history"
   get "skipme", to: "customers#skipme"
-  get "welcome", to: "customers#welcome"
   get "referrals", to: "customers#referrals"
   post "submit_referral_code", to: "customers#submit_referral_code"
   get "my_stats", to: "customers#my_stats"

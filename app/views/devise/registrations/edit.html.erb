@@ -1,49 +1,89 @@
-<div class="user-wrapper">
-  <h1 class="mb-3">Edit your details</h1>
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-    <%= f.error_notification %>
-    <div class="form-inputs">
-      <%= f.input :email, required: true, autofocus: true %>
-      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-user-pen"></i>
+      </div>
+      <div>
+        <h1>My Account</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          <%= resource.email %>
+        </p>
+      </div>
+    </div>
+    <%= link_to manage_path, class: "tiny-yellow-btn",
+        style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+  </div>
+
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-address-card"></i>
+      <h3>Personal Details</h3>
+    </div>
+    <div class="info-card-body">
+      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <%= f.error_notification %>
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <%= f.input :first_name,
+                        required: true,
+                        input_html: { autocomplete: "given-name", class: "form-control" },
+                        wrapper_html: { class: "mb-0" } %>
+          </div>
+          <div class="col-6">
+            <%= f.input :last_name,
+                        required: true,
+                        input_html: { autocomplete: "family-name", class: "form-control" },
+                        wrapper_html: { class: "mb-0" } %>
+          </div>
+        </div>
+        <%= f.input :email,
+                    required: true,
+                    input_html: { autocomplete: "email", class: "form-control" } %>
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <p class="text-muted small">Awaiting confirmation for: <strong><%= resource.unconfirmed_email %></strong></p>
+        <% end %>
+        <%= f.input :phone_number,
+                    required: true,
+                    input_html: { autocomplete: "tel", class: "form-control" } %>
+
+        <hr class="my-3">
+        <p class="text-muted small mb-3">Leave password blank if you don't want to change it.</p>
+
+        <%= f.input :password,
+                    hint: "#{@minimum_password_length} characters minimum" if @minimum_password_length,
+                    required: false,
+                    input_html: { autocomplete: "new-password", class: "form-control" } %>
+        <%= f.input :password_confirmation,
+                    required: false,
+                    input_html: { autocomplete: "new-password", class: "form-control" } %>
+        <%= f.input :current_password,
+                    hint: "Required to confirm any changes",
+                    required: true,
+                    input_html: { autocomplete: "current-password", class: "form-control" } %>
+
+        <%= f.button :submit, "Save Changes", class: "action-btn mt-2" %>
       <% end %>
-      <%= f.input :first_name,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-      <%= f.input :last_name,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-      <%= f.input :phone_number,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-      <%= f.input :email,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-      <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-      <%= f.input :password_confirmation,
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-      <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
-                required: true,
-                input_html: { autocomplete: "current-password" } %>
     </div>
-    <div class="form-actions">
-      <%= f.button :submit, "Update", class: "sign-up-btn" %>
-    </div>
-  <% end %>
+  </div>
 
   <% if current_user.admin? %>
-    <h3>Cancel my account</h3>
-    <div><%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
+    <div class="info-card">
+      <div class="info-card-header">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h3>Danger Zone</h3>
+      </div>
+      <div class="info-card-body">
+        <%= button_to "Delete account", registration_path(resource_name),
+                      data: { confirm: "Are you sure? This cannot be undone.", turbo_confirm: "Are you sure? This cannot be undone." },
+                      method: :delete,
+                      class: "action-btn",
+                      style: "border-color: #dc3545; color: #dc3545;" %>
+      </div>
+    </div>
   <% end %>
 
 </div>

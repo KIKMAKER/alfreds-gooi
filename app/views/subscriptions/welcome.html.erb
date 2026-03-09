@@ -1,40 +1,103 @@
-<div class="user-wrapper">
-  <h1>Welcome to gooi</h1>
-  <div class="user-container">
-    <strong><p class="fs-6">Well done <%= @subscription.user.first_name %>!</p></strong>
-    <strong><p class="fs-7">You've just taken the first step toward a cleaner and healthier earth.</p></strong>
+<div class="subscription-show-container">
 
-    <% if @discount_code.present? %>
-      <p>And you're getting <strong>R<%= @discount_amount %>0 off!</strong></p>
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div>
+        <h1>Welcome to gooi, <%= @subscription.user.first_name %>!</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+          You've just taken the first step toward a cleaner and healthier earth
+        </p>
+      </div>
+    </div>
+  </div>
 
-    <% end %>
+  <% if @discount_code.present? %>
+    <div class="info-card mb-3">
+      <div class="info-card-body" style="background: #fffbea;">
+        <p style="margin: 0; color: #7a5a00;">
+          <i class="fa-solid fa-tag" style="color: #FBB718;"></i>
+          Discount applied &mdash; <strong>R<%= @discount_amount %>0 off</strong> your first invoice!
+        </p>
+      </div>
+    </div>
+  <% end %>
 
-    <h2>Here's how it works:</h2>
-
-    <% if @subscription.Commercial? %>
-      <p>Your invoice has been generated and is ready for payment. Your starter kit includes <%= pluralize(@subscription.buckets_per_collection, 'commercial bucket') %> (45L each) for your weekly collection, along with a guide to help you get started with our service.</p>
-    <% else %>
-      <p>Your invoice for the Gooi starter kit has been generated and is ready for payment. Your starter kit includes a compost bin, compostable bags, and a guide to help you get started with our service.</p>
-    <% end %>
-
-    <% if @user_subscriptions.count > 1 %>
-      <p><strong>Your collection schedule:</strong></p>
-      <div class="mb-3">
+  <!-- Collection schedule -->
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-calendar-week"></i>
+      <h3>Your Collection Schedule</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @user_subscriptions.count > 1 %>
         <% @user_subscriptions.each do |sub| %>
-          <p><%= sub.short_address %>, <%= sub.suburb %> - <strong><%= sub.collection_day %></strong></p>
+          <div class="info-row">
+            <span class="info-label"><%= sub.suburb %></span>
+            <span class="info-value"><strong><%= sub.collection_day %></strong></span>
+          </div>
+        <% end %>
+      <% else %>
+        <p style="color: #525560; margin: 0;">
+          We'll be in your neighbourhood every <strong><%= @subscription.collection_day %></strong>.
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-recycle"></i>
+      <h3>Here's how it works</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @subscription.Commercial? %>
+        <p style="color: #525560;">
+          Your invoice has been generated and is ready for payment. Your starter kit includes
+          <strong><%= pluralize(@subscription.buckets_per_collection, 'commercial bucket') %></strong>
+          (45L each) for your weekly collection, along with a guide to get started.
+        </p>
+        <p style="color: #525560;">
+          On week one we'll deliver your commercial buckets. Once you have organic waste ready,
+          fill your buckets and have them out on your scheduled collection day.
+        </p>
+      <% else %>
+        <p style="color: #525560;">
+          Your invoice for the Gooi starter kit has been generated and is ready for payment.
+          Your starter kit includes a compost bin, compostable bags, and a guide to get started.
+        </p>
+        <p style="color: #525560;">
+          On week one we'll deliver your starter kit. Once you have compost ready, leave your
+          full bag outside before we arrive and we'll collect it on our way past.
+        </p>
+      <% end %>
+      <p style="color: #525560; margin-bottom: 0;">
+        To ensure your starter kit arrives on time, please settle your invoice as soon as possible.
+      </p>
+    </div>
+  </div>
+
+  <!-- Invoice CTA -->
+  <% if @invoice %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-file-invoice"></i>
+        <h3>Your Invoice</h3>
+      </div>
+      <div class="info-card-body">
+        <p style="color: #525560; margin-bottom: 1rem;">Your invoice is ready — please pay to confirm your starter kit delivery.</p>
+        <%= link_to invoice_path(@invoice), class: "action-btn" do %>
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> View invoice
         <% end %>
       </div>
-    <% else %>
-      <p>We will be in your neighbourhood every <strong><%= @subscription.collection_day %></strong>.</p>
-    <% end %>
+    </div>
+  <% end %>
 
-    <% if @subscription.Commercial? %>
-      <p>On week one we will deliver your commercial buckets. Once you have organic waste for us to collect, simply fill your buckets and have them ready for collection on your scheduled day.</p>
-    <% else %>
-      <p>On week one we will deliver your starter kit. Once you have some compost for us to collect you can be ready with your full bag, or stash it outside before we arrive, and we can collect it on our way past.</p>
-    <% end %>
-    <p>To ensure that you receive your starter kit on time, kindly settle the invoice as soon as possible.</p>
-    <%= link_to "view invoice", invoice_path(@invoice), class: "submit-btn my-2" if @invoice %>
-    <p>We are excited to have you on board and look forward to being your go-to organic waste collection service. Let's work together to create a cleaner, healthier planet for us all.</p>
-  </div>
+  <p style="color: #525560; font-size: 0.9375rem; text-align: center; margin-top: 1rem;">
+    We're excited to have you on board. Let's build a healthier planet together.
+  </p>
+
 </div>

@@ -1,21 +1,24 @@
-<div class="gooi-container">
-  <div class="user-wrapper">
-    <h2>Log in</h2>
-    <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: "false" } }) do |f| %>
-      <div class="user-form">
+<div class="subscription-show-container">
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-leaf"></i>
+      <h3>Log in</h3>
+    </div>
+    <div class="info-card-body">
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: "false" } }) do |f| %>
         <%= f.input :email,
                 required: false,
                 autofocus: true,
-                input_html: { autocomplete: "email" } %>
+                input_html: { autocomplete: "email", class: "form-control" } %>
         <%= f.input :password,
                 required: false,
-                input_html: { autocomplete: "current-password" } %>
+                input_html: { autocomplete: "current-password", class: "form-control" } %>
         <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
-        <div class="form-actions">
-          <%= f.button :submit, "Log in", class: "submit-btn" %>
-        </div>
+        <%= f.button :submit, "Log in", class: "action-btn w-100 mt-2" %>
+      <% end %>
+      <div class="mt-3 text-center" style="font-size: 0.875rem;">
+        <%= render "devise/shared/links" %>
       </div>
-    <% end %>
-    <%= render "devise/shared/links" %>
+    </div>
   </div>
 </div>

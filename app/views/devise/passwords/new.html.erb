@@ -1,23 +1,24 @@
-<div class="gooi-container">
-  <div class="user-wrapper">
-    <h2 class="mb-3">Forgot your password?</h2>
-
-    <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-      <%= f.error_notification %>
-      <div class="user-form">
-        <div class="form-inputs">
-          <%= f.input :email,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" } %>
-        </div>
+<div class="subscription-show-container">
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-key"></i>
+      <h3>Forgot your password?</h3>
+    </div>
+    <div class="info-card-body">
+      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <%= f.error_notification %>
+        <%= f.input :email,
+              required: true,
+              autofocus: true,
+              input_html: { autocomplete: "email", class: "form-control" } %>
+        <%= f.button :submit, "Send reset instructions", class: "action-btn w-100 mt-2" %>
+      <% end %>
+      <p class="text-muted text-center mt-3" style="font-size: 0.8125rem;">
+        You'll receive an email from howzit@gooi.me &mdash; check your spam folder if it doesn't arrive.
+      </p>
+      <div class="mt-2 text-center" style="font-size: 0.875rem;">
+        <%= render "devise/shared/links" %>
       </div>
-      <div class="form-actions">
-        <%= f.button :submit, "Send me reset password instructions", class: "submit-btn" %>
-      </div>
-    <% end %>
-    <p class='mt-3 fs-6 w-50 text-center'>You will receieve an email from howzit@gooi.me</p>
-    <p class='mt-2 fs-6 w-50 text-center'>it may be in your spam folder.</p>
-    <%= render "devise/shared/links" %>
+    </div>
   </div>
 </div>
