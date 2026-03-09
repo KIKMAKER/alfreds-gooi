@@ -5,11 +5,7 @@
       <div class="grid-header">
         <div class="grid-item "><strong>ID</strong></div>
         <div class="grid-item"><strong>DATE</strong></div>
-        <% if @subscription.XL? || @subscription.Commercial? %>
-          <div class="grid-item"><strong>BUCKETS</strong></div>
-        <% else %>
-          <div class="grid-item"><strong>BAGS</strong></div>
-        <% end %>
+        <div class="grid-item"><strong>COLLECTED</strong></div>
         <div class="grid-item"><strong>KIKI:</strong></div>
         <div class="grid-item"><strong>ALFRED:</strong></div>
       </div>
@@ -17,11 +13,14 @@
         <div class="grid-row">
           <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
           <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
-          <% if @subscription.XL? || @subscription.Commercial? %>
-            <div class="grid-item"><%= collection.buckets %></div>
-          <% else %>
-            <div class="grid-item"><%= collection.bags %></div>
-          <% end %>
+          <div class="grid-item">
+            <% parts = [] %>
+            <% parts << "#{collection.bags} bags"       if collection.bags.to_i > 0 %>
+            <% parts << "#{collection.buckets} XL"      if collection.buckets.to_f > 0 %>
+            <% parts << "#{collection.buckets_45l}×45L" if collection.buckets_45l.to_i > 0 %>
+            <% parts << "#{collection.buckets_25l}×25L" if collection.buckets_25l.to_i > 0 %>
+            <%= parts.any? ? parts.join(", ") : "—" %>
+          </div>
           <div class="grid-item"><%= collection.kiki_note %></div>
           <div class="grid-item"><%= collection.alfred_message %></div>
         </div>
