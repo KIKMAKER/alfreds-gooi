@@ -503,6 +503,7 @@ class Subscription < ApplicationRecord
 
   # Mailchimp sync methods
   def should_sync_to_mailchimp?
+    return false unless Rails.env.production?
     return false unless user.present?
     return false unless ENV['MAILCHIMP_LIST_ID'].present?
 

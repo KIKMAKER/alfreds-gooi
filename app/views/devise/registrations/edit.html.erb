@@ -54,7 +54,7 @@
         <p class="text-muted small mb-3">Leave password blank if you don't want to change it.</p>
 
         <%= f.input :password,
-                    hint: "#{@minimum_password_length} characters minimum" if @minimum_password_length,
+                    hint: (@minimum_password_length ? "#{@minimum_password_length} characters minimum" : nil),
                     required: false,
                     input_html: { autocomplete: "new-password", class: "form-control" } %>
         <%= f.input :password_confirmation,
