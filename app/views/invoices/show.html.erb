@@ -44,7 +44,9 @@
         </div>
         <% if @subscription.business_profile.present? %>
           <div class="business">
-            <p><strong>Business:</strong> <%= @subscription.business_profile.business_name %></p>
+            <% if @subscription.business_profile.business_name.present? %>
+              <p><strong>Business:</strong> <%= @subscription.business_profile.business_name %></p>
+            <% end %>
             <% if @subscription.business_profile.street_address.present? %>
               <p><strong>Address:</strong> <%= @subscription.business_profile.street_address %></p>
             <% end %>
