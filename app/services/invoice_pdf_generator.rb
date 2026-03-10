@@ -61,7 +61,9 @@ class InvoicePdfGenerator
 
     # Add business profile if present
     if @business_profile
-      details_data << ['Business:', @business_profile.business_name]
+      details_data << ['Business:', @business_profile.business_name] if @business_profile.business_name.present?
+      details_data << ['Billing Address:', @business_profile.street_address] if @business_profile.street_address.present?
+      details_data << ['Reg #:', @business_profile.registration_number] if @business_profile.registration_number.present?
       details_data << ['VAT #:', @business_profile.vat_number] if @business_profile.vat_number.present?
       details_data << ['Att:', @business_profile.contact_person] if @business_profile.contact_person.present?
     end
