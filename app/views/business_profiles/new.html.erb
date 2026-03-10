@@ -9,6 +9,10 @@
             placeholder: "e.g. ABC Restaurant Group",
             required: true %>
 
+      <%= f.input :registration_number,
+            placeholder: "e.g. 2023/123456/07",
+            hint: "Optional - company registration number (CIPC)" %>
+
       <%= f.input :vat_number,
             placeholder: "e.g. 4123456789",
             hint: "Optional - only if you're VAT registered" %>

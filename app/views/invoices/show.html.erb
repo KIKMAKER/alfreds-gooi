@@ -48,6 +48,9 @@
             <% if @subscription.business_profile.street_address.present? %>
               <p><strong>Address:</strong> <%= @subscription.business_profile.street_address %></p>
             <% end %>
+            <% if @subscription.business_profile.registration_number.present? %>
+              <p><strong>Reg #:</strong> <%= @subscription.business_profile.registration_number %></p>
+            <% end %>
             <% if @subscription.business_profile.vat_number.present? %>
               <p><strong>VAT #:</strong> <%= @subscription.business_profile.vat_number %></p>
             <% end %>

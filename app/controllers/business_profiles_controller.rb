@@ -45,6 +45,7 @@ class BusinessProfilesController < ApplicationController
   def business_profile_params
     params.require(:business_profile).permit(
       :business_name,
+      :registration_number,
       :vat_number,
       :contact_person,
       :street_address,
