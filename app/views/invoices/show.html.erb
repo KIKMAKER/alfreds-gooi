@@ -130,7 +130,7 @@
             <p><strong>Account Name:</strong> Gooi</p>
             <p><strong>Account Number:</strong> 63066225426</p>
             <p><strong>Branch Code:</strong> 250655</p>
-            <p><strong>Reference:</strong> Invoice #<%= @invoice.id %> - <%= @subscription.customer_id %></p>
+            <p><strong>Reference:</strong> Invoice #<%= @invoice.number || @invoice.id %> - <%= @subscription.customer_id %></p>
           </div>
           <% unless @subscription.business_profile.present? %>
             <div class="mt-3">

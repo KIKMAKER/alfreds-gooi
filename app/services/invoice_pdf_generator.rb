@@ -173,7 +173,7 @@ class InvoicePdfGenerator
       ['Account Name:', 'Gooi'],
       ['Account Number:', '63066225426'],
       ['Branch Code:', '250655'],
-      ['Reference:', "Invoice ##{@invoice.id} - #{@subscription&.customer_id}"]
+      ['Reference:', "Invoice ##{@invoice.number || @invoice.id} - #{@subscription&.customer_id}"]
     ]
 
     pdf.table(payment_data,

@@ -16,6 +16,10 @@ class DriversDay < ApplicationRecord
   after_commit :send_weekly_stats_if_thursday_finished,
                if: -> { saved_change_to_end_time? && end_time.present? }
 
+  # recalculate stats when kms or times are updated
+  after_commit :recalculate_statistics,
+               if: -> { (saved_change_to_start_kms? || saved_change_to_end_kms? || saved_change_to_start_time? || saved_change_to_end_time?) && day_statistic.present? }
+
 
   # custom methods
 
@@ -174,6 +178,10 @@ class DriversDay < ApplicationRecord
   # end
 
   private
+
+  def recalculate_statistics
+    calculate_and_save_statistics!
+  end
 
   def send_weekly_stats_if_thursday_finished
     # Ruby wday: 0=Sun ... 4=Thu

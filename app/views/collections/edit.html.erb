@@ -57,7 +57,12 @@
     <% if @collection.new_customer %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
-        <% if @collection.subscription.Commercial? %>
+        <% if current_user.admin? %>
+          <%= f.input :bags, label: "Bags", placeholder: "0" %>
+          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
+          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
+          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
+        <% elsif @collection.subscription.Commercial? %>
           <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
           <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
         <% elsif @collection.subscription.XL? %>
@@ -87,6 +92,12 @@
         <%= f.input :skip %>
         <%= f.input :dropped_off_buckets, placeholder: "0" %>
         <% if current_user.admin? %>
+          <%= f.input :bags, label: "Bags", placeholder: "0" %>
+          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
+          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
+          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
+        <% end %>
+        <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
           <p>Users subs:</p>
@@ -106,7 +117,12 @@
     <% else %>
       <%= simple_form_for [@collection] do |f| %>
         <%= f.input :skip %>
-        <% if @subscription.Standard? %>
+        <% if current_user.admin? %>
+          <%= f.input :bags, label: "Bags", placeholder: "0" %>
+          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
+          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
+          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
+        <% elsif @subscription.Standard? %>
           <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
         <% elsif @subscription.Commercial? %>
           <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
