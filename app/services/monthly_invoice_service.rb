@@ -31,10 +31,6 @@ class MonthlyInvoiceService
     # Calculate which month this is (1st, 2nd, 3rd, etc.)
     installment_number = calculate_installment_number
 
-    # Calculate the collections for this month's invoice
-    # Weekly collections, so roughly 4-5 collections per month
-    collections_per_month = (52.0 / 12.0).round
-
     # Get the bucket configuration
     bucket_size = @subscription.bucket_size || 45
     buckets_per_collection = @subscription.buckets_per_collection
@@ -102,16 +98,14 @@ class MonthlyInvoiceService
       @subscription.update_column(:volume_processing_product_id, volume_product.id)
     end
 
-    # Calculate monthly volume cost
-    # Premium products store the TOTAL price for the entire contract period per bucket
-    # For monthly invoicing, divide by number of months (not weeks) for consistent monthly amounts
-    total_volume_cost = buckets_per_collection * volume_product.price
-    monthly_volume_cost = total_volume_cost / @subscription.duration
+    # Calculate monthly volume cost: per-visit rate × visits per month
+    collections_per_month = (52.0 / 12.0 * collections_per_week).round
+    volume_per_visit = buckets_per_collection * volume_product.price
 
     invoice.invoice_items.create!(
       product: volume_product,
-      quantity: 1,  # Quantity represents 1 month's worth
-      amount: monthly_volume_cost
+      quantity: collections_per_month,
+      amount: volume_per_visit
     )
 
     # Add starter kit installment if applicable

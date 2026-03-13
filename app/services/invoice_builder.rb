@@ -107,9 +107,6 @@ class InvoiceBuilder
   end
 
   def add_commercial_subscription(invoice, subscription)
-    total_collections = (subscription.duration * 52.0 / 12.0).round
-    collections_per_month = (52.0 / 12.0).round
-
     # Line 1: Monthly collection fee (duration-specific pricing)
     monthly_title = case subscription.duration
                     when 12
@@ -150,35 +147,31 @@ class InvoiceBuilder
     collections_per_week = subscription.collections_per_week || 1
 
     if subscription.monthly_invoicing?
-      # For monthly invoicing, calculate total contract cost and monthly amounts
-      # Monthly collection cost: flat monthly fee × duration
-      full_monthly_cost = monthly_product.price * subscription.duration
+      # Monthly volume: charge per collection visit, not amortised over contract
+      collections_per_month = (52.0 / 12.0 * collections_per_week).round
+      volume_per_visit = subscription.buckets_per_collection * volume_product.price
+      monthly_volume_amount = volume_per_visit * collections_per_month
 
-      # Volume cost: total for all buckets over entire contract
-      total_volume_cost = subscription.buckets_per_collection * volume_product.price
-      full_volume_cost = total_volume_cost
+      if @is_new
+        # Only set contract_total at inception so recurring invoices don't overwrite it
+        monthly_starter = subscription.starter_kit_installment.to_f
+        contract_total = (monthly_product.price + monthly_volume_amount + monthly_starter) * subscription.duration
+        subscription.update!(
+          contract_total: contract_total,
+          next_invoice_date: Date.today + 4.weeks
+        )
+      end
 
-      contract_total = full_monthly_cost + full_volume_cost
-
-      subscription.update!(
-        contract_total: contract_total,
-        next_invoice_date: Date.today + 4.weeks
-      )
-
-      # Calculate monthly volume amount (divide total by months for consistent invoices)
-      monthly_volume_cost = total_volume_cost / subscription.duration
-
-      # Only invoice for the FIRST month
       invoice.invoice_items.create!(
         product: monthly_product,
-        quantity: 1,  # 1 month
+        quantity: 1,
         amount: monthly_product.price
       )
 
       invoice.invoice_items.create!(
         product: volume_product,
-        quantity: 1,  # 1 month
-        amount: monthly_volume_cost
+        quantity: collections_per_month,
+        amount: volume_per_visit
       )
     else
       # Standard behavior: invoice full duration upfront
