@@ -1,0 +1,21 @@
+<div class="subscription-show-container" style="text-align: center; padding-top: 4rem;">
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content" style="justify-content: center;">
+      <div>
+        <h1>Request could not be processed</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">Error 422</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card mb-3">
+    <div class="info-card-body" style="text-align: center; padding: 2rem;">
+      <p class="mb-3" style="color: #333;">This usually happens when a form is submitted twice or the page has expired. Try going back and submitting again.</p>
+      <% if user_signed_in? %>
+        <%= link_to "Go to dashboard", manage_path, class: "action-btn" %>
+      <% else %>
+        <%= link_to "Go home", root_path, class: "action-btn" %>
+      <% end %>
+    </div>
+  </div>
+</div>

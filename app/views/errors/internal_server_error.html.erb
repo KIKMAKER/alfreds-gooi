@@ -1,0 +1,22 @@
+<div class="subscription-show-container" style="text-align: center; padding-top: 4rem;">
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content" style="justify-content: center;">
+      <div>
+        <h1>Something went wrong</h1>
+        <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">Error 500</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card mb-3">
+    <div class="info-card-body" style="text-align: center; padding: 2rem;">
+      <p class="mb-3" style="color: #333;">We've hit a snag on our end. We've been notified and will look into it — sorry for the inconvenience.</p>
+      <% if user_signed_in? %>
+        <%= link_to "Go to dashboard", manage_path, class: "action-btn" %>
+      <% else %>
+        <%= link_to "Go home", root_path, class: "action-btn" %>
+      <% end %>
+      <p class="mt-3" style="font-size: 0.8rem; color: #888;">If this keeps happening, reach us at <a href="mailto:howzit@gooi.me">howzit@gooi.me</a></p>
+    </div>
+  </div>
+</div>
