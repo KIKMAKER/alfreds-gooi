@@ -42,7 +42,7 @@ class InvoiceBuilder
   def add_starter_kit(invoice, subscription)
     kit_title = if subscription.Commercial?
                   bucket_size = subscription.bucket_size || 45
-                  "Commercial Starter Buckets (#{bucket_size}L)"
+                  "Commercial Starter Bucket (#{bucket_size}L)"
                 else
                   "#{subscription.plan} Starter Kit"
                 end
@@ -107,33 +107,20 @@ class InvoiceBuilder
   end
 
   def add_commercial_subscription(invoice, subscription)
-    # Line 1: Monthly collection fee (duration-specific pricing)
+    # Collection fee: duration-specific flat monthly rate
     monthly_title = case subscription.duration
-                    when 12
-                      "Commercial weekly collection per month (12-month rate)"
-                    when 6
-                      "Commercial weekly collection per month (6-month rate)"
-                    when 3
-                      "Commercial weekly collection per month (3-month rate)"
-                    else
-                      raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
+                    when 12 then "Commercial collection fee (12-month)"
+                    when 6  then "Commercial collection fee (6-month)"
+                    when 3  then "Commercial collection fee (3-month)"
+                    else raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
                     end
 
     monthly_product = Product.find_by(title: monthly_title)
     raise "Product not found: #{monthly_title}" unless monthly_product
 
-    # Line 2: Volume charge (duration and bucket-size specific pricing)
+    # Volume: per bucket per visit, rate is R1.70/L regardless of duration
     bucket_size = subscription.bucket_size || 45
-    volume_title = case subscription.duration.to_i
-                   when 12
-                     "Volume Processing per #{bucket_size}L (12-month rate)"
-                   when 6
-                     "Volume Processing per #{bucket_size}L (Premium 6-month rate)"
-                   when 3
-                     "Volume Processing per #{bucket_size}L (3-month rate)"
-                   else
-                     raise "Unsupported duration for Commercial subscription: #{subscription.duration}"
-                   end
+    volume_title = "Commercial volume per #{bucket_size}L bucket"
 
     volume_product = Product.find_by(title: volume_title)
     raise "Product not found: #{volume_title}" unless volume_product
@@ -174,44 +161,21 @@ class InvoiceBuilder
         amount: volume_per_visit
       )
     else
-      # Standard behavior: invoice full duration upfront
-      # Monthly fee is per-month, so quantity = number of months
-      existing_monthly = invoice.invoice_items.find_by(
+      # Upfront contract billing: invoice full duration in one go
+      total_visits = (52.0 / 12.0 * collections_per_week).round * subscription.duration
+      volume_per_visit = subscription.buckets_per_collection * volume_product.price
+
+      invoice.invoice_items.create!(
         product: monthly_product,
+        quantity: subscription.duration,
         amount: monthly_product.price
       )
 
-      if existing_monthly
-        # Add to existing quantity
-        existing_monthly.update!(quantity: existing_monthly.quantity + subscription.duration)
-      else
-        # Create new invoice item
-        invoice.invoice_items.create!(
-          product: monthly_product,
-          quantity: subscription.duration,  # Number of months
-          amount: monthly_product.price
-        )
-      end
-
-      # Volume charge: total cost for all buckets over entire contract
-      total_volume_cost = subscription.buckets_per_collection * volume_product.price
-
-      existing_volume = invoice.invoice_items.find_by(
+      invoice.invoice_items.create!(
         product: volume_product,
-        amount: total_volume_cost
+        quantity: total_visits,
+        amount: volume_per_visit
       )
-
-      if existing_volume
-        # Add to existing quantity (though this is unlikely for commercial)
-        existing_volume.update!(quantity: existing_volume.quantity + 1)
-      else
-        # Create new invoice item
-        invoice.invoice_items.create!(
-          product: volume_product,
-          quantity: 1,  # Total for contract
-          amount: total_volume_cost
-        )
-      end
     end
   end
 
@@ -293,7 +257,7 @@ class InvoiceBuilder
     # Find the starter kit product to link to
     kit_title = if subscription.Commercial?
                   bucket_size = subscription.bucket_size || 45
-                  "Commercial Starter Buckets (#{bucket_size}L)"
+                  "Commercial Starter Bucket (#{bucket_size}L)"
                 else
                   "#{subscription.plan} Starter Kit"
                 end

@@ -49,20 +49,15 @@ class MonthlyInvoiceService
     # Fallback to title lookup if product_id not stored or product was deleted
     unless monthly_product
       monthly_title = case @subscription.duration
-                      when 12
-                        "Commercial weekly collection per month (12-month rate)"
-                      when 6
-                        "Commercial weekly collection per month (6-month rate)"
-                      when 3
-                        "Commercial weekly collection per month (3-month rate)"
-                      else
-                        raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
+                      when 12 then "Commercial collection fee (12-month)"
+                      when 6  then "Commercial collection fee (6-month)"
+                      when 3  then "Commercial collection fee (3-month)"
+                      else raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
                       end
 
       monthly_product = Product.find_by(title: monthly_title)
       raise "Product not found: #{monthly_title}" unless monthly_product
 
-      # Store the product_id for future use
       @subscription.update_column(:monthly_collection_product_id, monthly_product.id)
     end
 
@@ -80,21 +75,11 @@ class MonthlyInvoiceService
 
     # Fallback to title lookup if product_id not stored or product was deleted
     unless volume_product
-      volume_title = case @subscription.duration.to_i
-                     when 12
-                       "Volume Processing per #{bucket_size}L (12-month rate)"
-                     when 6
-                       "Volume Processing per #{bucket_size}L (Premium 6-month rate)"
-                     when 3
-                       "Volume Processing per #{bucket_size}L (3-month rate)"
-                     else
-                       raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
-                     end
+      volume_title = "Commercial volume per #{bucket_size}L bucket"
 
       volume_product = Product.find_by(title: volume_title)
       raise "Product not found: #{volume_title}" unless volume_product
 
-      # Store the product_id for future use
       @subscription.update_column(:volume_processing_product_id, volume_product.id)
     end
 
@@ -185,7 +170,7 @@ class MonthlyInvoiceService
 
     # Find the starter kit product to link to
     bucket_size = @subscription.bucket_size || 45
-    kit_title = "Commercial Starter Buckets (#{bucket_size}L)"
+    kit_title = "Commercial Starter Bucket (#{bucket_size}L)"
 
     kit = Product.find_by(title: kit_title)
     return unless kit

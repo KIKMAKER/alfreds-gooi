@@ -145,12 +145,18 @@ elsif proceed == "products"
   puts "Creating Commercial products"
 
   commercial_products = [
-    { title: "Weekly Collection Service (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
-    { title: "Volume Processing (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
-    { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
-    { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
-    { title: "Volume Processing (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    { title: "Volume Processing (3-month rate)", description: "Volume charge per 45L bucket", price: 30 }
+    # Collection fees — flat monthly rate, varies by contract length
+    { title: "Commercial collection fee (6-month)",  description: "Monthly collection service fee, 6-month contract rate",  price: 220 },
+    { title: "Commercial collection fee (12-month)", description: "Monthly collection service fee, 12-month contract rate", price: 200 },
+    { title: "Commercial collection fee (3-month)",  description: "Monthly collection service fee, 3-month contract rate",  price: 240 },
+    # Volume processing — per bucket per visit, R1.70/L regardless of contract length
+    { title: "Commercial volume per 25L bucket", description: "Volume processing per 25L bucket per collection visit (R1.70/L)", price: 42.50 },
+    { title: "Commercial volume per 45L bucket", description: "Volume processing per 45L bucket per collection visit (R1.70/L)", price: 76.50 },
+    { title: "Commercial volume per 50L bucket", description: "Volume processing per 50L bucket per collection visit (R1.70/L)", price: 85.00 },
+    # Starter buckets — one-off, amortised over contract duration for monthly billing
+    { title: "Commercial Starter Bucket (25L)", description: "25L commercial collection bucket with branding", price: 150 },
+    { title: "Commercial Starter Bucket (45L)", description: "45L commercial collection bucket with branding", price: 210 },
+    { title: "Commercial Starter Bucket (50L)", description: "50L commercial collection drum with branding", price: 850 },
   ]
 
   seed_products(commercial_products)
