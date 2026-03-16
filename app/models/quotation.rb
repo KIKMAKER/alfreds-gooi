@@ -51,6 +51,30 @@ class Quotation < ApplicationRecord
     end
   end
 
+  def weeks_in_contract
+    duration_months * 4
+  end
+
+  def weekly_rate
+    return 0 if weeks_in_contract.zero? || total_amount.blank?
+    (total_amount / weeks_in_contract).round(2)
+  end
+
+  def monthly_rate
+    return 0 if duration_months.zero? || total_amount.blank?
+    (total_amount / duration_months).round(2)
+  end
+
+  def ongoing_weekly_rate
+    return 0 if weeks_in_contract.zero?
+    ((total_amount - starter_cost) / weeks_in_contract).round(2)
+  end
+
+  def ongoing_monthly_rate
+    return 0 if duration_months.zero?
+    ((total_amount - starter_cost) / duration_months).round(2)
+  end
+
   def expired?
     expires_at < Date.today || status == 'expired'
   end
@@ -72,6 +96,13 @@ class Quotation < ApplicationRecord
   end
 
   private
+
+  def starter_cost
+    quotation_items
+      .joins(:product)
+      .where("products.title ILIKE ?", "%Starter%")
+      .sum { |i| (i.amount || 0) * (i.quantity || 0) }
+  end
 
   def has_customer_or_prospect_details
     if user_id.nil? && prospect_name.blank?

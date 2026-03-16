@@ -134,6 +134,15 @@ class QuotationPdfGenerator
     # Total
     pdf.font 'Helvetica', size: 14, style: :bold
     pdf.text "Total: R#{@quotation.total_amount.to_i}", align: :right
+
+    pdf.move_down 8
+    pdf.font 'Helvetica', size: 10
+    pdf.text "Monthly equivalent: R#{@quotation.monthly_rate}/month", align: :right, color: '444444'
+    pdf.text "Weekly equivalent: R#{@quotation.weekly_rate}/week", align: :right, color: '444444'
+    if @quotation.ongoing_weekly_rate != @quotation.weekly_rate
+      pdf.text "Ongoing (once starters paid off): R#{@quotation.ongoing_weekly_rate}/week or R#{@quotation.ongoing_monthly_rate}/month",
+               align: :right, color: '888888', style: :italic
+    end
     pdf.move_down 30
   end
 

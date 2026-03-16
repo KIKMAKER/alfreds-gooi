@@ -84,6 +84,14 @@
       <p>Total: R<%= @quotation.total_amount.truncate %></p>
     </div>
 
+    <div class="ms-1 mt-2">
+      <p class="text-muted" style="font-size: 0.9em;">Monthly equivalent: R<%= @quotation.monthly_rate %>/month</p>
+      <p class="text-muted" style="font-size: 0.9em;">Weekly equivalent: R<%= @quotation.weekly_rate %>/week</p>
+      <% if @quotation.ongoing_weekly_rate != @quotation.weekly_rate %>
+        <p class="text-muted" style="font-size: 0.9em; font-style: italic;">Ongoing rate (once starters paid off): R<%= @quotation.ongoing_monthly_rate %>/month or R<%= @quotation.ongoing_weekly_rate %>/week</p>
+      <% end %>
+    </div>
+
     <div class="text-center my-4">
       <%= link_to "Download PDF", pdf_quotation_path(@quotation), class: "small-yellow-btn", target: "_blank" %>
     </div>

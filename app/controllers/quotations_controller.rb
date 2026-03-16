@@ -108,6 +108,7 @@ class QuotationsController < ApplicationController
       :prospect_phone,
       :prospect_company,
       :notes,
+      :duration_months,
       :created_date,
       :expires_at,
       :status,
