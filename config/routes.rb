@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
+    root to: 'dashboard#index'
     resources :bulk_messages, only: [:index]
     resources :logistics, only: :index do
       collection do
@@ -49,6 +50,12 @@ Rails.application.routes.draw do
     # Analytics Dashboard (Blazer)
     authenticate :user, ->(user) { user.admin? } do
       mount Blazer::Engine, at: "analytics"
+    end
+
+    resources :quotations, only: [:index, :new, :create, :edit, :update, :destroy] do
+      member do
+        get :send_email
+      end
     end
 
     resources :expenses do
@@ -132,9 +139,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :quotations do
+  resources :quotations, only: [:show] do
     member do
-      get :send_email
       get :pdf
     end
   end

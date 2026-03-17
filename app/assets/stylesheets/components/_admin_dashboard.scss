@@ -1,0 +1,118 @@
+.dash-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $dark-yellow;
+  margin-bottom: 0.4rem;
+}
+
+.dash-kpi-card {
+  background: #fff;
+  border-radius: 1em;
+  border: 1px solid rgba($dark-green, 0.12);
+  border-top: 4px solid $dark-yellow;
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  display: block;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  color: inherit;
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba($dark-green, 0.12);
+    transform: translateY(-2px);
+    color: inherit;
+  }
+}
+
+.dash-kpi-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $font-grey;
+  margin-bottom: 0.35rem;
+}
+
+.dash-kpi-value {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: $dark-green;
+  line-height: 1;
+}
+
+.dash-category-card {
+  background: #fff;
+  border-radius: 1em;
+  border: 1px solid rgba($dark-green, 0.1);
+  border-left: 4px solid $dark-green;
+  padding: 1.5rem 1.75rem;
+  height: 100%;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 8px 28px rgba($dark-green, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &--accent {
+    border-left-color: $dark-yellow;
+  }
+}
+
+.dash-category-heading {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $dark-green;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dash-category-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  color: $font-grey;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.dash-category-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  li a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: $dark-green;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2rem;
+    border: 1px solid rgba($dark-green, 0.2);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: $dark-green;
+      color: #fff;
+      border-color: $dark-green;
+    }
+  }
+
+  .dash-arrow {
+    opacity: 0.5;
+    font-size: 0.7rem;
+  }
+}
