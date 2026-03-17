@@ -60,9 +60,10 @@
     <h3>Products</h3>
     <p class="text-muted">Enter quantities for products to include in this quotation:</p>
 
-    <div class="row mb-2">
+    <div class="row mb-2" id="products-container">
       <% @products.each_with_index do |product, index| %>
-        <div class="col-md-6 mb-3">
+        <% product_type = product.title.downcase.include?("event") ? "event" : "subscription" %>
+        <div class="col-md-6 mb-3 product-card" data-product-type="<%= product_type %>">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title"><%= product.title %></h5>
@@ -105,6 +106,9 @@
         subscriptionFields.style.display = "block";
         eventFields.style.display = "none";
       }
+      document.querySelectorAll(".product-card").forEach(card => {
+        card.style.display = card.dataset.productType === selected ? "" : "none";
+      });
     }
 
     radios.forEach(r => r.addEventListener("change", toggle));
