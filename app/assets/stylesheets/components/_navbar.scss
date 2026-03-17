@@ -21,16 +21,12 @@
   }
 }
 
-// .hamburger-menu {
-//   display: none;
-
-// }
 
 /* Always show burger (for logged-in users) */
 .hamburger-menu {
   display: block;
   margin-right: 5vw;
-  margin-top: 3vh;
+  margin-top: 1vh;
   display: flex;
   align-items: center;
 
@@ -106,6 +102,7 @@
   width: 7em;
   padding: 8px 16px;
   margin-left: 3vw;
+  margin-top: 1vw;
 }
 
 .inner-container {
