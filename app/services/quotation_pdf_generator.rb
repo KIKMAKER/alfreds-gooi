@@ -64,6 +64,12 @@ class QuotationPdfGenerator
       details_data << ['Company:', @quotation.prospect_company] if @quotation.prospect_company.present?
     end
 
+    if @quotation.event?
+      details_data << ['Event:', @quotation.event_name] if @quotation.event_name.present?
+      details_data << ['Event Date:', @quotation.event_date.strftime('%e %b %Y')] if @quotation.event_date.present?
+      details_data << ['Venue:', @quotation.event_venue] if @quotation.event_venue.present?
+    end
+
     details_data << ['Quote Date:', @quotation.created_date.strftime('%e %b %Y')]
     details_data << ['Valid Until:', @quotation.expires_at.strftime('%e %b %Y')]
 
@@ -137,11 +143,13 @@ class QuotationPdfGenerator
 
     pdf.move_down 8
     pdf.font 'Helvetica', size: 10
-    pdf.text "Monthly equivalent: R#{@quotation.monthly_rate}/month", align: :right, color: '444444'
-    pdf.text "Weekly equivalent: R#{@quotation.weekly_rate}/week", align: :right, color: '444444'
-    if @quotation.ongoing_weekly_rate != @quotation.weekly_rate
-      pdf.text "Ongoing (once starters paid off): R#{@quotation.ongoing_weekly_rate}/week or R#{@quotation.ongoing_monthly_rate}/month",
-               align: :right, color: '888888', style: :italic
+    unless @quotation.event?
+      pdf.text "Monthly equivalent: R#{@quotation.monthly_rate}/month", align: :right, color: '444444'
+      pdf.text "Weekly equivalent: R#{@quotation.weekly_rate}/week", align: :right, color: '444444'
+      if @quotation.ongoing_weekly_rate != @quotation.weekly_rate
+        pdf.text "Ongoing (once starters paid off): R#{@quotation.ongoing_weekly_rate}/week or R#{@quotation.ongoing_monthly_rate}/month",
+                 align: :right, color: '888888', style: :italic
+      end
     end
     pdf.move_down 30
   end

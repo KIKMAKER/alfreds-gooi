@@ -112,6 +112,10 @@ class QuotationsController < ApplicationController
       :created_date,
       :expires_at,
       :status,
+      :quote_type,
+      :event_date,
+      :event_name,
+      :event_venue,
       quotation_items_attributes: [:id, :product_id, :quantity, :amount, :_destroy]
     )
   end
