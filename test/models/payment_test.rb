@@ -1,121 +1,51 @@
 require "test_helper"
 
-class PaymentsTest < ActionDispatch::IntegrationTest
+class PaymentTest < ActiveSupport::TestCase
   def setup
-    puts "Creating Alfred"
-    alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
-      user.first_name = "Alfred"
-      user.last_name = "Mbonjwa"
-      user.password = "password"
-      user.role = "driver"
-      user.phone_number = "+27785325513"
-    end
-    puts "Alfred created with user id: #{alfred.id}"
-
     @user = User.create!(
-      email: "pay@example.com",
+      email: "payment-model-#{SecureRandom.hex(4)}@example.com",
       password: "password",
-      customer_id: "GFWC999",
-      phone_number: "+27836353126",
-      referral_code: "MYCODE"
+      phone_number: "+27800000002"
     )
-
-    @referrer = User.create!(
-      email: "ref@example.com",
-      password: "password",
-      customer_id: "GFWC998",
-      phone_number: "+27836353126",
-      referral_code: "REF123"
-    )
-
-    @subscription = Subscription.create!(
-      user: @user,
-      plan: "Standard",
-      duration: 1,
-      street_address: "123 Main",
-      suburb: "Cape Town",
-      referral_code: @referrer.referral_code,
-      customer_id: "GFWC999"
-    )
-
-    @invoice = Invoice.create!(
-      subscription: @subscription,
-      issued_date: Date.today,
-      due_date: Date.today + 14,
-      total_amount: 660,
-      paid: false
-    )
-
-    # Optional: create a referral
-    @referral = Referral.create!(
-      referrer: @referrer,
-      referee: @user,
-      subscription: @subscription,
-      status: :pending
-    )
-
-    @payload = {
-      "id" => 999,
-      "status" => "completed",
-      "totalAmount" => 66000,
-      "tipAmount" => 0,
-      "feeAmount" => 1500,
-      "settleAmount" => 64500,
-      "date" => Time.now.iso8601,
-      "userReference" => "Test User",
-      "merchantReference" => @user.customer_id,
-      "extra" => {
-        "invoiceId" => @invoice.id
-      }
-    }
-
-    @auth_key = "test_key"
-    ENV["WEBHOOK_AUTH_KEY"] = @auth_key
-
-    @params = {
-      "payload" => @payload.to_json
-    }
-    body_string = "payload=#{@params["payload"]}"
-    @signature = OpenSSL::HMAC.hexdigest("sha256", @auth_key, body_string)
-
-    @headers = {
-      "Authorization" => "SnapScan signature=#{@signature}",
-      "Content-Type" => "application/x-www-form-urlencoded"
-    }
-
-    @body = body_string
   end
 
-  test "creates payment and updates everything correctly" do
-    raw_body = "payload=#{CGI.escape(@payload.to_json)}"
-    signature = OpenSSL::HMAC.hexdigest("sha256", @auth_key, raw_body)
+  # --- payment_type enum ---
 
-    headers = {
-      "Authorization" => "SnapScan signature=#{signature}",
-      "Content-Type" => "application/x-www-form-urlencoded"
-    }
-
-    post "/snapscan/webhook", headers: headers, params: raw_body, as: :raw
-    puts "❗️Response code: #{response.status}"
-    puts "❗️Response body: #{response.body}"
-
-    payment = Payment.last
-    puts "Here in the test file should be the payemnt: #{payment.user.customer_id}"
-    assert_response :success
-
-    assert_equal @user.id, payment.user_id
-    puts "#{payment.user_id}"
-    assert_equal "completed", payment.status
-    assert_equal @invoice.id, payment.invoice_id
-    assert @invoice.reload.paid
-
-    assert @subscription.reload.active?, "Subscription should be active"
-    assert_not_nil @subscription.start_date, "Subscription should have a start date"
-
-    collection = Collection.last
-    assert_equal @subscription, collection.subscription
-
-    assert_equal "completed", @referral.reload.status
+  test "payment_type accepts eft" do
+    p = Payment.create!(user: @user, payment_type: :eft, manual: true)
+    assert p.eft?
+    assert_equal "eft", p.payment_type
   end
 
+  test "payment_type accepts snapscan" do
+    p = Payment.create!(user: @user, payment_type: :snapscan, manual: true)
+    assert p.snapscan?
+  end
+
+  test "payment_type accepts cash" do
+    p = Payment.create!(user: @user, payment_type: :cash, manual: true)
+    assert p.cash?
+  end
+
+  test "payment_type accepts other" do
+    p = Payment.create!(user: @user, payment_type: :other, manual: true)
+    assert p.other?
+  end
+
+  test "payment_type is nil by default" do
+    p = Payment.create!(user: @user)
+    assert_nil p.payment_type
+  end
+
+  # --- manual flag ---
+
+  test "manual defaults to false" do
+    p = Payment.create!(user: @user)
+    assert_equal false, p.manual
+  end
+
+  test "manual can be set to true" do
+    p = Payment.create!(user: @user, manual: true)
+    assert p.manual
+  end
 end

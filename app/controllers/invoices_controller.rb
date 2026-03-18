@@ -96,25 +96,34 @@ class InvoicesController < ApplicationController
   end
 
   def paid
+    unless current_user.admin?
+      redirect_to invoice_path(@invoice), alert: "Not authorised"
+      return
+    end
+
+    payment_type = params[:payment_type]
     user = @invoice.subscription.user
-    pending_subscriptions = user.subscriptions.where(status: :pending)
-    active_subscriptions = user.subscriptions.where(status: :active, is_paused: false)
 
     ActiveRecord::Base.transaction do
       @invoice.update!(paid: true)
 
-      pending_subscriptions.each do |subscription|
-        subscription.activate_subscription
+      Payment.create!(
+        invoice:      @invoice,
+        user:         user,
+        manual:       true,
+        payment_type: payment_type,
+        total_amount: (@invoice.total_amount * 100).to_i
+      )
 
-        # Create first collection for each subscription
-        first_collection = CreateFirstCollectionJob.perform_now(subscription)
-
-
+      unless @invoice.for_order?
+        user.subscriptions.where(status: :pending).each do |subscription|
+          subscription.activate_subscription
+          CreateFirstCollectionJob.perform_now(subscription)
+        end
       end
     end
 
-    count = active_subscriptions.count
-    flash[:notice] = "Payment recorded! #{count} #{'subscription'.pluralize(count)} activated."
+    flash[:notice] = "Payment recorded (#{payment_type&.upcase || 'manual'})!"
     redirect_to invoice_path(@invoice)
   rescue StandardError => e
     flash[:alert] = "An error occurred: #{e.message}"

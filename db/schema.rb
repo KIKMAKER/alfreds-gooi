@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_17_143855) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_18_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -433,6 +433,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_143855) do
     t.datetime "updated_at", null: false
     t.integer "legacy_subscription_id"
     t.boolean "used_discount_code"
+    t.bigint "order_id"
+    t.index ["order_id"], name: "index_invoices_on_order_id"
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
   end
 
@@ -473,6 +475,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_143855) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "invoice_id"
+    t.string "payment_type"
+    t.boolean "manual", default: false, null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
@@ -800,6 +804,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_143855) do
   add_foreign_key "invoice_discount_codes", "invoices"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
+  add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "subscriptions"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"

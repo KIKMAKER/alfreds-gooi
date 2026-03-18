@@ -1,20 +1,31 @@
 <div class="driver-wrapper">
-  <h1>All snapscan payments persisted to the db</h1>
+  <h1>Payments</h1>
   <% @payments.each do |payment| %>
     <div class="payment-card">
-      <p><%= payment.date.strftime(' %e %b %y') %></p>
+      <p><%= payment.date&.strftime('%e %b %y') %></p>
       <div class="payment-card-user">
-        <h3><%= payment.user_reference %> </h3>
+        <h3><%= payment.user_reference %></h3>
         <%= payment.merchant_reference %>
       </div>
       <div class="payment-card-amount">
         <% if payment.invoice %>
-          <h2> <%= link_to "R#{(payment.total_amount)/100}", invoice_path(payment.invoice) %></h2>
+          <h2><%= link_to "R#{payment.total_amount / 100}", invoice_path(payment.invoice) %></h2>
         <% else %>
-          <h2> R<%= ((payment.total_amount)/100) %></h2>
+          <h2>R<%= payment.total_amount / 100 %></h2>
         <% end %>
       </div>
-      <% if payment.status == "completed" %>
+      <%
+        type_label = payment.payment_type&.upcase ||
+                     (payment.snapscan_id.present? ? "SNAPSCAN" : nil)
+      %>
+      <% if type_label %>
+        <span class="payment-type-badge payment-type-badge--<%= payment.payment_type || 'snapscan' %>">
+          <%= type_label %>
+        </span>
+      <% else %>
+        <span class="payment-type-badge payment-type-badge--unknown">—</span>
+      <% end %>
+      <% if payment.status == "completed" || payment.manual? %>
         <i class="fa-regular fa-circle-check"></i>
       <% else %>
         <i class="fa-regular fa-circle-xmark"></i>

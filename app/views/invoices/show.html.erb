@@ -39,7 +39,16 @@
           <p><strong>Address:</strong> <%= @subscription.short_address %>, <%= @subscription.suburb %></p>
           <p><strong>Due Date:</strong> <%= @invoice.due_date.strftime('%A, %b %d') %> - <%= @invoice.paid ? 'paid!' : 'pending' %></p>
           <% if current_user.admin? && !@invoice.paid %>
-            <%= link_to 'paid', paid_invoice_path(@invoice) %>
+            <div class="payment-type-buttons">
+              <% %w[eft snapscan cash other].each do |type| %>
+                <%= button_to type.upcase,
+                      paid_invoice_path(@invoice),
+                      method: :post,
+                      params: { payment_type: type },
+                      class: "btn btn-sm btn-outline-success me-1",
+                      data: { turbo_confirm: "Mark as paid via #{type.upcase}?" } %>
+              <% end %>
+            </div>
           <% end %>
         </div>
         <% if @subscription.business_profile.present? %>

@@ -37,6 +37,12 @@
         <div class="dash-kpi-value"><%= @draft_quotes %></div>
       </a>
     </div>
+    <div class="col-6 col-md">
+      <a href="/admin/referrals" class="dash-kpi-card">
+        <div class="dash-kpi-label">Pending referrals</div>
+        <div class="dash-kpi-value"><%= @pending_referrals %></div>
+      </a>
+    </div>
   </div>
 
   <%# ─── Category Cards ─────────────────────────────────────────── %>
@@ -79,6 +85,7 @@
         <ul class="dash-category-links">
           <li><a href="/admin/financials">Financial Dashboard <span class="dash-arrow">→</span></a></li>
           <li><a href="/invoices">Invoices <span class="dash-arrow">→</span></a></li>
+          <li><a href="/payments">Payments <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/expenses">Expenses <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/quotations">Quotations <span class="dash-arrow">→</span></a></li>
         </ul>
@@ -96,6 +103,7 @@
           <li><a href="/admin/discount_codes">Discount Codes <span class="dash-arrow">→</span></a></li>
           <li><a href="/testimonials">Testimonials <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/analytics">Analytics <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/referrals">Referrals <span class="dash-arrow">→</span></a></li>
         </ul>
       </div>
     </div>

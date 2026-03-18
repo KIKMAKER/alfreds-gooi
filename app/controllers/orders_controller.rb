@@ -49,9 +49,10 @@ class OrdersController < ApplicationController
     if @order.update(collection: collection, status: :paid)
       # Create invoice for the order
       invoice = Invoice.create!(
+        order:        @order,
         subscription: collection.subscription,
-        issued_date: Time.current,
-        due_date: Time.current + 1.week,
+        issued_date:  Time.current,
+        due_date:     Time.current + 1.week,
         total_amount: @order.total_amount
       )
 
