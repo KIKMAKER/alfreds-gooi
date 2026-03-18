@@ -1,0 +1,66 @@
+.interest-success {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-text {
+    font-size: 1.0625rem;
+    color: #525560;
+    line-height: 1.75;
+    margin-bottom: 2rem;
+  }
+}
+
+.whatsapp-share-card {
+  background: #f5faf9;
+  border: 1px solid #e0ebe9;
+  border-left: 4px solid #25D366;
+  border-radius: 12px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  text-align: left;
+
+  &__eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #25D366;
+    margin: 0 0 0.5rem;
+  }
+
+  &__body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9375rem;
+    color: #023F3A;
+    line-height: 1.65;
+    margin: 0 0 1.25rem;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #25D366;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.65rem 1.5rem;
+    border-radius: 32px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #1ebe5a;
+      color: #fff;
+    }
+
+    i { font-size: 1.1rem; }
+  }
+}

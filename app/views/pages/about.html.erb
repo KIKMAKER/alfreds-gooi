@@ -15,5 +15,11 @@
   <%= render 'shared/mission_section' %>
   <%= render 'shared/why_compost_section' %>
   <%= render 'shared/compostable_section' %>
+
+  <div class="text-center my-4">
+    <p>Still have questions about what to compost, pricing, or how collection works?</p>
+    <%= link_to 'Read the FAQ', faq_path, class: 'action-btn' %>
+  </div>
+
   <%= render 'shared/partner_farms_section', farms: @farms %>
 </div>

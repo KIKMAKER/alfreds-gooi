@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
+    resources :interests, only: [:index]
     resources :bulk_messages, only: [:index]
     resources :logistics, only: :index do
       collection do
@@ -51,6 +52,7 @@ Rails.application.routes.draw do
       mount Blazer::Engine, at: "analytics"
     end
 
+    resources :posts
     resources :expenses do
       member do
         post :verify
@@ -197,6 +199,7 @@ Rails.application.routes.draw do
       patch :end
       get :collections
       get :snapshot
+      patch :reorder
     end
     resources :collections, only: [:index] do
       collection do
@@ -222,6 +225,7 @@ Rails.application.routes.draw do
   end
 
   resources :interests, only: :create
+  get "interests/success", to: "interests#success", as: :interest_success
 
   # testimonials
   resources :testimonials, only: [:new, :create, :index, :destroy, :update] do
@@ -244,6 +248,10 @@ Rails.application.routes.draw do
   root "pages#home"
   get "about", to: "pages#about"
   get "story", to: "pages#story"
+  get "faq", to: "pages#faq"
+
+  # blog
+  resources :posts, only: [:index, :show], path: "blog", param: :slug
 
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug

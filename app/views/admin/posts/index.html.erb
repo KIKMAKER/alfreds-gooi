@@ -1,0 +1,49 @@
+<div class="page-container">
+  <section class="map-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Blog Posts</h1>
+        <%= link_to "New Post", new_admin_post_path, class: "btn-gooi" %>
+      </div>
+
+      <% if @posts.any? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Published</th>
+              <th>Created</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @posts.each do |post| %>
+              <tr>
+                <td><strong><%= post.title %></strong></td>
+                <td>
+                  <% if post.published? %>
+                    <span class="badge bg-success">Published</span>
+                  <% else %>
+                    <span class="badge bg-secondary">Draft</span>
+                  <% end %>
+                </td>
+                <td><%= post.published_at&.strftime("%-d %b %Y") || "—" %></td>
+                <td><%= post.created_at.strftime("%-d %b %Y") %></td>
+                <td class="text-end">
+                  <%= link_to "Edit", edit_admin_post_path(post), class: "btn btn-sm btn-outline-secondary me-1" %>
+                  <%= link_to "View", post_path(post), class: "btn btn-sm btn-outline-secondary me-1", target: "_blank" %>
+                  <%= button_to "Delete", admin_post_path(post), method: :delete,
+                        class: "btn btn-sm btn-outline-danger",
+                        data: { turbo_confirm: "Delete this post?" } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">No posts yet. <%= link_to "Create the first one", new_admin_post_path %>.</p>
+      <% end %>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,76 @@
+<% content_for :meta_title, "#{@post.title} – Gooi Blog" %>
+<% content_for :meta_description, @post.excerpt.presence || @post.body.truncate(160) %>
+<% content_for :og_type, "article" %>
+<% content_for :og_image, @post.cover_image_url.presence || image_url("header-gooi-3.png") %>
+
+<% content_for :structured_data do %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "<%= j @post.title %>",
+  "description": "<%= j(@post.excerpt.presence || @post.body.truncate(160)) %>",
+  "datePublished": "<%= @post.published_at&.iso8601 %>",
+  "dateModified": "<%= @post.updated_at.iso8601 %>",
+  "author": {
+    "@type": "Organization",
+    "name": "Gooi",
+    "@id": "<%= root_url %>"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Gooi",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "<%= image_url('gooi_logo_CR.png') %>"
+    }
+  }<%= @post.cover_image_url.present? ? ",\n  \"image\": \"#{@post.cover_image_url}\"" : "" %>
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "<%= root_url %>" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "<%= posts_url %>" },
+    { "@type": "ListItem", "position": 3, "name": "<%= j @post.title %>", "item": "<%= post_url(@post) %>" }
+  ]
+}
+</script>
+<% end %>
+
+<div class="page-container">
+  <section class="map-section">
+    <div class="container" style="max-width: 740px;">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
+          <li class="breadcrumb-item"><%= link_to "Blog", posts_path %></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= @post.title %></li>
+        </ol>
+      </nav>
+
+      <% if @post.cover_image_url.present? %>
+        <img src="<%= @post.cover_image_url %>" alt="<%= @post.title %>"
+             style="width:100%;max-height:400px;object-fit:cover;border-radius:12px;" class="mb-4">
+      <% end %>
+
+      <h1 class="mb-2"><%= @post.title %></h1>
+      <p class="text-muted mb-4" style="font-size:0.9rem;">
+        <%= @post.published_at&.strftime("%-d %B %Y") %>
+      </p>
+
+      <div class="post-body">
+        <%= simple_format @post.body %>
+      </div>
+
+      <hr class="my-5">
+
+      <div class="text-center">
+        <%= link_to "← Back to blog", posts_path %>
+      </div>
+    </div>
+  </section>
+</div>

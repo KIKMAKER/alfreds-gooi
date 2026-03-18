@@ -1,0 +1,37 @@
+<% content_for :meta_title, "Thanks for your interest - Gooi" %>
+
+<%
+  wa_message = "Hey! I just asked Gooi, a compost collection service, to add #{@suburb} to their route. The more of us that sign up, the sooner they'll come our way. Check it out: #{root_url}"
+  wa_url = "https://wa.me/?text=#{ERB::Util.url_encode(wa_message)}"
+%>
+
+<div class="page-container">
+  <section class="map-section">
+    <div class="interest-success">
+
+      <h1>Seed planted!</h1>
+      <p class="intro-text">
+        Thanks for letting us know you want Gooi in <strong><%= @suburb %></strong>.
+        We've sent a confirmation to your inbox and we'll be in touch when we expand your way.
+      </p>
+
+      <div class="whatsapp-share-card">
+        <p class="whatsapp-share-card__eyebrow">Tell your neighbours</p>
+        <p class="whatsapp-share-card__body">
+          The more people in <%= @suburb %> who sign up, the sooner we can add your street to the route.
+          Send this to your neighbours — it takes 10 seconds.
+        </p>
+        <a href="<%= wa_url %>"
+           target="_blank"
+           rel="noopener"
+           class="whatsapp-share-card__btn">
+          <i class="fa-brands fa-whatsapp"></i>
+          Share on WhatsApp
+        </a>
+      </div>
+
+      <%= link_to "Back to home", root_path, class: "btn-gooi" %>
+
+    </div>
+  </section>
+</div>

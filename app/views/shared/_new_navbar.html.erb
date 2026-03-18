@@ -1,18 +1,55 @@
 <div class="navbar-container new-navbar">
   <div class="inner-container">
-    <%= link_to root_path do %>
+    <%= link_to root_path, class: "new-nav-logo-link" do %>
       <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
     <% end %>
-    <div class="links-container">
-      <%= link_to 'About', about_path, class:"link-title" %>
 
-      <% if user_signed_in?  %>
-        <div class="sign-up-btn">
-          <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
-        </div>
+    <%# Desktop links %>
+    <div class="links-container">
+      <%= link_to 'About', about_path, class: "link-title" %>
+      <%= link_to 'FAQ', faq_path, class: "link-title" %>
+      <%= link_to 'Blog', posts_path, class: "link-title" %>
+
+      <% if user_signed_in? %>
+        <%= link_to "Log out", destroy_user_session_path,
+              data: { turbo_method: :delete },
+              class: "new-nav-auth-btn" %>
       <% else %>
-        <%= link_to "Log in", new_user_session_path, class:"submit-btn" %>
+        <%= link_to "Log in", new_user_session_path, class: "new-nav-auth-btn" %>
       <% end %>
     </div>
+
+    <%# Mobile hamburger — only for new-navbar %>
+    <button class="new-nav-burger" id="newNavBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <%# Mobile drawer %>
+  <div class="new-nav-drawer" id="newNavDrawer">
+    <%= link_to 'About', about_path, class: "new-nav-drawer-link" %>
+    <%= link_to 'FAQ', faq_path, class: "new-nav-drawer-link" %>
+    <%= link_to 'Blog', posts_path, class: "new-nav-drawer-link" %>
+    <div class="new-nav-drawer-divider"></div>
+    <% if user_signed_in? %>
+      <%= link_to "Log out", destroy_user_session_path,
+            data: { turbo_method: :delete },
+            class: "new-nav-drawer-link" %>
+    <% else %>
+      <%= link_to "Log in", new_user_session_path, class: "new-nav-drawer-link" %>
+    <% end %>
   </div>
 </div>
+
+<script>
+  (function() {
+    var burger = document.getElementById('newNavBurger');
+    var drawer = document.getElementById('newNavDrawer');
+    if (!burger || !drawer) return;
+    burger.addEventListener('click', function() {
+      var open = drawer.classList.toggle('open');
+      burger.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open);
+    });
+  })();
+</script>
