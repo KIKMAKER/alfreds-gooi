@@ -8,6 +8,8 @@ class InterestsController < ApplicationController
 
     interest = Interest.new(interest_params)
     if interest.save
+      InterestMailer.with(interest: interest).new_interest_email.deliver_later
+      InterestMailer.with(interest: interest).confirmation_email.deliver_later
       redirect_to interest_success_path(suburb: interest.suburb)
     else
       redirect_back fallback_location: root_path,
