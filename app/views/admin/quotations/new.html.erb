@@ -4,6 +4,14 @@
   <%= simple_form_for [:admin, @quotation], html: { class: 'mt-4' } do |f| %>
     <%= f.error_notification %>
 
+    <div class="mb-4">
+      <%= f.input :quote_type,
+          as: :radio_buttons,
+          collection: [["Subscription", "subscription"], ["Event / Once-Off", "event"]],
+          label: "Quotation Type",
+          input_html: { data: { action: "change->quotation#toggleType" } } %>
+    </div>
+
     <div class="row">
       <div class="col-md-6">
         <h3>Customer or Prospect</h3>
@@ -35,6 +43,19 @@
         <%= f.input :status, collection: Quotation.statuses.keys,
             selected: 'draft', include_blank: false %>
         <%= f.input :notes, as: :text, input_html: { rows: 3 } %>
+
+        <div id="subscription-fields">
+          <%= f.input :duration_months,
+              label: "Contract duration (months)",
+              hint: "Used to calculate the weekly rate shown on the quote",
+              input_html: { value: 6 } %>
+        </div>
+
+        <div id="event-fields" style="display: none;">
+          <%= f.input :event_name, label: "Event Name" %>
+          <%= f.input :event_date, as: :date, label: "Event Date" %>
+          <%= f.input :event_venue, label: "Venue / Location" %>
+        </div>
       </div>
     </div>
 
@@ -43,9 +64,10 @@
     <h3>Products</h3>
     <p class="text-muted">Enter quantities for products to include in this quotation:</p>
 
-    <div class="row mb-2">
+    <div class="row mb-2" id="products-container">
       <% @products.each_with_index do |product, index| %>
-        <div class="col-md-6 mb-3">
+        <% product_type = product.title.downcase.include?("event") ? "event" : "subscription" %>
+        <div class="col-md-6 mb-3 product-card" data-product-type="<%= product_type %>">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title"><%= product.title %></h5>
@@ -72,3 +94,28 @@
     </div>
   <% end %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const radios = document.querySelectorAll('input[name="quotation[quote_type]"]');
+    const subscriptionFields = document.getElementById("subscription-fields");
+    const eventFields = document.getElementById("event-fields");
+
+    function toggle() {
+      const selected = document.querySelector('input[name="quotation[quote_type]"]:checked')?.value;
+      if (selected === "event") {
+        subscriptionFields.style.display = "none";
+        eventFields.style.display = "block";
+      } else {
+        subscriptionFields.style.display = "block";
+        eventFields.style.display = "none";
+      }
+      document.querySelectorAll(".product-card").forEach(card => {
+        card.style.display = card.dataset.productType === selected ? "" : "none";
+      });
+    }
+
+    radios.forEach(r => r.addEventListener("change", toggle));
+    toggle();
+  });
+</script>

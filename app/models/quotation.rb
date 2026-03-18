@@ -14,6 +14,8 @@ class Quotation < ApplicationRecord
 
   # Enums
   enum :status, %i[draft sent accepted rejected expired]
+  attribute :quote_type, :string, default: "subscription"
+  enum :quote_type, { subscription: "subscription", event: "event" }
 
   # Validations
   validates :created_date, :expires_at, presence: true
@@ -27,6 +29,8 @@ class Quotation < ApplicationRecord
   scope :expired_status, -> { where('expires_at < ?', Date.today).or(where(status: :expired)) }
   scope :for_prospects, -> { where(user_id: nil) }
   scope :for_customers, -> { where.not(user_id: nil) }
+  scope :event_quotes, -> { where(quote_type: "event") }
+  scope :subscription_quotes, -> { where(quote_type: "subscription") }
 
   # Methods
   def set_number
@@ -49,6 +53,10 @@ class Quotation < ApplicationRecord
     else
       Rails.logger.error "Failed to update total amount: #{self.errors.full_messages.join(", ")}"
     end
+  end
+
+  def event?
+    quote_type == "event"
   end
 
   def weeks_in_contract

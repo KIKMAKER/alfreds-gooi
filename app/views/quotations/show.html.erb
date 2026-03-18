@@ -84,13 +84,27 @@
       <p>Total: R<%= @quotation.total_amount.truncate %></p>
     </div>
 
-    <div class="ms-1 mt-2">
-      <p class="text-muted" style="font-size: 0.9em;">Monthly equivalent: R<%= @quotation.monthly_rate %>/month</p>
-      <p class="text-muted" style="font-size: 0.9em;">Weekly equivalent: R<%= @quotation.weekly_rate %>/week</p>
-      <% if @quotation.ongoing_weekly_rate != @quotation.weekly_rate %>
-        <p class="text-muted" style="font-size: 0.9em; font-style: italic;">Ongoing rate (once starters paid off): R<%= @quotation.ongoing_monthly_rate %>/month or R<%= @quotation.ongoing_weekly_rate %>/week</p>
-      <% end %>
-    </div>
+    <% if @quotation.event? %>
+      <div class="ms-1 mt-2">
+        <% if @quotation.event_name.present? %>
+          <p class="text-muted" style="font-size: 0.9em;"><strong>Event:</strong> <%= @quotation.event_name %></p>
+        <% end %>
+        <% if @quotation.event_date.present? %>
+          <p class="text-muted" style="font-size: 0.9em;"><strong>Date:</strong> <%= @quotation.event_date.strftime('%A, %b %d, %Y') %></p>
+        <% end %>
+        <% if @quotation.event_venue.present? %>
+          <p class="text-muted" style="font-size: 0.9em;"><strong>Venue:</strong> <%= @quotation.event_venue %></p>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="ms-1 mt-2">
+        <p class="text-muted" style="font-size: 0.9em;">Monthly equivalent: R<%= @quotation.monthly_rate %>/month</p>
+        <p class="text-muted" style="font-size: 0.9em;">Weekly equivalent: R<%= @quotation.weekly_rate %>/week</p>
+        <% if @quotation.ongoing_weekly_rate != @quotation.weekly_rate %>
+          <p class="text-muted" style="font-size: 0.9em; font-style: italic;">Ongoing rate (once starters paid off): R<%= @quotation.ongoing_monthly_rate %>/month or R<%= @quotation.ongoing_weekly_rate %>/week</p>
+        <% end %>
+      </div>
+    <% end %>
 
     <div class="text-center my-4">
       <%= link_to "Download PDF", pdf_quotation_path(@quotation), class: "small-yellow-btn", target: "_blank" %>

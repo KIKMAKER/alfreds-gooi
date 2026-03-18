@@ -28,14 +28,27 @@
 
       <div class="col-md-6">
         <h3>Quotation Details</h3>
+        <%= f.input :quote_type,
+            as: :radio_buttons,
+            collection: [["Subscription", "subscription"], ["Event / Once-Off", "event"]],
+            label: "Quotation Type" %>
         <%= f.input :created_date, as: :date %>
         <%= f.input :expires_at, as: :date, label: "Expires On" %>
-        <%= f.input :duration_months,
-              label: "Contract duration (months)",
-              hint: "Used to calculate the weekly rate shown on the quote",
-              input_html: { value: f.object.duration_months || 6 } %>
         <%= f.input :status, collection: Quotation.statuses.keys, include_blank: false %>
         <%= f.input :notes, as: :text, input_html: { rows: 3 } %>
+
+        <div id="subscription-fields" style="<%= @quotation.event? ? 'display:none;' : '' %>">
+          <%= f.input :duration_months,
+                label: "Contract duration (months)",
+                hint: "Used to calculate the weekly rate shown on the quote",
+                input_html: { value: f.object.duration_months || 6 } %>
+        </div>
+
+        <div id="event-fields" style="<%= @quotation.event? ? '' : 'display:none;' %>">
+          <%= f.input :event_name, label: "Event Name" %>
+          <%= f.input :event_date, as: :date, label: "Event Date" %>
+          <%= f.input :event_venue, label: "Venue / Location" %>
+        </div>
       </div>
     </div>
 
@@ -102,3 +115,25 @@
     </div>
   <% end %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const radios = document.querySelectorAll('input[name="quotation[quote_type]"]');
+    const subscriptionFields = document.getElementById("subscription-fields");
+    const eventFields = document.getElementById("event-fields");
+
+    function toggle() {
+      const selected = document.querySelector('input[name="quotation[quote_type]"]:checked')?.value;
+      if (selected === "event") {
+        subscriptionFields.style.display = "none";
+        eventFields.style.display = "block";
+      } else {
+        subscriptionFields.style.display = "block";
+        eventFields.style.display = "none";
+      }
+    }
+
+    radios.forEach(r => r.addEventListener("change", toggle));
+    toggle();
+  });
+</script>

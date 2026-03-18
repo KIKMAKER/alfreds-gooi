@@ -2,16 +2,11 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
 
-  config.action_mailer.default_url_options = { host: 'alfred.gooi.me', protocol: 'https' }
-  config.action_mailer.smtp_settings = {
-    address: 'smtp.gmail.com',
-    port: 587,
-    domain: 'gooi.me',
-    authentication: :plain,
-    user_name: ENV['SMTP_USERNAME'],
-    password: ENV['SMTP_PASSWORD'],
-    enable_starttls_auto: true
-  }
+  config.action_mailer.default_url_options  = { host: 'www.gooi.me', protocol: 'https' }
+  config.action_mailer.delivery_method      = :postmark
+  config.action_mailer.postmark_settings    = { api_token: ENV['POSTMARK_API_TOKEN'] }
+  config.action_mailer.default_options      = { from: 'howzit@gooi.me' }
+  config.action_mailer.raise_delivery_errors = true
 
 
   config.exceptions_app = self.routes

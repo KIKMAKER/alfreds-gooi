@@ -1,0 +1,249 @@
+<% content_for :meta_title, "FAQ – Gooi Compost Collection Cape Town" %>
+<% content_for :meta_description, "Answers to common questions about Gooi's weekly food scrap collection service in Cape Town — what's compostable, pricing, how it works, and drop-off sites." %>
+
+<% content_for :structured_data do %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What can I put in my Gooi bag or bucket?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fruit and vegetable scraps, coffee grounds and filters, tea bags (paper), eggshells, bread and grains, cooked food (small amounts), paper napkins. No meat, fish, dairy, oily food, or non-food items."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What cannot go in the compost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Please keep out meat, fish, dairy, oils and fats, bones, pet waste, plastic, glass, or any non-food materials. These items contaminate the compost and cannot be processed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does the service cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standard plan (up to two 5L bags/week): R260/month on a 1-month plan, R220/month on 3 months, or R180/month on 6 months. XL plan (one 25L bucket/week): R300/month on 1 month, R270/month on 3 months, or R240/month on 6 months."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which suburbs does Gooi service?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We currently collect across Cape Town's southern suburbs, the Atlantic Seaboard, False Bay, and the City Bowl — including areas like Claremont, Sea Point, Muizenberg, Observatory, and many more. Check the map on our home page for your suburb's collection day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What day will my scraps be collected?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Collection day is determined by your suburb. Southern suburbs and False Bay are collected on Tuesdays, the Atlantic Seaboard and Constantia on Wednesdays, and the City Bowl on Thursdays. Your confirmed day is shown in your account after sign-up."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What time will Alfred arrive?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Routes run from roughly 8am to 5pm. Traffic and Alfred's legendary chats with customers mean we can't give a precise time — please leave your scraps out early and we'll swing by!"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I prepare my scraps for collection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standard subscribers receive two compostable 5L bags each collection. Fill them and leave them at your gate or doorstep on your collection day. XL subscribers get a 25L bucket — just leave it out on collection day and we swap it for a clean one."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I skip a week?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Log in to your account and skip any upcoming collection. You can also set holiday dates in advance if you'll be away."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I pause my subscription?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can pause your subscription from your account page and resume it when you're ready. Paused months don't count toward your subscription duration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where does the compost end up?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your food scraps are delivered to our composting partner Soil for Life, where they're transformed into nutrient-rich compost that feeds gardens and farms around Cape Town."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you have drop-off sites?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! If weekly doorstep collection doesn't suit you, you can drop your scraps at one of our partner farms and drop-off locations around Cape Town. See the Farms page for locations and hours."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you collect from businesses?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We offer commercial collection for restaurants, cafés, offices, and other businesses. Pricing is volume-based (45L buckets) with flexible contract lengths. Get in touch via the Commercial inquiry form on our home page."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "<%= root_url %>" },
+    { "@type": "ListItem", "position": 2, "name": "FAQ", "item": "<%= faq_url %>" }
+  ]
+}
+</script>
+<% end %>
+
+<div class="faq-page">
+
+  <div class="faq-header">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
+        <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+      </ol>
+    </nav>
+    <h1>Frequently asked questions</h1>
+    <p class="faq-lead">Everything you need to know about composting with Gooi.</p>
+  </div>
+
+  <div class="faq-body">
+
+    <%# ── What's compostable ──────────────────────────── %>
+    <div class="faq-section-label"><span>What's compostable</span></div>
+
+    <details class="faq-item">
+      <summary>What can I put in my Gooi bag or bucket?</summary>
+      <div class="faq-answer">
+        <p>Fruit and vegetable scraps, coffee grounds and filters, tea bags (paper), eggshells, bread and grains, cooked food (small amounts), paper napkins.</p>
+        <p><strong>Not accepted:</strong> meat, fish, dairy, oily food, or any non-food items.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What cannot go in the compost?</summary>
+      <div class="faq-answer">
+        Meat, fish, dairy, oils and fats, bones, pet waste, plastic, glass, or any non-food materials. These items contaminate the compost and cannot be processed at our partner facility.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Where does the compost end up?</summary>
+      <div class="faq-answer">
+        Your food scraps are delivered to our composting partner <strong>Soil for Life</strong>, where they're transformed into nutrient-rich compost that feeds gardens and farms around Cape Town.
+      </div>
+    </details>
+
+    <%# ── Pricing ──────────────────────────────────────── %>
+    <div class="faq-section-label"><span>Pricing</span></div>
+
+    <details class="faq-item">
+      <summary>How much does the service cost?</summary>
+      <div class="faq-answer">
+        <p><strong>Standard</strong> — up to two 5L bags per week:</p>
+        <ul>
+          <li>1 month — R260/month</li>
+          <li>3 months — R220/month (R660 total)</li>
+          <li>6 months — R180/month (R1 080 total)</li>
+        </ul>
+        <p><strong>XL</strong> — one 25L bucket per week:</p>
+        <ul>
+          <li>1 month — R300/month</li>
+          <li>3 months — R270/month (R810 total)</li>
+          <li>6 months — R240/month (R1 440 total)</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Do you collect from businesses?</summary>
+      <div class="faq-answer">
+        Yes. We offer commercial collection for restaurants, cafés, offices, and other businesses. Pricing is volume-based (45L buckets) with flexible contract lengths of 3, 6, or 12 months.
+        <%= link_to "Get in touch →", new_commercial_inquiry_account_path %>
+      </div>
+    </details>
+
+    <%# ── How it works ────────────────────────────────── %>
+    <div class="faq-section-label"><span>How it works</span></div>
+
+    <details class="faq-item">
+      <summary>Which suburbs does Gooi service?</summary>
+      <div class="faq-answer">
+        We collect across Cape Town's southern suburbs, the Atlantic Seaboard, False Bay, and the City Bowl — including Claremont, Sea Point, Muizenberg, Observatory, and many more.
+        <%= link_to "See the full map →", root_path(anchor: "pricing") %>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What day will my scraps be collected?</summary>
+      <div class="faq-answer">
+        Collection day is determined by your suburb. Southern suburbs and False Bay are on <strong>Tuesdays</strong>, the Atlantic Seaboard and Constantia on <strong>Wednesdays</strong>, and the City Bowl on <strong>Thursdays</strong>. Your confirmed day is shown in your account after sign-up.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What time will Alfred arrive?</summary>
+      <div class="faq-answer">
+        Routes run from roughly 8am to 5pm. Traffic and Alfred's legendary chats with customers mean we can't give a precise time — leave your scraps out early and we'll swing by!
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I prepare my scraps for collection?</summary>
+      <div class="faq-answer">
+        <p><strong>Standard:</strong> You'll receive two compostable 5L bags each collection. Fill them and leave them at your gate or doorstep on your collection day.</p>
+        <p><strong>XL:</strong> You get a 25L bucket — leave it out on collection day and we'll swap it for a clean one.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I skip a week or pause my subscription?</summary>
+      <div class="faq-answer">
+        Yes to both. Log in to skip any upcoming collection or set holiday dates in advance. You can also pause your subscription from your account page — paused months don't count toward your subscription duration.
+      </div>
+    </details>
+
+    <%# ── Drop-offs ───────────────────────────────────── %>
+    <div class="faq-section-label"><span>Drop-off sites</span></div>
+
+    <details class="faq-item">
+      <summary>Do you have drop-off sites?</summary>
+      <div class="faq-answer">
+        Yes. If weekly doorstep collection doesn't suit you, you can drop your scraps at one of our partner farms and community drop-off locations around Cape Town.
+        <%= link_to "See drop-off locations →", farms_path %>
+      </div>
+    </details>
+
+  </div><%# /faq-body %>
+
+  <div class="faq-cta">
+    <p>Still have questions? Find us on Instagram or send us a WhatsApp.</p>
+    <%= link_to "Sign up for collection", new_account_signup_path, class: "btn-gooi" %>
+  </div>
+
+</div>

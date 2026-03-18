@@ -72,6 +72,7 @@ gem "prawn"
 gem "prawn-table"
 gem "ahoy_matey"
 gem "blazer"
+gem "sitemap_generator"
 
 
 

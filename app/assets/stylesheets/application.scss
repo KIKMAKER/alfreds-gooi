@@ -13,6 +13,12 @@
 @import "components/index";
 @import "pages/index";
 
+// Global link colour — never browser blue
+a {
+  color: #023F3A;
+  &:hover { color: #108A63; }
+}
+
 .link-decoration {
   a {
     text-decoration: none;

@@ -1,19 +1,22 @@
 class InterestsController < ApplicationController
-  skip_before_action :authenticate_user!, only: :create if defined?(Devise)
+  skip_before_action :authenticate_user!, only: [:create, :success] if defined?(Devise)
   protect_from_forgery with: :exception
 
   def create
     # simple honeypot: drop if the hidden field is filled
-    return redirect_back fallback_location: root_path, notice: "Thanks!" if params[:website].present?
+    return redirect_to interest_success_path(suburb: "your area") if params[:website].present?
 
     interest = Interest.new(interest_params)
     if interest.save
-      redirect_back fallback_location: root_path,
-                    notice: "Thank you — one step closer to compost collection! 🌱"
+      redirect_to interest_success_path(suburb: interest.suburb)
     else
       redirect_back fallback_location: root_path,
                     alert: interest.errors.full_messages.to_sentence
     end
+  end
+
+  def success
+    @suburb = params[:suburb].presence || "your area"
   end
 
   private

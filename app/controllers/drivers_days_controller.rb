@@ -317,6 +317,31 @@ class DriversDaysController < ApplicationController
     redirect_to drivers_days_path, note: "Drivers Day deleted"
   end
 
+  def reorder
+    @drivers_day = DriversDay.find(params[:id])
+    items = params[:items] || []
+
+    items.each_with_index do |item_data, index|
+      case item_data[:type]
+      when "collection"
+        @drivers_day.collections
+                    .find_by(id: item_data[:id])
+                    &.update_column(:position, index + 1)
+      when "drop_off_event"
+        @drivers_day.drop_off_events
+                    .find_by(id: item_data[:id])
+                    &.update_column(:position, index + 1)
+      end
+    end
+
+    # Keep subscription collection_order in sync
+    @drivers_day.collections.order(:position).each_with_index do |c, i|
+      c.subscription&.update_column(:collection_order, i + 1)
+    end
+
+    head :no_content
+  end
+
   private
 
   def set_drivers_day

@@ -4,9 +4,7 @@
   justify-content: flex-start;
   align-items: center;
   // min-height: 80vh;
-  height: 90vh;
-  overflow-y: auto;
-  margin: 0% 6%;
+  margin: 0 6%;
   margin-top: 3rem;
 
   h1 {
@@ -127,6 +125,18 @@
 
 .collections {
   margin-bottom: 2rem;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #bbb;
+  font-size: 1.1rem;
+  padding: 0 8px 0 0;
+  user-select: none;
+  touch-action: none;
+  flex-shrink: 0;
+
+  &:active { cursor: grabbing; }
 }
 
 .collection {

@@ -9,8 +9,13 @@ export default class extends Controller {
   connect() {
     this.sortable = new Sortable(this.element, {
       animation: 150,
-      ghostClass: "sortable-ghost",  // Optional styling for the dragged item
-      onEnd: this.onEnd.bind(this),  // Trigger this method when the sorting ends
+      ghostClass: "sortable-ghost",
+      draggable: ".sortable-item",
+      handle: ".drag-handle",
+      delay: 200,
+      delayOnTouchOnly: true,
+      touchStartThreshold: 5,
+      onEnd: this.onEnd.bind(this),
     })
   }
 
@@ -18,17 +23,16 @@ export default class extends Controller {
     this.sortable.destroy()
   }
 
-  onEnd(event) {
-    const { newIndex, item } = event
+  onEnd() {
+    const items = Array.from(this.element.querySelectorAll(".sortable-item"))
+      .map(el => ({
+        type: el.dataset.sortableType,
+        id:   el.dataset.sortableId,
+      }))
 
-    // Get the URL to update the collection position
-    const url = item.dataset.sortableUrl
-
-    // Send the new position to the backend using PUT request
-    put(url, {
-      body: JSON.stringify({ position: newIndex + 1 })  // `+1` to adjust to 1-based index
+    put(this.urlValue, {
+      body: JSON.stringify({ items }),
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => console.log("Position updated", response))
-      .catch(error => console.error("Error updating position", error))
   }
 }

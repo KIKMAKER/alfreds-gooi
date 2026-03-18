@@ -1,0 +1,85 @@
+<div class="page-container">
+  <section class="map-section">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h1>Interest list</h1>
+        <span class="badge bg-secondary fs-6"><%= @interests.count %> total</span>
+      </div>
+      <p class="text-muted mb-4">People outside the current service area who want Gooi to expand their way.</p>
+
+      <%# ── Suburb summary ────────────────────────────────── %>
+      <% if @by_suburb.any? %>
+        <h2 class="interests-section-heading mb-3">By suburb</h2>
+        <div class="d-flex flex-wrap gap-2 mb-5">
+          <% @by_suburb.each do |suburb, entries| %>
+            <a href="#suburb-<%= suburb.parameterize %>" class="suburb-pill">
+              <%= suburb %>
+              <span class="suburb-pill__count"><%= entries.size %></span>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%# ── Full list grouped by suburb ────────────────────── %>
+      <% if @by_suburb.any? %>
+        <% @by_suburb.each do |suburb, entries| %>
+          <div id="suburb-<%= suburb.parameterize %>" class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <h2 class="interests-suburb-heading"><%= suburb %></h2>
+              <span class="badge interests-count-badge">
+                <%= entries.size %> <%= 'person'.pluralize(entries.size) %>
+              </span>
+            </div>
+
+            <table class="table table-sm interests-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Note</th>
+                  <th>Submitted</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% entries.each do |interest| %>
+                  <tr>
+                    <td class="interests-table__name"><%= interest.name %></td>
+                    <td>
+                      <%= mail_to interest.email, interest.email,
+                            subject: "Gooi coming to #{interest.suburb}" %>
+                    </td>
+                    <td class="interests-table__note">
+                      <% if interest.note.present? %>
+                        <span title="<%= interest.note %>">
+                          <%= truncate(interest.note, length: 80) %>
+                        </span>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="interests-table__date">
+                      <%= interest.created_at.strftime("%-d %b %Y") %>
+                    </td>
+                    <td class="interests-table__actions">
+                      <%= link_to "Edit", edit_admin_interest_path(interest), class: "btn btn-outline-secondary btn-xs" %>
+                      <%= button_to "Delete", admin_interest_path(interest), method: :delete,
+                            data: { turbo_confirm: "Delete #{interest.name}?" },
+                            class: "btn btn-outline-danger btn-xs" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-5">
+          <p class="text-muted">No interest submissions yet.</p>
+        </div>
+      <% end %>
+
+    </div>
+  </section>
+</div>

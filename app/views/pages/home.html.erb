@@ -1,6 +1,49 @@
 <% content_for :meta_title, "Gooi - Organic Waste Recycling Made Easy in Cape Town" %>
 <% content_for :meta_description, "Weekly doorstep collection of food scraps around Table Mountain. Join Cape Town's food waste revolution. Simple, affordable composting service for households and businesses." %>
 
+<% content_for :structured_data do %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Weekly Compost Collection",
+  "provider": { "@id": "<%= root_url %>" },
+  "areaServed": "Cape Town",
+  "description": "Weekly doorstep collection of food scraps from households and businesses around Table Mountain. Affordable, easy composting — two subscription plans available.",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Standard Plan",
+      "description": "Up to two 5L bags per week",
+      "price": "180",
+      "priceCurrency": "ZAR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "180",
+        "priceCurrency": "ZAR",
+        "unitText": "month",
+        "description": "From R180/month on 6-month plan"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "XL Plan",
+      "description": "One 25L bucket per week",
+      "price": "240",
+      "priceCurrency": "ZAR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "240",
+        "priceCurrency": "ZAR",
+        "unitText": "month",
+        "description": "From R240/month on 6-month plan"
+      }
+    }
+  ]
+}
+</script>
+<% end %>
+
 <!--header-->
 <div class="page-container">
   <section class="gooi-header">
@@ -12,6 +55,7 @@
         Ready to join the food waste revolution?</p>
       <div class="mt-5 mb-3">
         <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+
       </div>
       <br>
     </div>
@@ -557,7 +601,16 @@
     <%= simple_form_for @interest do |f| %>
       <%= f.input :name, input_html: { class: 'form-control' } %>
       <%= f.input :email, input_html: { class: 'form-control' } %>
-      <%= f.input :suburb, input_html: { class: 'form-control' } %>
+      <%= f.input :suburb, as: :select,
+            collection: Interest::SUBURBS,
+            include_blank: "— select your suburb —",
+            input_html: { class: 'form-select' } %>
+      <%= f.input :note, as: :text,
+            label: "Anything to add?",
+            placeholder: "e.g. 'My whole street would sign up' or 'We have a community garden'",
+            hint: "If your suburb isn't in the list, select Other and mention it here.",
+            input_html: { class: 'form-control', rows: 2 },
+            required: false %>
       <%= hidden_field_tag :website, nil, autocomplete: "off" %>
       <%= f.submit "Plant the seed", class: "submit-btn" %>
     <% end %>
