@@ -409,7 +409,7 @@ class Subscription < ApplicationRecord
         referral = Referral.find_by(referee_id: user_id, referrer_id: referrer.id)
         if referral
           referral.completed!
-          SubscriptionMailer.with(referrer: referrer, referee: user).referral_completed.deliver_later
+          SubscriptionMailer.with(referrer: referrer, referee: user).referral_completed.deliver_now
         end
       end
     end
