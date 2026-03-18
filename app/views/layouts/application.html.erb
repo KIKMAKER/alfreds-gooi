@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for?(:meta_title) ? yield(:meta_title) : "Home Compost Collection Service in Cape Town, South Africa | Gooi" %></title>
-    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Gooi offers home compost collection services across South Africa. Easy, affordable, and sustainable kitchen waste solutions for households and businesses." %>">
+    <% _meta_title = content_for?(:meta_title) ? yield(:meta_title) : "Home Compost Collection Service in Cape Town, South Africa | Gooi" %>
+    <% _meta_description = content_for?(:meta_description) ? yield(:meta_description) : "Gooi offers home compost collection services across South Africa. Easy, affordable, and sustainable kitchen waste solutions for households and businesses." %>
+    <% _og_image = content_for?(:og_image) ? yield(:og_image) : image_url("header-gooi-3.png") %>
+
+    <title><%= _meta_title %></title>
+    <meta name="description" content="<%= _meta_description %>">
+
+    <%# Open Graph — Facebook, WhatsApp, iMessage, LinkedIn %>
+    <meta property="og:type"        content="<%= content_for?(:og_type) ? yield(:og_type) : "website" %>">
+    <meta property="og:site_name"   content="Gooi">
+    <meta property="og:title"       content="<%= _meta_title %>">
+    <meta property="og:description" content="<%= _meta_description %>">
+    <meta property="og:image"       content="<%= _og_image %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url"         content="<%= request.original_url %>">
+
+    <%# Twitter / X card %>
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="<%= _meta_title %>">
+    <meta name="twitter:description" content="<%= _meta_description %>">
+    <meta name="twitter:image"       content="<%= _og_image %>">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="facebook-domain-verification" content="ssuecz856619xo4pujlmnsdcobca9y" />
@@ -44,15 +64,18 @@
     <link rel="apple-touch-icon" href="<%= image_path 'icons/ios/180.png' %>">
     <link rel="apple-touch-startup-image" href="<%= image_path '/icons/ios/1024.png' %>">
 
-    <!-- Schema.org Organization markup -->
+    <!-- Schema.org LocalBusiness markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["LocalBusiness", "EnvironmentalService"],
+      "@id": "<%= root_url %>",
       "name": "Gooi",
       "url": "<%= root_url %>",
       "logo": "<%= image_url('gooi_logo_CR.png') %>",
       "description": "Weekly doorstep collection of food scraps around Table Mountain. Join Cape Town's food waste revolution.",
+      "priceRange": "R180–R300/month",
+      "openingHours": "Mo-Fr 08:00-17:00",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "27 Hare Street",
@@ -66,9 +89,51 @@
         "latitude": "-33.9497",
         "longitude": "18.4735"
       },
-      "areaServed": {
-        "@type": "City",
-        "name": "Cape Town"
+      "areaServed": [
+        "Bergvliet", "Claremont", "Kenilworth", "Wynberg", "Plumstead",
+        "Kalk Bay", "Muizenberg", "Fish Hoek", "Simon's Town",
+        "Camps Bay", "Sea Point", "Hout Bay", "Green Point", "Constantia",
+        "Gardens", "Tamboerskloof", "Observatory", "Woodstock", "De Waterkant"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Compost Collection Plans",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Standard Plan",
+              "description": "Weekly doorstep collection of up to two 5L bags of kitchen scraps"
+            },
+            "price": "180",
+            "priceCurrency": "ZAR",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "180",
+              "priceCurrency": "ZAR",
+              "unitText": "month",
+              "description": "From R180/month on 6-month plan"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "XL Plan",
+              "description": "Weekly doorstep collection of a 25L bucket of kitchen scraps"
+            },
+            "price": "240",
+            "priceCurrency": "ZAR",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "240",
+              "priceCurrency": "ZAR",
+              "unitText": "month",
+              "description": "From R240/month on 6-month plan"
+            }
+          }
+        ]
       },
       "sameAs": [
         "https://facebook.com/gooicapetown",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_17_090001) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_17_143855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -475,6 +475,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_090001) do
     t.bigint "invoice_id"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "slug", null: false
+    t.text "body", null: false
+    t.text "excerpt"
+    t.string "cover_image_url"
+    t.boolean "published", default: false, null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_posts_on_slug", unique: true
   end
 
   create_table "products", force: :cascade do |t|

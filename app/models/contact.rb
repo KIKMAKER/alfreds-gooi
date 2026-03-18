@@ -6,7 +6,7 @@ class Contact < ApplicationRecord
   validates :phone_number, presence: true,
             uniqueness: { scope: :subscription_id, message: "already exists for this subscription" }
   validates :relationship, inclusion: {
-    in: %w[owner spouse housemate family other],
+    in: %w[owner spouse housemate family other housekeeper],
     allow_blank: true
   }
 

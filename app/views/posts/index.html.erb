@@ -1,0 +1,47 @@
+<% content_for :meta_title, "Blog – Gooi Compost Collection Cape Town" %>
+<% content_for :meta_description, "Tips, stories, and composting guides from the Gooi team. Learn what to compost, how it works, and what happens to your food scraps." %>
+
+<div class="page-container">
+  <section class="map-section">
+    <div class="container" style="max-width: 900px;">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
+          <li class="breadcrumb-item active" aria-current="page">Blog</li>
+        </ol>
+      </nav>
+
+      <h1 class="mb-2">The Gooi Blog</h1>
+      <p class="mb-5">Composting tips, community stories, and updates from the bakkie.</p>
+
+      <% if @posts.any? %>
+        <div class="row g-4">
+          <% @posts.each do |post| %>
+            <div class="col-12 col-md-6">
+              <div class="testimonial-card h-100 d-flex flex-column">
+                <% if post.cover_image_url.present? %>
+                  <img src="<%= post.cover_image_url %>" alt="<%= post.title %>"
+                       style="width:100%;height:200px;object-fit:cover;border-radius:8px;" class="mb-3">
+                <% end %>
+                <h3 class="mb-1"><%= link_to post.title, post_path(post), style: "text-decoration:none;color:inherit;" %></h3>
+                <p class="text-muted" style="font-size:0.85rem;">
+                  <%= post.published_at&.strftime("%-d %B %Y") %>
+                </p>
+                <% if post.excerpt.present? %>
+                  <p class="flex-grow-1"><%= post.excerpt %></p>
+                <% end %>
+                <div class="mt-3">
+                  <%= link_to "Read more →", post_path(post) %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <p class="text-muted">No posts yet — check back soon.</p>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>

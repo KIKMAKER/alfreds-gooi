@@ -1,0 +1,94 @@
+<div class="page-container">
+  <section class="map-section">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h1>Interest list</h1>
+        <span class="badge bg-secondary fs-6"><%= @interests.count %> total</span>
+      </div>
+      <p class="text-muted mb-4">People outside the current service area who want Gooi to expand their way.</p>
+
+      <%# ── Suburb summary ────────────────────────────────── %>
+      <% if @by_suburb.any? %>
+        <h2 class="mb-3" style="font-size:1.1rem;">By suburb</h2>
+        <div class="d-flex flex-wrap gap-2 mb-5">
+          <% @by_suburb.each do |suburb, entries| %>
+            <a href="#suburb-<%= suburb.parameterize %>"
+               style="text-decoration:none;">
+              <span style="
+                display:inline-flex;align-items:center;gap:6px;
+                background:#f5faf9;border:1px solid #e0ebe9;
+                border-radius:20px;padding:4px 14px;
+                font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:600;
+                color:#023F3A;">
+                <%= suburb %>
+                <span style="
+                  background:#FBB718;color:#fff;
+                  border-radius:50%;width:20px;height:20px;
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:0.7rem;font-weight:700;">
+                  <%= entries.size %>
+                </span>
+              </span>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%# ── Full list grouped by suburb ────────────────────── %>
+      <% if @by_suburb.any? %>
+        <% @by_suburb.each do |suburb, entries| %>
+          <div id="suburb-<%= suburb.parameterize %>" class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <h2 style="font-size:1rem;margin:0;color:#023F3A;"><%= suburb %></h2>
+              <span class="badge" style="background:#FBB718;color:#fff;font-size:0.75rem;">
+                <%= entries.size %> <%= 'person'.pluralize(entries.size) %>
+              </span>
+            </div>
+
+            <table class="table table-sm" style="font-family:'Montserrat',sans-serif;font-size:0.875rem;">
+              <thead style="background:#f5faf9;">
+                <tr>
+                  <th style="color:#525560;font-weight:600;">Name</th>
+                  <th style="color:#525560;font-weight:600;">Email</th>
+                  <th style="color:#525560;font-weight:600;">Note</th>
+                  <th style="color:#525560;font-weight:600;">Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% entries.each do |interest| %>
+                  <tr>
+                    <td style="color:#023F3A;font-weight:500;"><%= interest.name %></td>
+                    <td>
+                      <a href="mailto:<%= interest.email %>?subject=Gooi coming to <%= interest.suburb %>"
+                         style="color:#023F3A;">
+                        <%= interest.email %>
+                      </a>
+                    </td>
+                    <td style="color:#525560;max-width:260px;">
+                      <% if interest.note.present? %>
+                        <span title="<%= interest.note %>">
+                          <%= truncate(interest.note, length: 80) %>
+                        </span>
+                      <% else %>
+                        <span style="color:#bbb;">—</span>
+                      <% end %>
+                    </td>
+                    <td style="color:#525560;white-space:nowrap;">
+                      <%= interest.created_at.strftime("%-d %b %Y") %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-5">
+          <p class="text-muted">No interest submissions yet.</p>
+        </div>
+      <% end %>
+
+    </div>
+  </section>
+</div>

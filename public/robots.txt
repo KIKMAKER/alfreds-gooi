@@ -1,1 +1,9 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Disallow: /admin/
+Disallow: /users/
+Disallow: /subscriptions/
+Disallow: /invoices/
+Disallow: /drivers_days/
+Disallow: /orders/
+
+Sitemap: https://www.gooi.me/sitemap.xml
