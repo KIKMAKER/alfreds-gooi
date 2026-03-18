@@ -1,70 +1,31 @@
-<% content_for :meta_title, "Thanks for your interest – Gooi" %>
+<% content_for :meta_title, "Thanks for your interest - Gooi" %>
 
 <%
-  wa_message = "Hey! I just asked Gooi to add #{@suburb} to their compost collection route 🌱 The more of us that sign up, the sooner they'll come our way. Check it out: #{root_url}"
+  wa_message = "Hey! I just asked Gooi, a compost collection service, to add #{@suburb} to their route. The more of us that sign up, the sooner they'll come our way. Check it out: #{root_url}"
   wa_url = "https://wa.me/?text=#{ERB::Util.url_encode(wa_message)}"
 %>
 
 <div class="page-container">
   <section class="map-section">
-    <div class="container" style="max-width:600px;text-align:center;">
+    <div class="interest-success">
 
-      <div style="font-size:3.5rem;margin-bottom:1rem;">🌱</div>
-
-      <h1 style="margin-bottom:0.5rem;">Seed planted!</h1>
-      <p style="font-size:1.0625rem;color:#525560;line-height:1.75;margin-bottom:2rem;">
-        Thanks for letting us know you want Gooi in <strong style="color:#023F3A;"><%= @suburb %></strong>.
+      <h1>Seed planted!</h1>
+      <p class="intro-text">
+        Thanks for letting us know you want Gooi in <strong><%= @suburb %></strong>.
         We've sent a confirmation to your inbox and we'll be in touch when we expand your way.
       </p>
 
-      <%# WhatsApp share block %>
-      <div style="
-        background:#f5faf9;
-        border:1px solid #e0ebe9;
-        border-left:4px solid #25D366;
-        border-radius:12px;
-        padding:1.75rem 2rem;
-        margin-bottom:2rem;
-        text-align:left;">
-
-        <p style="
-          font-family:'Montserrat',sans-serif;
-          font-size:0.7rem;
-          font-weight:700;
-          letter-spacing:0.12em;
-          text-transform:uppercase;
-          color:#25D366;
-          margin:0 0 0.5rem;">
-          Tell your neighbours
-        </p>
-
-        <p style="
-          font-family:'Montserrat',sans-serif;
-          font-size:0.9375rem;
-          color:#023F3A;
-          line-height:1.65;
-          margin:0 0 1.25rem;">
+      <div class="whatsapp-share-card">
+        <p class="whatsapp-share-card__eyebrow">Tell your neighbours</p>
+        <p class="whatsapp-share-card__body">
           The more people in <%= @suburb %> who sign up, the sooner we can add your street to the route.
           Send this to your neighbours — it takes 10 seconds.
         </p>
-
         <a href="<%= wa_url %>"
            target="_blank"
            rel="noopener"
-           style="
-             display:inline-flex;
-             align-items:center;
-             gap:0.5rem;
-             background:#25D366;
-             color:#fff;
-             font-family:'Montserrat',sans-serif;
-             font-size:0.875rem;
-             font-weight:600;
-             text-decoration:none;
-             padding:0.65rem 1.5rem;
-             border-radius:32px;
-             transition:background 0.2s;">
-          <i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i>
+           class="whatsapp-share-card__btn">
+          <i class="fa-brands fa-whatsapp"></i>
           Share on WhatsApp
         </a>
       </div>

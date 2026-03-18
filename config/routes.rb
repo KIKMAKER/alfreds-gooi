@@ -199,6 +199,7 @@ Rails.application.routes.draw do
       patch :end
       get :collections
       get :snapshot
+      patch :reorder
     end
     resources :collections, only: [:index] do
       collection do

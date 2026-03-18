@@ -26,11 +26,14 @@
   </div>
   <div class="collections"  >
     <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
-    <!--<ul data-controller="sortable">-->
-    <ul>
+    <ul data-controller="sortable"
+        data-sortable-url-value="<%= reorder_drivers_day_path(@drivers_day) %>">
       <% @route_items.each do |item| %>
         <% if item.is_a?(DropOffEvent) %>
-          <li class="collection <%= 'done' if item.is_done? %>">
+          <li class="collection sortable-item <%= 'done' if item.is_done? %>"
+              data-sortable-type="drop_off_event"
+              data-sortable-id="<%= item.id %>">
+            <span class="drag-handle">⠿</span>
             <div class="name" style="display: flex; gap: 8px; align-items: center;">
               <span
                 data-drop-off-id="<%= item.id %>"
@@ -55,9 +58,10 @@
             </div>
           </li>
         <% else %>
-          <li class="collection" data-sortable-url="<%= update_position_collection_path(item) %>"
-          data-sortable-handle
-          class="sortable-item">
+          <li class="collection sortable-item"
+              data-sortable-type="collection"
+              data-sortable-id="<%= item.id %>">
+            <span class="drag-handle">⠿</span>
             <div class="name">
               <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
               <% if current_user.admin? %>

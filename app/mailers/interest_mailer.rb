@@ -17,7 +17,7 @@ class InterestMailer < ApplicationMailer
     mail(
       to: @interest.email,
       from: ENV["MAIL_FROM"] || "howzit@gooi.me",
-      subject: "We've noted your interest, #{@first_name} 🌱"
+      subject: "We've noted your interest, #{@first_name}."
     )
   end
 end
