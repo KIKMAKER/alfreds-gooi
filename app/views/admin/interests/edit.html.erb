@@ -1,0 +1,9 @@
+<div class="page-container">
+  <section class="map-section">
+    <div class="container" style="max-width:680px;">
+      <h1 class="mb-4">Edit interest</h1>
+      <%= render "form", interest: @interest %>
+      <%= link_to "← Cancel", admin_interest_path(@interest), class: "btn btn-link ps-0 mt-2" %>
+    </div>
+  </section>
+</div>
