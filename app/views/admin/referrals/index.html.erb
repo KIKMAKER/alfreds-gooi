@@ -1,0 +1,64 @@
+<div class="admin-container">
+  <div class="pt-4 pb-3">
+    <p class="dash-eyebrow">Admin</p>
+    <h1>Referrals</h1>
+  </div>
+
+  <%# KPI Strip %>
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Total</div>
+        <div class="dash-kpi-value"><%= @total %></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Completed</div>
+        <div class="dash-kpi-value"><%= @completed %></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Pending</div>
+        <div class="dash-kpi-value"><%= @pending %></div>
+      </div>
+    </div>
+  </div>
+
+  <% %w[pending completed used].each do |status| %>
+    <% group = @by_status[status] %>
+    <% next if group.blank? %>
+
+    <h2 class="referrals-group-heading"><%= status.capitalize %></h2>
+
+    <div class="table-responsive mb-5">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Referrer</th>
+            <th>Referee</th>
+            <th>Plan</th>
+            <th>Sub status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% group.each do |referral| %>
+            <tr>
+              <td><%= referral.referrer&.email %></td>
+              <td><%= referral.referee&.email %></td>
+              <td><%= referral.subscription&.plan&.humanize || "—" %></td>
+              <td><%= referral.subscription&.status&.humanize || "—" %></td>
+              <td><%= referral.created_at.strftime('%-d %b %Y') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <% if @referrals.empty? %>
+    <p class="text-muted">No referrals yet.</p>
+  <% end %>
+</div>
