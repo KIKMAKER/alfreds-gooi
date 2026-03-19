@@ -119,7 +119,8 @@ class InvoicesController < ApplicationController
       )
 
       unless @invoice.for_order?
-        user.subscriptions.where(status: :pending).each do |subscription|
+        subscription = @invoice.subscription
+        if subscription&.status&.to_sym == :pending
           subscription.activate_subscription
           CreateFirstCollectionJob.perform_now(subscription)
         end

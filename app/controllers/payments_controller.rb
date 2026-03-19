@@ -4,8 +4,7 @@ class PaymentsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapscan_webhook, :fetch_snapscan_payments]
 
   def index
-    Snapscan::SyncService.new(ENV['SNAPSCAN_API_KEY']).sync!
-    @payments = Payment.all.order(date: :desc)
+    @payments = Payment.includes(:invoice).order(date: :desc)
   end
 
   def show

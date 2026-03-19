@@ -43,12 +43,7 @@ class Invoice < ApplicationRecord
     # Ensure total doesn't go negative
     total = 0 if total.negative?
 
-    # Update the invoice's total_amount field
-    if self.update!(total_amount: total)
-      puts "Total amount updated successfully"
-    else
-      puts "Failed to update total amount: #{self.errors.full_messages.join(", ")}"
-    end
+    self.update!(total_amount: total)
   end
 
   private
