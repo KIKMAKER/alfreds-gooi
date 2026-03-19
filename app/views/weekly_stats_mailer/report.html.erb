@@ -1,0 +1,55 @@
+<% compost_kg = (@stats.kg_diverted * 0.35).round(0).to_i %>
+<% co2e_kg    = (@stats.kg_diverted * 1.96).round(0).to_i %>
+<% days = (@stats.start_date..@stats.end_date).map(&:day) %>
+<% month = @stats.end_date.strftime('%B') %>
+<!DOCTYPE html>
+<html>
+<body style="font-family: sans-serif; color: #333; max-width: 560px; margin: 0 auto; padding: 24px;">
+
+  <h2 style="margin-bottom: 4px;">♻️ Gooi Weekly Stats</h2>
+  <p style="color: #888; margin-top: 0;"><%= @stats.period_label %></p>
+
+  <table style="border-collapse: collapse; width: 100%; margin-bottom: 28px;">
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666; white-space: nowrap;">Neighbours served</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= @stats.customers_served %></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666;">Kg collected</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= @stats.kg_diverted %> kg</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666;">Compost yield (35%)</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= compost_kg %> kg</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666;">CO₂e avoided (×1.96)</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= co2e_kg %> kg</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666;">New customers</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= @stats.new_customers %></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 12px 6px 0; color: #666;">Route distance</td>
+      <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= @stats.route_kms %> km</td>
+    </tr>
+  </table>
+
+  <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #aaa; margin-bottom: 8px;">Canva text — copy from here</p>
+
+  <pre style="font-family: inherit; font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap;">This week with Gooi
+(<%= days.join(', ') %> <%= month %>)
+
+Thanks to <%= @stats.customers_served %> neighbours we kept <%= @stats.kg_diverted %> kg of kitchen scraps out of landfill. That makes about:
+
+• <%= compost_kg %> kg of finished compost for local soil
+• <%= co2e_kg %> kg CO₂e emissions avoided
+<% if @stats.new_customers.to_i > 0 %>
+We also welcomed <%= pluralize(@stats.new_customers, "new household") %> to the Gooi loop — welcome!
+<% end %>
+Share this and help us grow the numbers!
+www.gooi.me</pre>
+
+</body>
+</html>
