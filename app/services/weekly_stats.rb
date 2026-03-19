@@ -33,7 +33,13 @@ class WeeklyStats
     kg_diverted      = days.sum(:total_net_kg).to_f.round(1)
 
     skips         = cols.where(skip: true).count
-    new_customers = cols.where(new_customer: true).distinct.count(:subscription_id)
+    new_customers = User
+      .joins(subscriptions: :collections)
+      .where(collections: { skip: false })
+      .group("users.id")
+      .having("COUNT(collections.id) = 1 AND MIN(collections.date) BETWEEN ? AND ?", start_date, end_date)
+      .count
+      .size
     # soil_bags     = cols.sum(:soil_bag).to_i
     route_kms     = days.sum do |d|
       ((d.end_kms || 0) - (d.start_kms || 0)).clamp(0, 1_000_000)
