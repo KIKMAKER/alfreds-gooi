@@ -1,0 +1,15 @@
+// General layout wrapper for all admin views.
+// Replaces .gooi-container in admin templates.
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+
+  @media (min-width: 768px) {
+    padding: 0 2.5rem 4rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 0 3rem 4rem;
+  }
+}

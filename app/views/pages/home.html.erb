@@ -601,10 +601,14 @@
     <%= simple_form_for @interest do |f| %>
       <%= f.input :name, input_html: { class: 'form-control' } %>
       <%= f.input :email, input_html: { class: 'form-control' } %>
-      <%= f.input :suburb, input_html: { class: 'form-control' } %>
+      <%= f.input :suburb, as: :select,
+            collection: Interest::SUBURBS,
+            include_blank: "— select your suburb —",
+            input_html: { class: 'form-select' } %>
       <%= f.input :note, as: :text,
             label: "Anything to add?",
             placeholder: "e.g. 'My whole street would sign up' or 'We have a community garden'",
+            hint: "If your suburb isn't in the list, select Other and mention it here.",
             input_html: { class: 'form-control', rows: 2 },
             required: false %>
       <%= hidden_field_tag :website, nil, autocomplete: "off" %>

@@ -1,0 +1,123 @@
+<div class="admin-container">
+  <div class="pt-4 pb-3">
+    <p class="dash-eyebrow">Admin Dashboard</p>
+    <h1><%= @greeting %>, <%= current_user.first_name %>.</h1>
+    <p class="text-muted small"><%= Date.today.strftime('%A, %-d %B %Y') %></p>
+  </div>
+
+  <%# ─── KPI Strip ─────────────────────────────────────────────── %>
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md">
+      <a href="/subscriptions/all" class="dash-kpi-card">
+        <div class="dash-kpi-label">Active subs</div>
+        <div class="dash-kpi-value"><%= @active_subs %></div>
+      </a>
+    </div>
+    <div class="col-6 col-md">
+      <a href="/subscriptions/pending" class="dash-kpi-card">
+        <div class="dash-kpi-label">Pending</div>
+        <div class="dash-kpi-value"><%= @pending_subs %></div>
+      </a>
+    </div>
+    <div class="col-6 col-md">
+      <a href="/subscriptions/paused" class="dash-kpi-card">
+        <div class="dash-kpi-label">Paused</div>
+        <div class="dash-kpi-value"><%= @paused_subs %></div>
+      </a>
+    </div>
+    <div class="col-6 col-md">
+      <a href="/collections/this_week" class="dash-kpi-card">
+        <div class="dash-kpi-label">Collections this week</div>
+        <div class="dash-kpi-value"><%= @collections_this_week %></div>
+      </a>
+    </div>
+    <div class="col-6 col-md">
+      <a href="/admin/quotations" class="dash-kpi-card">
+        <div class="dash-kpi-label">Draft quotes</div>
+        <div class="dash-kpi-value"><%= @draft_quotes %></div>
+      </a>
+    </div>
+    <div class="col-6 col-md">
+      <a href="/admin/referrals" class="dash-kpi-card">
+        <div class="dash-kpi-label">Pending referrals</div>
+        <div class="dash-kpi-value"><%= @pending_referrals %></div>
+      </a>
+    </div>
+  </div>
+
+  <%# ─── Category Cards ─────────────────────────────────────────── %>
+  <div class="row g-3">
+
+    <%# Customers %>
+    <div class="col-12 col-md-6">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>👥</span> Customers</div>
+        <p class="dash-category-desc">Manage users, subscriptions, and incoming sign-ups.</p>
+        <ul class="dash-category-links">
+          <li><a href="/admin/users">Users <span class="dash-arrow">→</span></a></li>
+          <li><a href="/subscriptions/all">All subscriptions <span class="dash-arrow">→</span></a></li>
+          <li><a href="/subscriptions/pending">Pending <span class="dash-arrow">→</span></a></li>
+          <li><a href="/subscriptions/paused">Paused <span class="dash-arrow">→</span></a></li>
+          <li><a href="/subscriptions/completed">Completed <span class="dash-arrow">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <%# Operations %>
+    <div class="col-12 col-md-6">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>🚛</span> Operations</div>
+        <p class="dash-category-desc">Plan and track collections, routes, and drop-off sites.</p>
+        <ul class="dash-category-links">
+          <li><a href="/admin/logistics">Logistics <span class="dash-arrow">→</span></a></li>
+          <li><a href="/drivers_days">Driver's Days <span class="dash-arrow">→</span></a></li>
+          <li><a href="/collections/this_week">Collections this week <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/drop_off_sites">Drop-off Sites <span class="dash-arrow">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <%# Finance %>
+    <div class="col-12 col-md-6">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>💳</span> Finance</div>
+        <p class="dash-category-desc">Invoices, expenses, quotations, and financial reporting.</p>
+        <ul class="dash-category-links">
+          <li><a href="/admin/financials">Financial Dashboard <span class="dash-arrow">→</span></a></li>
+          <li><a href="/invoices">Invoices <span class="dash-arrow">→</span></a></li>
+          <li><a href="/payments">Payments <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/expenses">Expenses <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/quotations">Quotations <span class="dash-arrow">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <%# Growth %>
+    <div class="col-12 col-md-6">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>📣</span> Growth</div>
+        <p class="dash-category-desc">Messaging, discounts, testimonials, and analytics.</p>
+        <ul class="dash-category-links">
+          <li><a href="/admin/bulk_messages">Bulk Messages <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/whatsapp_messages">WhatsApp <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/discount_codes">Discount Codes <span class="dash-arrow">→</span></a></li>
+          <li><a href="/testimonials">Testimonials <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/analytics">Analytics <span class="dash-arrow">→</span></a></li>
+          <li><a href="/admin/referrals">Referrals <span class="dash-arrow">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <%# Config %>
+    <div class="col-12 col-md-4">
+      <div class="dash-category-card dash-category-card--accent">
+        <div class="dash-category-heading"><span>⚙️</span> Config</div>
+        <p class="dash-category-desc">Products and reference data.</p>
+        <ul class="dash-category-links">
+          <li><a href="/admin/products">Products <span class="dash-arrow">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>

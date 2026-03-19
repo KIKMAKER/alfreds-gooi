@@ -92,7 +92,7 @@ class DropOffEvent < ApplicationRecord
 
   def send_completion_email
     return unless drop_off_site.user.present?
-    DropOffEventMailer.completion_notification(self).deliver_later
+    DropOffEventMailer.completion_notification(self).deliver_now
   end
 
   def update_site_analytics

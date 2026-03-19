@@ -1,5 +1,6 @@
 class Invoice < ApplicationRecord
   belongs_to :subscription, optional: true
+  belongs_to :order, optional: true
   has_one :user, through: :subscription
   has_many :invoice_items, dependent: :destroy
   accepts_nested_attributes_for :invoice_items,
@@ -13,6 +14,10 @@ class Invoice < ApplicationRecord
   # validates :issued_date, :due_date, :total_amount, presence: true
   after_commit :set_number, on: :create
   after_update :create_revenue_recognitions, if: :saved_change_to_paid?
+
+  def for_order?
+    order_id.present?
+  end
 
   ## custom methods
 

@@ -4,7 +4,7 @@
     <%= link_to "← Back to Quotation", quotation_path(@quotation), class: "btn btn-sm btn-secondary-outline" %>
   </div>
 
-  <%= simple_form_for @quotation do |f| %>
+  <%= simple_form_for [:admin, @quotation] do |f| %>
     <%= f.error_notification %>
 
     <div class="row mb-4">

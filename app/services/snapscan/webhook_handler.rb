@@ -54,7 +54,8 @@ module Snapscan
           user_reference:     @payload["userReference"],
           merchant_reference: @payload["merchantReference"],
           user:               @user,
-          invoice:            @invoice
+          invoice:            @invoice,
+          payment_type:       :snapscan
         )
 
         # Mark invoice paid and activate all pending subscriptions unconditionally

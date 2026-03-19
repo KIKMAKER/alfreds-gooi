@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
   namespace :admin do
-    resources :interests, only: [:index]
+    root to: 'dashboard#index'
+    resources :interests, only: [:index, :show, :edit, :update, :destroy]
+    resources :referrals, only: [:index]
     resources :bulk_messages, only: [:index]
     resources :logistics, only: :index do
       collection do
@@ -50,6 +52,12 @@ Rails.application.routes.draw do
     # Analytics Dashboard (Blazer)
     authenticate :user, ->(user) { user.admin? } do
       mount Blazer::Engine, at: "analytics"
+    end
+
+    resources :quotations, only: [:index, :new, :create, :edit, :update, :destroy] do
+      member do
+        get :send_email
+      end
     end
 
     resources :posts
@@ -116,7 +124,7 @@ Rails.application.routes.draw do
 
   resources :invoices do
     member do
-      get :paid
+      post :paid
       patch :issued_bags, to: "invoices#issued_bags"
       get :send_email, to: "invoices#send_email"
       post :apply_discount_code
@@ -134,9 +142,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :quotations do
+  resources :quotations, only: [:show] do
     member do
-      get :send_email
       get :pdf
     end
   end
@@ -258,10 +265,13 @@ Rails.application.routes.draw do
 
 
 
-  # Block WordPress scanning bots
-  match "/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
-  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
-  match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  # Block WordPress scanning bots (short-circuits before Rails controller stack)
+  match "/wp-includes/*path",      to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/web/wp-includes/*path",  to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/wp-content/*path",       to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/wp-admin/*path",         to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/*.php",                  to: ->(_) { [404, {}, [""]] }, via: :all
 
   # Render dynamic PWA files from app/views/pwa/*
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

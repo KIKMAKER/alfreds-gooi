@@ -115,5 +115,39 @@
   .payment-card {
     width: 90vw;
   }
+}
 
+.payment-type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &--snapscan {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+
+  &--eft {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  &--cash {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &--other {
+    background: #f3f4f6;
+    color: #4b5563;
+  }
+
+  &--unknown {
+    background: #f3f4f6;
+    color: #9ca3af;
+  }
 }

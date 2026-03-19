@@ -1,30 +1,14 @@
 <div class="navbar-container">
   <div class="inner-container">
-    <%= link_to root_path do %>
+    <%= link_to admin_root_path do %>
       <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
     <% end %>
     <div class="links-container">
-      <%= link_to 'subscriptions', subscriptions_path, class:"link-title" %>
-      <%= link_to 'invoices', invoices_path, class:"link-title" %>
-      <%= link_to 'financials', admin_financials_path, class:"link-title" %>
-      <%= link_to 'analytics', '/admin/analytics', class:"link-title" %>
-      <%= link_to 'quotations', quotations_path, class:"link-title" %>
-      <%= link_to 'users', admin_users_path, class:"link-title" %>
-      <%= link_to 'products', admin_products_path, class:"link-title" %>
-      <%= link_to 'discounts', admin_discount_codes_path, class:"link-title" %>
-      <%= link_to 'bulk messages', admin_bulk_messages_path, class:"link-title" %>
-      <%= link_to 'whatsapp', admin_whatsapp_messages_path, class:"link-title" %>
-      <%= link_to 'blog', admin_posts_path, class:"link-title" %>
-      <%= link_to 'interests', admin_interests_path, class:"link-title" %>
-      <%= link_to 'testimonials', testimonials_path, class:"link-title" %>
-      <%= link_to 'drop-offs', admin_drop_off_sites_path, class:"link-title" %>
-      <%= link_to 'drivers days', drivers_days_path, class:"link-title" %>
-      <%= link_to 'logistics', admin_logistics_path, class:"link-title" %>
-      <%= link_to 'collections', this_week_collections_path, class:"link-title" %>
+      <%= link_to 'Dashboard', admin_root_path, class: "link-title" %>
 
-      <% if user_signed_in?  %>
+      <% if user_signed_in? %>
         <div class="sign-up-btn">
-          <%= link_to "Log Out", destroy_user_session_path, data: {turbo_method: :delete} %>
+          <%= link_to "Log Out", destroy_user_session_path, data: { turbo_method: :delete } %>
         </div>
       <% else %>
         <div class="sign-up-btn">
@@ -38,29 +22,13 @@
         <%= image_tag 'menu-svgrepo-com.png', class: "avatar" %>
       </button>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-        <li><%= link_to 'subscriptions', subscriptions_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'invoices', invoices_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'financials', admin_financials_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'analytics', '/admin/analytics', class: "dropdown-item" %></li>
-        <li><%= link_to 'quotations', quotations_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'users', admin_users_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'products', admin_products_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'discounts', admin_discount_codes_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'bulk messages', admin_bulk_messages_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'whatsapp', admin_whatsapp_messages_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'blog', admin_posts_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'interests', admin_interests_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'testimonials', testimonials_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'drop-offs', admin_drop_off_sites_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'drivers days', drivers_days_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'logistics', admin_logistics_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'collections', this_week_collections_path, class: "dropdown-item" %></li>
+        <li><%= link_to 'Dashboard', admin_root_path, class: "dropdown-item" %></li>
 
         <li><hr class="dropdown-divider"></li>
 
         <% if user_signed_in? %>
           <li>
-            <%= link_to "log out", destroy_user_session_path,
+            <%= link_to "Log out", destroy_user_session_path,
                 data: { turbo_method: :delete }, class: "dropdown-item text-danger" %>
           </li>
         <% else %>
