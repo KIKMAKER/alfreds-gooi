@@ -108,11 +108,14 @@ class InvoicesController < ApplicationController
       @invoice.update!(paid: true)
 
       Payment.create!(
-        invoice:      @invoice,
-        user:         user,
-        manual:       true,
-        payment_type: payment_type,
-        total_amount: (@invoice.total_amount * 100).to_i
+        invoice:            @invoice,
+        user:               user,
+        manual:             true,
+        payment_type:       payment_type,
+        total_amount:       (@invoice.total_amount * 100).to_i,
+        date:               Time.current,
+        user_reference:     "#{user.first_name} #{user.last_name}".strip,
+        merchant_reference: user.customer_id
       )
 
       unless @invoice.for_order?
