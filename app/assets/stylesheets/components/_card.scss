@@ -117,6 +117,21 @@
   }
 }
 
+.payment-type-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+
+  // button_to wraps each button in its own form — target the button inside
+  form button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+}
+
 .payment-type-badge {
   display: inline-block;
   padding: 0.2rem 0.55rem;
