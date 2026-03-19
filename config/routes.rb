@@ -265,10 +265,13 @@ Rails.application.routes.draw do
 
 
 
-  # Block WordPress scanning bots
-  match "/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
-  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
-  match "/web/wp-includes/*path", to: ->(_) { [404, {}, ["Not Found"]] }, via: :all
+  # Block WordPress scanning bots (short-circuits before Rails controller stack)
+  match "/wp-includes/*path",      to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/blog/wp-includes/*path", to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/web/wp-includes/*path",  to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/wp-content/*path",       to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/wp-admin/*path",         to: ->(_) { [404, {}, [""]] }, via: :all
+  match "/*.php",                  to: ->(_) { [404, {}, [""]] }, via: :all
 
   # Render dynamic PWA files from app/views/pwa/*
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
