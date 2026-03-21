@@ -101,6 +101,42 @@ class Subscription < ApplicationRecord
     collections.where("created_at >= ?", n.months.ago).sum(:buckets)
   end
 
+  def allowed_litres_per_collection
+    if Commercial?
+      (buckets_per_collection || 1) * (bucket_size || 45)
+    elsif XL?
+      25
+    else
+      5
+    end
+  end
+
+  def total_litres
+    if Commercial?
+      collections.sum("buckets_25l * 25 + buckets_45l * 45")
+    elsif XL?
+      collections.sum("buckets * 25")
+    else
+      collections.sum("bags * 5")
+    end
+  end
+
+  def total_litres_last_n_months(n)
+    scope = collections.where("created_at >= ?", n.months.ago)
+    if Commercial?
+      scope.sum("buckets_25l * 25 + buckets_45l * 45")
+    elsif XL?
+      scope.sum("buckets * 25")
+    else
+      scope.sum("bags * 5")
+    end
+  end
+
+  def avg_litres_per_collection
+    return 0 if total_collections.zero?
+    (total_litres.to_f / total_collections).round(1)
+  end
+
   def amount_invoiced
     return 0 unless monthly_invoicing?
     invoices.sum(:total_amount)

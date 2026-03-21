@@ -41,6 +41,19 @@ class Collection < ApplicationRecord
     self.date == Date.current
   end
 
+  def volume_litres
+    sub = subscription
+    return 0 unless sub
+
+    if sub.Commercial?
+      (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
+    elsif sub.XL?
+      buckets.to_i * 25
+    else
+      bags.to_i * 5
+    end
+  end
+
   # Save data outside of heroku
   def self.to_csv
     attributes = %w[id created_at updated_at subscription_id date kiki_note alfred_message bags buckets is_done skip drivers_day_id new_customer buckets]

@@ -205,67 +205,49 @@
           </div>
         </div>
 
-        <% if @subscription.XL? || @subscription.Commercial? %>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
-              <i class="fa-solid fa-bucket"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @total_buckets %></div>
-              <div class="stat-label">Total Buckets</div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
+            <i class="fa-solid fa-droplet"></i>
           </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@total_litres) %>L</div>
+            <div class="stat-label">Total Volume</div>
+          </div>
+        </div>
 
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
-              <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @buckets_last_month %></div>
-              <div class="stat-label">Last Month</div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
+            <i class="fa-solid fa-calendar-check"></i>
           </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@litres_last_month) %>L</div>
+            <div class="stat-label">Last Month</div>
+          </div>
+        </div>
 
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #3c8a63 100%);">
-              <i class="fa-solid fa-calendar"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @buckets_last_three_months %></div>
-              <div class="stat-label">Last 3 Months (avg: <%= (@buckets_last_three_months/3.0).round(1) %>)</div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #3c8a63 100%);">
+            <i class="fa-solid fa-calendar"></i>
           </div>
-        <% else %>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
-              <i class="fa-solid fa-bag-shopping"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @total_bags %></div>
-              <div class="stat-label">Total Bags</div>
-            </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@litres_last_three_months) %>L</div>
+            <div class="stat-label">Last 3 Months (avg: <%= (@litres_last_three_months / 3.0).round %>L/mo)</div>
           </div>
+        </div>
 
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
-              <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @bags_last_month %></div>
-              <div class="stat-label">Last Month</div>
+        <% over_limit = @total_collections > 0 && @avg_litres_per_collection > @allowed_litres %>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, <%= over_limit ? '#bc4749, #8b3537' : '#3c8a63, #108A63' %> 100%);">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" style="<%= 'color: #bc4749;' if over_limit %>"><%= @avg_litres_per_collection %>L</div>
+            <div class="stat-label">
+              Avg per visit
+              <span style="font-weight: 400; color: #aaa;">(plan: <%= @allowed_litres %>L)</span>
             </div>
           </div>
-
-          <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #3c8a63 100%);">
-              <i class="fa-solid fa-calendar"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value"><%= @bags_last_three_months %></div>
-              <div class="stat-label">Last 3 Months (avg: <%= (@bags_last_three_months/3.0).round(1) %>)</div>
-            </div>
-          </div>
-        <% end %>
+        </div>
       </div>
     </div>
 

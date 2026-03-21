@@ -82,6 +82,11 @@ class SubscriptionsController < ApplicationController
     @buckets_last_month = @subscription.total_buckets_last_n_months(1).to_i
     @buckets_last_three_months = @subscription.total_buckets_last_n_months(3).to_i
     @buckets_last_six_months = @subscription.total_buckets_last_n_months(6).to_i
+    @total_litres = @subscription.total_litres
+    @litres_last_month = @subscription.total_litres_last_n_months(1)
+    @litres_last_three_months = @subscription.total_litres_last_n_months(3)
+    @avg_litres_per_collection = @subscription.avg_litres_per_collection
+    @allowed_litres = @subscription.allowed_litres_per_collection
     scope = @subscription.collections
                        .where(skip: false)
                        .where.not(updated_at: nil, time: nil)

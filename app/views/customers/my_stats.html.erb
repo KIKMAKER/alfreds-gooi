@@ -137,10 +137,8 @@
             <span class="info-value" style="<%= c.skip ? 'color: #aaa; font-weight: 400;' : '' %>">
               <% if c.skip %>
                 Skipped
-              <% elsif c.subscription.XL? %>
-                <%= c.buckets %> bucket<%= c.buckets == 1 ? '' : 's' %>
               <% else %>
-                <%= c.bags %> bag<%= c.bags == 1 ? '' : 's' %>
+                <%= c.volume_litres %>L
               <% end %>
             </span>
           </div>
