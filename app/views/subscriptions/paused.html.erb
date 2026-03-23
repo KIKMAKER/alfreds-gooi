@@ -31,7 +31,7 @@
                 <td><s><%= subscription.customer_id %></s></td>
                 <td>
                   <s>
-                    <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+                    <%= link_to subscription.display_name, admin_subscription_path(subscription), class: "link-green" %>
                   </s>
                 </td>
                 <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></s></td>
@@ -54,7 +54,7 @@
               <tr>
                 <td><%= subscription.customer_id %></td>
                 <td>
-                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+                  <%= link_to subscription.display_name, admin_subscription_path(subscription), class: "link-green" %>
                 </td>
                 <td><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></td>
                 <td><%= subscription.duration || "unpaid" %></td>

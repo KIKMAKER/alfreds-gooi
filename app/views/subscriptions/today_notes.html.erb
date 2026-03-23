@@ -14,7 +14,7 @@
             <% if today_collection&.skip %>
               <p>SKIP!</p>
             <% end %>
-            <%= link_to subscription.user.first_name, subscription_path(subscription) %>
+            <%= link_to subscription.display_name, admin_subscription_path(subscription) %>
           </div>
           <div>
             <% if today_collection %>
@@ -36,7 +36,7 @@
               <% elsif today_collection.buckets.present? && today_collection.updated_at < Time.now %>
                 <%= link_to "Got #{pluralize(today_collection.buckets, 'buckets')}.", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.new_customer %>
-                <%= link_to "Meet #{today_collection.subscription.user.first_name}", edit_collection_path(today_collection), class:"small-yellow-btn" %>
+                <%= link_to "Meet #{today_collection.subscription.display_name}", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.dropped_off_buckets.present? && today_collection.updated_at < Time.now %>
                 <%= link_to "Dropped off #{pluralize(today_collection.dropped_off_buckets, 'buckets')}. Drop more?", edit_collection_path(today_collection), class:"small-yellow-btn" %>
               <% elsif today_collection.subscription.user.drop_off? %>

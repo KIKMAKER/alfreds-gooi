@@ -63,7 +63,7 @@
               data-sortable-id="<%= item.id %>">
             <span class="drag-handle">⠿</span>
             <div class="name">
-              <p><%= link_to item.subscription.user.first_name.truncate(13), subscription_path(item.subscription) %></p>
+              <p><%= link_to item.subscription.display_name.truncate(13), admin_subscription_path(item.subscription) %></p>
               <% if current_user.admin? %>
                 <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
               <% end %>

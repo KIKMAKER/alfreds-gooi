@@ -90,7 +90,7 @@
                 <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
 
                 <td>
-                  <%= link_to subscription_path(subscription) do %>
+                  <%= link_to admin_subscription_path(subscription) do %>
                     <% sd = subscription.start_date&.strftime('%e %B %Y') || "unpaid" %>
                     <% if completed %><s><%= sd %></s><% else %><%= sd %><% end %>
                   <% end %>

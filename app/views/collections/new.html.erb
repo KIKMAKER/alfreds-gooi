@@ -5,7 +5,7 @@
         <%= link_to 'Back', :back, class: 'small-yellow-btn' %>
       </div>
       <div>
-        <h1><strong><%= @subscription.user.first_name %></strong></h1>
+        <h1><strong><%= @subscription.display_name %></strong></h1>
         <%= link_to "https://wa.me/#{@subscription.user.phone_number}" do %>
           <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
         <% end %>

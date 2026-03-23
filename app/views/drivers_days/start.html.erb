@@ -10,11 +10,11 @@
       <br>
       <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
       <% @skip_subscriptions.each do |sub| %>
-        <p><%= sub.user.first_name %> at <%= sub.street_address %> </p>
+        <p><%= sub.display_name %> at <%= sub.street_address %> </p>
       <% end %>
       <h3><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</strong></h3>
       <% @bags_needed.each do |sub| %>
-        <p><%= sub.collections.last.needs_bags %> for <%= sub.user.first_name %> at <%= sub.street_address %></p>
+        <p><%= sub.collections.last.needs_bags %> for <%= sub.display_name %> at <%= sub.street_address %></p>
       <% end %>
 
       <% if @products_needed.any? %>

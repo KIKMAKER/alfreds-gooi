@@ -27,7 +27,7 @@
               <td><%= c.date&.strftime('%e %b %Y') %></td>
               <td>
                 <% if c.subscription %>
-                  <%= link_to c.subscription_id, subscription_path(c.subscription) %>
+                  <%= link_to c.subscription_id, admin_subscription_path(c.subscription) %>
                 <% else %>
                   <span class="text-muted">—</span>
                 <% end %>

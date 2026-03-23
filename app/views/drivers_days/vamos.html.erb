@@ -15,7 +15,7 @@
         <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
         <h5 class="mt-3">They are:</h5>
         <% @new_customers.each do |collection| %>
-          <p><%= collection.subscription.user.first_name %> at <%= collection.subscription.street_address %> </p>
+          <p><%= collection.subscription.display_name %> at <%= collection.subscription.street_address %> </p>
           <p>Let them know you are coming past:</p>
           <%= link_to collection.subscription.user.generate_whatsapp_link("Hello from gooi! I will be coming past today to drop off your starter kit. Please add this number to your contacts so that you can recieve our weekly reminders about collection day. Welcome to gooi! It's a joy to have you onboard."), target: :_blank do %>
             <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>

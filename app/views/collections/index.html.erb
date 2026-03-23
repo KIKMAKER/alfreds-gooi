@@ -13,7 +13,7 @@
         class="sortable-item">
           <div class="car">
             <p class="emoji"><%= link_to "🚗", "https://wa.me/#{collection.subscription.user.phone_number}?text=Hello%20#{collection.subscription.user.first_name}!%20I%27m%20on%20my%20way", target: :_blank %></p>
-            <p><%= link_to collection.subscription.user.first_name.truncate(13), subscription_path(collection.subscription) %></p>
+            <p><%= link_to collection.subscription.display_name.truncate(13), admin_subscription_path(collection.subscription) %></p>
             <% if current_user.admin? %>
               <p><%= link_to 'X', collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
             <% end %>
@@ -27,7 +27,7 @@
               <% elsif (collection.buckets || 0) >= 1 %>
                 <%= link_to "#{pluralize(collection.buckets, 'bucket')}", edit_collection_path(collection), class: "small-yellow-btn" %>
               <% elsif collection.new_customer %>
-                <%= link_to "Meet #{collection.subscription.user.first_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
+                <%= link_to "Meet #{collection.subscription.display_name}", edit_collection_path(collection) , class: "small-yellow-btn"%>
               <% elsif collection.subscription.user.drop_off? %>
                 <%= link_to "Drop off", edit_collection_path(collection) , class: "small-yellow-btn"%>
               <% else %>

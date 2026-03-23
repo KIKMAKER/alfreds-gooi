@@ -12,7 +12,7 @@
         </p>
       </div>
     </div>
-    <%= link_to subscription_path(@subscription), class: "tiny-yellow-btn",
+    <%= link_to admin_subscription_path(@subscription), class: "tiny-yellow-btn",
         style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
       <i class="fa-solid fa-arrow-left"></i> Back
     <% end %>
@@ -241,7 +241,7 @@
 
     <div class="d-flex gap-2 mb-4">
       <%= f.submit "Save Changes", class: "action-btn" %>
-      <%= link_to "Cancel", subscription_path(@subscription), class: "action-btn",
+      <%= link_to "Cancel", admin_subscription_path(@subscription), class: "action-btn",
           style: "border-color: #ccc; color: #666;" %>
     </div>
 
