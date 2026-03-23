@@ -68,6 +68,13 @@
         </div>
         <div class="info-card-body">
           <div class="row g-3">
+            <div class="col-12">
+              <%= f.input :title,
+                          label: "Display name (overrides first name on route)",
+                          placeholder: "e.g. Rose Cottage, Back gate",
+                          input_html: { class: 'form-control' },
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
             <div class="col-md-4">
               <%= f.input :plan,
                           collection: Subscription.plans.keys.map { |p| [p.titleize, p] },

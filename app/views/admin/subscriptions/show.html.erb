@@ -1,0 +1,333 @@
+<div class="user-wrapper">
+  <div class="subscription-show-container">
+    <!-- Header -->
+    <div class="subscription-header">
+      <div class="subscription-header-content">
+
+          <h1><%= @subscription.display_name %>'s Subscription</h1>
+          <% if @subscription.completed? %>
+            <span class="subscription-status-badge completed">Completed</span>
+          <% elsif @subscription.pause? %>
+            <span class="subscription-status-badge paused">Paused</span>
+          <% elsif @subscription.active? %>
+            <span class="subscription-status-badge active">Active</span>
+          <% else %>
+            <span class="subscription-status-badge pending">Pending</span>
+          <% end %>
+
+      </div>
+      <div class="subscription-header-actions">
+        <%= link_to edit_subscription_path(@subscription), class: 'tiny-yellow-btn' do %>
+          <i class="fa-solid fa-pen"></i> Edit
+        <% end %>
+        <%= link_to admin_user_path(@subscription.user), class: 'tiny-yellow-btn' do %>
+          <i class="fa-solid fa-user"></i> User's subs
+        <% end %>
+        <%#= link_to subscriptions_path, class: 'tiny-yellow-btn' do %>
+<!--          <i class="fa-solid fa-list"></i> All Subs-->
+        <%# end %>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="subscription-grid">
+      <!-- Plan Details Card -->
+      <div class="info-card">
+        <div class="info-card-header">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <h3>Plan Details</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="info-row">
+            <span class="info-label">Plan</span>
+            <span class="info-value"><%= @subscription.plan %></span>
+          </div>
+          <% if @subscription.Commercial? %>
+            <div class="info-row">
+              <span class="info-label">Buckets</span>
+              <span class="info-value"><%= @subscription.buckets_per_collection %> × <%= @subscription.bucket_size %>L</span>
+            </div>
+          <% end %>
+          <div class="info-row">
+            <span class="info-label">Collection Day</span>
+            <span class="info-value"><%= @subscription.collection_day %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Start Date</span>
+            <span class="info-value"><%= @subscription.start_date&.strftime('%d %b, %Y') || "Pending payment" %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">End Date</span>
+            <span class="info-value"><%= @subscription.end_date&.strftime('%d %b, %Y') || "Still pending" %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location Card -->
+      <div class="info-card">
+        <div class="info-card-header">
+          <i class="fa-solid fa-location-dot"></i>
+          <h3>Location</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="info-row">
+            <span class="info-label">Address</span>
+            <span class="info-value"><%= @subscription.street_address %></span>
+          </div>
+          <% if @subscription.apartment_unit_number.present? %>
+            <div class="info-row">
+              <span class="info-label">Unit</span>
+              <span class="info-value"><%= @subscription.apartment_unit_number %></span>
+            </div>
+          <% end %>
+          <% if @subscription.access_code.present? %>
+            <div class="info-row">
+              <span class="info-label">Access Code</span>
+              <span class="info-value"><%= @subscription.access_code %></span>
+            </div>
+          <% end %>
+          <div class="info-row">
+            <span class="info-label">Collection Order</span>
+            <span class="info-value">#<%= @subscription.collection_order || 'Not set' %></span>
+          </div>
+          <% if @avg_collection_time %>
+            <div class="info-row">
+              <span class="info-label">Avg Collection Time</span>
+              <span class="info-value"><%= @avg_collection_time %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Holiday Card -->
+      <% if @subscription.holiday_start || @subscription.holiday_end %>
+        <div class="info-card">
+          <div class="info-card-header">
+            <i class="fa-solid fa-umbrella-beach"></i>
+            <h3>Holiday</h3>
+          </div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-label">Dates</span>
+              <span class="info-value">
+                <%= @subscription.holiday_start&.strftime('%d %b') %> - <%= @subscription.holiday_end&.strftime('%d %b') %>
+              </span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Referral Card -->
+      <div class="info-card referral-card">
+        <div class="info-card-header">
+          <i class="fa-solid fa-gift"></i>
+          <h3>Referral Code</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="referral-code-display">
+            <%= @subscription.user.referral_code %>
+          </div>
+          <small class="text-muted">Share this code to earn rewards!</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contacts Section -->
+    <div class="contacts-section mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Household Contacts</h2>
+        <%= link_to subscription_contacts_path(@subscription), class: 'small-yellow-btn' do %>
+          <i class="fa-solid fa-user-plus"></i> Manage
+        <% end %>
+      </div>
+
+      <% if @subscription.contacts.any? %>
+        <div class="contacts-grid">
+          <% @subscription.contacts.each do |contact| %>
+            <div class="contact-card">
+              <div class="contact-card-header">
+                <div class="contact-info">
+                  <h4 class="contact-name"><%= contact.full_name %></h4>
+                  <% if contact.is_primary? %>
+                    <span class="contact-badge primary-badge">Owner</span>
+                  <% elsif contact.relationship.present? %>
+                    <span class="contact-badge"><%= contact.relationship.titleize %></span>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="contact-details">
+                <div class="contact-detail-row">
+                  <i class="fa-solid fa-phone"></i>
+                  <span><%= contact.phone_number %></span>
+                </div>
+                <div class="contact-detail-row">
+                  <i class="fa-brands fa-whatsapp"></i>
+                  <% if contact.can_receive_whatsapp? %>
+                    <span class="whatsapp-active">Receiving reminders</span>
+                  <% else %>
+                    <span class="whatsapp-inactive">Opted out</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <i class="fa-solid fa-users" style="font-size: 3rem; color: #ccc;"></i>
+          <p class="text-muted mt-2">No contacts yet</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="statistics-section mt-4">
+      <h2 class="mb-3">Collection Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #108A63 100%);">
+            <i class="fa-solid fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= @total_collections %></div>
+            <div class="stat-label">Total Collections</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #bc4749 0%, #8b3537 100%);">
+            <i class="fa-solid fa-calendar-xmark"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= @skipped_collections %></div>
+            <div class="stat-label">Skipped</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
+            <i class="fa-solid fa-droplet"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@total_litres) %>L</div>
+            <div class="stat-label">Total Volume</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@litres_last_month) %>L</div>
+            <div class="stat-label">Last Month</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #3c8a63 100%);">
+            <i class="fa-solid fa-calendar"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_delimiter(@litres_last_three_months) %>L</div>
+            <div class="stat-label">Last 3 Months (avg: <%= (@litres_last_three_months / 3.0).round %>L/mo)</div>
+          </div>
+        </div>
+
+        <% over_limit = @total_collections > 0 && @avg_litres_per_collection > @allowed_litres %>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, <%= over_limit ? '#bc4749, #8b3537' : '#3c8a63, #108A63' %> 100%);">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" style="<%= 'color: #bc4749;' if over_limit %>"><%= @avg_litres_per_collection %>L</div>
+            <div class="stat-label">
+              Avg per visit
+              <span style="font-weight: 400; color: #aaa;">(plan: <%= @allowed_litres %>L)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoices Section -->
+    <div class="invoices-section mt-4">
+      <h2 class="mb-3">Invoices</h2>
+
+      <% if @subscription.monthly_invoicing? %>
+        <div class="invoice-progress-card mb-3">
+          <h5 class="mb-3"><i class="fa-solid fa-chart-line"></i> Contract Progress</h5>
+          <div class="progress mb-3" style="height: 30px; border-radius: 50px;">
+            <div class="progress-bar" role="progressbar"
+                 style="width: <%= @subscription.invoicing_progress_percentage %>%; background: linear-gradient(90deg, #3c8a63 0%, #108A63 100%);"
+                 aria-valuenow="<%= @subscription.invoicing_progress_percentage %>"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+              <strong><%= @subscription.invoicing_progress_percentage %>%</strong>
+            </div>
+          </div>
+          <div class="invoice-progress-details">
+            <div class="invoice-progress-item">
+              <span class="label">Contract Total</span>
+              <span class="value">R<%= number_with_delimiter(@subscription.contract_total) %></span>
+            </div>
+            <div class="invoice-progress-item">
+              <span class="label">Invoiced to Date</span>
+              <span class="value">R<%= number_with_delimiter(@subscription.amount_invoiced) %></span>
+            </div>
+            <div class="invoice-progress-item">
+              <span class="label">Remaining</span>
+              <span class="value">R<%= number_with_delimiter(@subscription.amount_remaining) %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @subscription.invoices.any? %>
+        <div class="invoice-list">
+          <% @subscription.invoices.each do |invoice| %>
+            <%= link_to invoice_path(invoice), class: 'invoice-item-card' do %>
+              <div class="invoice-icon">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+              </div>
+              <div class="invoice-details">
+                <div class="invoice-number">Invoice #<%= invoice.id %></div>
+                <div class="invoice-date"><%= invoice.created_at.strftime('%d %b %Y') %></div>
+              </div>
+              <div class="invoice-amount">
+                R<%= number_with_delimiter(invoice.total_amount) %>
+              </div>
+              <i class="fa-solid fa-chevron-right"></i>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <i class="fa-solid fa-file-invoice" style="font-size: 3rem; color: #ccc;"></i>
+          <p class="text-muted mt-2">No invoices yet</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions mt-4">
+      <%= link_to new_subscription_collection_path(@subscription), class: 'action-btn' do %>
+        <i class="fa-solid fa-plus-circle"></i> Create Collection
+      <% end %>
+      <%= link_to subscription_collections_path(@subscription), class: 'action-btn' do %>
+        <i class="fa-solid fa-list"></i> View All Collections
+      <% end %>
+      <% unless @subscription.completed? %>
+        <%= link_to complete_subscription_path(@subscription), class: 'action-btn',
+                    data: { turbo_confirm: 'Mark this subscription as completed?' } do %>
+          <i class="fa-solid fa-check-circle"></i> Mark Complete
+        <% end %>
+      <% else %>
+        <%= link_to admin_subscription_path(@next_subscription), class: 'action-btn' do %>
+          <i class="fa-solid fa-arrow-right"></i> Latest Subscription
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
