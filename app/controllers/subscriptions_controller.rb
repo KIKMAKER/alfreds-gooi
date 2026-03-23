@@ -1,17 +1,18 @@
 class SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome]
+
+  SORTABLE_SUB_COLS = {
+    "name"           => "users.first_name",
+    "suburb"         => "subscriptions.suburb",
+    "plan"           => "subscriptions.plan",
+    "duration"       => "subscriptions.duration",
+    "start_date"     => "subscriptions.start_date",
+    "collection_day" => "subscriptions.collection_day"
+  }.freeze
+
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      SORTABLE_SUB_COLS = {
-        "name"           => "users.first_name",
-        "suburb"         => "subscriptions.suburb",
-        "plan"           => "subscriptions.plan",
-        "duration"       => "subscriptions.duration",
-        "start_date"     => "subscriptions.start_date",
-        "collection_day" => "subscriptions.collection_day"
-      }.freeze unless defined?(SORTABLE_SUB_COLS)
-
       @sort     = SORTABLE_SUB_COLS.key?(params[:sort]) ? params[:sort] : "name"
       @dir      = params[:dir] == "desc" ? "desc" : "asc"
       order_col = SORTABLE_SUB_COLS[@sort]

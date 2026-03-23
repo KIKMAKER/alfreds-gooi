@@ -4,13 +4,13 @@ class Admin::UsersController < ApplicationController
   before_action :require_admin
   before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections]
 
-  def index
-    SORTABLE_USER_COLS = {
-      "name"       => "first_name",
-      "email"      => "email",
-      "last_login" => "last_sign_in_at"
-    }.freeze unless defined?(SORTABLE_USER_COLS)
+  SORTABLE_USER_COLS = {
+    "name"       => "first_name",
+    "email"      => "email",
+    "last_login" => "last_sign_in_at"
+  }.freeze
 
+  def index
     @sort = SORTABLE_USER_COLS.key?(params[:sort]) ? params[:sort] : "name"
     @dir  = params[:dir] == "desc" ? "desc" : "asc"
 
