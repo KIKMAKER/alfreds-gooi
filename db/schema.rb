@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_23_112028) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_23_134734) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -723,6 +723,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_23_112028) do
     t.integer "subscription_product_id"
     t.integer "monthly_collection_product_id"
     t.integer "volume_processing_product_id"
+    t.string "title"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 

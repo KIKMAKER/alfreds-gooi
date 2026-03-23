@@ -70,6 +70,10 @@ class Subscription < ApplicationRecord
     Time.zone.today + days_until_next_collection # Use Time.zone.today here as well
   end
 
+  def display_name
+    title.presence || user.first_name
+  end
+
   def total_collections
     collections.where(skip: false).count
   end
