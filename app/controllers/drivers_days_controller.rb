@@ -233,6 +233,13 @@ class DriversDaysController < ApplicationController
     @collections = @drivers_day.collections
     @stat = @drivers_day.day_statistic
 
+    subscription_ids = @collections.pluck(:subscription_id)
+    @low_collection_subs = Subscription.where(id: subscription_ids)
+      .joins(:collections)
+      .where(collections: { skip: false })
+      .group("subscriptions.id")
+      .having("COUNT(collections.id) <= 2")
+
     # Prepare snapshot card variables (same as show action)
     if @stat
       @new_customers = @collections.where(new_customer: true).distinct.count(:subscription_id)

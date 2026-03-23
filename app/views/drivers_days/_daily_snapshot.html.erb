@@ -52,6 +52,19 @@
     </div>
   </div>
 
+  <% if low_collection_subs&.any? %>
+    <div class="snapshot-new-customers" style="margin: 1.5rem 0; padding: 1rem 1.5rem; background: #f9f3e3; border-radius: 12px;">
+      <div class="impact-title" style="margin-bottom: 0.5rem;">Getting started (≤2 collections)</div>
+      <ul style="margin: 0; padding-left: 1.2rem;">
+        <% low_collection_subs.each do |sub| %>
+          <li style="font-size: 0.95rem; margin-bottom: 0.25rem;">
+            <%= sub.display_name %> — <%= sub.suburb %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="snapshot-footer">
     <% site_names = drivers_day.drop_off_events.map { |e| e.drop_off_site&.name }.compact.uniq %>
     <p>Together we're building <strong><%= site_names.any? ? site_names.to_sentence : "a healthier planet" %></strong>.</p>
