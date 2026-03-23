@@ -43,7 +43,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :trackable
 
   # Validation context for multi-step signup
   validates :first_name, :last_name, :email, :phone_number, :password, presence: true, on: :account_step
