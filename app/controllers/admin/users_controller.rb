@@ -4,17 +4,22 @@ class Admin::UsersController < ApplicationController
   before_action :require_admin
   before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections]
 
+  SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
+  LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
+
   SORTABLE_USER_COLS = {
-    "name"       => "first_name",
-    "email"      => "email",
-    "last_login" => "last_sign_in_at"
+    "name"              => "first_name",
+    "email"             => "email",
+    "last_login"        => "last_sign_in_at",
+    "subs_count"        => SUBS_COUNT_SQL,
+    "latest_sub_status" => LATEST_SUB_STATUS_SQL
   }.freeze
 
   def index
     @sort = SORTABLE_USER_COLS.key?(params[:sort]) ? params[:sort] : "name"
     @dir  = params[:dir] == "desc" ? "desc" : "asc"
 
-    @users = User.includes(:subscriptions).order("#{SORTABLE_USER_COLS[@sort]} #{@dir} NULLS LAST")
+    @users = User.includes(:subscriptions).order(Arel.sql("#{SORTABLE_USER_COLS[@sort]} #{@dir} NULLS LAST"))
   end
 
   def new

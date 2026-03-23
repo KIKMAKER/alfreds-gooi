@@ -15,9 +15,9 @@
           <tr>
             <th scope="col"><%= link_to "Name#{sort_arrow.("name")}", sort_href.("name"), class: "link-green" %></th>
             <th scope="col"><%= link_to "Email#{sort_arrow.("email")}", sort_href.("email"), class: "link-green" %></th>
-            <th scope="col">Subscriptions</th>
+            <th scope="col"><%= link_to "Subscriptions#{sort_arrow.("subs_count")}", sort_href.("subs_count"), class: "link-green" %></th>
             <th scope="col"><%= link_to "Last Login#{sort_arrow.("last_login")}", sort_href.("last_login"), class: "link-green" %></th>
-            <th scope="col">Status</th>
+            <th scope="col"><%= link_to "Status#{sort_arrow.("latest_sub_status")}", sort_href.("latest_sub_status"), class: "link-green" %></th>
           </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
               <td><%= user.email %></td>
               <td><%= link_to "#{user.subscriptions.size} subs", admin_user_path(user), class: "btn-today-green"  %></td>
               <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :short) : "Never" %></td>
-              <td><%= user.customer? ? user.subscriptions.last&.status : 'none'  %></td>
+              <td><%= user.customer? ? user.subscriptions.max_by(&:created_at)&.status : 'none'  %></td>
 
 
             </tr>

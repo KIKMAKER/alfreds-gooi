@@ -1,6 +1,7 @@
 .admin-navbar {
   .links-container { display: flex; }
   .hamburger-menu  { display: none; }
+  .new-nav-auth-btn { margin-right: 1rem; }
 
   @media screen and (max-width: 623px) {
     .links-container { display: none !important; }

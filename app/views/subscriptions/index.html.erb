@@ -11,6 +11,10 @@
       </div>
       <br>
       <h1>All Subscriptions</h1>
+      <br>
+      <%= link_to "Export CSV", export_subscriptions_path, class: "btn-today-green" %>
+      <br>
+      <br>
       <% sort_arrow = ->(col) { @sort == col ? (@dir == "asc" ? " ↑" : " ↓") : "" } %>
       <% sort_href  = ->(col) { subscriptions_path(sort: col, dir: (@sort == col && @dir == "asc") ? "desc" : "asc") } %>
       <table class="table table-bordered">
