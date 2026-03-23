@@ -5,7 +5,16 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections]
 
   def index
-    @users = User.includes(:subscriptions).order(:first_name)
+    SORTABLE_USER_COLS = {
+      "name"       => "first_name",
+      "email"      => "email",
+      "last_login" => "last_sign_in_at"
+    }.freeze unless defined?(SORTABLE_USER_COLS)
+
+    @sort = SORTABLE_USER_COLS.key?(params[:sort]) ? params[:sort] : "name"
+    @dir  = params[:dir] == "desc" ? "desc" : "asc"
+
+    @users = User.includes(:subscriptions).order("#{SORTABLE_USER_COLS[@sort]} #{@dir} NULLS LAST")
   end
 
   def new

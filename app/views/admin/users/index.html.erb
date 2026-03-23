@@ -8,13 +8,15 @@
         <%= link_to "Create New User", new_admin_user_path, class: "btn-yellow" %>
       </div>
 
+      <% sort_arrow = ->(col) { @sort == col ? (@dir == "asc" ? " ↑" : " ↓") : "" } %>
+      <% sort_href  = ->(col) { admin_users_path(sort: col, dir: (@sort == col && @dir == "asc") ? "desc" : "asc") } %>
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
+            <th scope="col"><%= link_to "Name#{sort_arrow.("name")}", sort_href.("name"), class: "link-green" %></th>
+            <th scope="col"><%= link_to "Email#{sort_arrow.("email")}", sort_href.("email"), class: "link-green" %></th>
             <th scope="col">Subscriptions</th>
-            <th scope="col">Last Login</th>
+            <th scope="col"><%= link_to "Last Login#{sort_arrow.("last_login")}", sort_href.("last_login"), class: "link-green" %></th>
             <th scope="col">Status</th>
           </tr>
         </thead>

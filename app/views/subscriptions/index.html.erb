@@ -11,91 +11,45 @@
       </div>
       <br>
       <h1>All Subscriptions</h1>
+      <% sort_arrow = ->(col) { @sort == col ? (@dir == "asc" ? " ↑" : " ↓") : "" } %>
+      <% sort_href  = ->(col) { subscriptions_path(sort: col, dir: (@sort == col && @dir == "asc") ? "desc" : "asc") } %>
       <table class="table table-bordered">
         <thead>
           <tr>
             <th scope="col">Customer ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">Duration</th>
+            <th scope="col"><%= link_to "Name#{sort_arrow.("name")}", sort_href.("name"), class: "link-green" %></th>
+            <th scope="col"><%= link_to "Start Date#{sort_arrow.("start_date")}", sort_href.("start_date"), class: "link-green" %></th>
+            <th scope="col"><%= link_to "Duration#{sort_arrow.("duration")}", sort_href.("duration"), class: "link-green" %></th>
             <th scope="col">Total Collections</th>
             <th scope="col">Remaining Collections</th>
-            <th scope="col">Holiday Start</th>
-            <th scope="col">Holiday End</th>
+            <th scope="col"><%= link_to "Suburb#{sort_arrow.("suburb")}", sort_href.("suburb"), class: "link-green" %></th>
+            <th scope="col"><%= link_to "Plan#{sort_arrow.("plan")}", sort_href.("plan"), class: "link-green" %></th>
+            <th scope="col"><%= link_to "Day#{sort_arrow.("collection_day")}", sort_href.("collection_day"), class: "link-green" %></th>
           </tr>
         </thead>
         <tbody>
           <% @subscriptions.each do |subscription| %>
-            <% if subscription.completed? %>
-              <tr>
-                <td><s><%= subscription.customer_id %></s></td>
-                <td>
-                  <s>
-                    <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
-                  </s>
-                </td>
-                <td><s><%= subscription.start_date&.strftime('%e %B %Y') || "unknown" %></s></td>
-                <td>
-                  <%= subscription.duration || "unknown" %>
-                </td>
-                <td><%= subscription.total_collections || "unknown" %></td>
-                <td>
-                  <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < -1 %>
-                      <%= link_to "whatsapp them", subscription.user.whatsapp_notification_link %>
-                    <% else %>
-                      <%= subscription.remaining_collections&.to_i.truncate || "unknown" %></td>
-                  <% end %>
+            <% overdue = subscription.remaining_collections.present? && subscription.remaining_collections < 1 %>
+            <tr class="<%= 'text-muted' if subscription.completed? %>">
+              <td><%= subscription.customer_id %></td>
+              <td>
+                <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
+              </td>
+              <td><%= subscription.start_date&.strftime('%e %b %Y') %></td>
+              <td><%= subscription.duration %></td>
+              <td><%= subscription.total_collections %></td>
+              <td>
+                <% if overdue %>
+                  <span style="color: #bc4749;"><%= subscription.remaining_collections.to_i %></span>
+                  <%= link_to "WhatsApp", subscription.user.whatsapp_notification_link, target: "_blank", class: "btn-today-green" if subscription.user.whatsapp_notification_link %>
+                <% else %>
+                  <%= subscription.remaining_collections&.to_i %>
                 <% end %>
-                <td><%= subscription.holiday_start&.strftime('%e %B %Y') %></td>
-                <td><%= subscription.holiday_end&.strftime('%e %B %Y') %></td>
-              </tr>
-            <% elsif !subscription.invoices.first&.paid %>
-              <tr>
-                <td><%= subscription.customer_id %></td>
-                <td>
-                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
-                </td>
-                <td><%= subscription.start_date&.strftime('%e %B %Y') || "unpaid" %></td>
-                <td><%= subscription.duration || "unpaid" %></td>
-                <td><%= subscription.total_collections || "unpaid" %></td>
-                <td>
-                  <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections <= -1 %>
-                    <p><%= subscription.remaining_collections %></p>
-                     <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
-                      <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", "#" %>
-                    <% else %>
-                      <%= subscription.remaining_collections&.to_i.truncate || "unpaid" %></td>
-                  <% end %>
-                <% end %>
-                <td><%= subscription.holiday_start&.strftime('%e %B %Y') || "unpaid" %></td>
-                <td><%= subscription.holiday_end&.strftime('%e %B %Y') || "unpaid" %></td>
-              </tr>
-            <% else %>
-              <tr>
-                <td><%= subscription.customer_id %></td>
-                <td>
-                  <%= link_to subscription.user.first_name, subscription_path(subscription), class: "link-green" %>
-                </td>
-                <td><%= subscription.start_date&.strftime('%e %B %Y') || "check" %></td>
-                <td><%= subscription.duration || "check" %></td>
-                <td><%= subscription.total_collections || "check" %></td>
-                <td>
-                  <% unless subscription.remaining_collections.nil? %>
-                    <% if subscription.remaining_collections < 2 %>
-
-                    <p><%= subscription.remaining_collections.truncate %></p>
-                      <%#= link_to "reassign #{subscription.remaining_collections.truncate} collections", reassign_collections_subscription_path(subscription) %>
-                      <%= link_to "WhatsApp them", subscription.user.whatsapp_notification_link, target: "_blank" if subscription.user.whatsapp_notification_link %>
-                    <% else %>
-                      <%= subscription.remaining_collections&.to_i.truncate || "check" %></td>
-                  <% end %>
-                <% end %>
-                <td><%= subscription.holiday_start&.strftime('%e %B %Y') || "check" %></td>
-                <td><%= subscription.holiday_end&.strftime('%e %B %Y') || "check" %></td>
-              </tr>
-            <% end %>
+              </td>
+              <td><%= subscription.suburb %></td>
+              <td><%= subscription.plan %></td>
+              <td><%= subscription.collection_day %></td>
+            </tr>
           <% end %>
         </tbody>
       </table>
