@@ -1,13 +1,18 @@
 class SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show edit update destroy want_bags pause unpause holiday_dates clear_holiday complete reassign_collections welcome]
 
+  TOTAL_COLLECTIONS_SQL = "(SELECT COUNT(*) FROM collections WHERE collections.subscription_id = subscriptions.id AND collections.skip = false)".freeze
+  REMAINING_COLLECTIONS_SQL = "(CEIL(subscriptions.duration * 4.2) - #{TOTAL_COLLECTIONS_SQL})".freeze
+
   SORTABLE_SUB_COLS = {
-    "name"           => "users.first_name",
-    "suburb"         => "subscriptions.suburb",
-    "plan"           => "subscriptions.plan",
-    "duration"       => "subscriptions.duration",
-    "start_date"     => "subscriptions.start_date",
-    "collection_day" => "subscriptions.collection_day"
+    "name"                  => "users.first_name",
+    "suburb"                => "subscriptions.suburb",
+    "plan"                  => "subscriptions.plan",
+    "duration"              => "subscriptions.duration",
+    "start_date"            => "subscriptions.start_date",
+    "collection_day"        => "subscriptions.collection_day",
+    "total_collections"     => TOTAL_COLLECTIONS_SQL,
+    "remaining_collections" => REMAINING_COLLECTIONS_SQL
   }.freeze
 
   # pretty much standard CRUD stuff
@@ -20,7 +25,7 @@ class SubscriptionsController < ApplicationController
       @subscriptions = Subscription.active
                                     .includes(:user, :invoices)
                                     .joins(:user)
-                                    .order("#{order_col} #{@dir}")
+                                    .order(Arel.sql("#{order_col} #{@dir}"))
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
     end
