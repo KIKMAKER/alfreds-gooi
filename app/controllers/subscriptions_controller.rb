@@ -3,10 +3,23 @@ class SubscriptionsController < ApplicationController
   # pretty much standard CRUD stuff
   def index
     if current_user.admin? || current_user.driver?
-      @subscriptions = Subscription.active
-                                    .includes(:user, :invoices)  # Preloads users to avoid N+1 queries
-                                    .order_by_user_name
+      SORTABLE_SUB_COLS = {
+        "name"           => "users.first_name",
+        "suburb"         => "subscriptions.suburb",
+        "plan"           => "subscriptions.plan",
+        "duration"       => "subscriptions.duration",
+        "start_date"     => "subscriptions.start_date",
+        "collection_day" => "subscriptions.collection_day"
+      }.freeze unless defined?(SORTABLE_SUB_COLS)
 
+      @sort     = SORTABLE_SUB_COLS.key?(params[:sort]) ? params[:sort] : "name"
+      @dir      = params[:dir] == "desc" ? "desc" : "asc"
+      order_col = SORTABLE_SUB_COLS[@sort]
+
+      @subscriptions = Subscription.active
+                                    .includes(:user, :invoices)
+                                    .joins(:user)
+                                    .order("#{order_col} #{@dir}")
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
     end
@@ -537,13 +550,10 @@ class SubscriptionsController < ApplicationController
   end
 
   def export
-    @subscriptions = Subscription.all
+    @subscriptions = Subscription.active.includes(:user)
     send_data generate_csv(@subscriptions),
-            filename: "subscriptions_#{Date.today}.csv",
+            filename: "active_subscriptions_#{Date.today}.csv",
             type: "text/csv"
-    # generate_csv(@subscriptions, "subscriptions_#{Date.today}.csv")
-
-    # redirect_to subscriptions_path, notice: "Subscription data exported"
   end
 
   private
@@ -598,20 +608,37 @@ class SubscriptionsController < ApplicationController
 
   def generate_csv(subscriptions)
     CSV.generate(headers: true) do |csv|
-      csv << ["customer_id", "first_name", "email", "suburb", "plan", "duration", "start_date", "end_date", "total_collections", "status"] # Headers
+      csv << [
+        "customer_id", "first_name", "last_name", "email", "phone_number",
+        "street_address", "suburb", "collection_day", "plan", "duration",
+        "bucket_size", "buckets_per_collection", "collections_per_week",
+        "start_date", "end_date", "status", "monthly_invoicing",
+        "total_collections", "total_litres", "allowed_litres_per_visit", "avg_litres_per_visit"
+      ]
 
-      subscriptions.each do |subscription|
+      subscriptions.each do |sub|
         csv << [
-          subscription.customer_id,
-          subscription.user.first_name,
-          subscription.user.email,
-          subscription.suburb,
-          subscription.plan,
-          subscription.duration,
-          subscription.start_date&.to_date,
-          subscription.end_date,
-          subscription.total_collections,
-          subscription.is_paused ? "paused" : "active"
+          sub.customer_id,
+          sub.user.first_name,
+          sub.user.last_name,
+          sub.user.email,
+          sub.user.phone_number,
+          sub.street_address,
+          sub.suburb,
+          sub.collection_day,
+          sub.plan,
+          sub.duration,
+          sub.bucket_size,
+          sub.buckets_per_collection,
+          sub.collections_per_week,
+          sub.start_date&.to_date,
+          sub.end_date&.to_date,
+          sub.is_paused ? "paused" : "active",
+          sub.monthly_invoicing?,
+          sub.total_collections,
+          sub.total_litres,
+          sub.allowed_litres_per_collection,
+          sub.avg_litres_per_collection
         ]
       end
     end
