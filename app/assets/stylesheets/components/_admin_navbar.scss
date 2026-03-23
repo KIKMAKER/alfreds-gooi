@@ -1,0 +1,9 @@
+.admin-navbar {
+  .links-container { display: flex; }
+  .hamburger-menu  { display: none; }
+
+  @media screen and (max-width: 623px) {
+    .links-container { display: none !important; }
+    .hamburger-menu  { display: flex; }
+  }
+}
