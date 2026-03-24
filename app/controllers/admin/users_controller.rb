@@ -116,8 +116,8 @@ class Admin::UsersController < ApplicationController
                         .first
 
     if subscription
-      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_later
-      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_later
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_now
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_now
       redirect_to pending_admin_users_path, notice: "Nudge sent to #{@user.first_name}."
     else
       redirect_to pending_admin_users_path, alert: "No pending subscription found for #{@user.first_name}."
@@ -131,8 +131,8 @@ class Admin::UsersController < ApplicationController
                        .distinct
 
     subs.each do |subscription|
-      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_later
-      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_later
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_now
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_now
     end
 
     redirect_to pending_admin_users_path, notice: "Nudge sent to #{subs.count} pending customer#{'s' if subs.count != 1}."
