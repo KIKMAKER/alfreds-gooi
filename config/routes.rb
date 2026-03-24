@@ -37,9 +37,10 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       get  :pending,          on: :collection
       post :nudge_all_pending, on: :collection
-      post :renew_last_subscription, on: :member
+      post :nudge_pending,            on: :member
+      post :renew_last_subscription,  on: :member
       post :fix_subscription_boundaries, on: :member
-      get :collections, on: :member
+      get  :collections,              on: :member
     end
     resources :subscriptions, only: [:show]
     resources :whatsapp_messages, only: [:index] do

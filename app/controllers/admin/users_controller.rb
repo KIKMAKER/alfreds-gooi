@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -107,6 +107,20 @@ class Admin::UsersController < ApplicationController
                                   MIN(subscriptions.payment_reminder_sent_at) AS last_nudged_at")
                          .group("users.id")
                          .order(Arel.sql("MIN(invoices.issued_date) ASC"))
+  end
+
+  def nudge_pending
+    subscription = @user.subscriptions.pending
+                        .joins(:invoices)
+                        .where(invoices: { paid: false })
+                        .first
+
+    if subscription
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_later
+      redirect_to pending_admin_users_path, notice: "Nudge sent to #{@user.first_name}."
+    else
+      redirect_to pending_admin_users_path, alert: "No pending subscription found for #{@user.first_name}."
+    end
   end
 
   def nudge_all_pending
