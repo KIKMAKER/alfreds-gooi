@@ -5,7 +5,9 @@
     Hi <%= @subscription.user.first_name %>,
   </p>
 
-  <%# TODO: add your copy here %>
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    You signed up for our compost collection service on <%= @subscription.created_at.strftime('%B %-d, %Y') %> and your subscription is still waiting for you. All you need to do is complete your payment and Alfred will drop off your starter kit the next time he is in your neighbourhood.
+  </p>
 
   <% if @invoice %>
     <p style="font-size: 1.1rem;">
@@ -20,6 +22,15 @@
       Pay My Invoice
     </a>
   </p>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+  If you've found another composting solution and don't need your subscription any more, please reply to this mail and we will remove you from our database.
+  </p>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+  But if you've been waiting for a nudge to kickstart this incredibly impactful habit, join us as we solve Cape Town's organic waste crisis, and build beautiful soil for our local farmers.
+  </p>
+
 
   <p style="font-size: 1.1rem;">Kristen</p>
   <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
