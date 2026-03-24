@@ -35,7 +35,8 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
-      get :pending, on: :collection
+      get  :pending,          on: :collection
+      post :nudge_all_pending, on: :collection
       post :renew_last_subscription, on: :member
       post :fix_subscription_boundaries, on: :member
       get :collections, on: :member

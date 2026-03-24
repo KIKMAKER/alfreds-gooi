@@ -1,0 +1,26 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Your gooi subscription is waiting for you</h1>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @subscription.user.first_name %>,
+  </p>
+
+  <%# TODO: add your copy here %>
+
+  <% if @invoice %>
+    <p style="font-size: 1.1rem;">
+      <strong>Invoice #<%= @invoice.number %></strong><br>
+      Amount: <strong>R<%= number_with_precision(@invoice.total_amount, precision: 2) %></strong>
+    </p>
+  <% end %>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Pay My Invoice
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+</div>

@@ -7,7 +7,10 @@
           <h1>Pending Signups</h1>
           <p class="text-muted small">Users who signed up but haven't paid yet, oldest first.</p>
         </div>
-        <%= link_to "All Users", admin_users_path, class: "btn-yellow" %>
+        <div class="d-flex gap-2">
+          <%= button_to "Send nudge to all", nudge_all_pending_admin_users_path, method: :post, class: "btn-yellow", data: { confirm: "Send a nudge email to all #{@pending_users.size} pending customers?" } %>
+          <%= link_to "All Users", admin_users_path, class: "btn-yellow" %>
+        </div>
       </div>
 
       <% if @pending_users.empty? %>

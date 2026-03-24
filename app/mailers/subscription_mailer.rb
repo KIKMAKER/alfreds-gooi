@@ -71,6 +71,12 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def ad_hoc_nudge
+    @subscription = params[:subscription]
+    @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
+    mail(to: @subscription.user.email, subject: "Your gooi subscription is waiting for you")
+  end
+
   def payment_reminder(stage = :day_3)
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last

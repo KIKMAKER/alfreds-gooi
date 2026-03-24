@@ -109,6 +109,19 @@ class Admin::UsersController < ApplicationController
                          .order("invoice_issued_date ASC")
   end
 
+  def nudge_all_pending
+    subs = Subscription.pending
+                       .joins(:invoices)
+                       .where(invoices: { paid: false })
+                       .distinct
+
+    subs.each do |subscription|
+      SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_later
+    end
+
+    redirect_to pending_admin_users_path, notice: "Nudge sent to #{subs.count} pending customer#{'s' if subs.count != 1}."
+  end
+
   def collections
     @collections = @user.collections
                         .includes(subscription: :user)
