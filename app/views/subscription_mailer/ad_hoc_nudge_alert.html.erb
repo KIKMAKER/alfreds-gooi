@@ -1,16 +1,39 @@
+<h1>Howzit Kiki!</h1>
+<h2>Nudge sent! <%= @subscription.display_name %> was sent this:</h2>
+<hr>
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
-  <h2>Nudge sent to <%= @subscription.display_name %></h2>
-  <p>
-    <strong>Email:</strong> <%= @subscription.user.email %><br>
-    <strong>Phone:</strong> <%= @subscription.user.phone_number.presence || "—" %><br>
-    <strong>Plan:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> month<%= @subscription.duration == 1 ? '' : 's' %>)<br>
-    <strong>Signed up:</strong> <%= @subscription.created_at.strftime('%-d %B %Y') %>
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Your gooi subscription is waiting for you</h1>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @subscription.user.first_name %>,
   </p>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    You signed up for our compost collection service on <%= @subscription.created_at.strftime('%B %-d, %Y') %> and your subscription is still waiting for you. All you need to do is complete your payment and Alfred will drop off your starter kit the next time he is in your neighbourhood.
+  </p>
+
   <% if @invoice %>
-    <p>
+    <p style="font-size: 1.1rem;">
       <strong>Invoice #<%= @invoice.number %></strong><br>
-      Amount: R<%= number_with_precision(@invoice.total_amount, precision: 2) %><br>
-      Issued: <%= @invoice.issued_date.strftime('%-d %B %Y') %>
+      Amount: <strong>R<%= number_with_precision(@invoice.total_amount, precision: 2) %></strong>
     </p>
   <% end %>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Pay My Invoice
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+  If you've found another composting solution and don't need your subscription any more, please reply to this mail and we will remove you from our database.
+  </p>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+  But if you've been waiting for a nudge to kickstart this incredibly impactful habit, join us as we solve Cape Town's organic waste crisis, and build beautiful soil for our local farmers.
+  </p>
+
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
 </div>
