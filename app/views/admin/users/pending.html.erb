@@ -1,0 +1,59 @@
+<div class="gooi-container">
+  <div class="outline">
+    <div>
+      <br>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h1>Pending Signups</h1>
+          <p class="text-muted small">Users who signed up but haven't paid yet, oldest first.</p>
+        </div>
+        <%= link_to "All Users", admin_users_path, class: "btn-yellow" %>
+      </div>
+
+      <% if @pending_users.empty? %>
+        <p class="text-muted">No pending signups right now.</p>
+      <% else %>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Invoice Total</th>
+              <th>Days Since Issue</th>
+              <th>Last Nudged</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @pending_users.each do |user| %>
+              <% days_since = user.invoice_issued_date ? (Date.today - user.invoice_issued_date.to_date).to_i : nil %>
+              <% badge_class = if days_since.nil? then "secondary"
+                                elsif days_since < 3 then "success"
+                                elsif days_since <= 7 then "warning"
+                                else "danger" end %>
+              <tr>
+                <td><%= link_to [user.first_name, user.last_name].compact.join(" ").presence || user.email, admin_user_path(user), class: "link-green" %></td>
+                <td><%= user.email %></td>
+                <td><%= user.phone_number.presence || "—" %></td>
+                <td><%= user.invoice_total ? "R#{number_with_precision(user.invoice_total, precision: 2)}" : "—" %></td>
+                <td>
+                  <% if days_since %>
+                    <span class="badge bg-<%= badge_class %>"><%= days_since %> days</span>
+                  <% else %>
+                    —
+                  <% end %>
+                </td>
+                <td><%= user.last_nudged_at ? user.last_nudged_at.to_date.strftime('%-d %b %Y') : "Never" %></td>
+                <td class="d-flex gap-2">
+                  <%= link_to "View", admin_user_path(user), class: "btn-today-green" %>
+                  <a href="mailto:<%= user.email %>?subject=Your%20Gooi%20Invoice" class="btn-today-green">Email</a>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>

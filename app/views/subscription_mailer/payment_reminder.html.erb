@@ -1,0 +1,48 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">
+    <% if @stage == :day_3 %>
+      Your gooi invoice is waiting
+    <% elsif @stage == :day_7 %>
+      Still pending payment
+    <% else %>
+      Invoice overdue
+    <% end %>
+  </h1>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @subscription.user.first_name %>,
+  </p>
+
+  <% if @stage == :day_3 %>
+    <p style="font-size: 1.1rem;">
+      Just a reminder that your gooi invoice is still waiting. Pay now to lock in your first collection and get your starter kit on the way.
+    </p>
+  <% elsif @stage == :day_7 %>
+    <p style="font-size: 1.1rem;">
+      Your <%= @subscription.plan %> subscription is still pending payment. Once payment clears, we'll get your collections scheduled and your starter kit delivered.
+    </p>
+  <% else %>
+    <p style="font-size: 1.1rem;">
+      Your invoice is now overdue. Pay today to keep your spot — we'd hate to lose you before you've even started gooiing!
+    </p>
+  <% end %>
+
+  <% if @invoice %>
+    <p style="font-size: 1.1rem;">
+      <strong>Invoice #<%= @invoice.number %></strong><br>
+      Amount: <strong>R<%= number_with_precision(@invoice.total_amount, precision: 2) %></strong><br>
+      Issued: <%= @invoice.issued_date.strftime('%-d %B %Y') %><br>
+      Due: <%= @invoice.due_date.strftime('%-d %B %Y') %>
+    </p>
+  <% end %>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Pay My Invoice
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+</div>

@@ -99,6 +99,16 @@ class Admin::UsersController < ApplicationController
       alert: "Error creating subscription/invoice: #{e.message}"
   end
 
+  def pending
+    @pending_users = User.joins(subscriptions: :invoices)
+                         .where(subscriptions: { status: :pending }, invoices: { paid: false })
+                         .select("users.*, MIN(invoices.issued_date) AS invoice_issued_date,
+                                  MAX(invoices.total_amount) AS invoice_total,
+                                  MIN(subscriptions.payment_reminder_sent_at) AS last_nudged_at")
+                         .group("users.id")
+                         .order("invoice_issued_date ASC")
+  end
+
   def collections
     @collections = @user.collections
                         .includes(subscription: :user)

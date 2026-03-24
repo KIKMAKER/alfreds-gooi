@@ -14,10 +14,13 @@
       </a>
     </div>
     <div class="col-6 col-md">
-      <a href="/subscriptions/pending" class="dash-kpi-card">
+      <%= link_to pending_admin_users_path, class: "dash-kpi-card" do %>
         <div class="dash-kpi-label">Pending</div>
         <div class="dash-kpi-value"><%= @pending_subs %></div>
-      </a>
+        <% if @overdue_pending_count > 0 %>
+          <div class="dash-kpi-sub" style="color: #dc3545; font-size: 0.75rem; margin-top: 2px;"><%= @overdue_pending_count %> overdue</div>
+        <% end %>
+      <% end %>
     </div>
     <div class="col-6 col-md">
       <a href="/subscriptions/paused" class="dash-kpi-card">
@@ -56,7 +59,7 @@
         <ul class="dash-category-links">
           <li><a href="/admin/users">Users <span class="dash-arrow">→</span></a></li>
           <li><a href="/subscriptions/all">All subscriptions <span class="dash-arrow">→</span></a></li>
-          <li><a href="/subscriptions/pending">Pending <span class="dash-arrow">→</span></a></li>
+          <li><%= link_to pending_admin_users_path do %>Pending <span class="dash-arrow">→</span><% end %></li>
           <li><a href="/subscriptions/paused">Paused <span class="dash-arrow">→</span></a></li>
           <li><a href="/subscriptions/completed">Completed <span class="dash-arrow">→</span></a></li>
         </ul>

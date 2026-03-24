@@ -1,0 +1,18 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h2>Payment nudge sent — <%= @stage %></h2>
+  <p>
+    <strong>Customer:</strong> <%= @subscription.display_name %><br>
+    <strong>Email:</strong> <%= @subscription.user.email %><br>
+    <strong>Phone:</strong> <%= @subscription.user.phone_number %><br>
+    <strong>Plan:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> month<%= @subscription.duration == 1 ? '' : 's' %>)
+  </p>
+  <% if @invoice %>
+    <p>
+      <strong>Invoice #<%= @invoice.number %></strong><br>
+      Amount: R<%= number_with_precision(@invoice.total_amount, precision: 2) %><br>
+      Issued: <%= @invoice.issued_date.strftime('%-d %B %Y') %><br>
+      Due: <%= @invoice.due_date.strftime('%-d %B %Y') %><br>
+      Days overdue: <%= (Date.today - @invoice.due_date).to_i %> days
+    </p>
+  <% end %>
+</div>

@@ -71,4 +71,31 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def payment_reminder(stage = :day_3)
+    @subscription = params[:subscription]
+    @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
+    @stage        = stage
+
+    subject = case stage
+              when :day_3  then "Just a heads up — your gooi invoice is waiting"
+              when :day_7  then "Your gooi subscription is still pending"
+              when :day_14 then "Last nudge — your gooi invoice is overdue"
+              end
+
+    mail(to: @subscription.user.email, subject: subject)
+  end
+
+  def payment_reminder_alert(stage = :day_3)
+    @subscription = params[:subscription]
+    @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
+    @stage        = stage
+
+    mail(
+      to: 'howzit@gooi.me',
+      subject: "Nudge sent (#{stage}) → #{@subscription.display_name}",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
+
 end
