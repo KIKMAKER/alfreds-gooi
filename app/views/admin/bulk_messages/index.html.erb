@@ -14,7 +14,7 @@
                        options_for_select([
                          ['— Active —', nil, disabled: true],
                          ['All Active', 'all_active'],
-                         ['New Customers (last 30 days)', 'new_customers'],
+                         ['New Customers (first-time)', 'new_customers'],
                          ['Long-term (12+ months)', 'long_term'],
                          ['— Other —', nil, disabled: true],
                          ['Paused', 'paused'],
@@ -74,6 +74,40 @@
         <div class="col-md-3">
           <%= f.label :date_to, "First Sub To", class: "form-label" %>
           <%= f.date_field :date_to, value: params[:date_to], class: "form-control" %>
+        </div>
+
+        <!-- Completed Date Range (shown for recently_completed / all_completed) -->
+        <% if %w[recently_completed all_completed].include?(params[:status_filter]) %>
+          <div class="col-md-3">
+            <%= f.label :completed_from, "Completed From", class: "form-label" %>
+            <%= f.date_field :completed_from,
+                             value: params[:completed_from] || (params[:status_filter] == 'recently_completed' ? 2.weeks.ago.to_date : nil),
+                             class: "form-control" %>
+          </div>
+          <div class="col-md-3">
+            <%= f.label :completed_to, "Completed To", class: "form-label" %>
+            <%= f.date_field :completed_to,
+                             value: params[:completed_to] || (params[:status_filter] == 'recently_completed' ? Date.today : nil),
+                             class: "form-control" %>
+          </div>
+        <% end %>
+
+        <!-- Collection Date + Subset -->
+        <div class="col-12"><hr class="my-2"></div>
+        <div class="col-md-3">
+          <%= f.label :collection_date, "Collection Date", class: "form-label" %>
+          <%= f.date_field :collection_date, value: params[:collection_date], class: "form-control" %>
+          <small class="text-muted">Filter by actual collection record on this date</small>
+        </div>
+        <div class="col-md-9 d-flex align-items-center gap-4 flex-wrap pt-4">
+          <% [['all', 'All on this date'], ['normal', 'Normal collection'], ['skipped', 'Skipped'], ['new_customer', 'New customer']].each do |value, label| %>
+            <div class="form-check">
+              <%= f.radio_button :collection_subset, value,
+                                 checked: (params[:collection_subset] || 'all') == value,
+                                 class: "form-check-input" %>
+              <%= f.label "collection_subset_#{value}", label, class: "form-check-label" %>
+            </div>
+          <% end %>
         </div>
       </div>
 
@@ -143,7 +177,8 @@
               ['{suburb}', "Suburb"],
               ['{plan}', "Plan (Standard / XL)"],
               ['{account_start}', "Subscription start date"],
-              ['{relationship}', "Contact's relationship (Owner, Spouse…)"]
+              ['{relationship}', "Contact's relationship (Owner, Spouse…)"],
+              ['{collection_date}', "Collection date (e.g. Tuesday, 25 March)"]
             ].each do |token, description| %>
               <span class="badge bg-light text-dark border" title="<%= description %>"><%= token %></span>
             <% end %>
@@ -164,6 +199,11 @@
       <h3 class="mb-3">
         Results: <%= @contacts.count %> <%= 'contact'.pluralize(@contacts.count) %>
         <small class="text-muted fw-normal fs-6">across <%= subscription_count %> <%= 'subscription'.pluralize(subscription_count) %></small>
+        <% if params[:collection_date].present? && params[:collection_subset].present? && params[:collection_subset] != 'all' %>
+          <span class="badge bg-info ms-2" style="font-size: 0.75rem;">
+            <%= { 'normal' => 'Normal collection', 'skipped' => 'Skipped', 'new_customer' => 'New customer' }[params[:collection_subset]] %>
+          </span>
+        <% end %>
       </h3>
 
       <div class="table-responsive">
@@ -211,7 +251,8 @@
                       '{suburb}'         => sub&.suburb.to_s,
                       '{plan}'           => sub&.plan&.titleize.to_s,
                       '{account_start}'  => sub&.start_date&.strftime("%d %b %Y").to_s,
-                      '{relationship}'   => (contact.is_primary? ? 'Owner' : contact.relationship&.titleize).to_s
+                      '{relationship}'      => (contact.is_primary? ? 'Owner' : contact.relationship&.titleize).to_s,
+                      '{collection_date}'   => params[:collection_date].present? ? Date.parse(params[:collection_date]).strftime('%A, %-d %B') : ''
                     } %>
                     <% personalized_message = replacements.reduce(@message) { |msg, (k, v)| msg.gsub(k, v) } %>
                     <% encoded_message = ERB::Util.url_encode(personalized_message) %>

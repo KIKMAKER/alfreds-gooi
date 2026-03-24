@@ -14,15 +14,20 @@ class Admin::BulkMessagesController < ApplicationController
                     when 'all_active'
                       Subscription.active
                     when 'new_customers'
-                      Subscription.active.where('start_date >= ?', 30.days.ago)
+                      Subscription.active.where(is_new_customer: true)
                     when 'long_term'
                       Subscription.active.where('start_date <= ?', 12.months.ago)
                     when 'paused'
                       Subscription.where(status: :pause)
                     when 'recently_completed'
-                      Subscription.where(status: :completed).where('updated_at >= ?', 2.weeks.ago)
+                      from = params[:completed_from].present? ? params[:completed_from] : 2.weeks.ago.to_date
+                      to   = params[:completed_to].present?   ? params[:completed_to]   : Date.today
+                      Subscription.where(status: :completed).where(end_date: from..to)
                     when 'all_completed'
-                      Subscription.where(status: :completed)
+                      base = Subscription.where(status: :completed)
+                      base = base.where('end_date >= ?', params[:completed_from]) if params[:completed_from].present?
+                      base = base.where('end_date <= ?', params[:completed_to])   if params[:completed_to].present?
+                      base
                     when 'all_pending'
                       Subscription.pending
                     when 'legacy'
@@ -35,6 +40,20 @@ class Admin::BulkMessagesController < ApplicationController
       subscriptions = subscriptions.where(collection_day: params[:collection_day])
     end
 
+    if params[:collection_date].present?
+      subscriptions = subscriptions.joins(:collections)
+                                   .where(collections: { date: params[:collection_date] })
+      case params[:collection_subset]
+      when 'normal'
+        subscriptions = subscriptions.where(collections: { skip: false, new_customer: false })
+      when 'skipped'
+        subscriptions = subscriptions.where(collections: { skip: true })
+      when 'new_customer'
+        subscriptions = subscriptions.where(collections: { skip: false, new_customer: true })
+      end
+      subscriptions = subscriptions.distinct
+    end
+
     if params[:suburb].present? && params[:suburb] != 'all'
       subscriptions = subscriptions.where(suburb: params[:suburb])
     end
@@ -44,13 +63,21 @@ class Admin::BulkMessagesController < ApplicationController
     end
 
     if params[:min_collections].present?
-      subscription_ids = subscriptions.select { |sub| sub.total_collections >= params[:min_collections].to_i }.map(&:id)
-      subscriptions = Subscription.where(id: subscription_ids)
+      min = params[:min_collections].to_i
+      qualifying_ids = Collection.where(skip: false, subscription_id: subscriptions.select(:id))
+                                 .group(:subscription_id)
+                                 .having("COUNT(*) >= ?", min)
+                                 .select(:subscription_id)
+      subscriptions = subscriptions.where(id: qualifying_ids)
     end
 
     if params[:max_collections].present?
-      subscription_ids = subscriptions.select { |sub| sub.total_collections <= params[:max_collections].to_i }.map(&:id)
-      subscriptions = Subscription.where(id: subscription_ids)
+      max = params[:max_collections].to_i
+      qualifying_ids = Collection.where(skip: false, subscription_id: subscriptions.select(:id))
+                                 .group(:subscription_id)
+                                 .having("COUNT(*) <= ?", max)
+                                 .select(:subscription_id)
+      subscriptions = subscriptions.where(id: qualifying_ids)
     end
 
     if params[:date_from].present?
