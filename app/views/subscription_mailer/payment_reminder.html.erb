@@ -3,9 +3,9 @@
     <% if @stage == :day_3 %>
       Your gooi invoice is waiting
     <% elsif @stage == :day_7 %>
-      Still pending payment
+      Ready to start gooiing?
     <% else %>
-      Invoice overdue
+      Your gooi subscription is waiting for you
     <% end %>
   </h1>
 
@@ -19,11 +19,11 @@
     </p>
   <% elsif @stage == :day_7 %>
     <p style="font-size: 1.1rem;">
-      Your <%= @subscription.plan %> subscription is still pending payment. Once payment clears, we'll get your collections scheduled and your starter kit delivered.
+      Your gooi subscription is still pending payment. Once payment clears, we'll get your collections scheduled and your starter kit delivered.
     </p>
   <% else %>
     <p style="font-size: 1.1rem;">
-      Your invoice is now overdue. Pay today to keep your spot — we'd hate to lose you before you've even started gooiing!
+      Are you still interested in gooiing your kitchen scraps? Pay today to keep your spot — we'd love to help you manage your organic waste!
     </p>
   <% end %>
 
@@ -42,6 +42,13 @@
       Pay My Invoice
     </a>
   </p>
+
+  <p style="font-size: 1.1rem;">
+      Unsure about something or have something to chat about? Reply to this email and we'll get back to you shortly.
+    </p>
+     <p style="font-size: 1.1rem;">
+     Looking forward to welcoming you to the gooi family!
+    </p>
 
   <p style="font-size: 1.1rem;">Kristen</p>
   <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
