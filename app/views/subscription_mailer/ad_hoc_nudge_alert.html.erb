@@ -1,0 +1,16 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h2>Nudge sent to <%= @subscription.display_name %></h2>
+  <p>
+    <strong>Email:</strong> <%= @subscription.user.email %><br>
+    <strong>Phone:</strong> <%= @subscription.user.phone_number.presence || "—" %><br>
+    <strong>Plan:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> month<%= @subscription.duration == 1 ? '' : 's' %>)<br>
+    <strong>Signed up:</strong> <%= @subscription.created_at.strftime('%-d %B %Y') %>
+  </p>
+  <% if @invoice %>
+    <p>
+      <strong>Invoice #<%= @invoice.number %></strong><br>
+      Amount: R<%= number_with_precision(@invoice.total_amount, precision: 2) %><br>
+      Issued: <%= @invoice.issued_date.strftime('%-d %B %Y') %>
+    </p>
+  <% end %>
+</div>
