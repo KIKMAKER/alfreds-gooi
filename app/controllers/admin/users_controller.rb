@@ -106,7 +106,7 @@ class Admin::UsersController < ApplicationController
                                   MAX(invoices.total_amount) AS invoice_total,
                                   MIN(subscriptions.payment_reminder_sent_at) AS last_nudged_at")
                          .group("users.id")
-                         .order("invoice_issued_date ASC")
+                         .order(Arel.sql("MIN(invoices.issued_date) ASC"))
   end
 
   def nudge_all_pending
