@@ -70,6 +70,10 @@ class Admin::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
+      if @user.saved_change_to_phone_number? && @user.phone_number.present?
+        Contact.where(subscription: @user.subscriptions, is_primary: true)
+               .update_all(phone_number: @user.phone_number)
+      end
       redirect_to admin_user_path(@user), notice: "User updated."
     else
       flash.now[:alert] = @user.errors.full_messages.to_sentence
