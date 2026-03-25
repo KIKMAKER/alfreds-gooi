@@ -2,6 +2,8 @@ class Contact < ApplicationRecord
   belongs_to :subscription
   has_many :whatsapp_messages, dependent: :nullify
 
+  before_validation :normalize_phone_number
+
   validates :first_name, presence: true
   validates :phone_number, presence: true,
             uniqueness: { scope: :subscription_id, message: "already exists for this subscription" }
@@ -15,6 +17,17 @@ class Contact < ApplicationRecord
   scope :can_receive_whatsapp, -> { where(whatsapp_opt_out: false).where.not(phone_number: [nil, '']) }
   scope :opted_in, -> { where(whatsapp_opt_out: false) }
   scope :opted_out, -> { where(whatsapp_opt_out: true) }
+
+  private
+
+  def normalize_phone_number
+    return if phone_number.blank?
+    cleaned = phone_number.gsub(/[^\d+]/, '').strip
+    cleaned = "+#{cleaned}" if cleaned.start_with?('27') && !cleaned.start_with?('+')
+    self.phone_number = cleaned
+  end
+
+  public
 
   # Format phone for WhatsApp
   def formatted_phone
