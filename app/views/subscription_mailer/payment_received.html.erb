@@ -1,72 +1,107 @@
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
-  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Payment received! 🎉</h1>
-  <p style="font-size: 1.1rem; margin-top: 1rem;">
-    Hi <%= @user.first_name %>,
-  </p>
+  <% if @subscription.once_off? %>
 
-  <p style="font-size: 1.1rem;">
-    Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong>. ♻️
-  </p>
-
-  <% if @is_new %>
-    <%# ---- NEW CUSTOMER ---- %>
-    <% if @subscription.Commercial? %>
-      <p style="font-size: 1.1rem;">
-        <strong>Your subscription details:</strong><br>
-        Duration: <%= @subscription.duration %> months<br>
-        Buckets per collection: <%= @subscription.buckets_per_collection %> × <%= @subscription.bucket_size %>L buckets<br>
-        Collection day: <%= @subscription.collection_day %>
-      </p>
-      <p style="font-size: 1.1rem;">
-        Alfred will deliver your commercial buckets in the week of <strong><%= @subscription.start_date.strftime('%A, %-d %B') %></strong>.
-        Once you have organic waste ready, leave the full buckets out before 8am on your collection day.
-      </p>
-    <% else %>
-      <p style="font-size: 1.1rem;">
-        <strong>Your subscription details:</strong><br>
-        Plan: <%= @subscription.plan %><br>
-        Duration: <%= @subscription.duration %> months<br>
-        Collection day: <%= @subscription.collection_day %>
-      </p>
-      <p style="font-size: 1.1rem;">
-        Alfred will deliver your starter kit in the week of <strong><%= @subscription.start_date.strftime('%A, %-d %B') %></strong>.
-        Your kit includes a compost bin, compostable bags, and a guide to get you going.
-      </p>
-    <% end %>
-
-    <p style="font-size: 1.1rem;">
-      <strong>What happens next?</strong><br>
-      • Alfred will collect from your address every <%= @subscription.collection_day %><br>
-      • Please leave your compost out before 8am on collection day<br>
-      • You can manage your subscription anytime at <%= link_to 'gooi.me', root_url, style: "color: #FBB718; text-decoration: none; font-weight: bold;" %>
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Your collection is booked! 🎉</h1>
+    <p style="font-size: 1.1rem; margin-top: 1rem;">
+      Hi <%= @user.first_name %>,
     </p>
 
     <p style="font-size: 1.1rem;">
-      Thanks for joining the food waste revolution!
+      Payment received! Alfred will be coming to collect your kitchen scraps on <strong><%= @subscription.collection_day %></strong>.
     </p>
+
+    <p style="font-size: 1.1rem;">
+      <strong>What you need to do:</strong><br>
+      • Leave your food scraps out before <strong>8am</strong> on <%= @subscription.collection_day %><br>
+      • A bag or container works fine — anything that's easy to carry<br>
+      • Alfred will take it from there ♻️
+    </p>
+
+    <p style="font-size: 1.1rem;">
+      If you enjoy the experience, you're welcome to sign up for a regular weekly subscription anytime.
+    </p>
+
+    <p style="margin: 2rem 0;">
+      <a href="<%= manage_url %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+        View My Account
+      </a>
+    </p>
+
+    <p style="font-size: 1.1rem;">Thanks for giving gooi a try!</p>
 
   <% else %>
-    <%# ---- RETURNING CUSTOMER ---- %>
-    <p style="font-size: 1.1rem;">
-      Welcome back! Your <%= @subscription.plan %> subscription is active and your collections will continue every <strong><%= @subscription.collection_day %></strong> as usual.
+
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Payment received! 🎉</h1>
+    <p style="font-size: 1.1rem; margin-top: 1rem;">
+      Hi <%= @user.first_name %>,
     </p>
 
     <p style="font-size: 1.1rem;">
-      You can manage your subscription anytime at <%= link_to 'gooi.me', root_url, style: "color: #FBB718; text-decoration: none; font-weight: bold;" %>.
+      Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong>. ♻️
     </p>
 
-    <p style="font-size: 1.1rem;">
-      Thanks for gooiing again!
+    <% if @is_new %>
+      <%# ---- NEW CUSTOMER ---- %>
+      <% if @subscription.Commercial? %>
+        <p style="font-size: 1.1rem;">
+          <strong>Your subscription details:</strong><br>
+          Duration: <%= @subscription.duration %> months<br>
+          Buckets per collection: <%= @subscription.buckets_per_collection %> × <%= @subscription.bucket_size %>L buckets<br>
+          Collection day: <%= @subscription.collection_day %>
+        </p>
+        <p style="font-size: 1.1rem;">
+          Alfred will deliver your commercial buckets in the week of <strong><%= @subscription.start_date.strftime('%A, %-d %B') %></strong>.
+          Once you have organic waste ready, leave the full buckets out before 8am on your collection day.
+        </p>
+      <% else %>
+        <p style="font-size: 1.1rem;">
+          <strong>Your subscription details:</strong><br>
+          Plan: <%= @subscription.plan %><br>
+          Duration: <%= @subscription.duration %> months<br>
+          Collection day: <%= @subscription.collection_day %>
+        </p>
+        <p style="font-size: 1.1rem;">
+          Alfred will deliver your starter kit in the week of <strong><%= @subscription.start_date.strftime('%A, %-d %B') %></strong>.
+          Your kit includes a compost bin, compostable bags, and a guide to get you going.
+        </p>
+      <% end %>
+
+      <p style="font-size: 1.1rem;">
+        <strong>What happens next?</strong><br>
+        • Alfred will collect from your address every <%= @subscription.collection_day %><br>
+        • Please leave your compost out before 8am on collection day<br>
+        • You can manage your subscription anytime at <%= link_to 'gooi.me', root_url, style: "color: #FBB718; text-decoration: none; font-weight: bold;" %>
+      </p>
+
+      <p style="font-size: 1.1rem;">
+        Thanks for joining the food waste revolution!
+      </p>
+
+    <% else %>
+      <%# ---- RETURNING CUSTOMER ---- %>
+      <p style="font-size: 1.1rem;">
+        Welcome back! Your <%= @subscription.plan %> subscription is active and your collections will continue every <strong><%= @subscription.collection_day %></strong> as usual.
+      </p>
+
+      <p style="font-size: 1.1rem;">
+        You can manage your subscription anytime at <%= link_to 'gooi.me', root_url, style: "color: #FBB718; text-decoration: none; font-weight: bold;" %>.
+      </p>
+
+      <p style="font-size: 1.1rem;">
+        Thanks for gooiing again!
+      </p>
+
+    <% end %>
+
+    <p style="margin: 2rem 0;">
+      <a href="<%= manage_url %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+        View My Account
+      </a>
     </p>
 
   <% end %>
-
-  <p style="margin: 2rem 0;">
-    <a href="<%= manage_url %>"
-       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
-      View My Account
-    </a>
-  </p>
 
   <p style="font-size: 1.1rem;">Kristen</p>
   <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>

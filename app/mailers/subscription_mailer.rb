@@ -1,7 +1,8 @@
 class SubscriptionMailer < ApplicationMailer
   def subscription_completed
     @subscription = params[:subscription]
-    mail(to: @subscription.user.email, subject: "Your gooi subscription is complete 🎉")
+    subject = @subscription.once_off? ? "Your once-off collection is done — thanks for gooiing! 🎉" : "Your gooi subscription is complete 🎉"
+    mail(to: @subscription.user.email, subject: subject)
   end
 
   def subscription_completed_alert
@@ -51,7 +52,8 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @user = @subscription.user
     @is_new = params[:is_new]
-    mail(to: @user.email, subject: "Payment received - your gooi subscription is now active!")
+    subject = @subscription.once_off? ? "Your once-off collection is booked!" : "Payment received - your gooi subscription is now active!"
+    mail(to: @user.email, subject: subject)
   end
 
   def referral_completed
