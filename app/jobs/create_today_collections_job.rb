@@ -25,6 +25,7 @@ class CreateTodayCollectionsJob < ApplicationJob
     # Create collections for each subscription assigned to this day
     subscriptions = Subscription.where(collection_day: day_name)
     subscriptions.each do |subscription|
+      next if subscription.once_off?
       unless subscription.status == "completed"
         collection = Collection.create!(
           drivers_day: drivers_day,

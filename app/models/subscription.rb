@@ -19,7 +19,8 @@ class Subscription < ApplicationRecord
   SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
   validates :suburb, inclusion: { in: SUBURBS }
   validates :street_address, presence: true
-  validates :suburb, :plan, :duration, presence: true
+  validates :suburb, :plan, presence: true
+  validates :duration, presence: true, unless: :once_off?
   validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
   validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
   geocoded_by :street_address
@@ -79,6 +80,7 @@ class Subscription < ApplicationRecord
   end
 
   def remaining_collections
+    return 1 - total_collections if once_off?
     return nil if duration.nil?
     total = duration * 4.2
     remaining = total.ceil - self.total_collections

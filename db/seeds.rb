@@ -179,6 +179,13 @@ elsif proceed == "products"
 
   puts "Additional stock created"
 
+  once_off_products = [
+    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
+  ]
+
+  seed_products(once_off_products)
+  puts "Once-off Collection product created"
+
   puts "A total of #{Product.count} products have been seeded to the DB."
 
 elsif proceed == "dropoffs"
@@ -341,6 +348,13 @@ elsif proceed == "y"
   seed_products(additional_stock_products)
 
   puts "Additional stock created"
+
+  once_off_products = [
+    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
+  ]
+
+  seed_products(once_off_products)
+  puts "Once-off Collection product created"
 
   puts "A total of #{Product.count} products have been seeded to the DB."
 

@@ -20,16 +20,21 @@ class InvoiceBuilder
       total_amount: 0
     )
 
-    # Add items for each subscription
-    @subscriptions.each do |sub|
-      add_starter_kit(invoice, sub) if @is_new
-      add_subscription_product(invoice, sub)
-      # Add starter kit installment for subsequent monthly invoices
-      add_monthly_starter_kit_installment(invoice, sub) unless @is_new
+    if @subscription&.once_off?
+      add_once_off_collection(invoice)
+    else
+      # Add items for each subscription
+      @subscriptions.each do |sub|
+        add_starter_kit(invoice, sub) if @is_new
+        add_subscription_product(invoice, sub)
+        # Add starter kit installment for subsequent monthly invoices
+        add_monthly_starter_kit_installment(invoice, sub) unless @is_new
+      end
+
+      apply_referrals(invoice)
+      apply_discount_code(invoice) if @subscription.discount_code
     end
 
-    apply_referrals(invoice)
-    apply_discount_code(invoice) if @subscription.discount_code
     invoice.calculate_total # Calculate total AFTER adding all items including discounts
 
     InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
@@ -38,6 +43,12 @@ class InvoiceBuilder
   end
 
   private
+
+  def add_once_off_collection(invoice)
+    product = Product.find_by(title: "Once-off Collection")
+    return Rails.logger.warn("Product not found: Once-off Collection") unless product
+    invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
+  end
 
   def add_starter_kit(invoice, subscription)
     kit_title = if subscription.Commercial?

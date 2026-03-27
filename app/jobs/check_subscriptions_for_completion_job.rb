@@ -8,21 +8,22 @@ class CheckSubscriptionsForCompletionJob < ApplicationJob
     Subscription.active.where(collection_day: today_name).find_each do |subscription|
       next if subscription.start_date.blank?
 
-      required_collections   = (4.2 * subscription.duration).ceil + 1
+      required_collections   = subscription.once_off? ? 1 : (4.2 * subscription.duration).ceil + 1
       completed_collections  = subscription.collections.where(skip: false).count
       remaining_collections  = required_collections - completed_collections
 
       # Calculate alert threshold based on subscription duration
+      # once_off: 0 (completes after 1 collection — no ending-soon email needed)
       # 1-month: alert with 1 left, 3-month: 2 left, 6+ months: 3 left
-      alert_threshold = case subscription.duration
-                        when 1
-                          1
-                        when 3
-                          2
-                        when 6, 12
-                          3
+      alert_threshold = if subscription.once_off?
+                          0
                         else
-                          2
+                          case subscription.duration
+                          when 1 then 1
+                          when 3 then 2
+                          when 6, 12 then 3
+                          else 2
+                          end
                         end
 
       # Is there an overlapping or upcoming subscription for this user?

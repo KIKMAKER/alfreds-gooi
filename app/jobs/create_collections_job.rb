@@ -53,6 +53,7 @@ class CreateCollectionsJob < ApplicationJob
     )
 
     subscriptions.find_each do |subscription|
+      next if subscription.once_off?
 
       collection = Collection.find_or_create_by!(
         drivers_day: drivers_day,
