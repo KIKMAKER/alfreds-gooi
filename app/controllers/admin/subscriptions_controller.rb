@@ -20,6 +20,7 @@ class Admin::SubscriptionsController < ApplicationController
         is_new:       @subscription.is_new_customer,
         referee:      referee
       ).call
+      CreateFirstCollectionJob.perform_now(@subscription) if @subscription.once_off?
       redirect_to admin_user_path(@user), notice: "Subscription created and invoice sent."
     else
       render :new, status: :unprocessable_entity
