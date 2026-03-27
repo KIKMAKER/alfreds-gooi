@@ -45,7 +45,9 @@
 
           <div class="col-md-8">
             <%= f.label :street_address, class: "form-label" %>
-            <%= f.text_field :street_address, class: "form-control", placeholder: "12 Example Street" %>
+            <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+              <%= f.text_field :street_address, class: "d-none", data: { address_autocomplete_target: "address" } %>
+            </div>
           </div>
 
           <div class="col-md-4">
