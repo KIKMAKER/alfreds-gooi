@@ -2,7 +2,7 @@
   <div class="outline">
     <div>
       <br>
-      <h1>New Subscription for <%= @user.display_name %></h1>
+      <h1>New Subscription for <%= @user.full_name %></h1>
       <p class="text-muted"><%= @user.email %></p>
 
       <% if @subscription.errors.any? %>
