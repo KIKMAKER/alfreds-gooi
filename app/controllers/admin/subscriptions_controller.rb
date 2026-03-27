@@ -2,6 +2,30 @@ class Admin::SubscriptionsController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin_or_driver
 
+  def new
+    @user = User.find(params[:user_id])
+    @subscription = Subscription.new
+  end
+
+  def create
+    @user = User.find(params[:user_id])
+    @subscription = @user.subscriptions.build(subscription_params)
+    @subscription.status   = :pending
+    @subscription.is_paused = true
+
+    if @subscription.save
+      referee = User.find_by(referral_code: @subscription.referral_code) if @subscription.referral_code.present?
+      InvoiceBuilder.new(
+        subscription: @subscription,
+        is_new:       @subscription.is_new_customer,
+        referee:      referee
+      ).call
+      redirect_to admin_user_path(@user), notice: "Subscription created and invoice sent."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def show
     @subscription = Subscription.joins(:user).find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
@@ -35,6 +59,13 @@ class Admin::SubscriptionsController < ApplicationController
   end
 
   private
+
+  def subscription_params
+    params.require(:subscription).permit(
+      :plan, :duration, :street_address, :suburb,
+      :apartment_unit_number, :discount_code, :referral_code, :is_new_customer
+    )
+  end
 
   def require_admin_or_driver
     redirect_to root_path, alert: "Unauthorized" unless current_user.admin? || current_user.driver?

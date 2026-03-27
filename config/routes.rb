@@ -42,7 +42,7 @@ Rails.application.routes.draw do
       post :fix_subscription_boundaries, on: :member
       get  :collections,              on: :member
     end
-    resources :subscriptions, only: [:show]
+    resources :subscriptions, only: [:show, :new, :create]
     resources :whatsapp_messages, only: [:index] do
       collection do
         post :trigger_reminders

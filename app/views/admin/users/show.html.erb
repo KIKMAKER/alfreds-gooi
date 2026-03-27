@@ -17,6 +17,8 @@
         <p><strong>Referred by:</strong> <%= link_to @referred_by.first_name + " " + @referred_by.last_name.to_s, admin_user_path(@referred_by), class: "link-title" %></p>
       <% end %>
 
+      <%= link_to "New Subscription", new_admin_subscription_path(user_id: @user.id), class: "btn-today-green my-2" %>
+
       <%= button_to "Duplicate last sub",
               renew_last_subscription_admin_user_path(@user),
               method: :post,
