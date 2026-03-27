@@ -2,11 +2,13 @@ class CreateFirstCollectionJob < ApplicationJob
   queue_as :default
 
   def perform(subscription)
-    today = Date.today
-    puts "Today is #{today}"
-    next_collection_date = subscription.calculate_next_collection_day
-    day_name = next_collection_date.strftime('%A')
-    process_day(next_collection_date, day_name, subscription)
+    collection_date = if subscription.once_off? && subscription.start_date.present?
+                        subscription.start_date
+                      else
+                        subscription.calculate_next_collection_day
+                      end
+    day_name = collection_date.strftime('%A')
+    process_day(collection_date, day_name, subscription)
   end
 
   private

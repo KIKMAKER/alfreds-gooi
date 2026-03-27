@@ -438,9 +438,10 @@ class Subscription < ApplicationRecord
   end
 
   def activate_subscription
+    resolved_start = once_off? && start_date.present? ? start_date : suggested_start_date
     update!(
       status: :active,
-      start_date: suggested_start_date,
+      start_date: resolved_start,
       is_paused: false
     )
 
