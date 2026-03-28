@@ -68,8 +68,12 @@ class Admin::FestivalEventsController < ApplicationController
   end
 
   def enter_as_logger
-    session[:festival_event_id] = @festival_event.id
-    session.delete(:festival_participant_id)
+    participant = @festival_event.festival_participants.find_or_create_by(
+      name: current_user.first_name
+    ) { |p| p.pin = nil }
+
+    session[:festival_event_id]       = @festival_event.id
+    session[:festival_participant_id] = participant.id
     redirect_to new_festival_waste_log_path, notice: "Logging for #{@festival_event.name}."
   end
 

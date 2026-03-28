@@ -11,16 +11,11 @@ class Festival::BaseController < ActionController::Base
   private
 
   def require_festival_access!
-    # Devise admins can enter the field interface directly — no PIN needed.
-    # They must have selected a festival first (via admin enter_as_logger action).
-    if admin_in_field?
-      unless session[:festival_event_id].present?
-        redirect_to admin_festival_events_path, alert: "Select a festival to log for."
-      end
-      return
-    end
+    return if session[:festival_participant_id].present?
 
-    unless session[:festival_participant_id].present?
+    if admin_in_field?
+      redirect_to admin_festival_events_path, alert: "Select a festival to log for."
+    else
       redirect_to new_festival_session_path, alert: "Please log in first."
     end
   end

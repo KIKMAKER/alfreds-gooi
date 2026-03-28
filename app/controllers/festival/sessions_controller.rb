@@ -10,7 +10,9 @@ class Festival::SessionsController < ActionController::Base
 
   def create
     festival = FestivalEvent.find_by(id: params[:festival_event_id])
-    participant = festival&.festival_participants&.find_by(name: params[:name], pin: params[:pin])
+    participant = festival&.festival_participants
+                          &.where.not(pin: nil)
+                          &.find_by(name: params[:name], pin: params[:pin])
 
     if participant
       session[:festival_participant_id] = participant.id
