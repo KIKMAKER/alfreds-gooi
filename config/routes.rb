@@ -75,6 +75,19 @@ Rails.application.routes.draw do
         post :confirm_import
       end
     end
+
+    resources :festival_events do
+      member do
+        get :dashboard
+        get :export_csv
+      end
+      resources :festival_participants, only: [:new, :create, :destroy]
+    end
+  end
+
+  namespace :festival do
+    resources :sessions, only: [:new, :create, :destroy]
+    resources :waste_logs, only: [:index, :new, :create, :destroy]
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'

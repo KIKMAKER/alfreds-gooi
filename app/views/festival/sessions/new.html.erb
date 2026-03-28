@@ -1,0 +1,27 @@
+<div class="festival-login">
+  <h1 class="festival-login__heading">Log in</h1>
+  <p class="festival-login__sub">Select your festival and enter your name and PIN.</p>
+
+  <%= form_with url: festival_sessions_path, method: :post, class: "festival-form" do |f| %>
+    <div class="festival-form__group">
+      <label class="festival-form__label" for="festival_event_id">Festival</label>
+      <select name="festival_event_id" id="festival_event_id" class="festival-form__select">
+        <% @festival_events.each do |event| %>
+          <option value="<%= event.id %>"><%= event.name %> (<%= event.start_date.strftime("%-d %b") %>)</option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="festival-form__group">
+      <label class="festival-form__label" for="name">Your name</label>
+      <input type="text" name="name" id="name" class="festival-form__input" autocomplete="name" autocapitalize="words" required>
+    </div>
+
+    <div class="festival-form__group">
+      <label class="festival-form__label" for="pin">PIN</label>
+      <input type="password" name="pin" id="pin" class="festival-form__input" inputmode="numeric" autocomplete="current-password" required>
+    </div>
+
+    <button type="submit" class="festival-btn festival-btn--primary">Log in</button>
+  <% end %>
+</div>

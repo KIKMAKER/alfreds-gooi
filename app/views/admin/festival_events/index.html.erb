@@ -1,0 +1,36 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Festival Events</h1>
+    <%= link_to "New Festival", new_admin_festival_event_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @festival_events.any? %>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Dates</th>
+          <th>Participants</th>
+          <th>Entries</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @festival_events.each do |event| %>
+          <tr>
+            <td><%= link_to event.name, admin_festival_event_path(event) %></td>
+            <td><%= event.start_date.strftime("%-d %b") %> – <%= event.end_date.strftime("%-d %b %Y") %></td>
+            <td><%= event.festival_participants.count %></td>
+            <td><%= event.festival_waste_logs.count %></td>
+            <td class="text-end">
+              <%= link_to "Dashboard", dashboard_admin_festival_event_path(event), class: "btn btn-sm btn-outline-secondary me-1" %>
+              <%= link_to "CSV", export_csv_admin_festival_event_path(event), class: "btn btn-sm btn-outline-success" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-muted">No festivals yet.</p>
+  <% end %>
+</div>

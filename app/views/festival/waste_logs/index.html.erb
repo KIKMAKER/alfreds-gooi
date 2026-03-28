@@ -1,0 +1,75 @@
+<div class="festival-index">
+  <div class="festival-index__header">
+    <h1 class="festival-index__heading"><%= current_festival.name %></h1>
+    <p class="festival-index__sub">Logged as <strong><%= current_participant.name %></strong></p>
+    <%= link_to "+ New entry", new_festival_waste_log_path, class: "festival-btn festival-btn--primary" %>
+  </div>
+
+  <%# Running totals %>
+  <div class="festival-totals">
+    <h2 class="festival-totals__heading">Totals (all days)</h2>
+    <div class="festival-totals__grid">
+      <div class="festival-totals__section">
+        <div class="festival-totals__section-label">Gooi – Organics</div>
+        <div class="festival-totals__row">
+          <span>Total organic</span>
+          <span class="festival-totals__value"><%= number_with_precision(@totals[FestivalWasteLog::ORGANIC_CATEGORY] || 0, precision: 2) %> kg</span>
+        </div>
+        <div class="festival-totals__row">
+          <span>→ Compost</span>
+          <span class="festival-totals__value"><%= number_with_precision(@totals_by_destination["compost"] || 0, precision: 2) %> kg</span>
+        </div>
+        <div class="festival-totals__row">
+          <span>→ Pigs</span>
+          <span class="festival-totals__value"><%= number_with_precision(@totals_by_destination["pigs"] || 0, precision: 2) %> kg</span>
+        </div>
+      </div>
+      <div class="festival-totals__section">
+        <div class="festival-totals__section-label">Chanel – Inorganics</div>
+        <% FestivalWasteLog::CHANEL_CATEGORIES.each do |cat| %>
+          <div class="festival-totals__row">
+            <span><%= FestivalWasteLog::CATEGORY_LABELS[cat] %></span>
+            <span class="festival-totals__value"><%= number_with_precision(@totals[cat] || 0, precision: 2) %> kg</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Log entries grouped by day %>
+  <% @logs.group_by(&:day_number).each do |day, entries| %>
+    <div class="festival-day">
+      <h3 class="festival-day__heading"><%= current_festival.day_label(day) %></h3>
+      <table class="festival-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Stream</th>
+            <th>Weight</th>
+            <th>By</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% entries.each do |log| %>
+            <tr>
+              <td><%= log.logged_at.strftime("%H:%M") %></td>
+              <td><%= log.organic? ? log.organic_label : log.category_label %></td>
+              <td><%= number_with_precision(log.weight_kg, precision: 2) %> kg</td>
+              <td class="festival-table__meta"><%= log.festival_participant&.name %></td>
+              <td>
+                <%= button_to "✕", festival_waste_log_path(log), method: :delete,
+                    class: "festival-table__delete",
+                    data: { turbo_confirm: "Remove this entry?" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <% if @logs.empty? %>
+    <p class="festival-index__empty">No entries yet. <%= link_to "Add the first one", new_festival_waste_log_path %>.</p>
+  <% end %>
+</div>

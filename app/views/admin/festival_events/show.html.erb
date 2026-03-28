@@ -1,0 +1,48 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h1><%= @festival_event.name %></h1>
+      <p class="text-muted"><%= @festival_event.start_date.strftime("%-d %b") %> – <%= @festival_event.end_date.strftime("%-d %b %Y") %> &middot; <%= @festival_event.day_count %> day(s)</p>
+    </div>
+    <div>
+      <%= link_to "Edit", edit_admin_festival_event_path(@festival_event), class: "btn btn-outline-secondary me-1" %>
+      <%= link_to "Dashboard", dashboard_admin_festival_event_path(@festival_event), class: "btn btn-outline-secondary me-1" %>
+      <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-outline-success" %>
+    </div>
+  </div>
+
+  <%# Participants %>
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <strong>Participants</strong>
+      <%= link_to "+ Add", new_admin_festival_event_festival_participant_path(@festival_event), class: "btn btn-sm btn-primary" %>
+    </div>
+    <div class="card-body p-0">
+      <% if @festival_event.festival_participants.any? %>
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Name</th><th>PIN</th><th>Entries</th><th></th></tr></thead>
+          <tbody>
+            <% @festival_event.festival_participants.order(:name).each do |p| %>
+              <tr>
+                <td><%= p.name %></td>
+                <td><code><%= p.pin %></code></td>
+                <td><%= p.festival_waste_logs.count %></td>
+                <td>
+                  <%= button_to "Remove", admin_festival_event_festival_participant_path(@festival_event, p),
+                      method: :delete, class: "btn btn-sm btn-link text-danger",
+                      data: { turbo_confirm: "Remove #{p.name}?" } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted p-3 mb-0">No participants yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <p class="text-muted small">
+    Field team login URL: <code><%= new_festival_session_url %></code>
+  </p>
+</div>

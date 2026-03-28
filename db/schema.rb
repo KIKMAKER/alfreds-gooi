@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_24_145118) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_28_121931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -366,6 +366,39 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_24_145118) do
     t.index ["transaction_date"], name: "index_expenses_on_transaction_date"
     t.index ["verified"], name: "index_expenses_on_verified"
     t.index ["verified_by_id"], name: "index_expenses_on_verified_by_id"
+  end
+
+  create_table "festival_events", force: :cascade do |t|
+    t.string "name", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "festival_participants", force: :cascade do |t|
+    t.bigint "festival_event_id", null: false
+    t.string "name", null: false
+    t.string "pin", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["festival_event_id"], name: "index_festival_participants_on_festival_event_id"
+  end
+
+  create_table "festival_waste_logs", force: :cascade do |t|
+    t.bigint "festival_event_id", null: false
+    t.bigint "festival_participant_id"
+    t.integer "day_number", null: false
+    t.datetime "logged_at", null: false
+    t.string "category", null: false
+    t.decimal "weight_kg", precision: 8, scale: 3, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "source"
+    t.integer "destination"
+    t.index ["festival_event_id"], name: "index_festival_waste_logs_on_festival_event_id"
+    t.index ["festival_participant_id"], name: "index_festival_waste_logs_on_festival_participant_id"
   end
 
   create_table "financial_metrics", force: :cascade do |t|
@@ -804,6 +837,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_24_145118) do
   add_foreign_key "expense_imports", "users"
   add_foreign_key "expenses", "expense_imports"
   add_foreign_key "expenses", "users", column: "verified_by_id"
+  add_foreign_key "festival_participants", "festival_events"
+  add_foreign_key "festival_waste_logs", "festival_events"
+  add_foreign_key "festival_waste_logs", "festival_participants"
   add_foreign_key "invoice_discount_codes", "discount_codes"
   add_foreign_key "invoice_discount_codes", "invoices"
   add_foreign_key "invoice_items", "invoices"

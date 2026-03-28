@@ -1,0 +1,87 @@
+<div class="festival-log-form">
+  <div class="festival-log-form__header">
+    <h1 class="festival-log-form__heading">Log waste</h1>
+    <p class="festival-log-form__sub"><%= current_festival.name %> &mdash; logged as <strong><%= current_participant.name %></strong></p>
+  </div>
+
+  <%= form_with url: festival_waste_logs_path, method: :post, class: "festival-form" do |f| %>
+    <div class="festival-form__row">
+      <div class="festival-form__group">
+        <label class="festival-form__label" for="day_number">Day</label>
+        <select name="day_number" id="day_number" class="festival-form__select">
+          <% (1..current_festival.day_count).each do |n| %>
+            <option value="<%= n %>" <%= "selected" if n == @log.day_number %>><%= current_festival.day_label(n) %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="festival-form__group">
+        <label class="festival-form__label" for="logged_at">Time</label>
+        <input type="datetime-local" name="logged_at" id="logged_at" class="festival-form__input"
+               value="<%= @log.logged_at&.strftime('%Y-%m-%dT%H:%M') %>" required>
+      </div>
+    </div>
+
+    <%# ── Gooi: Organics ── %>
+    <div class="festival-form__section-heading">Gooi – Organics</div>
+
+    <div class="festival-form__group festival-form__group--inline">
+      <label class="festival-form__label" for="organic_weight">
+        Weight <span class="festival-form__unit">kg</span>
+      </label>
+      <input type="number" name="organic_weight" id="organic_weight"
+             class="festival-form__input festival-form__input--weight"
+             step="0.001" min="0" inputmode="decimal" placeholder="—">
+    </div>
+
+    <div class="festival-form__flags">
+      <div class="festival-form__flag-group">
+        <div class="festival-form__flag-label">Source</div>
+        <div class="festival-form__flag-options">
+          <label class="festival-form__flag-option">
+            <input type="radio" name="organic_source" value="attendee">
+            <span>Attendee</span>
+          </label>
+          <label class="festival-form__flag-option">
+            <input type="radio" name="organic_source" value="vendor">
+            <span>Vendor</span>
+          </label>
+        </div>
+      </div>
+      <div class="festival-form__flag-group">
+        <div class="festival-form__flag-label">Goes to</div>
+        <div class="festival-form__flag-options">
+          <label class="festival-form__flag-option">
+            <input type="radio" name="organic_destination" value="compost">
+            <span>Compost</span>
+          </label>
+          <label class="festival-form__flag-option">
+            <input type="radio" name="organic_destination" value="pigs">
+            <span>Pigs</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <%# ── Chanel: Inorganics ── %>
+    <div class="festival-form__section-heading">Chanel – Inorganics</div>
+    <% FestivalWasteLog::CHANEL_CATEGORIES.each do |cat| %>
+      <div class="festival-form__group festival-form__group--inline">
+        <label class="festival-form__label" for="weights_<%= cat %>">
+          <%= FestivalWasteLog::CATEGORY_LABELS[cat] %> <span class="festival-form__unit">kg</span>
+        </label>
+        <input type="number" name="weights[<%= cat %>]" id="weights_<%= cat %>"
+               class="festival-form__input festival-form__input--weight"
+               step="0.001" min="0" inputmode="decimal" placeholder="—">
+      </div>
+    <% end %>
+
+    <div class="festival-form__group">
+      <label class="festival-form__label" for="notes">Notes (optional)</label>
+      <textarea name="notes" id="notes" class="festival-form__input festival-form__input--textarea" rows="2"></textarea>
+    </div>
+
+    <button type="submit" class="festival-btn festival-btn--primary">Save entry</button>
+    <%= link_to "View all logs", festival_waste_logs_path, class: "festival-btn festival-btn--secondary" %>
+  <% end %>
+</div>

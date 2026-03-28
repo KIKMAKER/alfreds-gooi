@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Waste Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="festival-body">
+    <div class="festival-header">
+      <span class="festival-header__title">Waste Tracker</span>
+      <% if session[:festival_participant_id].present? %>
+        <%= link_to "Log out", festival_session_path("current"), data: { turbo_method: :delete }, class: "festival-header__logout" %>
+      <% end %>
+    </div>
+
+    <% if notice %>
+      <div class="alert alert-info alert-dismissible fade show m-2" role="alert">
+        <%= notice %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="alert alert-warning alert-dismissible fade show m-2" role="alert">
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
+    <div class="festival-content">
+      <%= yield %>
+    </div>
+  </body>
+</html>

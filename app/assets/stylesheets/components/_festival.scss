@@ -1,0 +1,368 @@
+// Festival Waste Tracker — mobile-first UI
+
+.festival-body {
+  background: #f5f5f0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+// Header bar
+.festival-header {
+  background: #023F3A;
+  color: white;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  &__logout {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+    text-decoration: none;
+
+    &:hover { color: white; }
+  }
+}
+
+.festival-content {
+  padding: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+// Login page
+.festival-login {
+  padding-top: 24px;
+
+  &__heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #023F3A;
+    margin-bottom: 4px;
+  }
+
+  &__sub {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+}
+
+// Shared form styles
+.festival-form {
+  &__group {
+    margin-bottom: 16px;
+
+    &--inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      border: 1px solid #e0e0e0;
+    }
+  }
+
+  &__row {
+    display: flex;
+    gap: 12px;
+
+    .festival-form__group { flex: 1; }
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+
+    .festival-form__group--inline & {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  &__unit {
+    font-weight: 400;
+    color: #888;
+    font-size: 0.8rem;
+  }
+
+  &__input {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1.05rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: white;
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      border-color: #023F3A;
+      box-shadow: 0 0 0 3px rgba(2,63,58,0.12);
+    }
+
+    &--weight {
+      width: 100px;
+      text-align: right;
+      padding: 10px 12px;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    &--textarea {
+      resize: vertical;
+      font-size: 0.95rem;
+      padding: 12px 16px;
+    }
+  }
+
+  &__select {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1.05rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: white;
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      border-color: #023F3A;
+      box-shadow: 0 0 0 3px rgba(2,63,58,0.12);
+    }
+  }
+
+  &__section-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin: 20px 0 8px;
+  }
+}
+
+// Buttons
+.festival-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 10px;
+
+  &--primary {
+    background: #023F3A;
+    color: white;
+
+    &:hover { background: #035249; color: white; }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: #023F3A;
+    border: 1.5px solid #023F3A;
+
+    &:hover { background: #f0f7f6; }
+  }
+}
+
+// Organic flags (source + destination radio pairs)
+.festival-form__flags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.festival-form__flag-group {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.festival-form__flag-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.festival-form__flag-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.festival-form__flag-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #023F3A;
+    flex-shrink: 0;
+  }
+}
+
+// Log entry form page
+.festival-log-form {
+  &__header { margin-bottom: 20px; }
+
+  &__heading {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #023F3A;
+    margin-bottom: 2px;
+  }
+
+  &__sub { color: #666; font-size: 0.9rem; }
+}
+
+// Index page
+.festival-index {
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__heading {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #023F3A;
+    margin-bottom: 2px;
+  }
+
+  &__sub { color: #666; font-size: 0.9rem; margin-bottom: 12px; }
+
+  &__empty { color: #888; text-align: center; margin-top: 40px; }
+}
+
+// Totals panel
+.festival-totals {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid #e0e0e0;
+
+  &__heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 480px) { grid-template-columns: 1fr; }
+  }
+
+  &__section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #023F3A;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__value {
+    font-weight: 600;
+    color: #023F3A;
+  }
+}
+
+// Day sections in index
+.festival-day {
+  margin-bottom: 24px;
+
+  &__heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+  }
+}
+
+// Log table
+.festival-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.88rem;
+  border: 1px solid #e0e0e0;
+
+  th {
+    background: #f8f8f6;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  &__meta { color: #888; font-size: 0.8rem; }
+
+  &__delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+
+    &:hover { color: #c0392b; }
+  }
+}
