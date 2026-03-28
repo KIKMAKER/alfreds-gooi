@@ -16,6 +16,7 @@ class Festival::SessionsController < ActionController::Base
 
     if participant
       session[:festival_participant_id] = participant.id
+      cookies.permanent[:festival_participant_id] = { value: participant.id, httponly: true }
       redirect_to festival_waste_logs_path, notice: "Welcome, #{participant.name}!"
     else
       @festival_events = FestivalEvent.order(start_date: :desc)
@@ -26,6 +27,7 @@ class Festival::SessionsController < ActionController::Base
 
   def destroy
     session.delete(:festival_participant_id)
+    cookies.delete(:festival_participant_id)
     redirect_to new_festival_session_path, notice: "Logged out."
   end
 end

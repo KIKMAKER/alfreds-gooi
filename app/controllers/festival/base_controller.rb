@@ -11,7 +11,7 @@ class Festival::BaseController < ActionController::Base
   private
 
   def require_festival_access!
-    return if session[:festival_participant_id].present?
+    return if festival_participant_id.present?
 
     if admin_in_field?
       redirect_to admin_festival_events_path, alert: "Select a festival to log for."
@@ -24,12 +24,18 @@ class Festival::BaseController < ActionController::Base
     user_signed_in? && current_user.admin?
   end
 
+  # Checks session first (fast), falls back to permanent cookie so PWA restarts
+  # on iOS don't clear the session and force re-login.
+  def festival_participant_id
+    session[:festival_participant_id] || cookies[:festival_participant_id]
+  end
+
   def current_participant
-    @current_participant ||= FestivalParticipant.find_by(id: session[:festival_participant_id])
+    @current_participant ||= FestivalParticipant.find_by(id: festival_participant_id)
   end
 
   def current_festival
-    @current_festival ||= if session[:festival_participant_id].present?
+    @current_festival ||= if festival_participant_id.present?
       current_participant&.festival_event
     elsif session[:festival_event_id].present?
       FestivalEvent.find_by(id: session[:festival_event_id])
