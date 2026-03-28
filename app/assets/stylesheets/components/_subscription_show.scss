@@ -89,7 +89,7 @@
   }
 
   &.paused {
-    background-color: #FBB718;
+    background-color: $dark-yellow;
     color: white;
   }
 
@@ -187,7 +187,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: $dark-green;
-    background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);
+    background: linear-gradient(135deg, $dark-yellow 0%, #f0a500 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -351,7 +351,7 @@
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);
+    background: linear-gradient(135deg, $dark-yellow 0%, #f0a500 100%);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -82,7 +82,7 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #FBB718;
+    color: $dark-yellow;
     white-space: nowrap;
   }
 
@@ -136,7 +136,7 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 1.25rem;
     font-weight: 300;
-    color: #FBB718;
+    color: $dark-yellow;
     flex-shrink: 0;
     transition: transform 0.25s ease, content 0.1s;
     width: 1.25rem;
@@ -162,7 +162,7 @@
 .faq-answer {
   padding: 0 0 1.5rem 0;
   padding-left: 1.25rem;
-  border-left: 3px solid #FBB718;
+  border-left: 3px solid $dark-yellow;
   margin-left: 0.125rem;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
@@ -191,7 +191,7 @@
         content: '—';
         position: absolute;
         left: 0;
-        color: #FBB718;
+        color: $dark-yellow;
         font-size: 0.8rem;
         top: 0.1em;
       }

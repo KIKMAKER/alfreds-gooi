@@ -157,7 +157,7 @@
 }
 
 .yellow-txt {
-  color: #FBB718;
+  color: $dark-yellow;
   font-weight: 700;
 }
 
@@ -400,7 +400,7 @@
     content: '\201C';
     font-family: 'Libre Baskerville', serif;
     font-size: 3.5rem;
-    color: #FBB718;
+    color: $dark-yellow;
     line-height: 1;
     display: block;
     margin-bottom: 0.25rem;
@@ -426,7 +426,7 @@
 }
 
 .testimonial-image {
-  border: solid 3px #FBB718;
+  border: solid 3px $dark-yellow;
   background-color: #e8f4f3;
   width: 56px;
   height: 56px;
@@ -635,7 +635,7 @@ input[type="checkbox"].toggle:checked+label::before {
 }
 
 .popular {
-  border: 2px solid #FBB718;
+  border: 2px solid $dark-yellow;
 }
 
 .month-card {
@@ -669,7 +669,7 @@ input[type="checkbox"].toggle:checked+label::before {
     font-size: 16px;
     color: #fff;
     position: absolute;
-    background-color: #FBB718;
+    background-color: $dark-yellow;
     padding: 8px 16px;
     border-radius: 0px 0px 8px 8px;
     top: 0px;
@@ -749,7 +749,7 @@ input[type="checkbox"].toggle:checked+label::before {
 //   display: none;
 //   justify-content: center;
 //   align-items: center;
-//   color: #FBB718;
+//   color: $dark-yellow;
 //   width: 70px;
 //   height: 70px;
 //   border-radius: 150px;

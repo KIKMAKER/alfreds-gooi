@@ -35,10 +35,6 @@ class FestivalWasteLog < ApplicationRecord
     CATEGORY_LABELS[category] || category.humanize
   end
 
-  def team
-    organic? ? "Gooi" : "Chanel"
-  end
-
   def organic_label
     return nil unless organic?
     src  = source&.humanize      || "N/A"

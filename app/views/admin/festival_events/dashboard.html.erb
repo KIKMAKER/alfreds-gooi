@@ -1,77 +1,77 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h1><%= @festival_event.name %> – Dashboard</h1>
-      <p class="text-muted"><%= @festival_event.start_date.strftime("%-d %b") %> – <%= @festival_event.end_date.strftime("%-d %b %Y") %></p>
-    </div>
-    <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-success me-2" %>
-    <%= button_to "Log waste →", enter_as_logger_admin_festival_event_path(@festival_event),
-          method: :post, class: "btn btn-primary" %>
-  </div>
-
-  <%# Grand total cards %>
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <div class="h2"><%= number_with_precision(@grand_total, precision: 1) %> kg</div>
-          <div class="text-muted">Total waste tracked</div>
-        </div>
+<div class="admin-container">
+  <div class="pt-4 pb-3">
+    <p class="dash-eyebrow">Festival Tracker</p>
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h1><%= @festival_event.name %></h1>
+        <p class="text-muted small"><%= @festival_event.start_date.strftime("%-d %b") %> – <%= @festival_event.end_date.strftime("%-d %b %Y") %></p>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <div class="h2"><%= number_with_precision(@gooi_total, precision: 1) %> kg</div>
-          <div class="text-muted">Organics</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center">
-        <div class="card-body">
-          <div class="h2"><%= number_with_precision(@chanel_total, precision: 1) %> kg</div>
-          <div class="text-muted">Inorganics</div>
-        </div>
+      <div class="fad-action-bar">
+        <%= link_to "← Event", admin_festival_event_path(@festival_event), class: "fad-pill-link" %>
+        <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "fad-pill-link" %>
+        <%= button_to "Log waste →", enter_as_logger_admin_festival_event_path(@festival_event),
+              method: :post, class: "fad-action-btn" %>
       </div>
     </div>
   </div>
 
-  <%# Totals by stream %>
-  <div class="row mb-4">
+  <%# KPI strip %>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Total waste tracked</div>
+        <div class="dash-kpi-value"><%= number_with_precision(@grand_total, precision: 1) %> kg</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Organics</div>
+        <div class="dash-kpi-value"><%= number_with_precision(@gooi_total, precision: 1) %> kg</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Inorganics</div>
+        <div class="dash-kpi-value"><%= number_with_precision(@chanel_total, precision: 1) %> kg</div>
+      </div>
+    </div>
+  </div>
+
+  <%# Stream totals %>
+  <div class="row g-3 mb-4">
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-header"><strong>Organics (all days)</strong></div>
-        <table class="table table-sm mb-0">
+      <div class="dash-category-card">
+        <div class="dash-category-heading">Organics (all days)</div>
+        <table class="fad-table mt-3">
           <tr>
             <td>Total organic</td>
-            <td class="text-end fw-bold"><%= number_with_precision(@totals_by_category[FestivalWasteLog::ORGANIC_CATEGORY] || 0, precision: 2) %> kg</td>
+            <td class="fad-table__val"><%= number_with_precision(@totals_by_category[FestivalWasteLog::ORGANIC_CATEGORY] || 0, precision: 2) %> kg</td>
           </tr>
-          <tr class="table-light"><td colspan="2" class="small text-muted ps-3">By source</td></tr>
+          <tr class="fad-table__subhead"><td colspan="2">By source</td></tr>
           <% FestivalWasteLog.sources.each_key do |src| %>
             <tr>
               <td class="ps-3"><%= src.humanize %></td>
-              <td class="text-end"><%= number_with_precision(@totals_by_source[src] || 0, precision: 2) %> kg</td>
+              <td class="fad-table__val"><%= number_with_precision(@totals_by_source[src] || 0, precision: 2) %> kg</td>
             </tr>
           <% end %>
-          <tr class="table-light"><td colspan="2" class="small text-muted ps-3">By destination</td></tr>
+          <tr class="fad-table__subhead"><td colspan="2">By destination</td></tr>
           <% FestivalWasteLog.destinations.each_key do |dest| %>
             <tr>
               <td class="ps-3"><%= dest.humanize %></td>
-              <td class="text-end"><%= number_with_precision(@totals_by_destination[dest] || 0, precision: 2) %> kg</td>
+              <td class="fad-table__val"><%= number_with_precision(@totals_by_destination[dest] || 0, precision: 2) %> kg</td>
             </tr>
           <% end %>
         </table>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-header"><strong>Inorganics (all days)</strong></div>
-        <table class="table table-sm mb-0">
+      <div class="dash-category-card">
+        <div class="dash-category-heading">Inorganics (all days)</div>
+        <table class="fad-table mt-3">
           <% FestivalWasteLog::CHANEL_CATEGORIES.each do |cat| %>
             <tr>
               <td><%= FestivalWasteLog::CATEGORY_LABELS[cat] %></td>
-              <td class="text-end fw-bold"><%= number_with_precision(@totals_by_category[cat] || 0, precision: 2) %> kg</td>
+              <td class="fad-table__val"><%= number_with_precision(@totals_by_category[cat] || 0, precision: 2) %> kg</td>
             </tr>
           <% end %>
         </table>
@@ -81,49 +81,56 @@
 
   <%# Per-day breakdown %>
   <% (1..@festival_event.day_count).each do |day| %>
-    <div class="card mb-3">
-      <div class="card-header"><strong><%= @festival_event.day_label(day) %></strong></div>
-      <div class="card-body p-0">
-        <table class="table table-sm mb-0">
-          <thead><tr><th>Stream</th><th class="text-end">Weight</th></tr></thead>
-          <tbody>
-            <% FestivalWasteLog::ALL_CATEGORIES.each do |cat| %>
-              <% kg = @totals_by_day_category[[day, cat]] || 0 %>
-              <% next if kg == 0 %>
-              <tr>
-                <td><%= FestivalWasteLog::CATEGORY_LABELS[cat] %></td>
-                <td class="text-end"><%= number_with_precision(kg, precision: 2) %> kg</td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+    <div class="dash-category-card mb-3">
+      <div class="dash-category-heading"><%= @festival_event.day_label(day) %></div>
+      <table class="fad-table mt-3">
+        <thead>
+          <tr><th>Stream</th><th class="fad-table__val">Weight</th></tr>
+        </thead>
+        <tbody>
+          <% FestivalWasteLog::ALL_CATEGORIES.each do |cat| %>
+            <% kg = @totals_by_day_category[[day, cat]] || 0 %>
+            <% next if kg == 0 %>
+            <tr>
+              <td><%= FestivalWasteLog::CATEGORY_LABELS[cat] %></td>
+              <td class="fad-table__val"><%= number_with_precision(kg, precision: 2) %> kg</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   <% end %>
 
   <%# Raw log table %>
-  <div class="card mb-4">
-    <div class="card-header"><strong>All entries</strong></div>
-    <div class="card-body p-0">
-      <% if @logs.any? %>
-        <table class="table table-sm table-hover mb-0">
-          <thead><tr><th>Day</th><th>Time</th><th>Stream</th><th>Weight</th><th>By</th><th>Notes</th></tr></thead>
-          <tbody>
-            <% @logs.each do |log| %>
-              <tr>
-                <td>Day <%= log.day_number %></td>
-                <td><%= log.logged_at.strftime("%H:%M") %></td>
-                <td><%= log.organic? ? log.organic_label : log.category_label %></td>
-                <td><%= number_with_precision(log.weight_kg, precision: 3) %> kg</td>
-                <td><%= log.festival_participant&.name %></td>
-                <td class="text-muted small"><%= log.notes %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p class="text-muted p-3 mb-0">No entries yet.</p>
-      <% end %>
-    </div>
+  <div class="dash-category-card mb-5">
+    <div class="dash-category-heading">All entries</div>
+    <% if @logs.any? %>
+      <table class="fad-table mt-3">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Stream</th>
+            <th class="fad-table__val">Weight</th>
+            <th>By</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @logs.each do |log| %>
+            <tr>
+              <td>Day <%= log.day_number %></td>
+              <td><%= log.logged_at.strftime("%H:%M") %></td>
+              <td><%= log.organic? ? log.organic_label : log.category_label %></td>
+              <td class="fad-table__val"><%= number_with_precision(log.weight_kg, precision: 3) %> kg</td>
+              <td class="fad-table__meta"><%= log.festival_participant&.name %></td>
+              <td class="fad-table__meta"><%= log.notes %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="fad-empty">No entries yet.</p>
+    <% end %>
   </div>
 </div>

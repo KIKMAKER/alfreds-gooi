@@ -1,36 +1,32 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Festival Events</h1>
-    <%= link_to "New Festival", new_admin_festival_event_path, class: "btn btn-primary" %>
+<div class="admin-container">
+  <div class="pt-4 pb-3 d-flex justify-content-between align-items-end">
+    <div>
+      <p class="dash-eyebrow">Festival Tracker</p>
+      <h1>Festival Events</h1>
+    </div>
+    <%= link_to "+ New festival", new_admin_festival_event_path, class: "fad-action-btn" %>
   </div>
 
   <% if @festival_events.any? %>
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Dates</th>
-          <th>Participants</th>
-          <th>Entries</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @festival_events.each do |event| %>
-          <tr>
-            <td><%= link_to event.name, admin_festival_event_path(event) %></td>
-            <td><%= event.start_date.strftime("%-d %b") %> – <%= event.end_date.strftime("%-d %b %Y") %></td>
-            <td><%= event.festival_participants.count %></td>
-            <td><%= event.festival_waste_logs.count %></td>
-            <td class="text-end">
-              <%= link_to "Dashboard", dashboard_admin_festival_event_path(event), class: "btn btn-sm btn-outline-secondary me-1" %>
-              <%= link_to "CSV", export_csv_admin_festival_event_path(event), class: "btn btn-sm btn-outline-success" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <div class="fad-event-list">
+      <% @festival_events.each do |event| %>
+        <div class="fad-event-row">
+          <div class="fad-event-row__main">
+            <%= link_to event.name, admin_festival_event_path(event), class: "fad-event-row__name" %>
+            <span class="fad-event-row__dates">
+              <%= event.start_date.strftime("%-d %b") %> – <%= event.end_date.strftime("%-d %b %Y") %>
+              &middot; <%= event.festival_participants.count %> participants
+              &middot; <%= event.festival_waste_logs.count %> entries
+            </span>
+          </div>
+          <div class="fad-event-row__actions">
+            <%= link_to "Dashboard", dashboard_admin_festival_event_path(event), class: "fad-pill-link" %>
+            <%= link_to "CSV", export_csv_admin_festival_event_path(event), class: "fad-pill-link" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   <% else %>
-    <p class="text-muted">No festivals yet.</p>
+    <p class="fad-empty">No festivals yet.</p>
   <% end %>
 </div>

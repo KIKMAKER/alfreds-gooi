@@ -122,3 +122,196 @@
     font-size: 0.7rem;
   }
 }
+
+// ─── Festival admin pages (fad-) ────────────────────────────────────────────
+
+.fad-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+// Primary action button — matches dash link hover state (filled green)
+.fad-action-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  background: $dark-green;
+  border: 1px solid $dark-green;
+  border-radius: 2rem;
+  padding: 0.35rem 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: darken($dark-green, 8%);
+    color: #fff;
+  }
+}
+
+// Outlined pill link — same shape as fad-action-btn but ghost style
+.fad-pill-link {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: $dark-green;
+  border: 1px solid rgba($dark-green, 0.2);
+  border-radius: 2rem;
+  padding: 0.3rem 0.7rem;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $dark-green;
+    color: #fff;
+    border-color: $dark-green;
+  }
+}
+
+// Inline table used inside dash-category-card panels
+.fad-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+
+  th {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $font-grey;
+    padding: 6px 8px 6px 0;
+    border-bottom: 1px solid rgba($dark-green, 0.1);
+  }
+
+  td {
+    padding: 7px 8px 7px 0;
+    border-bottom: 1px solid rgba($dark-green, 0.06);
+    color: #333;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  &__val {
+    text-align: right;
+    font-weight: 600;
+    color: $dark-green;
+    white-space: nowrap;
+  }
+
+  &__subhead td {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $font-grey;
+    padding-top: 12px;
+  }
+
+  &__meta {
+    color: #888;
+    font-size: 0.82rem;
+  }
+}
+
+// Event list on index page
+.fad-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #fff;
+  border-radius: 1em;
+  border: 1px solid rgba($dark-green, 0.1);
+  overflow: hidden;
+}
+
+.fad-event-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba($dark-green, 0.07);
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba($dark-green, 0.03);
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $dark-green;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__dates {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    color: $font-grey;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+}
+
+// Card header row (title + action side by side)
+.fad-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.fad-code {
+  font-size: 0.82rem;
+  background: rgba($dark-green, 0.06);
+  color: $dark-green;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.fad-danger-link {
+  font-size: 0.8rem;
+  color: #c0392b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: 'Montserrat', sans-serif;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.fad-empty {
+  color: #999;
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}

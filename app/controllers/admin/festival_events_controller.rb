@@ -3,7 +3,7 @@ require "csv"
 class Admin::FestivalEventsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!
-  before_action :set_festival, only: [:show, :edit, :update, :destroy, :dashboard, :export_csv]
+  before_action :set_festival, only: [:show, :edit, :update, :destroy, :dashboard, :export_csv, :enter_as_logger]
 
   def index
     @festival_events = FestivalEvent.order(start_date: :desc)
@@ -81,15 +81,14 @@ class Admin::FestivalEventsController < ApplicationController
     logs = @festival_event.festival_waste_logs.includes(:festival_participant).order(:day_number, :logged_at)
 
     csv_data = CSV.generate(headers: true) do |csv|
-      csv << ["Festival", "Day", "Date/Time", "Logged By", "Team", "Category", "Weight (kg)", "Notes"]
+      csv << ["Festival", "Day", "Date/Time", "Logged By", "Category", "Weight (kg)", "Notes"]
       logs.each do |log|
         csv << [
           @festival_event.name,
           log.day_number,
           log.logged_at.strftime("%Y-%m-%d %H:%M"),
           log.festival_participant&.name,
-          log.team,
-          log.category_label,
+          log.organic? ? log.organic_label : log.category_label,
           log.weight_kg,
           log.notes
         ]

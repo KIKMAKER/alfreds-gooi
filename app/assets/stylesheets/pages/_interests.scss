@@ -24,7 +24,7 @@
   }
 
   &__count {
-    background: #FBB718;
+    background: $dark-yellow;
     color: #fff;
     border-radius: 50%;
     width: 20px;
@@ -44,7 +44,7 @@
 }
 
 .interests-count-badge {
-  background: #FBB718;
+  background: $dark-yellow;
   color: #fff;
   font-size: 0.75rem;
 }
