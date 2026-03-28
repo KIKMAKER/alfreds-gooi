@@ -27,6 +27,9 @@
     </div>
 
     <div class="festival-header">
+      <%= link_to root_path, class: "festival-header__logo-link" do %>
+        <%= image_tag "gooi_logo_CR.svg", class: "festival-header__logo", alt: "Gooi" %>
+      <% end %>
       <span class="festival-header__title">Waste Tracker</span>
       <div class="festival-header__right">
         <span class="festival-badge"
