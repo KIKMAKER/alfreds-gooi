@@ -76,6 +76,7 @@
           <li><a href="/drivers_days">Driver's Days <span class="dash-arrow">→</span></a></li>
           <li><a href="/collections/this_week">Collections this week <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/drop_off_sites">Drop-off Sites <span class="dash-arrow">→</span></a></li>
+          <li><%= link_to route_drivers_days_path(date: Date.today) do %>Today's route <span class="dash-arrow">→</span><% end %></li>
         </ul>
       </div>
     </div>

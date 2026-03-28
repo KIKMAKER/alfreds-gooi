@@ -28,7 +28,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    if resource.drop_off? && resource.drop_off_sites.any?
+    if resource.admin?
+      admin_root_path
+    elsif resource.drop_off? && resource.drop_off_sites.any?
       resource.drop_off_sites.count == 1 ? drop_off_site_manager_path(resource.drop_off_sites.first) : drop_off_site_managers_path
     elsif resource.customer?
       manage_path
