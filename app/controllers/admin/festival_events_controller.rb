@@ -49,23 +49,13 @@ class Admin::FestivalEventsController < ApplicationController
                                          .sum(:weight_kg)
                                          .transform_values { |v| v.to_f.round(3) }
 
-    dest_map = FestivalWasteLog.destinations.invert
-    @totals_by_destination = @festival_event.festival_waste_logs
-                                            .organic
-                                            .group(:destination)
-                                            .sum(:weight_kg)
-                                            .each_with_object({}) do |(k, v), h|
-                                              h[dest_map[k]] = v.to_f.round(3) if k
-                                            end
+    @totals_by_destination = FestivalWasteLog.destinations.keys.index_with do |dest|
+      @festival_event.festival_waste_logs.organic.where(destination: dest).sum(:weight_kg).to_f.round(3)
+    end
 
-    src_map = FestivalWasteLog.sources.invert
-    @totals_by_source = @festival_event.festival_waste_logs
-                                       .organic
-                                       .group(:source)
-                                       .sum(:weight_kg)
-                                       .each_with_object({}) do |(k, v), h|
-                                         h[src_map[k]] = v.to_f.round(3) if k
-                                       end
+    @totals_by_source = FestivalWasteLog.sources.keys.index_with do |src|
+      @festival_event.festival_waste_logs.organic.where(source: src).sum(:weight_kg).to_f.round(3)
+    end
 
     @totals_by_day_category = @festival_event.festival_waste_logs
                                              .group(:day_number, :category)
