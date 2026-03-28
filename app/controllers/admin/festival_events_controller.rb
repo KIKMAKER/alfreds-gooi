@@ -67,6 +67,12 @@ class Admin::FestivalEventsController < ApplicationController
     @chanel_total = @festival_event.festival_waste_logs.inorganic.sum(:weight_kg).to_f.round(3)
   end
 
+  def enter_as_logger
+    session[:festival_event_id] = @festival_event.id
+    session.delete(:festival_participant_id)
+    redirect_to new_festival_waste_log_path, notice: "Logging for #{@festival_event.name}."
+  end
+
   def export_csv
     logs = @festival_event.festival_waste_logs.includes(:festival_participant).order(:day_number, :logged_at)
 

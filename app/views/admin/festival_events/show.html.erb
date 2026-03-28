@@ -7,7 +7,9 @@
     <div>
       <%= link_to "Edit", edit_admin_festival_event_path(@festival_event), class: "btn btn-outline-secondary me-1" %>
       <%= link_to "Dashboard", dashboard_admin_festival_event_path(@festival_event), class: "btn btn-outline-secondary me-1" %>
-      <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-outline-success" %>
+      <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-outline-success me-1" %>
+      <%= button_to "Log waste →", enter_as_logger_admin_festival_event_path(@festival_event),
+            method: :post, class: "btn btn-primary" %>
     </div>
   </div>
 

@@ -78,8 +78,9 @@ Rails.application.routes.draw do
 
     resources :festival_events do
       member do
-        get :dashboard
-        get :export_csv
+        get  :dashboard
+        get  :export_csv
+        post :enter_as_logger
       end
       resources :festival_participants, only: [:new, :create, :destroy]
     end

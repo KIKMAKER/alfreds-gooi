@@ -4,7 +4,9 @@
       <h1><%= @festival_event.name %> – Dashboard</h1>
       <p class="text-muted"><%= @festival_event.start_date.strftime("%-d %b") %> – <%= @festival_event.end_date.strftime("%-d %b %Y") %></p>
     </div>
-    <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-success" %>
+    <%= link_to "Export CSV", export_csv_admin_festival_event_path(@festival_event), class: "btn btn-success me-2" %>
+    <%= button_to "Log waste →", enter_as_logger_admin_festival_event_path(@festival_event),
+          method: :post, class: "btn btn-primary" %>
   </div>
 
   <%# Grand total cards %>

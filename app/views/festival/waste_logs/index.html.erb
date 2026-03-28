@@ -1,7 +1,7 @@
 <div class="festival-index">
   <div class="festival-index__header">
     <h1 class="festival-index__heading"><%= current_festival.name %></h1>
-    <p class="festival-index__sub">Logged as <strong><%= current_participant.name %></strong></p>
+    <p class="festival-index__sub">Logged as <strong><%= current_participant&.name || "Admin" %></strong></p>
     <%= link_to "+ New entry", new_festival_waste_log_path, class: "festival-btn festival-btn--primary" %>
   </div>
 

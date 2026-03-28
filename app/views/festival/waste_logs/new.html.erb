@@ -1,7 +1,7 @@
 <div class="festival-log-form">
   <div class="festival-log-form__header">
     <h1 class="festival-log-form__heading">Log waste</h1>
-    <p class="festival-log-form__sub"><%= current_festival.name %> &mdash; logged as <strong><%= current_participant.name %></strong></p>
+    <p class="festival-log-form__sub"><%= current_festival.name %> &mdash; logged as <strong><%= current_participant&.name || "Admin" %></strong></p>
   </div>
 
   <%= form_with url: festival_waste_logs_path, method: :post, class: "festival-form",

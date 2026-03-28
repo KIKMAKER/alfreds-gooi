@@ -1,6 +1,9 @@
 class Festival::SessionsController < ActionController::Base
   layout "festival"
 
+  include Devise::Controllers::Helpers
+  helper_method :current_user, :user_signed_in?
+
   def new
     @festival_events = FestivalEvent.order(start_date: :desc)
   end
