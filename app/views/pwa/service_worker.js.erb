@@ -1,4 +1,4 @@
-const CACHE = 'festival-v1'
+const CACHE = 'festival-v2'
 
 // Take control of all matching clients immediately on activation,
 // and delete any stale caches from old versions.
@@ -39,17 +39,19 @@ self.addEventListener('fetch', event => {
 
   // Festival pages — try the network first so users always get fresh data when online.
   // On network failure, fall back to the cached version from their last online visit.
+  // Cache and match by URL string (not the full request object) so that Vary: Accept
+  // header differences between Turbo navigations don't cause cache misses.
   if (url.pathname.startsWith('/festival/')) {
     event.respondWith(
       fetch(request)
         .then(response => {
           if (response.ok) {
-            caches.open(CACHE).then(cache => cache.put(request, response.clone()))
+            caches.open(CACHE).then(cache => cache.put(request.url, response.clone()))
           }
           return response
         })
         .catch(() =>
-          caches.match(request).then(cached =>
+          caches.match(request.url).then(cached =>
             cached || new Response(
               '<!DOCTYPE html><html><body style="font-family:sans-serif;padding:2rem">' +
               '<h2>You\'re offline</h2>' +
