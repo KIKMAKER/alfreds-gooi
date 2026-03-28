@@ -111,6 +111,21 @@
       </div>
     </div>
 
+    <%# Festival %>
+    <div class="col-12 col-md-4">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>🎪</span> Festival Tracker</div>
+        <p class="dash-category-desc">Waste logging for events — manage festivals, participants, and reports.</p>
+        <ul class="dash-category-links">
+          <li><%= link_to admin_festival_events_path do %>All festivals <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to new_admin_festival_event_path do %>New festival <span class="dash-arrow">→</span><% end %></li>
+          <% if (upcoming = FestivalEvent.where("end_date >= ?", Date.today).order(:start_date).first) %>
+            <li><%= link_to dashboard_admin_festival_event_path(upcoming) do %><%= upcoming.name %> dashboard <span class="dash-arrow">→</span><% end %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
     <%# Config %>
     <div class="col-12 col-md-4">
       <div class="dash-category-card dash-category-card--accent">
