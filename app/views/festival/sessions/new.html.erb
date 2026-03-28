@@ -1,6 +1,12 @@
 <div class="festival-login">
-  <h1 class="festival-login__heading">Log in</h1>
-  <p class="festival-login__sub">Select your festival and enter your name and PIN.</p>
+  <h1 class="festival-login__heading">Welcome to the Gooi Waste Tracker</h1>
+  <p class="festival-login__intro">
+    This tool is for Gooi's on-the-ground team at live events. We use it to weigh and record waste streams in real time. Your logs feed directly into our impact reporting, so every entry counts.
+  </p>
+  <% if (blurb = FestivalEvent.tracking_blurb) %>
+    <p class="festival-login__blurb"><%= blurb %></p>
+  <% end %>
+  <p class="festival-login__sub">Select your event and enter your name and PIN to get started.</p>
 
   <%= form_with url: festival_sessions_path, method: :post, class: "festival-form" do |f| %>
     <div class="festival-form__group">

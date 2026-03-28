@@ -5,6 +5,17 @@ class FestivalEvent < ApplicationRecord
   validates :name, :start_date, :end_date, presence: true
   validate :end_date_after_start_date
 
+  def self.tracking_blurb
+    today = Date.today
+    if (current = where("start_date <= ? AND end_date >= ?", today, today).order(:start_date).first)
+      "We are currently tracking for #{current.name}."
+    elsif (upcoming = where("start_date > ?", today).order(:start_date).first)
+      "We'll soon start tracking for #{upcoming.name}."
+    elsif (recent = order(end_date: :desc).first)
+      "We recently tracked for #{recent.name}."
+    end
+  end
+
   def day_count
     (end_date - start_date).to_i + 1
   end

@@ -65,6 +65,24 @@
     margin-bottom: 4px;
   }
 
+  &__intro {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  &__blurb {
+    display: inline-block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: $dark-green;
+    background: rgba(2, 63, 58, 0.07);
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin-bottom: 16px;
+  }
+
   &__sub {
     color: #666;
     font-size: 0.9rem;

@@ -139,12 +139,19 @@
   }
 }
 
-// Mobile drawer
+// Mobile drawer — absolute so it floats over the page instead of pushing it down
 .new-nav-drawer {
   display: none;
   flex-direction: column;
-  padding: 0.5rem 5% 1.25rem;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
   border-top: 1px solid #e8efee;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 0.5rem 5% 1.25rem;
+  z-index: 999;
 
   &.open {
     display: flex;

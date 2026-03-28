@@ -9,6 +9,7 @@
       <%= link_to 'About', about_path, class: "link-title" %>
       <%= link_to 'FAQ', faq_path, class: "link-title" %>
       <%= link_to 'Blog', posts_path, class: "link-title" %>
+      <%= link_to 'RFF', new_festival_session_path, class: "link-title" %>
 
       <% if user_signed_in? %>
         <%= link_to "Log out", destroy_user_session_path,
@@ -30,6 +31,7 @@
     <%= link_to 'About', about_path, class: "new-nav-drawer-link" %>
     <%= link_to 'FAQ', faq_path, class: "new-nav-drawer-link" %>
     <%= link_to 'Blog', posts_path, class: "new-nav-drawer-link" %>
+    <%= link_to 'RFF', new_festival_session_path, class: "new-nav-drawer-link" %>
     <div class="new-nav-drawer-divider"></div>
     <% if user_signed_in? %>
       <%= link_to "Log out", destroy_user_session_path,
