@@ -33,22 +33,45 @@ export default class extends Controller {
   }
 
   // Wired to the form via: data-action="submit->festival-offline#interceptSubmit"
-  interceptSubmit(event) {
-    if (navigator.onLine) return  // Online: let Turbo handle the submit normally
+  //
+  // Always intercepts and attempts the POST ourselves. navigator.onLine is
+  // unreliable on iOS Safari — it stays true for a while after disconnecting.
+  // The only reliable signal is whether the actual fetch throws a network error.
+  async interceptSubmit(event) {
+    event.preventDefault()
 
-    event.preventDefault()       // Stop Turbo from sending the request
+    const form = event.target
+    const body = new URLSearchParams(new FormData(form))
 
-    this.enqueue(event.target)
-    this.updateStatus()
-    this.showStatus("Saved — will sync automatically when signal returns.")
-    event.target.reset()
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body
+      })
 
-    // Restore the datetime field to now so the next entry is pre-filled sensibly
-    const timeField = event.target.querySelector("[name='logged_at']")
-    if (timeField) {
-      const now = new Date()
-      now.setSeconds(0, 0)
-      timeField.value = now.toISOString().slice(0, 16)
+      // Rails redirects to the index on success — follow the redirect destination
+      if (response.redirected || response.ok) {
+        window.location.href = response.url
+        return
+      }
+
+      // Server returned an error (validation etc.) — reload to show it
+      window.location.href = response.url || form.action
+
+    } catch {
+      // Network error — we're offline. Save to queue and give visual feedback.
+      this.enqueue(form)
+      this.updateStatus()
+      this.showStatus("Saved — will sync automatically when signal returns.")
+      form.reset()
+
+      const timeField = form.querySelector("[name='logged_at']")
+      if (timeField) {
+        const now = new Date()
+        now.setSeconds(0, 0)
+        timeField.value = now.toISOString().slice(0, 16)
+      }
     }
   }
 
