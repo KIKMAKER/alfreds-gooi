@@ -22,9 +22,6 @@ class FestivalWasteLog < ApplicationRecord
   validates :day_number, :logged_at, :category, :weight_kg, presence: true
   validates :category, inclusion: { in: ALL_CATEGORIES }
   validates :weight_kg, numericality: { greater_than: 0 }
-  validates :source, :destination, presence: true, if: :organic?
-  validates :source, absence: true, unless: :organic?
-  validates :destination, absence: true, unless: :organic?
 
   scope :organic, -> { where(category: ORGANIC_CATEGORY) }
   scope :inorganic, -> { where(category: CHANEL_CATEGORIES) }
@@ -44,6 +41,8 @@ class FestivalWasteLog < ApplicationRecord
 
   def organic_label
     return nil unless organic?
-    "#{source.humanize} → #{destination.humanize}"
+    src  = source&.humanize      || "N/A"
+    dest = destination&.humanize || "N/A"
+    "#{src} → #{dest}"
   end
 end

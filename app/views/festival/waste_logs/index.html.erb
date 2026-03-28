@@ -10,7 +10,7 @@
     <h2 class="festival-totals__heading">Totals (all days)</h2>
     <div class="festival-totals__grid">
       <div class="festival-totals__section">
-        <div class="festival-totals__section-label">Gooi – Organics</div>
+        <div class="festival-totals__section-label">Organics</div>
         <div class="festival-totals__row">
           <span>Total organic</span>
           <span class="festival-totals__value"><%= number_with_precision(@totals[FestivalWasteLog::ORGANIC_CATEGORY] || 0, precision: 2) %> kg</span>
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="festival-totals__section">
-        <div class="festival-totals__section-label">Chanel – Inorganics</div>
+        <div class="festival-totals__section-label">Inorganics</div>
         <% FestivalWasteLog::CHANEL_CATEGORIES.each do |cat| %>
           <div class="festival-totals__row">
             <span><%= FestivalWasteLog::CATEGORY_LABELS[cat] %></span>

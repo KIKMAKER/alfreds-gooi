@@ -9,12 +9,14 @@ class Festival::WasteLogsController < Festival::BaseController
                               .sum(:weight_kg)
                               .transform_values { |v| v.to_f.round(3) }
 
+    dest_map = FestivalWasteLog.destinations.invert
     @totals_by_destination = current_festival.festival_waste_logs
                                              .organic
                                              .group(:destination)
                                              .sum(:weight_kg)
-                                             .transform_keys { |k| FestivalWasteLog.destinations.key(k) }
-                                             .transform_values { |v| v.to_f.round(3) }
+                                             .each_with_object({}) do |(k, v), h|
+                                               h[dest_map[k]] = v.to_f.round(3) if k
+                                             end
   end
 
   def new

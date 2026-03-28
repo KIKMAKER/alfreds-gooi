@@ -21,7 +21,7 @@
       <div class="card text-center">
         <div class="card-body">
           <div class="h2"><%= number_with_precision(@gooi_total, precision: 1) %> kg</div>
-          <div class="text-muted">Gooi – Organics</div>
+          <div class="text-muted">Organics</div>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <div class="card text-center">
         <div class="card-body">
           <div class="h2"><%= number_with_precision(@chanel_total, precision: 1) %> kg</div>
-          <div class="text-muted">Chanel – Inorganics</div>
+          <div class="text-muted">Inorganics</div>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
   <div class="row mb-4">
     <div class="col-md-6">
       <div class="card">
-        <div class="card-header"><strong>Gooi – Organics (all days)</strong></div>
+        <div class="card-header"><strong>Organics (all days)</strong></div>
         <table class="table table-sm mb-0">
           <tr>
             <td>Total organic</td>
@@ -64,7 +64,7 @@
     </div>
     <div class="col-md-6">
       <div class="card">
-        <div class="card-header"><strong>Chanel – Inorganics (all days)</strong></div>
+        <div class="card-header"><strong>Inorganics (all days)</strong></div>
         <table class="table table-sm mb-0">
           <% FestivalWasteLog::CHANEL_CATEGORIES.each do |cat| %>
             <tr>
