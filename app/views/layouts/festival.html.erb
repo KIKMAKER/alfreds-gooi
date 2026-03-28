@@ -4,17 +4,41 @@
     <title>Waste Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker', { scope: '/festival/' })
+      }
+    </script>
   </head>
-  <body class="festival-body">
+
+  <body class="festival-body" data-controller="festival-offline">
+
+    <%# Offline banner — shown automatically when navigator.onLine is false %>
+    <div class="festival-offline-bar"
+         data-festival-offline-target="offlineBar"
+         hidden>
+      You're offline — entries will sync when signal returns.
+    </div>
+
     <div class="festival-header">
       <span class="festival-header__title">Waste Tracker</span>
-      <% if session[:festival_participant_id].present? %>
-        <%= link_to "Log out", festival_session_path("current"), data: { turbo_method: :delete }, class: "festival-header__logout" %>
-      <% end %>
+      <div class="festival-header__right">
+        <span class="festival-badge"
+              data-festival-offline-target="badge"
+              hidden></span>
+        <% if session[:festival_participant_id].present? %>
+          <%= link_to "Log out",
+                festival_session_path("current"),
+                data: { turbo_method: :delete },
+                class: "festival-header__logout" %>
+        <% end %>
+      </div>
     </div>
 
     <% if notice %>
@@ -33,5 +57,6 @@
     <div class="festival-content">
       <%= yield %>
     </div>
+
   </body>
 </html>

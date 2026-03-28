@@ -1,4 +1,8 @@
 class Festival::WasteLogsController < Festival::BaseController
+  # CSRF is skipped here because offline-queued submissions are replayed by the
+  # browser's Stimulus controller and cannot carry a fresh server-issued token.
+  # The PIN session already authenticates the request.
+  skip_before_action :verify_authenticity_token, only: [:create]
   def index
     @logs = current_festival.festival_waste_logs
                             .includes(:festival_participant)
