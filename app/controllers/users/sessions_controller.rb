@@ -40,14 +40,16 @@ class Users::SessionsController < Devise::SessionsController
   protected
 
   def after_sign_in_path_for(resource)
-    # PRIORITY 1: Check if user was trying to access a specific path
+    # PRIORITY 1: Admin always lands on the dashboard
+    return admin_root_path if resource.admin?
+
+    # PRIORITY 2: Check if user was trying to access a specific path
     stored = stored_location_for(resource)
     if stored.present? && safe_redirect_path?(stored)
       return stored
     end
 
-    # PRIORITY 2: Role-based default redirects (if no stored location)
-    return this_week_collections_path if resource.admin?
+    # PRIORITY 3: Role-based default redirects (if no stored location)
 
     if resource.driver?
       today = Time.zone.today
