@@ -24,15 +24,20 @@
       color: #525560;
 
       a {
-        color: #023F3A;
+        color: $dark-green;
         text-decoration: none;
-        &:hover { text-decoration: underline; }
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
-      &.active { color: #525560; }
+      &.active {
+        color: #525560;
+      }
     }
 
-    .breadcrumb-item + .breadcrumb-item::before {
+    .breadcrumb-item+.breadcrumb-item::before {
       color: #aaa;
     }
   }
@@ -40,7 +45,7 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     font-size: clamp(2rem, 5vw, 3rem);
-    color: #023F3A;
+    color: $dark-green;
     margin-bottom: 0.5rem;
     line-height: 1.2;
   }
@@ -111,14 +116,19 @@
   font-family: 'Libre Baskerville', serif;
   font-size: 1.05rem;
   font-weight: 400;
-  color: #023F3A;
+  color: $dark-green;
   line-height: 1.45;
   gap: 1rem;
   transition: color 0.2s ease;
 
   // Hide default marker
-  &::-webkit-details-marker { display: none; }
-  &::marker { display: none; }
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::marker {
+    display: none;
+  }
 
   // The + / − indicator
   &::after {
@@ -139,8 +149,8 @@
   }
 }
 
-.faq-item[open] > summary {
-  color: #023F3A;
+.faq-item[open]>summary {
+  color: $dark-green;
   font-weight: 700;
 
   &::after {
@@ -159,8 +169,13 @@
   color: #525560;
   line-height: 1.8;
 
-  p { margin-bottom: 0.75rem; }
-  p:last-child { margin-bottom: 0; }
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 
   ul {
     margin: 0.5rem 0 0.75rem 1rem;
@@ -184,15 +199,18 @@
   }
 
   strong {
-    color: #023F3A;
+    color: $dark-green;
     font-weight: 600;
   }
 
   a {
-    color: #023F3A;
+    color: $dark-green;
     text-decoration: underline;
     text-underline-offset: 3px;
-    &:hover { color: #108A63; }
+
+    &:hover {
+      color: #108A63;
+    }
   }
 }
 

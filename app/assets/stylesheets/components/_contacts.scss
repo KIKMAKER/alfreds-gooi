@@ -6,7 +6,7 @@
     font-family: 'Libre Baskerville', serif;
     font-weight: 700;
     font-size: 24px;
-    color: #023F3A;
+    color: $dark-green;
   }
 }
 
@@ -76,7 +76,7 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 1rem;
-  color: #023F3A;
+  color: $dark-green;
   margin: 0 0 0.25rem 0;
   white-space: nowrap;
   overflow: hidden;
@@ -93,7 +93,7 @@
   font-family: 'Montserrat', sans-serif;
 
   &.primary-badge {
-    background-color: #023F3A;
+    background-color: $dark-green;
     color: white;
   }
 }
@@ -111,10 +111,10 @@
   font-size: 0.9rem;
   color: #525560;
 
-  > i {
+  >i {
     width: 20px;
     flex-shrink: 0;
-    color: #023F3A;
+    color: $dark-green;
     font-size: 1rem;
 
     &.fa-whatsapp {

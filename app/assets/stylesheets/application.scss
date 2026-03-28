@@ -15,8 +15,11 @@
 
 // Global link colour — never browser blue
 a {
-  color: #023F3A;
-  &:hover { color: #108A63; }
+  color: $dark-green;
+
+  &:hover {
+    color: #108A63;
+  }
 }
 
 .link-decoration {
@@ -31,14 +34,14 @@ h1 {
   font-family: 'Libre Baskerville', serif;
   font-weight: 700;
   font-size: 2rem;
-  color: #023F3A;
+  color: $dark-green;
 }
 
 h3 {
   font-family: 'Libre Baskerville', serif;
   font-weight: 700;
   font-size: 24px;
-  color: #023F3A;
+  color: $dark-green;
 }
 
 ul {

@@ -18,7 +18,7 @@
 
 // Header bar
 .festival-header {
-  background: #023F3A;
+  background: $dark-green;
   color: white;
   padding: 14px 16px;
   display: flex;
@@ -38,11 +38,13 @@
   }
 
   &__logout {
-    color: rgba(255,255,255,0.75);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 0.85rem;
     text-decoration: none;
 
-    &:hover { color: white; }
+    &:hover {
+      color: white;
+    }
   }
 }
 
@@ -59,7 +61,7 @@
   &__heading {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #023F3A;
+    color: $dark-green;
     margin-bottom: 4px;
   }
 
@@ -111,7 +113,9 @@
     display: flex;
     gap: 12px;
 
-    .festival-form__group { flex: 1; }
+    .festival-form__group {
+      flex: 1;
+    }
   }
 
   &__label {
@@ -145,8 +149,8 @@
 
     &:focus {
       outline: none;
-      border-color: #023F3A;
-      box-shadow: 0 0 0 3px rgba(2,63,58,0.12);
+      border-color: $dark-green;
+      box-shadow: 0 0 0 3px rgba(2, 63, 58, 0.12);
     }
 
     &--weight {
@@ -176,8 +180,8 @@
 
     &:focus {
       outline: none;
-      border-color: #023F3A;
-      box-shadow: 0 0 0 3px rgba(2,63,58,0.12);
+      border-color: $dark-green;
+      box-shadow: 0 0 0 3px rgba(2, 63, 58, 0.12);
     }
   }
 
@@ -206,18 +210,23 @@
   margin-bottom: 10px;
 
   &--primary {
-    background: #023F3A;
+    background: $dark-green;
     color: white;
 
-    &:hover { background: #035249; color: white; }
+    &:hover {
+      background: #035249;
+      color: white;
+    }
   }
 
   &--secondary {
     background: transparent;
-    color: #023F3A;
-    border: 1.5px solid #023F3A;
+    color: $dark-green;
+    border: 1.5px solid $dark-green;
 
-    &:hover { background: #f0f7f6; }
+    &:hover {
+      background: #f0f7f6;
+    }
   }
 }
 
@@ -262,23 +271,28 @@
   input[type="radio"] {
     width: 20px;
     height: 20px;
-    accent-color: #023F3A;
+    accent-color: $dark-green;
     flex-shrink: 0;
   }
 }
 
 // Log entry form page
 .festival-log-form {
-  &__header { margin-bottom: 20px; }
+  &__header {
+    margin-bottom: 20px;
+  }
 
   &__heading {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #023F3A;
+    color: $dark-green;
     margin-bottom: 2px;
   }
 
-  &__sub { color: #666; font-size: 0.9rem; }
+  &__sub {
+    color: #666;
+    font-size: 0.9rem;
+  }
 }
 
 // Index page
@@ -290,13 +304,21 @@
   &__heading {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #023F3A;
+    color: $dark-green;
     margin-bottom: 2px;
   }
 
-  &__sub { color: #666; font-size: 0.9rem; margin-bottom: 12px; }
+  &__sub {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
 
-  &__empty { color: #888; text-align: center; margin-top: 40px; }
+  &__empty {
+    color: #888;
+    text-align: center;
+    margin-top: 40px;
+  }
 }
 
 // Totals panel
@@ -321,14 +343,16 @@
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 
-    @media (max-width: 480px) { grid-template-columns: 1fr; }
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__section-label {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #023F3A;
+    color: $dark-green;
     margin-bottom: 8px;
     letter-spacing: 0.05em;
   }
@@ -340,12 +364,14 @@
     padding: 4px 0;
     border-bottom: 1px solid #f0f0f0;
 
-    &:last-child { border-bottom: none; }
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__value {
     font-weight: 600;
-    color: #023F3A;
+    color: $dark-green;
   }
 }
 
@@ -387,9 +413,14 @@
     border-bottom: 1px solid #f0f0f0;
   }
 
-  tr:last-child td { border-bottom: none; }
+  tr:last-child td {
+    border-bottom: none;
+  }
 
-  &__meta { color: #888; font-size: 0.8rem; }
+  &__meta {
+    color: #888;
+    font-size: 0.8rem;
+  }
 
   &__delete {
     background: none;
@@ -399,6 +430,8 @@
     padding: 4px 8px;
     font-size: 0.85rem;
 
-    &:hover { color: #c0392b; }
+    &:hover {
+      color: #c0392b;
+    }
   }
 }

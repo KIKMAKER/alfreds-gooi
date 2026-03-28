@@ -15,10 +15,13 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #023F3A;
+  color: $dark-green;
   text-decoration: none;
 
-  &:hover { background: #e8f4f2; color: #023F3A; }
+  &:hover {
+    background: #e8f4f2;
+    color: $dark-green;
+  }
 
   &__count {
     background: #FBB718;
@@ -37,7 +40,7 @@
 .interests-suburb-heading {
   font-size: 1rem;
   margin: 0;
-  color: #023F3A;
+  color: $dark-green;
 }
 
 .interests-count-badge {
@@ -50,15 +53,29 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 0.875rem;
 
-  thead { background: #f5faf9; }
+  thead {
+    background: #f5faf9;
+  }
 
-  th { color: #525560; font-weight: 600; }
+  th {
+    color: #525560;
+    font-weight: 600;
+  }
 
-  &__name { color: #023F3A; font-weight: 500; }
+  &__name {
+    color: $dark-green;
+    font-weight: 500;
+  }
 
-  &__note { color: #525560; max-width: 260px; }
+  &__note {
+    color: #525560;
+    max-width: 260px;
+  }
 
-  &__date { color: #525560; white-space: nowrap; }
+  &__date {
+    color: #525560;
+    white-space: nowrap;
+  }
 
   &__actions {
     white-space: nowrap;
@@ -113,7 +130,7 @@
   &__body {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.9375rem;
-    color: #023F3A;
+    color: $dark-green;
     line-height: 1.65;
     margin: 0 0 1.25rem;
   }
@@ -137,6 +154,8 @@
       color: #fff;
     }
 
-    i { font-size: 1.1rem; }
+    i {
+      font-size: 1.1rem;
+    }
   }
 }

@@ -18,6 +18,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+
   h1 {
     color: white;
     margin-bottom: 1rem;
@@ -34,7 +35,7 @@
   min-width: 0;
   overflow: hidden;
 
-  > div {
+  >div {
     min-width: 0;
     overflow: hidden;
   }
@@ -79,7 +80,7 @@
 
   &.active {
     background-color: #84cba3;
-    color: #023F3A;
+    color: $dark-green;
   }
 
   &.completed {
@@ -134,7 +135,7 @@
   border-bottom: 1px solid #e0e0e0;
 
   i {
-    color: #023F3A;
+    color: $dark-green;
     font-size: 1.25rem;
   }
 
@@ -143,7 +144,7 @@
     font-size: 1rem;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    color: #023F3A;
+    color: $dark-green;
   }
 }
 
@@ -170,7 +171,7 @@
 
   .info-value {
     font-weight: 600;
-    color: #023F3A;
+    color: $dark-green;
     text-align: right;
   }
 }
@@ -185,7 +186,7 @@
     font-family: 'Courier New', monospace;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #023F3A;
+    color: $dark-green;
     background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -201,7 +202,7 @@
     font-family: 'Libre Baskerville', serif;
     font-weight: 700;
     font-size: 24px;
-    color: #023F3A;
+    color: $dark-green;
   }
 }
 
@@ -250,7 +251,7 @@
 .stat-value {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #023F3A;
+  color: $dark-green;
   font-family: 'Montserrat', sans-serif;
   line-height: 1;
 }
@@ -270,7 +271,7 @@
     font-family: 'Libre Baskerville', serif;
     font-weight: 700;
     font-size: 24px;
-    color: #023F3A;
+    color: $dark-green;
   }
 }
 
@@ -281,7 +282,7 @@
   box-shadow: rgba(100, 100, 111, 0.15) 0px 4px 16px 0px;
 
   h5 {
-    color: #023F3A;
+    color: $dark-green;
     font-weight: 600;
 
     i {
@@ -317,7 +318,7 @@
   .value {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #023F3A;
+    color: $dark-green;
     font-family: 'Montserrat', sans-serif;
   }
 }
@@ -368,7 +369,7 @@
 
   .invoice-number {
     font-weight: 600;
-    color: #023F3A;
+    color: $dark-green;
     font-size: 1rem;
   }
 
@@ -384,7 +385,7 @@
     font-family: 'Montserrat', sans-serif;
   }
 
-  > i {
+  >i {
     color: #ccc;
     font-size: 1rem;
   }
@@ -401,8 +402,8 @@
 
 .action-btn {
   background: white;
-  border: 2px solid #023F3A;
-  color: #023F3A;
+  border: 2px solid $dark-green;
+  color: $dark-green;
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
   font-weight: 600;
@@ -414,7 +415,7 @@
   font-family: 'Montserrat', sans-serif;
 
   &:hover {
-    background: #023F3A;
+    background: $dark-green;
     color: white;
     transform: translateY(-2px);
     box-shadow: rgba(2, 63, 58, 0.3) 0px 4px 16px 0px;
