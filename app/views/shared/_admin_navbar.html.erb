@@ -1,9 +1,9 @@
 <div class="navbar-container admin-navbar">
   <div class="inner-container">
     <%= link_to root_path do %>
-      <%= image_tag('gooi_logo_CR.png', class: 'gooi-logo') %>
+      <%= image_tag('gooi_logo_CR.svg', class: 'gooi-logo') %>
     <% end %>
-    <div class="links-container">
+    <div class="links-container" style="margin-left: auto;">
       <%= link_to 'Dashboard', admin_root_path, class: "link-title" %>
 
       <% if user_signed_in? %>
@@ -19,7 +19,6 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
         <li><%= link_to 'Dashboard', admin_root_path, class: "dropdown-item" %></li>
-        <li><%= link_to 'Festival Tracker', admin_festival_events_path, class: "dropdown-item" %></li>
 
         <li><hr class="dropdown-divider"></li>
 
