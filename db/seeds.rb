@@ -257,11 +257,84 @@ elsif proceed == "dropoffs"
 
   seed_drop_off_sites_with_users(drop_off_sites_data)
 
-  puts "\n✓ #{DropOffSite.count} drop-off sites have been seeded to the DB."
-  puts "✓ #{User.where(role: 'drop_off').count} drop-off manager users created."
-  puts "\nLogin credentials (all passwords: 'password'):"
-  User.where(role: 'drop_off').each do |user|
-    puts "  - #{user.email}"
+  ## SEED DROP-OFF EVENTS + BUCKETS
+  puts "\nSeeding drop-off events and buckets..."
+
+  # Find or create Alfred the driver (reuse prod account if present)
+  alfred = User.find_or_create_by!(email: "driver@gooi.com") do |u|
+    u.first_name   = "Alfred"
+    u.last_name    = "Mbonjwa"
+    u.password     = "password"
+    u.role         = "driver"
+    u.phone_number = "+27785325513"
+  end
+
+  # Which weekday each site collects on
+  site_wday = {
+    "Neighbourhood Farm" => 2,  # Tuesday
+    "Soil For Life"      => 3,  # Wednesday
+    "Streetscapes Farm"  => 4   # Thursday
+  }
+
+  drop_off_sites_data.each do |site_data|
+    site = DropOffSite.find_by!(name: site_data[:name])
+    target_wday = site_wday[site.name]
+    next unless target_wday
+
+    # Collect the 5 most recent past dates for this weekday
+    past_dates = []
+    d = Date.today - 1
+    while past_dates.size < 5
+      past_dates << d if d.wday == target_wday
+      d -= 1
+    end
+
+    past_dates.each do |event_date|
+      # One DriversDay per (driver, date) — shared across sites on the same day
+      dd = DriversDay.find_or_create_by!(user: alfred, date: event_date) do |day|
+        day.start_time = event_date.to_time + 8.hours
+        day.end_time   = event_date.to_time + 14.hours
+        day.start_kms  = rand(50_000..60_000)
+        day.end_kms    = rand(60_001..61_500)
+      end
+
+      next if DropOffEvent.exists?(drop_off_site: site, date: event_date)
+
+      bucket_count    = rand(3..6)
+      total_weight_kg = rand(12.0..32.0).round(1)
+      per_bucket_kg   = (total_weight_kg / bucket_count).round(2)
+
+      event = DropOffEvent.create!(
+        drop_off_site:   site,
+        drivers_day:     dd,
+        date:            event_date,
+        is_done:         true,
+        weight_kg:       total_weight_kg,
+        buckets_dropped: bucket_count
+      )
+
+      bucket_count.times do
+        Bucket.create!(
+          drivers_day:    dd,
+          drop_off_event: event,
+          weight_kg:      per_bucket_kg,
+          bucket_size:    [25, 25, 45].sample
+        )
+      end
+
+      puts "  ✓ #{site.name} #{event_date}: #{bucket_count} buckets, #{total_weight_kg} kg"
+    end
+
+    site.recalc_totals!
+  end
+
+  puts "\n✓ #{DropOffSite.count} drop-off sites seeded."
+  puts "✓ #{DropOffEvent.count} drop-off events created."
+  puts "✓ #{Bucket.where.not(drop_off_event_id: nil).count} buckets attached to events."
+  puts "\nLog in to test drop-off site manager views (password: 'password'):"
+  drop_off_sites_data.each do |s|
+    site = DropOffSite.find_by!(name: s[:name])
+    puts "  - #{s[:email]}  →  #{site.name} (#{site.collection_day}s, #{site.total_dropoffs_count} events, #{site.total_weight_kg.round(1)} kg)"
   end
 
 elsif proceed == "y"
