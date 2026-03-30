@@ -25,7 +25,7 @@ class DropOffSiteManagersController < ApplicationController
   private
 
   def set_drop_off_site
-    @drop_off_site = current_user.drop_off_sites.find(params[:id])
+    @drop_off_site = current_user.drop_off_sites.find_by!(slug: params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to drop_off_site_managers_path, alert: "Site not found."
   end
