@@ -19,4 +19,19 @@
   <p><%= simple_format(@inquiry.additional_notes) %></p>
 <% end %>
 
+<%
+  notes_prefill = "#{@inquiry.estimated_buckets} x 45L buckets, #{@inquiry.collection_frequency}, #{@inquiry.preferred_duration}-month contract."
+  notes_prefill += " #{@inquiry.additional_notes}" if @inquiry.additional_notes.present?
+  quote_url = new_admin_quotation_url(quotation: {
+    prospect_name:    "#{@user.first_name} #{@user.last_name}",
+    prospect_email:   @user.email,
+    prospect_phone:   @user.phone_number,
+    prospect_company: @inquiry.business_name,
+    duration_months:  @inquiry.preferred_duration,
+    notes:            notes_prefill
+  })
+%>
+
 <p><a href="mailto:<%= @user.email %>">Reply to <%= @user.first_name %></a></p>
+<p><a href="<%= quote_url %>">→ Create Quotation for <%= @inquiry.business_name %></a></p>
+<p><a href="<%= admin_commercial_inquiry_url(@inquiry) %>">→ View inquiry in admin</a></p>

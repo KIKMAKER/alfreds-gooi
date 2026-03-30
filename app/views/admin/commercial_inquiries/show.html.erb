@@ -1,0 +1,91 @@
+<% status_colors = { "pending" => "#b45309", "contacted" => "#1d4ed8", "converted" => "#108A63", "declined" => "#6b7280" } %>
+<%
+  notes_prefill = "#{@inquiry.estimated_buckets} x 45L buckets, #{@inquiry.collection_frequency}, #{@inquiry.preferred_duration}-month contract."
+  notes_prefill += " #{@inquiry.additional_notes}" if @inquiry.additional_notes.present?
+  quote_url = new_admin_quotation_url(quotation: {
+    prospect_name:    "#{@inquiry.user.first_name} #{@inquiry.user.last_name}",
+    prospect_email:   @inquiry.user.email,
+    prospect_phone:   @inquiry.user.phone_number,
+    prospect_company: @inquiry.business_name,
+    duration_months:  @inquiry.preferred_duration,
+    notes:            notes_prefill
+  })
+%>
+
+<div class="admin-container">
+  <%= link_to "← All inquiries", admin_commercial_inquiries_path, class: "fad-pill-link d-inline-block mb-3" %>
+
+  <div class="pt-2 pb-3">
+    <p class="dash-eyebrow">Commercial Inquiry</p>
+    <h1><%= @inquiry.business_name %></h1>
+    <p class="text-muted">
+      Received <%= @inquiry.created_at.strftime("%-d %b %Y") %>
+      &middot; <span style="color: <%= status_colors[@inquiry.status] %>; font-weight: 600;"><%= @inquiry.status.capitalize %></span>
+    </p>
+  </div>
+
+  <div class="dash-category-card mb-4">
+    <div class="fad-card-header mb-3">
+      <span class="dash-category-heading">Inquiry Details</span>
+      <div class="fad-action-bar">
+        <%= link_to "Create Quotation →", quote_url, class: "fad-action-btn" %>
+        <%= link_to "Reply by email", "mailto:#{@inquiry.user.email}", class: "fad-pill-link" %>
+      </div>
+    </div>
+
+    <table class="fad-table">
+      <tr>
+        <td class="fad-table__meta">Contact</td>
+        <td><%= @inquiry.user.first_name %> <%= @inquiry.user.last_name %></td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Email</td>
+        <td><%= mail_to @inquiry.user.email %></td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Phone</td>
+        <td><%= @inquiry.user.phone_number %></td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Business address</td>
+        <td><%= @inquiry.business_address %></td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Buckets per collection</td>
+        <td><%= @inquiry.estimated_buckets %> x 45L</td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Collection frequency</td>
+        <td><%= @inquiry.collection_frequency %></td>
+      </tr>
+      <tr>
+        <td class="fad-table__meta">Preferred duration</td>
+        <td><%= @inquiry.preferred_duration %> months</td>
+      </tr>
+      <% if @inquiry.additional_notes.present? %>
+        <tr>
+          <td class="fad-table__meta">Notes</td>
+          <td><%= @inquiry.additional_notes %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <div class="dash-category-card">
+    <div class="dash-category-heading mb-3">Update Status</div>
+    <div class="fad-action-bar">
+      <% unless @inquiry.contacted? %>
+        <%= button_to "Mark Contacted", admin_commercial_inquiry_path(@inquiry, status: :contacted),
+              method: :patch, class: "fad-pill-link" %>
+      <% end %>
+      <% unless @inquiry.converted? %>
+        <%= button_to "Mark Converted", admin_commercial_inquiry_path(@inquiry, status: :converted),
+              method: :patch, class: "fad-pill-link" %>
+      <% end %>
+      <% unless @inquiry.declined? %>
+        <%= button_to "Mark Declined", admin_commercial_inquiry_path(@inquiry, status: :declined),
+              method: :patch, class: "fad-danger-link" %>
+      <% end %>
+    </div>
+  </div>
+</div>

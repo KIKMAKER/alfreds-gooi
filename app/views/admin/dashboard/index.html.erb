@@ -46,6 +46,12 @@
         <div class="dash-kpi-value"><%= @pending_referrals %></div>
       </a>
     </div>
+    <div class="col-6 col-md">
+      <%= link_to admin_commercial_inquiries_path, class: "dash-kpi-card" do %>
+        <div class="dash-kpi-label">Pending inquiries</div>
+        <div class="dash-kpi-value"><%= @pending_inquiries %></div>
+      <% end %>
+    </div>
   </div>
 
   <%# ─── Category Cards ─────────────────────────────────────────── %>
@@ -108,6 +114,7 @@
           <li><a href="/testimonials">Testimonials <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/analytics">Analytics <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/referrals">Referrals <span class="dash-arrow">→</span></a></li>
+          <li><%= link_to admin_commercial_inquiries_path do %>Commercial Inquiries <span class="dash-arrow">→</span><% end %></li>
         </ul>
       </div>
     </div>

@@ -8,12 +8,13 @@ class Admin::QuotationsController < ApplicationController
   end
 
   def new
-    @quotation = Quotation.new
+    @quotation = Quotation.new(quotation_prefill_params)
     @quotation.created_date = Date.today
-    @quotation.expires_at = Date.today + 30.days
+    @quotation.expires_at   = Date.today + 30.days
+    @quotation.duration_months ||= 6
     @quotation.quotation_items.build
     @products = Product.all.order(:title)
-    @users = User.where(role: :customer).order(:first_name, :last_name)
+    @users    = User.where(role: :customer).order(:first_name, :last_name)
   end
 
   def create
@@ -78,6 +79,14 @@ class Admin::QuotationsController < ApplicationController
 
   def set_quotation
     @quotation = Quotation.find(params[:id])
+  end
+
+  def quotation_prefill_params
+    return {} unless params[:quotation].present?
+    params.require(:quotation).permit(
+      :prospect_name, :prospect_email, :prospect_phone,
+      :prospect_company, :duration_months, :notes
+    )
   end
 
   def quotation_params

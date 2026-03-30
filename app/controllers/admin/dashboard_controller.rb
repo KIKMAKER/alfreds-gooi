@@ -17,6 +17,7 @@ class Admin::DashboardController < ApplicationController
     @collections_this_week = Collection.where(date: Date.today.all_week).count
     @draft_quotes          = Quotation.where(status: :draft).count
     @pending_referrals     = Referral.where(status: :pending).count
+    @pending_inquiries     = CommercialInquiry.where(status: :pending).count
 
     hour = Time.now.hour
     @greeting = if hour < 12 then "Good morning"

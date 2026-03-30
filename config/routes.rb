@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: 'dashboard#index'
     resources :interests, only: [:index, :show, :edit, :update, :destroy]
+    resources :commercial_inquiries, only: [:index, :show, :update]
     resources :referrals, only: [:index]
     resources :bulk_messages, only: [:index]
     resources :logistics, only: :index do
