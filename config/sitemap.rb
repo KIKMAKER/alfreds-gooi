@@ -10,7 +10,4 @@ SitemapGenerator::Sitemap.create do
     add post_path(post), lastmod: post.updated_at, changefreq: "monthly", priority: 0.6
   end
 
-  Farm.all.each do |farm|
-    add farm_path(farm), changefreq: "monthly", priority: 0.5
-  end
 end
