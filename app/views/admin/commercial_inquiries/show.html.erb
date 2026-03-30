@@ -25,12 +25,10 @@
   </div>
 
   <div class="dash-category-card mb-4">
-    <div class="fad-card-header mb-3">
-      <span class="dash-category-heading">Inquiry Details</span>
-      <div class="fad-action-bar">
-        <%= link_to "Create Quotation →", quote_url, class: "fad-action-btn" %>
-        <%= link_to "Reply by email", "mailto:#{@inquiry.user.email}", class: "fad-pill-link" %>
-      </div>
+    <div class="dash-category-heading mb-3">Inquiry Details</div>
+    <div class="fad-action-bar mb-4">
+      <%= link_to "Create Quotation →", quote_url, class: "fad-action-btn" %>
+      <%= link_to "Reply by email", "mailto:#{@inquiry.user.email}", class: "fad-pill-link" %>
     </div>
 
     <table class="fad-table">
