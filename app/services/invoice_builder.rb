@@ -145,15 +145,14 @@ class InvoiceBuilder
     collections_per_week = subscription.collections_per_week || 1
 
     if subscription.monthly_invoicing?
-      # Monthly volume: charge per collection visit, not amortised over contract
-      collections_per_month = (52.0 / 12.0 * collections_per_week).round
-      volume_per_visit = subscription.buckets_per_collection * volume_product.price
-      monthly_volume_amount = volume_per_visit * collections_per_month
+      # Monthly volume = (buckets × total-contract-cost-per-bucket) / duration
+      # e.g. 3 buckets × R540 (6-month total per bucket) / 6 months = R270/month
+      monthly_volume = (subscription.buckets_per_collection * volume_product.price) / subscription.duration
 
       if @is_new
         # Only set contract_total at inception so recurring invoices don't overwrite it
         monthly_starter = subscription.starter_kit_installment.to_f
-        contract_total = (monthly_product.price + monthly_volume_amount + monthly_starter) * subscription.duration
+        contract_total = (monthly_product.price + monthly_volume + monthly_starter) * subscription.duration
         subscription.update!(
           contract_total: contract_total,
           next_invoice_date: Date.today + 4.weeks
@@ -168,8 +167,8 @@ class InvoiceBuilder
 
       invoice.invoice_items.create!(
         product: volume_product,
-        quantity: collections_per_month,
-        amount: volume_per_visit
+        quantity: 1,
+        amount: monthly_volume
       )
     else
       # Upfront contract billing: invoice full duration in one go
