@@ -17,7 +17,7 @@ class Festival::SessionsController < ActionController::Base
     if participant
       session[:festival_participant_id] = participant.id
       cookies.permanent[:festival_participant_id] = { value: participant.id, httponly: true }
-      redirect_to festival_waste_logs_path, notice: "Welcome, #{participant.name}!"
+      redirect_to new_festival_waste_log_path, notice: "Welcome, #{participant.name}!"
     else
       @festival_events = FestivalEvent.order(start_date: :desc)
       flash.now[:alert] = "Name or PIN not recognised. Try again."
