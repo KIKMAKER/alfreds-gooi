@@ -40,7 +40,7 @@
                 <% if c.bags&.positive? %>
                   <% parts << "#{c.bags} bag#{c.bags == 1 ? '' : 's'}" %>
                 <% end %>
-                <%= parts.any? ? parts.join(", ") : "Collected" %>
+                <%= parts.any? ? parts.join(", ") : "Upcoming" %>
               <% end %>
             </span>
           </div>
