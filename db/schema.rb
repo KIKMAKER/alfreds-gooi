@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_28_164643) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_31_115726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -467,6 +467,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_28_164643) do
     t.integer "legacy_subscription_id"
     t.boolean "used_discount_code"
     t.bigint "order_id"
+    t.boolean "admin_approved", default: false, null: false
     t.index ["order_id"], name: "index_invoices_on_order_id"
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
   end
@@ -758,6 +759,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_28_164643) do
     t.integer "volume_processing_product_id"
     t.string "title"
     t.date "payment_reminder_sent_at"
+    t.decimal "monthly_volume_amount", precision: 10, scale: 2
+    t.decimal "monthly_subscription_amount", precision: 10, scale: 2
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 

@@ -1,0 +1,56 @@
+<div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #1f2937; margin-bottom: 4px;">Monthly Invoice Ready for Approval</h2>
+  <p style="color: #6b7280; margin-top: 0 0 24px;">Review the line items below, then approve to send to the customer.</p>
+
+  <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <p style="margin: 0 0 8px; font-size: 15px;">
+      <strong>Customer:</strong> <%= @user&.first_name %> <%= @user&.last_name %> (<%= @user&.email %>)
+    </p>
+    <p style="margin: 0 0 8px; font-size: 15px;">
+      <strong>Subscription:</strong> <%= @subscription.plan %> &mdash; <%= @subscription.duration %>-month contract
+    </p>
+    <p style="margin: 0; font-size: 15px;">
+      <strong>Installment:</strong> <%= @installment_number %> of <%= @subscription.duration %>
+    </p>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+    <thead>
+      <tr style="background: #e5e7eb;">
+        <th style="text-align: left; padding: 10px 12px; font-size: 13px; color: #374151;">Item</th>
+        <th style="text-align: right; padding: 10px 12px; font-size: 13px; color: #374151;">Qty</th>
+        <th style="text-align: right; padding: 10px 12px; font-size: 13px; color: #374151;">Unit</th>
+        <th style="text-align: right; padding: 10px 12px; font-size: 13px; color: #374151;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @invoice.invoice_items.each do |item| %>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 10px 12px; font-size: 14px;"><%= item.product&.title %></td>
+          <td style="padding: 10px 12px; font-size: 14px; text-align: right;"><%= item.quantity %></td>
+          <td style="padding: 10px 12px; font-size: 14px; text-align: right;">R<%= number_with_precision(item.amount.to_f, precision: 2) %></td>
+          <td style="padding: 10px 12px; font-size: 14px; text-align: right;">R<%= number_with_precision((item.amount.to_f * item.quantity.to_f), precision: 2) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr style="background: #f0fdf4;">
+        <td colspan="3" style="padding: 12px; font-size: 15px; font-weight: 700; text-align: right; color: #108A63;">Total</td>
+        <td style="padding: 12px; font-size: 15px; font-weight: 700; text-align: right; color: #108A63;">
+          R<%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div style="text-align: center; margin-bottom: 16px;">
+    <a href="<%= @approve_url %>"
+       style="display: inline-block; padding: 14px 32px; background: #108A63; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+      Approve &amp; Send to Customer
+    </a>
+  </div>
+
+  <p style="text-align: center; font-size: 13px; color: #6b7280; margin: 0;">
+    Invoice #<%= @invoice.number || @invoice.id %> &middot; Due <%= @invoice.due_date&.strftime('%-d %b %Y') %>
+  </p>
+</div>

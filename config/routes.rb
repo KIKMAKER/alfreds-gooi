@@ -13,6 +13,11 @@ Rails.application.routes.draw do
     root to: 'dashboard#index'
     resources :interests, only: [:index, :show, :edit, :update, :destroy]
     resources :commercial_inquiries, only: [:index, :show, :update]
+    resources :invoices, only: [] do
+      member do
+        get :approve
+      end
+    end
     resources :referrals, only: [:index]
     resources :bulk_messages, only: [:index]
     resources :logistics, only: :index do

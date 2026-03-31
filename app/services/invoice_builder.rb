@@ -17,7 +17,8 @@ class InvoiceBuilder
       subscription: @subscription, # Link to first subscription for now
       issued_date: Time.current,
       due_date: Time.current + 2.weeks,
-      total_amount: 0
+      total_amount: 0,
+      admin_approved: true # Upfront invoices email immediately; monthly invoices skip this
     )
 
     if @subscription&.once_off?
@@ -100,6 +101,8 @@ class InvoiceBuilder
   def add_subscription_product(invoice, subscription)
     if subscription.Commercial?
       add_commercial_subscription(invoice, subscription)
+    elsif subscription.monthly_invoicing?
+      add_monthly_subscription(invoice, subscription)
     else
       title = if @og
                 "#{subscription.plan} #{subscription.duration} month OG subscription"
@@ -115,6 +118,30 @@ class InvoiceBuilder
 
       invoice.invoice_items.create!(product: product, quantity: 1, amount: product.price)
     end
+  end
+
+  def add_monthly_subscription(invoice, subscription)
+    title = "#{subscription.plan} #{subscription.duration} month subscription"
+    product = Product.find_by(title: title)
+    raise "Product not found: #{title}" unless product
+
+    monthly_amount = product.price.to_f / subscription.duration
+
+    if @is_new
+      monthly_starter = subscription.starter_kit_installment.to_f
+      subscription.update!(
+        subscription_product_id: product.id,
+        monthly_subscription_amount: monthly_amount,
+        next_invoice_date: Date.today + 4.weeks,
+        contract_total: (monthly_amount + monthly_starter) * subscription.duration
+      )
+    end
+
+    invoice.invoice_items.create!(
+      product: product,
+      quantity: 1,
+      amount: subscription.monthly_subscription_amount || monthly_amount
+    )
   end
 
   def add_commercial_subscription(invoice, subscription)
@@ -150,12 +177,14 @@ class InvoiceBuilder
       monthly_volume = (subscription.buckets_per_collection * volume_product.price) / subscription.duration
 
       if @is_new
-        # Only set contract_total at inception so recurring invoices don't overwrite it
+        # Only set contract_total and lock in monthly amounts at inception
         monthly_starter = subscription.starter_kit_installment.to_f
         contract_total = (monthly_product.price + monthly_volume + monthly_starter) * subscription.duration
         subscription.update!(
           contract_total: contract_total,
-          next_invoice_date: Date.today + 4.weeks
+          next_invoice_date: Date.today + 4.weeks,
+          monthly_volume_amount: monthly_volume,
+          monthly_subscription_amount: monthly_product.price
         )
       end
 

@@ -1,0 +1,20 @@
+ACTION REQUIRED: Approve Monthly Invoice
+=========================================
+
+Customer: <%= @user&.first_name %> <%= @user&.last_name %> (<%= @user&.email %>)
+Subscription: <%= @subscription.plan %> — <%= @subscription.duration %>-month contract
+Installment: <%= @installment_number %> of <%= @subscription.duration %>
+
+Line Items
+----------
+<% @invoice.invoice_items.each do |item| %>
+  <%= item.product&.title %> x<%= item.quantity %> — R<%= number_with_precision((item.amount.to_f * item.quantity.to_f), precision: 2) %>
+<% end %>
+
+TOTAL: R<%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
+Due: <%= @invoice.due_date&.strftime('%-d %b %Y') %>
+
+Approve & send to customer:
+<%= @approve_url %>
+
+This invoice will NOT be sent until you click the link above.

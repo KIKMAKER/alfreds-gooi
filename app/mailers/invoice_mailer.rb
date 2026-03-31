@@ -21,17 +21,19 @@ class InvoiceMailer < ApplicationMailer
     )
   end
 
-  # Sends an admin alert for monthly invoices
+  # Sends an admin approval request for monthly invoices.
+  # Admin must click "Approve & Send" before the customer receives the invoice.
   # Expects: params[:invoice], params[:installment_number]
-  def invoice_created_alert
+  def invoice_pending_approval
     @invoice            = params[:invoice]
     @subscription       = @invoice.subscription
     @user               = @subscription&.user
     @installment_number = params[:installment_number]
+    @approve_url        = approve_admin_invoice_url(@invoice)
 
     mail(
       to: "howzit@gooi.me",
-      subject: "Monthly Invoice Generated: #{@user&.first_name} - Installment #{@installment_number}",
+      subject: "Action required: Approve invoice for #{@user&.first_name} — Installment #{@installment_number} (R#{number_with_precision(@invoice.total_amount.to_f, precision: 2)})",
       track_opens: 'true',
       message_stream: 'outbound'
     )

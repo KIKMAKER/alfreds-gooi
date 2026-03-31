@@ -28,10 +28,19 @@
             <span class="info-value" style="<%= c.skip ? 'color: #aaa; font-weight: 400;' : '' %>">
               <% if c.skip %>
                 Skipped
-              <% elsif c.subscription.XL? %>
-                <%= c.buckets %> bucket<%= c.buckets == 1 ? '' : 's' %>
               <% else %>
-                <%= c.bags %> bag<%= c.bags == 1 ? '' : 's' %>
+                <% parts = [] %>
+                <% if c.buckets_45l.to_i > 0 || c.buckets_25l.to_i > 0 %>
+                  <% parts << "#{c.buckets_45l} × 45L" if c.buckets_45l.to_i > 0 %>
+                  <% parts << "#{c.buckets_25l} × 25L" if c.buckets_25l.to_i > 0 %>
+                <% elsif c.buckets&.positive? %>
+                  <% size = c.subscription&.bucket_size || 45 %>
+                  <% parts << "#{c.buckets.to_i} × #{size}L" %>
+                <% end %>
+                <% if c.bags&.positive? %>
+                  <% parts << "#{c.bags} bag#{c.bags == 1 ? '' : 's'}" %>
+                <% end %>
+                <%= parts.any? ? parts.join(", ") : "Collected" %>
               <% end %>
             </span>
           </div>

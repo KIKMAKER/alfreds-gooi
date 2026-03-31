@@ -28,115 +28,111 @@ class MonthlyInvoiceService
   end
 
   def generate_monthly_invoice
-    # Calculate which month this is (1st, 2nd, 3rd, etc.)
-    installment_number = calculate_installment_number
-
-    # Get the bucket configuration
-    bucket_size = @subscription.bucket_size || 45
-    buckets_per_collection = @subscription.buckets_per_collection
-    collections_per_week = @subscription.collections_per_week || 1
-
-    # Check if user already has an unpaid invoice from this invoicing cycle
-    # This allows combining multiple subscriptions into one invoice
     invoice = find_or_create_invoice
 
-    # Add monthly collection fee
-    # Try to use stored product_id first (preferred for consistency)
-    monthly_product = if @subscription.monthly_collection_product_id
-                        Product.find_by(id: @subscription.monthly_collection_product_id)
-                      end
-
-    # Fallback to title lookup if product_id not stored or product was deleted
-    unless monthly_product
-      monthly_title = case @subscription.duration
-                      when 12 then "Commercial collection fee (12-month)"
-                      when 6  then "Commercial collection fee (6-month)"
-                      when 3  then "Commercial collection fee (3-month)"
-                      else raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
-                      end
-
-      monthly_product = Product.find_by(title: monthly_title)
-      raise "Product not found: #{monthly_title}" unless monthly_product
-
-      @subscription.update_column(:monthly_collection_product_id, monthly_product.id)
+    if @subscription.Commercial?
+      add_commercial_items(invoice)
+    else
+      add_standard_xl_items(invoice)
     end
+
+    add_starter_kit_installment(invoice)
+    invoice.calculate_total
+
+    # Advance next_invoice_date immediately so the job won't re-trigger tomorrow
+    @subscription.update!(next_invoice_date: @subscription.next_invoice_date + 4.weeks)
+
+    # Send admin preview — customer email is withheld until admin approves
+    notify_or_send_preview(invoice)
+
+    invoice
+  end
+
+  def add_commercial_items(invoice)
+    monthly_product = find_monthly_collection_product
+    raise "monthly_subscription_amount not set on subscription #{@subscription.id} — backfill required" unless @subscription.monthly_subscription_amount
+    raise "monthly_volume_amount not set on subscription #{@subscription.id} — backfill required" unless @subscription.monthly_volume_amount
 
     invoice.invoice_items.create!(
       product: monthly_product,
       quantity: 1,
-      amount: monthly_product.price
+      amount: @subscription.monthly_subscription_amount
     )
 
-    # Add volume processing charge
-    # Try to use stored product_id first (preferred for consistency)
-    volume_product = if @subscription.volume_processing_product_id
-                       Product.find_by(id: @subscription.volume_processing_product_id)
-                     end
-
-    # Fallback to title lookup if product_id not stored or product was deleted
-    unless volume_product
-      volume_title = "Commercial volume per #{bucket_size}L bucket"
-
-      volume_product = Product.find_by(title: volume_title)
-      raise "Product not found: #{volume_title}" unless volume_product
-
-      @subscription.update_column(:volume_processing_product_id, volume_product.id)
-    end
-
-    # Monthly volume = (buckets × total-contract-cost-per-bucket) / duration
-    # e.g. 3 buckets × R540 (6-month total) / 6 months = R270/month
-    monthly_volume = (buckets_per_collection * volume_product.price) / @subscription.duration
-
+    volume_product = find_volume_product
     invoice.invoice_items.create!(
       product: volume_product,
       quantity: 1,
-      amount: monthly_volume
+      amount: @subscription.monthly_volume_amount
     )
+  end
 
-    # Add starter kit installment if applicable
-    add_starter_kit_installment(invoice)
+  def add_standard_xl_items(invoice)
+    raise "monthly_subscription_amount not set on subscription #{@subscription.id} — backfill required" unless @subscription.monthly_subscription_amount
 
-    # Calculate and save total
-    invoice.calculate_total
-
-    # Update subscription's next invoice date (add ~4 weeks)
-    @subscription.update!(
-      next_invoice_date: @subscription.next_invoice_date + 4.weeks
+    product = Product.find(@subscription.subscription_product_id)
+    invoice.invoice_items.create!(
+      product: product,
+      quantity: 1,
+      amount: @subscription.monthly_subscription_amount
     )
+  end
 
-    # Check if there are any OTHER subscriptions for this user that still need invoicing today
+  def find_monthly_collection_product
+    product = Product.find_by(id: @subscription.monthly_collection_product_id)
+    unless product
+      title = case @subscription.duration
+              when 12 then "Commercial collection fee (12-month)"
+              when 6  then "Commercial collection fee (6-month)"
+              when 3  then "Commercial collection fee (3-month)"
+              else raise "Unsupported duration for Commercial subscription: #{@subscription.duration}"
+              end
+      product = Product.find_by(title: title)
+      raise "Product not found: #{title}" unless product
+      @subscription.update_column(:monthly_collection_product_id, product.id)
+    end
+    product
+  end
+
+  def find_volume_product
+    product = Product.find_by(id: @subscription.volume_processing_product_id)
+    unless product
+      bucket_size = @subscription.bucket_size || 45
+      title = "Commercial volume per #{bucket_size}L bucket"
+      product = Product.find_by(title: title)
+      raise "Product not found: #{title}" unless product
+      @subscription.update_column(:volume_processing_product_id, product.id)
+    end
+    product
+  end
+
+  def notify_or_send_preview(invoice)
     user = @subscription.user
-    other_subs_needing_invoice = user.subscriptions
-                                     .where(monthly_invoicing: true, status: :active)
-                                     .where.not(id: @subscription.id)
-                                     .where('next_invoice_date <= ?', Date.today)
-                                     .count
 
-    if other_subs_needing_invoice > 0
-      # Don't send email yet, other subscriptions still need to add their items
-      Rails.logger.info "Added subscription #{@subscription.id} to invoice ##{invoice.id}, but #{other_subs_needing_invoice} other subscription(s) still need processing"
+    # Check if this user has other subscriptions that still need to add their items today.
+    # next_invoice_date has already been advanced 4 weeks, so compare against yesterday.
+    other_subs_pending = user.subscriptions
+                             .where(monthly_invoicing: true, status: :active)
+                             .where.not(id: @subscription.id)
+                             .where('next_invoice_date <= ?', Date.today)
+                             .count
+
+    if other_subs_pending > 0
+      Rails.logger.info "Waiting for #{other_subs_pending} other subscription(s) before sending preview for invoice ##{invoice.id}"
     else
-      # This is the last subscription to be processed, send the email now
-      Rails.logger.info "All subscriptions processed for invoice ##{invoice.id}, sending email"
-
-      # Send invoice email to customer
-      InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
-
-      # Send admin notification
+      Rails.logger.info "All subscriptions processed for invoice ##{invoice.id}, sending admin preview"
       InvoiceMailer.with(
         invoice: invoice,
-        installment_number: installment_number
-      ).invoice_created_alert.deliver_now
+        installment_number: calculate_installment_number
+      ).invoice_pending_approval.deliver_now
     end
-
-    invoice
   end
 
   def find_or_create_invoice
     user = @subscription.user
 
-    # Look for an unpaid invoice for this user created in the last 24 hours
-    # This allows multiple subscriptions to be combined into one invoice
+    # Look for an unpaid invoice for this user created today.
+    # This allows multiple subscriptions to be combined into one invoice.
     existing_invoice = Invoice.joins(:subscription)
                               .where(subscriptions: { user_id: user.id })
                               .where(paid: false)
@@ -145,32 +141,33 @@ class MonthlyInvoiceService
                               .first
 
     if existing_invoice
-      Rails.logger.info "Found existing unpaid invoice ##{existing_invoice.id} for user #{user.id}, adding subscription #{@subscription.id} to it"
+      Rails.logger.info "Found existing invoice ##{existing_invoice.id} for user #{user.id}, adding subscription #{@subscription.id} to it"
       existing_invoice
     else
-      # Create new invoice
       Invoice.create!(
         subscription: @subscription,
         issued_date: Time.current,
         due_date: Time.current + 2.weeks,
         total_amount: 0
+        # admin_approved defaults to false — held until admin approves
       )
     end
   end
 
   def calculate_installment_number
     return 1 unless @subscription.invoices.any?
-
-    # Count how many invoices have been created so far
     @subscription.invoices.count + 1
   end
 
   def add_starter_kit_installment(invoice)
     return unless @subscription.starter_kit_installment.present?
 
-    # Find the starter kit product to link to
     bucket_size = @subscription.bucket_size || 45
-    kit_title = "Commercial Starter Bucket (#{bucket_size}L)"
+    kit_title = if @subscription.Commercial?
+                  "Commercial Starter Bucket (#{bucket_size}L)"
+                else
+                  "#{@subscription.plan} Starter Kit"
+                end
 
     kit = Product.find_by(title: kit_title)
     return unless kit
