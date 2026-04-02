@@ -10,32 +10,24 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    super
-    # do |resource|
-    #   stored_location = session[:user_return_to] # Get stored location
-    #   raise
-
-    #   if stored_location
-    #     session.delete(:user_return_to) # Clear after using
-    #     return redirect_to stored_location
-    #   end
-    #   if resource.customer?
-    #     return redirect_to manage_path
-    #   elsif resource.driver?
-    #     # CreateCollectionsJob.perform_now
-    #     return redirect_to vamos_drivers_day_path(resource.drivers_day.last)
-    #   elsif resource.admin?
-    #     return redirect_to this_week_collections_path
-    #   else
-    #     return redirect_to root_path
-    #   end
-    # end
+    super do |resource|
+      # Set a permanent signed cookie so the session can be restored after
+      # a PWA restart on iOS (Safari clears session cookies on app close).
+      if resource.persisted?
+        cookies.permanent.signed[:gooi_user_id] = {
+          value:    resource.id,
+          httponly: true,
+          secure:   Rails.env.production?
+        }
+      end
+    end
   end
 
   # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
+  def destroy
+    cookies.delete(:gooi_user_id)
+    super
+  end
 
   protected
 

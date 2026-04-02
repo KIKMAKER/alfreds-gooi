@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :restore_session_from_cookie
   before_action :authenticate_user!
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -17,6 +18,21 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # Restore Devise session from permanent cookie after a PWA restart.
+  # iOS Safari clears session cookies when a standalone PWA is closed.
+  # The signed cookie set on login survives the restart and lets us silently
+  # sign the user back in without a re-login prompt.
+  def restore_session_from_cookie
+    return if current_user
+
+    user_id = cookies.signed[:gooi_user_id]
+    return unless user_id
+
+    user = User.find_by(id: user_id)
+    sign_in(user, store: true) if user
+  end
+
   # Store the original location before Devise intercepts
   def store_user_location!
     session[:user_return_to] = request.fullpath
