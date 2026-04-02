@@ -6,6 +6,7 @@ class MonthlyInvoiceService
 
   def call
     return unless @subscription.monthly_invoicing?
+    return if @subscription.satellite?  # Satellites never generate invoices
     return unless invoice_due?
 
     generate_monthly_invoice
@@ -13,7 +14,7 @@ class MonthlyInvoiceService
 
   # Class method to process all subscriptions that need invoicing
   def self.process_all
-    Subscription.where(monthly_invoicing: true, status: :active)
+    Subscription.where(monthly_invoicing: true, status: :active, primary_subscription_id: nil)
                 .where('next_invoice_date <= ?', Date.today)
                 .find_each do |subscription|
       new(subscription).call

@@ -52,6 +52,24 @@
             <span class="info-label">Collection Day</span>
             <span class="info-value"><%= @subscription.collection_day %></span>
           </div>
+          <% if @subscription.satellite? %>
+            <div class="info-row">
+              <span class="info-label">Billing</span>
+              <span class="info-value">
+                Satellite of
+                <%= link_to "##{@subscription.primary_subscription_id}", admin_subscription_path(@subscription.primary_subscription), class: "fad-pill-link" %>
+              </span>
+            </div>
+          <% elsif @subscription.satellite_subscriptions.any? %>
+            <div class="info-row">
+              <span class="info-label">Satellite subs</span>
+              <span class="info-value">
+                <% @subscription.satellite_subscriptions.each do |sat| %>
+                  <%= link_to "#{sat.collection_day} (##{sat.id})", admin_subscription_path(sat), class: "fad-pill-link" %>
+                <% end %>
+              </span>
+            </div>
+          <% end %>
           <div class="info-row">
             <span class="info-label">Start Date</span>
             <span class="info-value"><%= @subscription.start_date&.strftime('%d %b, %Y') || "Pending payment" %></span>

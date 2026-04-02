@@ -77,6 +77,16 @@
               <%= f.label :is_new_customer, "New customer (include starter kit)", class: "form-check-label" %>
             </div>
           </div>
+
+          <div class="col-12">
+            <hr class="my-2">
+            <p class="form-label mb-1">Satellite subscription (optional)</p>
+            <p class="text-muted small mb-2">If this subscription exists only to generate collections on a second day for the same commercial customer, link it to the billing subscription below. Satellites never generate invoices.</p>
+            <%= f.select :primary_subscription_id,
+                         @user.subscriptions.active.map { |s| ["#{s.collection_day} – #{s.plan} ##{s.id}", s.id] },
+                         { prompt: "Not a satellite (standard billing)" },
+                         class: "form-select" %>
+          </div>
         </div>
 
         <p class="text-muted small mb-4">

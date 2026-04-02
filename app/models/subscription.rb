@@ -9,6 +9,15 @@ class Subscription < ApplicationRecord
   has_many :contacts, dependent: :destroy
   accepts_nested_attributes_for :contacts, allow_destroy: true, reject_if: :all_blank
 
+  # Satellite subscriptions exist only to generate collections on a second collection day.
+  # All billing flows through the primary. Satellites are never invoiced independently.
+  belongs_to :primary_subscription, class_name: "Subscription", optional: true
+  has_many :satellite_subscriptions, class_name: "Subscription", foreign_key: :primary_subscription_id, dependent: :nullify
+
+  def satellite?
+    primary_subscription_id.present?
+  end
+
   before_create do
     self.set_customer_id unless self.customer_id
     # self.set_suburb
