@@ -65,7 +65,8 @@ class Admin::SubscriptionsController < ApplicationController
     params.require(:subscription).permit(
       :plan, :duration, :start_date, :street_address, :suburb,
       :apartment_unit_number, :discount_code, :referral_code, :is_new_customer,
-      :primary_subscription_id
+      :primary_subscription_id,
+      :buckets_per_collection, :bucket_size, :collections_per_week
     )
   end
 

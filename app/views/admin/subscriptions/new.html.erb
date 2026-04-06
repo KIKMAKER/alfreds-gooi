@@ -41,6 +41,21 @@
             <%= f.date_field :start_date, class: "form-control", data: { controller: "datepicker" } %>
           </div>
 
+          <div class="col-12 row g-3" data-subscription-plan-target="commercialField" style="display:none">
+            <div class="col-md-4">
+              <%= f.label :buckets_per_collection, "Buckets per collection", class: "form-label" %>
+              <%= f.number_field :buckets_per_collection, class: "form-control", min: 1, max: 20, placeholder: "e.g. 4" %>
+            </div>
+            <div class="col-md-4">
+              <%= f.label :bucket_size, "Bucket size (L)", class: "form-label" %>
+              <%= f.select :bucket_size, [[25, 25], [45, 45]], { prompt: "Select size" }, class: "form-select" %>
+            </div>
+            <div class="col-md-4">
+              <%= f.label :collections_per_week, "Collections per week", class: "form-label" %>
+              <%= f.select :collections_per_week, [[1, 1], [2, 2], [3, 3]], { selected: 1 }, class: "form-select" %>
+            </div>
+          </div>
+
           <div class="col-md-4">
             <%= f.label :suburb, class: "form-label" %>
             <%= f.select :suburb,
