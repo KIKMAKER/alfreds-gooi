@@ -17,8 +17,8 @@ class InvoiceBuilder
       subscription: @subscription, # Link to first subscription for now
       issued_date: Time.current,
       due_date: Time.current + 2.weeks,
-      total_amount: 0,
-      admin_approved: true # Upfront invoices email immediately; monthly invoices skip this
+      total_amount: 0
+      # admin_approved defaults to false — held until admin clicks approve
     )
 
     if @subscription&.once_off?
@@ -38,7 +38,7 @@ class InvoiceBuilder
 
     invoice.calculate_total # Calculate total AFTER adding all items including discounts
 
-    InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
+    InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now
 
     invoice
   end

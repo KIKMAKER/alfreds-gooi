@@ -177,6 +177,15 @@ Configured to use Postmark Rails for delivery.
 
 ## Critical Implementation Notes
 
+## Claude Workflow Preferences
+
+- **Commit after every completed piece of work** without waiting to be asked
+- **Commit sign-off:** use `this one is all claude` instead of the formal co-author footer
+
+---
+
+## Critical Implementation Notes
+
 1. **Always use `mark_skipped!` instead of `update(skip: true)`** on collections to ensure skip notification emails are sent
 2. **Collection creation is date-based** - collections belong to specific dates and are assigned to drivers_days for route organization
 3. **Suburb validation is strict** - only suburbs in `Subscription::SUBURBS` constant are allowed

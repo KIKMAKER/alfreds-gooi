@@ -31,9 +31,11 @@ class InvoiceMailer < ApplicationMailer
     @installment_number = params[:installment_number]
     @approve_url        = approve_admin_invoice_url(@invoice)
 
+    label = @installment_number ? "Installment #{@installment_number}" : "New subscription"
+
     mail(
       to: "howzit@gooi.me",
-      subject: "Action required: Approve invoice for #{@user&.first_name} — Installment #{@installment_number} (R#{number_with_precision(@invoice.total_amount.to_f, precision: 2)})",
+      subject: "Action required: Approve invoice for #{@user&.first_name} — #{label} (R#{number_with_precision(@invoice.total_amount.to_f, precision: 2)})",
       track_opens: 'true',
       message_stream: 'outbound'
     )
