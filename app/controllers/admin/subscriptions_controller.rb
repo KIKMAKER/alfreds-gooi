@@ -86,7 +86,7 @@ class Admin::SubscriptionsController < ApplicationController
       :apartment_unit_number, :discount_code, :referral_code, :is_new_customer,
       :primary_subscription_id,
       :buckets_per_collection, :bucket_size, :collections_per_week,
-      :collection_day, :title
+      :collection_day, :title, :monthly_invoicing
     )
   end
 

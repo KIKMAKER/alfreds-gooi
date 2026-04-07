@@ -63,7 +63,7 @@ class InvoiceBuilder
     raise "Product not found: #{kit_title}" unless kit
 
     # For commercial subscriptions, add starter kit quantity based on buckets_per_collection
-    quantity = subscription.Commercial? ? subscription.buckets_per_collection : 1
+    quantity = subscription.Commercial? ? subscription.buckets_per_collection * (subscription.collections_per_week || 1) : 1
 
     # For monthly invoicing, split the cost into installments
     if subscription.monthly_invoicing? && subscription.duration.present?
@@ -160,8 +160,8 @@ class InvoiceBuilder
     bucket_size = subscription.bucket_size || 45
     volume_title = "Commercial volume per #{bucket_size}L bucket"
 
-    volume_product = Product.find_by(title: volume_title)
-    raise "Product not found: #{volume_title}" unless volume_product
+    volume_product = Product.invoice_eligible.find_by(title: volume_title)
+    raise "Product not found (or marked quote_only): #{volume_title}" unless volume_product
 
     # Store product_ids on subscription for future monthly invoicing
     subscription.update_columns(
@@ -172,9 +172,10 @@ class InvoiceBuilder
     collections_per_week = subscription.collections_per_week || 1
 
     if subscription.monthly_invoicing?
-      # Monthly volume = (buckets × total-contract-cost-per-bucket) / duration
-      # e.g. 3 buckets × R540 (6-month total per bucket) / 6 months = R270/month
-      monthly_volume = (subscription.buckets_per_collection * volume_product.price) / subscription.duration
+      # Monthly volume = buckets × per-visit rate × estimated visits per month
+      # e.g. 3 buckets × R76 × 9 visits/month = R2,052/month
+      visits_per_month = (52.0 / 12.0 * collections_per_week).round
+      monthly_volume = subscription.buckets_per_collection * volume_product.price * visits_per_month
 
       if @is_new
         # Only set contract_total and lock in monthly amounts at inception

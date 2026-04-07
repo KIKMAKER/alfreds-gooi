@@ -6,6 +6,7 @@ class Product < ApplicationRecord
 
   scope :shop_items, -> { where(is_active: true) }
   scope :in_stock, -> { where("stock > ?", 0) }
+  scope :invoice_eligible, -> { where(quote_only: false) }
 
   def in_stock?
     stock.to_i > 0

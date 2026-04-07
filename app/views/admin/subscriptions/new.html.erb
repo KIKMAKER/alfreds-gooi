@@ -68,6 +68,12 @@
                              prompt: "No second day",
                              class: "form-select" %>
             </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <div class="form-check mb-2">
+                <%= f.check_box :monthly_invoicing, class: "form-check-input" %>
+                <%= f.label :monthly_invoicing, "Monthly invoicing (vs. upfront lump sum)", class: "form-check-label" %>
+              </div>
+            </div>
           </div>
 
           <div class="col-md-4">

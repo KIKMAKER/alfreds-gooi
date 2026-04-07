@@ -7,6 +7,7 @@
     <%= f.input :price, label: "Price (Rands)" %>
     <%= f.input :stock, label: "Stock Quantity" %>
     <%= f.input :is_active, label: "Active in Shop?", as: :boolean %>
+    <%= f.input :quote_only, label: "Quote only (hide from invoices)", as: :boolean %>
 
     <%= f.input :images,
                 as: :file,

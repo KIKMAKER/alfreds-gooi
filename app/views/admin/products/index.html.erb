@@ -8,6 +8,7 @@
     <div class="text-center bag"><p>Price</p></div>
     <div class="text-center address"><p>Stock</p></div>
     <div class="text-center status"><p>Active</p></div>
+    <div class="text-center status"><p>Quote Only</p></div>
     <div class="text-center actions"><p>Actions</p></div>
   </div>
 
@@ -28,6 +29,9 @@
           </div>
           <div class="text-center tatus">
             <p><%= product.is_active ? '✓' : '✗' %></p>
+          </div>
+          <div class="text-center tatus">
+            <p><%= product.quote_only? ? '✓' : '' %></p>
           </div>
           <div class="text-center ctions">
             <%= link_to "Edit", edit_admin_product_path(product), class: "small-yellow-btn" %>
