@@ -22,7 +22,7 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
   end
-  before_validation :set_collection_day, if: -> { will_save_change_to_street_address? || will_save_change_to_suburb? }
+  before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
   before_validation :normalize_referral_code
   SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
@@ -469,6 +469,11 @@ class Subscription < ApplicationRecord
     # Send payment received confirmation email
     SubscriptionMailer.with(subscription: self, is_new: is_new_customer).payment_received.deliver_now
     SubscriptionMailer.with(subscription: self).payment_received_alert.deliver_now
+
+    # Activate any satellite subscriptions so they also start generating collections
+    satellite_subscriptions.where(status: :pending).each do |sat|
+      sat.update!(status: :active, start_date: resolved_start, is_paused: false)
+    end
   end
 
 

@@ -54,6 +54,20 @@
               <%= f.label :collections_per_week, "Collections per week", class: "form-label" %>
               <%= f.select :collections_per_week, [[1, 1], [2, 2], [3, 3]], { selected: 1 }, class: "form-select" %>
             </div>
+            <div class="col-md-4">
+              <%= f.label :collection_day, "Primary collection day", class: "form-label" %>
+              <%= f.select :collection_day,
+                           %w[Monday Tuesday Wednesday Thursday Friday],
+                           { prompt: "Auto-assign from suburb" },
+                           class: "form-select" %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Second collection day <span class="text-muted">(optional — creates satellite)</span></label>
+              <%= select_tag :second_collection_day,
+                             options_for_select(%w[Monday Tuesday Wednesday Thursday Friday]),
+                             prompt: "No second day",
+                             class: "form-select" %>
+            </div>
           </div>
 
           <div class="col-md-4">

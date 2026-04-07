@@ -14,6 +14,25 @@ class Admin::SubscriptionsController < ApplicationController
     @subscription.is_paused = true
 
     if @subscription.save
+      # Auto-create satellite subscription if a second collection day was specified
+      if params[:second_collection_day].present?
+        @user.subscriptions.create!(
+          plan:                    @subscription.plan,
+          duration:                @subscription.duration,
+          street_address:          @subscription.street_address,
+          suburb:                  @subscription.suburb,
+          apartment_unit_number:   @subscription.apartment_unit_number,
+          bucket_size:             @subscription.bucket_size,
+          buckets_per_collection:  @subscription.buckets_per_collection,
+          collections_per_week:    @subscription.collections_per_week,
+          collection_day:          params[:second_collection_day],
+          title:                   "#{@subscription.title} (#{params[:second_collection_day]})",
+          status:                  :pending,
+          is_paused:               true,
+          primary_subscription_id: @subscription.id
+        )
+      end
+
       referee = User.find_by(referral_code: @subscription.referral_code) if @subscription.referral_code.present?
       InvoiceBuilder.new(
         subscription: @subscription,
@@ -67,7 +86,7 @@ class Admin::SubscriptionsController < ApplicationController
       :apartment_unit_number, :discount_code, :referral_code, :is_new_customer,
       :primary_subscription_id,
       :buckets_per_collection, :bucket_size, :collections_per_week,
-      :title
+      :collection_day, :title
     )
   end
 
