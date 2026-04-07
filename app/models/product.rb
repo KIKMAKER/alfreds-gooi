@@ -1,7 +1,7 @@
 class Product < ApplicationRecord
   validates :description, :title, :price, presence: true
-  has_many :invoice_items, dependent: :nullify
-  has_many :quotation_items, dependent: :nullify
+  has_many :invoice_items, dependent: :restrict_with_error
+  has_many :quotation_items, dependent: :restrict_with_error
   has_many_attached :images
 
   scope :shop_items, -> { where(is_active: true) }
