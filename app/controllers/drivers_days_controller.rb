@@ -7,6 +7,9 @@ class DriversDaysController < ApplicationController
 
     @drivers_day = DriversDay.find_or_create_by!(date: selected_date, user_id: User.find_by(first_name: "Alfred").id)
 
+    @prev_day = DriversDay.where(date: ...@drivers_day.date).order(date: :desc).first
+    @next_day = DriversDay.where(date: (@drivers_day.date + 1)..).order(date: :asc).first
+
     # Load collections ordered by position (nulls last = newly added collections appear at end)
     collections = @drivers_day.collections
                                 .includes(:subscription, :user)

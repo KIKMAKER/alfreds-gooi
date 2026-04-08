@@ -1,4 +1,17 @@
 <div class="driver-wrapper">
+  <div class="route-day-nav">
+    <% if @prev_day %>
+      <%= link_to "←", route_drivers_days_path(date: @prev_day.date), class: "route-day-nav__arrow" %>
+    <% else %>
+      <span class="route-day-nav__arrow route-day-nav__arrow--disabled">←</span>
+    <% end %>
+    <span class="route-day-nav__label"><%= @drivers_day.date.strftime("%A, %-d %b") %></span>
+    <% if @next_day %>
+      <%= link_to "→", route_drivers_days_path(date: @next_day.date), class: "route-day-nav__arrow" %>
+    <% else %>
+      <span class="route-day-nav__arrow route-day-nav__arrow--disabled">→</span>
+    <% end %>
+  </div>
   <%= link_to "Someone missing from the list?", recently_lapsed_subscriptions_path, class: "btn btn-info mb-3" %>
   <%= button_to "Optimize Route", optimise_route_path(drivers_day_id: @drivers_day.id), method: :patch, class: "btn btn-success mb-3", form: { data: { turbo: false } } %>
   <div class="collection-header">

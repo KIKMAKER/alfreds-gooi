@@ -276,3 +276,25 @@
 #collection_skip {
   opacity: 1
 }
+
+.route-day-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__arrow {
+    font-size: 1.4rem;
+    padding: 0 0.5rem;
+    text-decoration: none;
+
+    &--disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+  }
+}
