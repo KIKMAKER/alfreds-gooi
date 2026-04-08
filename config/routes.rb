@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get "orders/:id/checkout", to: "orders#checkout", as: :checkout_order
   post "orders/:id/attach_to_collection", to: "orders#attach_to_collection", as: :attach_to_collection_order
   post "orders/:id/mark_delivered", to: "orders#mark_delivered", as: :mark_delivered_order
+  post "orders/:id/postpone_delivery", to: "orders#postpone_delivery", as: :postpone_delivery_order
   namespace :admin do
     root to: 'dashboard#index'
     resources :interests, only: [:index, :show, :edit, :update, :destroy]

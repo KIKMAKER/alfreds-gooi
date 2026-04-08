@@ -38,11 +38,12 @@ class CreateNextWeekCollectionsJob < ApplicationJob
       next if subscription.status == "completed" # Skip completed subscriptions
       next if subscription.status == "pending" # Skip pending subscriptions
       collection = Collection.find_or_create_by!(
-        drivers_day: drivers_day,
         subscription: subscription,
-        date: collection_date)
+        date: collection_date
+      )
 
       collection.update!(
+        drivers_day: drivers_day,
         skip: subscription.is_paused?
       )
       puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"

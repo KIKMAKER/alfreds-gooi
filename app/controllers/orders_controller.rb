@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:checkout, :attach_to_collection, :mark_delivered]
+  before_action :set_order, only: [:checkout, :attach_to_collection, :mark_delivered, :postpone_delivery]
 
   def add_item
     product = Product.find(params[:product_id])
@@ -70,6 +70,24 @@ class OrdersController < ApplicationController
     else
       redirect_to checkout_order_path(@order), alert: "Could not complete order."
     end
+  end
+
+  def postpone_delivery
+    current_collection = @order.collection
+
+    if current_collection.nil?
+      redirect_back fallback_location: root_path, alert: "Order is not assigned to a collection."
+      return
+    end
+
+    next_date = current_collection.date + 7.days
+    subscription = current_collection.subscription
+
+    next_collection = Collection.find_or_create_by!(subscription: subscription, date: next_date)
+    @order.update!(collection: next_collection)
+
+    redirect_back fallback_location: root_path,
+                  notice: "Order ##{@order.id} postponed to #{next_date.strftime('%A, %B %-d')}."
   end
 
   def mark_delivered

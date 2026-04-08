@@ -48,6 +48,11 @@
                           method: :post,
                           class: "small-yellow-btn mt-2",
                           data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
+            <%= button_to "Postpone Order ##{order.id} to Next Week",
+                          postpone_delivery_order_path(order),
+                          method: :post,
+                          class: "btn btn-outline-secondary btn-sm mt-1",
+                          data: { turbo_confirm: "Postpone order ##{order.id} to next week's collection?" } %>
           <% end %>
         </div>
       <% end %>
