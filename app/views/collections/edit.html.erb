@@ -21,6 +21,19 @@
         <%#= image_tag 'empty_bucket.jpg', alt: "bucket", class:"bucket-img" %>
       <% end %>
 
+      <% whatsapp_contacts = @subscription.contacts.can_receive_whatsapp %>
+      <% if whatsapp_contacts.any? %>
+        <div class="collection-whatsapp-contacts">
+          <% whatsapp_contacts.each do |contact| %>
+            <% message = "Hello #{contact.first_name}, I'm here to collect your gooi!" %>
+            <% wa_url = "https://wa.me/#{contact.formatted_phone.gsub('+', '')}?text=#{URI.encode_www_form_component(message)}" %>
+            <%= link_to wa_url, target: :_blank, class: "collection-whatsapp-contacts__link" do %>
+              <i class="fa-brands fa-whatsapp"></i> <%= contact.display_name %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+
       <strong>
         <p>Address:</p>
       </strong>
