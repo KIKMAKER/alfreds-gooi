@@ -17,4 +17,10 @@ class Admin::InvoicesController < ApplicationController
     redirect_to admin_root_path,
       notice: "Invoice ##{@invoice.number} approved and sent to #{@invoice.subscription&.user&.email}."
   end
+
+  private
+
+  def authenticate_admin!
+    redirect_to root_path, alert: "Not authorised." unless current_user&.admin?
+  end
 end
