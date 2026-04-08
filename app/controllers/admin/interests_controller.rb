@@ -1,5 +1,4 @@
-class Admin::InterestsController < ApplicationController
-  before_action :authenticate_admin!
+class Admin::InterestsController < Admin::BaseController
   before_action :set_interest, only: %i[show edit update destroy]
 
   def index
@@ -33,9 +32,5 @@ class Admin::InterestsController < ApplicationController
 
   def interest_params
     params.require(:interest).permit(:name, :email, :suburb, :note)
-  end
-
-  def authenticate_admin!
-    redirect_to root_path unless current_user&.admin?
   end
 end

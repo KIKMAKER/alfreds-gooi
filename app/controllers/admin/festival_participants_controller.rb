@@ -1,6 +1,5 @@
-class Admin::FestivalParticipantsController < ApplicationController
+class Admin::FestivalParticipantsController < Admin::BaseController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
   before_action :set_festival
 
   def new
@@ -30,11 +29,5 @@ class Admin::FestivalParticipantsController < ApplicationController
 
   def participant_params
     params.require(:festival_participant).permit(:name, :pin)
-  end
-
-  def authenticate_admin!
-    unless current_user&.admin?
-      redirect_to root_path, alert: "Not authorised."
-    end
   end
 end

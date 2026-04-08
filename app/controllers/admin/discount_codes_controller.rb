@@ -1,5 +1,4 @@
-class Admin::DiscountCodesController < ApplicationController
-  before_action :authenticate_admin!
+class Admin::DiscountCodesController < Admin::BaseController
 
   def index
     @discount_codes = DiscountCode.order(created_at: :desc)
@@ -29,9 +28,5 @@ class Admin::DiscountCodesController < ApplicationController
 
   def discount_code_params
     params.require(:discount_code).permit(:code, :discount_cents, :discount_percent, :expires_at, :usage_limit)
-  end
-
-  def authenticate_admin!
-    redirect_to root_path unless current_user&.admin?
   end
 end

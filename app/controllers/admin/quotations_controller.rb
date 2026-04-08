@@ -1,6 +1,5 @@
 class Admin::QuotationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
   before_action :set_quotation, only: %i[edit update destroy send_email]
 
   def index
@@ -124,12 +123,6 @@ class Admin::QuotationsController < ApplicationController
         quantity: quantity,
         amount: product.price
       )
-    end
-  end
-
-  def authenticate_admin!
-    unless current_user&.admin?
-      redirect_to root_path, alert: "You must be an admin to access this page."
     end
   end
 end

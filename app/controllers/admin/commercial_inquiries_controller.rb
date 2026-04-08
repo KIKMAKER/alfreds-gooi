@@ -1,6 +1,5 @@
-class Admin::CommercialInquiriesController < ApplicationController
+class Admin::CommercialInquiriesController < Admin::BaseController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
   before_action :set_inquiry, only: [:show, :update]
 
   def index
@@ -20,9 +19,5 @@ class Admin::CommercialInquiriesController < ApplicationController
 
   def set_inquiry
     @inquiry = CommercialInquiry.find(params[:id])
-  end
-
-  def authenticate_admin!
-    redirect_to root_path, alert: "Not authorised." unless current_user&.admin?
   end
 end

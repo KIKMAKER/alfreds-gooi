@@ -1,6 +1,5 @@
-class Admin::DashboardController < ApplicationController
+class Admin::DashboardController < Admin::BaseController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
 
   def index
     NudgePendingSubscriptionsJob.perform_later
@@ -24,13 +23,5 @@ class Admin::DashboardController < ApplicationController
                 elsif hour < 17 then "Good afternoon"
                 else "Good evening"
                 end
-  end
-
-  private
-
-  def authenticate_admin!
-    unless current_user&.admin?
-      redirect_to root_path, alert: "Not authorised."
-    end
   end
 end

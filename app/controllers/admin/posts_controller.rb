@@ -1,5 +1,4 @@
-class Admin::PostsController < ApplicationController
-  before_action :authenticate_admin!
+class Admin::PostsController < Admin::BaseController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -47,9 +46,5 @@ class Admin::PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:title, :slug, :body, :excerpt, :cover_image_url, :published, :published_at)
-  end
-
-  def authenticate_admin!
-    redirect_to root_path unless current_user&.admin?
   end
 end

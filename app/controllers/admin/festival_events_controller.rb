@@ -1,8 +1,7 @@
 require "csv"
 
-class Admin::FestivalEventsController < ApplicationController
+class Admin::FestivalEventsController < Admin::BaseController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
   before_action :set_festival, only: [:show, :edit, :update, :destroy, :dashboard, :export_csv, :enter_as_logger]
 
   def index
@@ -109,11 +108,5 @@ class Admin::FestivalEventsController < ApplicationController
 
   def festival_event_params
     params.require(:festival_event).permit(:name, :start_date, :end_date)
-  end
-
-  def authenticate_admin!
-    unless current_user&.admin?
-      redirect_to root_path, alert: "Not authorised."
-    end
   end
 end

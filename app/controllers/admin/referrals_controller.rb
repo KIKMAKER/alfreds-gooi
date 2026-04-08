@@ -1,6 +1,5 @@
-class Admin::ReferralsController < ApplicationController
+class Admin::ReferralsController < Admin::BaseController
   before_action :authenticate_user!
-  before_action :authenticate_admin!
 
   def index
     @referrals = Referral.includes(:referrer, :referee, :subscription)
@@ -9,11 +8,5 @@ class Admin::ReferralsController < ApplicationController
     @total     = @referrals.count
     @completed = @referrals.where(status: :completed).count
     @pending   = @referrals.where(status: :pending).count
-  end
-
-  private
-
-  def authenticate_admin!
-    redirect_to root_path, alert: "Not authorised." unless current_user&.admin?
   end
 end

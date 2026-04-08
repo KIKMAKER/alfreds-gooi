@@ -1,5 +1,4 @@
-class Admin::DropOffSitesController < ApplicationController
-  before_action :authenticate_admin!
+class Admin::DropOffSitesController < Admin::BaseController
   before_action :set_drop_off_site, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -91,9 +90,5 @@ class Admin::DropOffSitesController < ApplicationController
       :instagram_handle,
       :facebook_url
     )
-  end
-
-  def authenticate_admin!
-    redirect_to root_path unless current_user&.admin?
   end
 end
