@@ -449,29 +449,35 @@ class SubscriptionsController < ApplicationController
   end
 
   def recently_lapsed
-    # Find driver's day
     today = Date.today
     driver = User.find_by(first_name: "Alfred", role: 'driver')
     @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
 
-    two_weeks_ago = today - 2.weeks
+    # Completed subs on today's collection day that ended in the last 2 weeks
+    candidates = Subscription
+      .where(collection_day: Date::DAYNAMES[today.wday])
+      .where(status: 'completed')
+      .where(end_date: (today - 2.weeks)..today)
 
-    # Get IDs of subs already on today's list
-    existing_ids = @drivers_day.collections.pluck(:subscription_id)
+    # Exclude any sub that still has a non-skipped collection scheduled today or later.
+    # This covers both today's route AND pre-created future collections — the old check
+    # only looked at today's drivers_day, missing next-week collections already on the books.
+    with_upcoming = Collection
+      .where(subscription_id: candidates.pluck(:id))
+      .where('date >= ?', today)
+      .where(skip: false)
+      .pluck(:subscription_id).uniq
 
-    # Find recently completed subscriptions for today's collection day
-    @recently_lapsed = Subscription
-      .where(collection_day: Date::DAYNAMES[today.wday])  # Matches today (enum uses day name string)
-      .where(status: 'completed')                          # Properly ended
-      .where(end_date: two_weeks_ago..today)           # Ended in last 2 weeks
-      .where.not(id: existing_ids)                     # Not already on list
+    @recently_lapsed = candidates
+      .where.not(id: with_upcoming)
       .includes(:user, :collections)
-      .order(end_date: :desc)                          # Most recent first
+      .order(end_date: :desc)
 
-    # Filter to only those who actually had collections in their last week
+    # Keep only subs that were actively collecting in their final week
+    # (filters out subs that ended without ever collecting)
+    # Uses the already-loaded association to avoid N+1 queries
     @recently_lapsed = @recently_lapsed.select do |sub|
-      last_week = sub.end_date - 1.week
-      sub.collections.where('date >= ? AND date <= ?', last_week, sub.end_date).where(skip: false).any?
+      sub.collections.any? { |c| !c.skip && c.date >= sub.end_date - 1.week && c.date <= sub.end_date }
     end
   end
 
