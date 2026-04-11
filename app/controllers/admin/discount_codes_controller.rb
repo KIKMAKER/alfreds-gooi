@@ -1,4 +1,5 @@
 class Admin::DiscountCodesController < Admin::BaseController
+  before_action :set_discount_code, only: [:show, :edit, :update, :destroy]
 
   def index
     @discount_codes = DiscountCode.order(created_at: :desc)
@@ -15,16 +16,34 @@ class Admin::DiscountCodesController < Admin::BaseController
     if @discount_code.save
       redirect_to admin_discount_code_path(@discount_code), notice: "Code created!"
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    @discount_code = DiscountCode.find(params[:id])
-    # We'll show the QR code here later
+  end
+
+  def edit
+  end
+
+  def update
+    if @discount_code.update(discount_code_params)
+      redirect_to admin_discount_code_path(@discount_code), notice: "Code updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @discount_code.destroy
+    redirect_to admin_discount_codes_path, notice: "Code deleted."
   end
 
   private
+
+  def set_discount_code
+    @discount_code = DiscountCode.find(params[:id])
+  end
 
   def discount_code_params
     params.require(:discount_code).permit(:code, :discount_cents, :discount_percent, :expires_at, :usage_limit)

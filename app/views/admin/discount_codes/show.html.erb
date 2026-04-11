@@ -25,5 +25,7 @@
     <p>📎 Coming soon: QR code with signup link</p>
     <br>
   </div>
-  <%= link_to "Back to all codes", admin_discount_codes_path, class: "small-yellow-btn my-3" %>
+  <%= link_to "Edit", edit_admin_discount_code_path(@discount_code), class: "small-yellow-btn my-3" %>
+  <%= link_to "Delete", admin_discount_code_path(@discount_code), data: { turbo_method: :delete, turbo_confirm: "Delete code #{@discount_code.code}?" }, class: "btn btn-sm btn-outline-danger ms-2" %>
+  <%= link_to "Back to all codes", admin_discount_codes_path, class: "ms-2" %>
 </div>

@@ -10,6 +10,7 @@
         <th>Limit</th>
         <th>Expires</th>
         <th>Status</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -34,6 +35,10 @@
             <% else %>
               <span class="badge bg-danger">Expired</span>
             <% end %>
+          </td>
+          <td>
+            <%= link_to "Edit", edit_admin_discount_code_path(code), class: "small-yellow-btn me-1" %>
+            <%= link_to "Delete", admin_discount_code_path(code), data: { turbo_method: :delete, turbo_confirm: "Delete code #{code.code}?" }, class: "btn btn-sm btn-outline-danger" %>
           </td>
         </tr>
       <% end %>

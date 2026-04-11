@@ -31,7 +31,7 @@ Rails.application.routes.draw do
         get :customer_map_data
       end
     end
-    resources :discount_codes, only: [:index, :new, :create, :show]
+    resources :discount_codes, only: [:index, :new, :create, :show, :edit, :update, :destroy]
     resources :products, only: [:index, :new, :create, :edit, :update]
     resources :drop_off_sites do
       member do
