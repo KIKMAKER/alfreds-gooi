@@ -49,8 +49,8 @@
     <div class="info-card">
       <div class="info-card-body" style="padding: 0;">
         <% @invoices.each do |invoice| %>
-          <%= link_to invoice_path(invoice), style: "text-decoration: none; color: inherit;" do %>
-            <div class="info-row" style="padding: 1rem 1.5rem; cursor: pointer;">
+          <div class="info-row" style="padding: 1rem 1.5rem;">
+            <%= link_to invoice_path(invoice), style: "text-decoration: none; color: inherit; flex: 1; display: flex; justify-content: space-between; align-items: center;" do %>
               <div class="d-flex flex-column gap-1">
                 <span style="font-weight: 600; color: #023F3A; font-size: 0.9rem;">
                   <%= invoice.issued_date.strftime('%d %b %Y') %>
@@ -72,19 +72,19 @@
                 <% else %>
                   <i class="fa-solid fa-circle-xmark" style="color: #bc4749; font-size: 1.1rem;"></i>
                 <% end %>
-                <% if current_user.admin? %>
-                  <%= button_to invoice_path(invoice),
-                      method: :delete,
-                      data: { turbo_confirm: "Delete this invoice?" },
-                      class: "btn btn-sm p-0 border-0 bg-transparent",
-                      style: "color: #bc4749; font-size: 0.8rem;",
-                      form: { style: "display: inline;" } do %>
-                    <i class="fa-solid fa-trash"></i>
-                  <% end %>
-                <% end %>
               </div>
-            </div>
-          <% end %>
+            <% end %>
+            <% if current_user.admin? %>
+              <%= button_to invoice_path(invoice),
+                  method: :delete,
+                  data: { turbo_confirm: "Delete this invoice?" },
+                  class: "btn btn-sm p-0 border-0 bg-transparent ms-3",
+                  style: "color: #bc4749; font-size: 0.8rem;",
+                  form: { style: "display: inline;" } do %>
+                <i class="fa-solid fa-trash"></i>
+              <% end %>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
