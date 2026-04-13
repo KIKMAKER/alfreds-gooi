@@ -88,7 +88,12 @@
 
               <% completed = subscription.respond_to?(:completed?) && subscription.completed? %>
               <tr>
-                <td><%= subscription.id %></td>
+                <td>
+                  <%= subscription.id %>
+                  <% if subscription.title.present? %>
+                    <small class="text-muted d-block"><%= subscription.title %></small>
+                  <% end %>
+                </td>
                 <td><%= subscription.respond_to?(:status) ? subscription.status : "-" %></td>
 
                 <td>
