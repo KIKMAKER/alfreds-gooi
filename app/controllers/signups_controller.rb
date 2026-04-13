@@ -103,7 +103,8 @@ class SignupsController < ApplicationController
         subscription: subscription,
         og: nil,
         is_new: true,
-        referee: referee
+        referee: referee,
+        auto_approve: true
       ).call
 
       # Send welcome emails

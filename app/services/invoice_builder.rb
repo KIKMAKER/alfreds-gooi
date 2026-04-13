@@ -1,6 +1,6 @@
 # app/services/invoice_builder.rb
 class InvoiceBuilder
-  def initialize(subscription: nil, subscriptions: nil, og: false, is_new: false, referee: nil, referred_friends: 0)
+  def initialize(subscription: nil, subscriptions: nil, og: false, is_new: false, referee: nil, referred_friends: 0, auto_approve: false)
     # Accept either a single subscription or multiple subscriptions
     @subscriptions = subscriptions || [subscription].compact
     raise ArgumentError, "At least one subscription required" if @subscriptions.empty?
@@ -10,15 +10,16 @@ class InvoiceBuilder
     @is_new = is_new
     @referee = referee
     @referred_friends = referred_friends
+    @auto_approve = auto_approve
   end
 
   def call
     invoice = Invoice.create!(
-      subscription: @subscription, # Link to first subscription for now
+      subscription: @subscription,
       issued_date: Time.current,
       due_date: Time.current + 2.weeks,
-      total_amount: 0
-      # admin_approved defaults to false — held until admin clicks approve
+      total_amount: 0,
+      admin_approved: @auto_approve
     )
 
     if @subscription&.once_off?
@@ -38,7 +39,11 @@ class InvoiceBuilder
 
     invoice.calculate_total # Calculate total AFTER adding all items including discounts
 
-    InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now
+    if @auto_approve
+      InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
+    else
+      InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now
+    end
 
     invoice
   end

@@ -174,7 +174,8 @@ class SubscriptionsController < ApplicationController
           og: current_user.og,
           is_new: false,
           referee: nil,
-          referred_friends: referred_friends
+          referred_friends: referred_friends,
+          auto_approve: true
         ).call
 
         # check for sub overlap and set proper start date
