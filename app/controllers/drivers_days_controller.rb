@@ -139,12 +139,20 @@ class DriversDaysController < ApplicationController
       # Send daily snapshot email now that stats exist
       DailySnapshotMailer.report(drivers_day_id: @drivers_day.id).deliver_now
 
-      # Run background jobs
-      CreateCollectionsJob.perform_now(@drivers_day.date.to_s)
-      CreateNextWeekDropOffEventsJob.perform_now
-      CheckSubscriptionsForCompletionJob.perform_now
+      # Run background jobs — wrapped so a job failure never 500s the end-of-day flow
+      [
+        -> { CreateCollectionsJob.perform_now(@drivers_day.date.to_s) },
+        -> { CreateNextWeekDropOffEventsJob.perform_now },
+        -> { CheckSubscriptionsForCompletionJob.perform_now }
+      ].each do |job|
+        begin
+          job.call
+        rescue => e
+          Rails.logger.error("[end_drivers_day] Job failed: #{e.class} — #{e.message}\n#{e.backtrace.first(5).join("\n")}")
+        end
+      end
 
-      puts "Driver's Day ended at: #{@drivers_day.end_time}"
+      Rails.logger.info("Driver's Day #{@drivers_day.id} ended at #{@drivers_day.end_time}")
       flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
     else
       flash.now[:alert] = "Failed to end the Day"

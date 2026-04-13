@@ -49,7 +49,7 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
           is_final_destination: this_event.is_final_destination
         )
 
-        puts "Created drop-off event for #{this_week_drivers_day.drop_off_events.first.drop_off_site.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
+        puts "Created drop-off event for #{this_event.drop_off_site&.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
       end
 
       puts "Completed creating #{this_week_events.count} drop-off events for #{drop_off_date} based on last week"
