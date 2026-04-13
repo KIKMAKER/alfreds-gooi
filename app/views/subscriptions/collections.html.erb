@@ -19,7 +19,10 @@
             <% parts << "#{collection.buckets} XL"      if collection.buckets.to_f > 0 %>
             <% parts << "#{collection.buckets_45l}×45L" if collection.buckets_45l.to_i > 0 %>
             <% parts << "#{collection.buckets_25l}×25L" if collection.buckets_25l.to_i > 0 %>
-            <%= parts.any? ? parts.join(", ") : "—" %>
+            <% if parts.empty? && !collection.skip && @subscription.Commercial? && @subscription.buckets_per_collection.present? %>
+              <% parts << "#{@subscription.buckets_per_collection}×#{@subscription.bucket_size}L" %>
+            <% end %>
+            <%= parts.any? ? parts.join(", ") : (collection.skip ? "skipped" : "—") %>
           </div>
           <div class="grid-item"><%= collection.kiki_note %></div>
           <div class="grid-item"><%= collection.alfred_message %></div>
