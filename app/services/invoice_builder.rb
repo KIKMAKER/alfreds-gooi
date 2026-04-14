@@ -210,9 +210,11 @@ class InvoiceBuilder
       total_visits = (52.0 / 12.0 * collections_per_week).round * subscription.duration
       volume_per_visit = subscription.buckets_per_collection * volume_product.price
 
+      # Multiply collection fee by collections_per_week — a twice-weekly client
+      # has two collection slots per week, each billed at the monthly rate.
       invoice.invoice_items.create!(
         product: monthly_product,
-        quantity: subscription.duration,
+        quantity: subscription.duration * collections_per_week,
         amount: monthly_product.price
       )
 
