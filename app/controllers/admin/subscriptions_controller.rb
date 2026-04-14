@@ -4,7 +4,21 @@ class Admin::SubscriptionsController < ApplicationController
 
   def new
     @user = User.find(params[:user_id])
-    @subscription = Subscription.new
+
+    if params[:quotation_id].present?
+      quotation = Quotation.find(params[:quotation_id])
+      @subscription = Subscription.new(
+        plan:                   :Commercial,
+        duration:               quotation.duration_months,
+        bucket_size:            quotation.inferred_bucket_size,
+        buckets_per_collection: quotation.buckets_per_collection,
+        collections_per_week:   quotation.effective_collections_per_week,
+        title:                  quotation.prospect_company.presence || quotation.customer_name
+      )
+      @quotation = quotation
+    else
+      @subscription = Subscription.new
+    end
   end
 
   def create
