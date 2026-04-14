@@ -186,9 +186,12 @@ class Subscription < ApplicationRecord
     }
   end
 
-  def is_paused?
-    # added && condition to prevent calculation of holiday when holiday is nil
-    is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
+  def is_paused?(on_date: Date.today)
+    is_paused || holiday_covers?(on_date)
+  end
+
+  def holiday_covers?(date)
+    holiday_start.present? && date >= holiday_start && date <= holiday_end
   end
 
   def complete?

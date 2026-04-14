@@ -412,9 +412,11 @@ class SubscriptionsController < ApplicationController
   def clear_holiday
     @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
-      @subscription.collections
-             .where('date >= ?', Date.current)
-             .update_all(skip: false)
+      unless @subscription.is_paused
+        @subscription.collections
+               .where('date >= ?', Date.current)
+               .update_all(skip: false)
+      end
       redirect_to manage_path, notice: "Holiday Canceled!"
     else
       redirect_to manage_path, status: :unprocessable_entity

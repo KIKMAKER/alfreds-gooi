@@ -44,7 +44,7 @@ class CreateNextWeekCollectionsJob < ApplicationJob
 
       collection.update!(
         drivers_day: drivers_day,
-        skip: subscription.is_paused?
+        skip: subscription.is_paused?(on_date: collection_date)
       )
       puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
 

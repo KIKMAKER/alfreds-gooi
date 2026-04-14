@@ -31,7 +31,7 @@ class CreateTodayCollectionsJob < ApplicationJob
           drivers_day: drivers_day,
           subscription: subscription,
           date: today,
-          skip: subscription.is_paused?
+          skip: subscription.is_paused?(on_date: today)
         )
         puts ">> >> >> #{subscription.customer_id}"
         collection.update!(new_customer: true) if subscription.is_new_customer
