@@ -19,6 +19,8 @@ class Quotation < ApplicationRecord
 
   # Validations
   validates :created_date, :expires_at, presence: true
+  validates :collections_per_week, numericality: { only_integer: true, greater_than: 0 }
+  validates :buckets_per_collection, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validate :has_customer_or_prospect_details
 
   # Callbacks
@@ -85,6 +87,20 @@ class Quotation < ApplicationRecord
 
   def expired?
     expires_at < Date.today || status == 'expired'
+  end
+
+  def needs_satellite?
+    collections_per_week > 1
+  end
+
+  # Scans product titles for "25L" or "45L" to infer bucket size.
+  # Returns 25, 45, or nil if no volume processing product is on the quote.
+  def inferred_bucket_size
+    quotation_items.joins(:product).each do |item|
+      return 25 if item.product.title.match?(/25\s*[Ll]/i)
+      return 45 if item.product.title.match?(/45\s*[Ll]/i)
+    end
+    nil
   end
 
   def customer_name

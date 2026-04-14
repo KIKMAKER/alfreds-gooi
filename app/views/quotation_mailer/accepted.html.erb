@@ -1,0 +1,140 @@
+<div style="max-width: 620px; margin: 0 auto; font-family: system-ui, -apple-system, sans-serif; color: #1f2937; padding: 24px;">
+
+  <div style="background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 20px 24px; margin-bottom: 28px;">
+    <h1 style="margin: 0 0 4px; font-size: 22px; color: #15803d;">✅ Quote #<%= @quotation.number %> accepted</h1>
+    <p style="margin: 0; font-size: 15px; color: #166534;"><%= @quotation.customer_name %> has accepted their quotation. Create their subscription below.</p>
+  </div>
+
+  <% if @quotation.needs_satellite? %>
+    <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px 20px; margin-bottom: 28px;">
+      <p style="margin: 0; font-size: 15px; color: #92400e;">
+        <strong>⚠️ Two collections per week.</strong> This client needs a <strong>primary subscription</strong> AND a <strong>satellite subscription</strong>.
+        The satellite's <code>collection_day</code> must be set manually — the suburb callback will only assign one day.
+        Remember to link the satellite back to the primary via <code>primary_subscription_id</code>.
+      </p>
+    </div>
+  <% end %>
+
+  <!-- WHAT YOU HAVE -->
+  <h2 style="font-size: 17px; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 16px;">
+    What you have (from the quote)
+  </h2>
+
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 14px;">
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; width: 45%; border-bottom: 1px solid #e5e7eb;">Customer</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.customer_name %></td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Email</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.customer_email %></td>
+    </tr>
+    <% phone = @quotation.user&.phone_number || @quotation.prospect_phone %>
+    <% if phone.present? %>
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Phone</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= phone %></td>
+    </tr>
+    <% end %>
+    <% if @quotation.prospect_company.present? %>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Company</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.prospect_company %></td>
+    </tr>
+    <% end %>
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">User account</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;">
+        <% if @quotation.user.present? %>
+          Existing customer — ID <%= @quotation.user.id %>
+        <% else %>
+          <strong style="color: #dc2626;">Prospect — no account yet. Create user first.</strong>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Plan</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;">Commercial</td>
+    </tr>
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Duration</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.duration_months %> months</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Collections per week</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.collections_per_week %></td>
+    </tr>
+    <% if @quotation.buckets_per_collection.present? %>
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Buckets per collection</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.buckets_per_collection %></td>
+    </tr>
+    <% end %>
+    <% if @quotation.inferred_bucket_size.present? %>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Bucket size</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.inferred_bucket_size %>L</td>
+    </tr>
+    <% else %>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Bucket size</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb; color: #d97706;"><em>Could not be inferred from products — check quote items</em></td>
+    </tr>
+    <% end %>
+    <tr style="background: #f9fafb;">
+      <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Quote total</td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;">R<%= number_with_precision(@quotation.total_amount.to_f, precision: 0) %> (R<%= number_with_precision(@quotation.monthly_rate.to_f, precision: 0) %>/month)</td>
+    </tr>
+  </table>
+
+  <!-- WHAT YOU STILL NEED -->
+  <h2 style="font-size: 17px; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 16px;">
+    What you still need to enter
+  </h2>
+
+  <ul style="margin: 0 0 28px; padding-left: 20px; font-size: 14px; line-height: 2;">
+    <% if @quotation.is_prospect? %>
+      <li><strong style="color: #dc2626;">Create user account</strong> for <%= @quotation.customer_name %> (<%= @quotation.customer_email %>)</li>
+    <% end %>
+    <li>Street address</li>
+    <li>Suburb → this auto-assigns collection day via callback</li>
+    <li>Start date (set this when they pay, or leave pending)</li>
+    <% if @quotation.needs_satellite? %>
+      <li><strong style="color: #d97706;">Satellite subscription</strong> — create separately, set <code>collection_day</code> manually (suburb callback will set it to one day only), then link via <code>primary_subscription_id</code></li>
+    <% end %>
+    <% if @quotation.notes.present? %>
+      <li>Review notes: <em><%= @quotation.notes %></em></li>
+    <% end %>
+  </ul>
+
+  <!-- QUOTE ITEMS -->
+  <h2 style="font-size: 17px; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 16px;">
+    Quote line items (for reference)
+  </h2>
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 14px;">
+    <tr style="background: #f3f4f6;">
+      <th style="padding: 8px 12px; text-align: left; font-weight: 600;">Item</th>
+      <th style="padding: 8px 12px; text-align: center; font-weight: 600;">Qty</th>
+      <th style="padding: 8px 12px; text-align: right; font-weight: 600;">Amount</th>
+    </tr>
+    <% @quotation.quotation_items.each do |item| %>
+    <tr>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #e5e7eb;"><%= item.product.title %></td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #e5e7eb; text-align: center;"><%= item.quantity.to_i %></td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">R<%= number_with_precision((item.amount * item.quantity).to_f, precision: 0) %></td>
+    </tr>
+    <% end %>
+  </table>
+
+  <div style="text-align: center; margin-bottom: 24px;">
+    <a href="<%= admin_quotations_url %>"
+       style="display: inline-block; padding: 12px 24px; background: #1d4ed8; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">
+      Open Admin Quotations
+    </a>
+  </div>
+
+  <p style="font-size: 12px; color: #9ca3af; text-align: center; margin: 0;">
+    Quote #<%= @quotation.number %> · Accepted <%= Time.now.strftime('%e %b %Y at %H:%M') %>
+  </p>
+
+</div>

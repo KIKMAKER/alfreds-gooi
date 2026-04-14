@@ -170,6 +170,7 @@ Rails.application.routes.draw do
   resources :quotations, only: [:show] do
     member do
       get :pdf
+      post :accept
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_14_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -570,6 +570,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.date "event_date"
     t.string "event_name"
     t.string "event_venue"
+    t.integer "collections_per_week", default: 1, null: false
+    t.integer "buckets_per_collection"
     t.index ["subscription_id"], name: "index_quotations_on_subscription_id"
     t.index ["user_id"], name: "index_quotations_on_user_id"
   end

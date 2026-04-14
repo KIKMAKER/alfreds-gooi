@@ -1,8 +1,24 @@
 class QuotationsController < ApplicationController
-  skip_before_action :authenticate_user!, only: %i[show pdf]
-  before_action :set_quotation, only: %i[show pdf]
+  skip_before_action :authenticate_user!, only: %i[show pdf accept]
+  before_action :set_quotation, only: %i[show pdf accept]
 
   def show
+  end
+
+  def accept
+    if @quotation.accepted?
+      redirect_to quotation_path(@quotation), notice: "This quotation has already been accepted."
+      return
+    end
+
+    if @quotation.expired?
+      redirect_to quotation_path(@quotation), alert: "This quotation has expired and can no longer be accepted."
+      return
+    end
+
+    @quotation.update!(status: :accepted)
+    QuotationMailer.with(quotation: @quotation).accepted.deliver_now
+    redirect_to quotation_path(@quotation), notice: "Thank you — we've received your acceptance and will be in touch shortly to get your service set up."
   end
 
   def pdf

@@ -98,6 +98,8 @@ class Admin::QuotationsController < ApplicationController
       :prospect_company,
       :notes,
       :duration_months,
+      :collections_per_week,
+      :buckets_per_collection,
       :created_date,
       :expires_at,
       :status,
