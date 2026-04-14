@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_14_000001) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_14_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -537,6 +537,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_000001) do
     t.boolean "is_active", default: false, null: false
     t.integer "stock", default: 0
     t.boolean "quote_only", default: false, null: false
+    t.string "billing_type", default: "standard", null: false
+    t.bigint "invoice_product_id"
+    t.index ["invoice_product_id"], name: "index_products_on_invoice_product_id"
   end
 
   create_table "quotation_items", force: :cascade do |t|
@@ -765,7 +768,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_000001) do
     t.decimal "monthly_volume_amount", precision: 10, scale: 2
     t.decimal "monthly_subscription_amount", precision: 10, scale: 2
     t.bigint "primary_subscription_id"
+    t.bigint "quotation_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
+    t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -875,6 +880,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_000001) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscriptions", "quotations"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
   add_foreign_key "whatsapp_messages", "contacts"

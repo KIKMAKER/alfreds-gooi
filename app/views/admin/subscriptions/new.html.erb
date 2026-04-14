@@ -30,6 +30,9 @@
 
       <%= form_with model: @subscription, url: admin_subscriptions_path, method: :post do |f| %>
         <%= hidden_field_tag :user_id, @user.id %>
+        <% if @quotation.present? %>
+          <%= hidden_field_tag :quotation_id, @quotation.id %>
+        <% end %>
 
         <div class="row g-3 mb-4" data-controller="subscription-plan">
           <div class="col-md-4">

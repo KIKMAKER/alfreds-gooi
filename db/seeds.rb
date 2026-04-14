@@ -85,108 +85,115 @@ if proceed == "payments"
 
 elsif proceed == "products"
   ## PRODUCTS
-  puts "Creating starter kits"
+  puts "Creating products"
 
   def seed_products(products)
-    products.each do |product|
-      Product.find_or_create_by!(title: product[:title]) do |p|
-        p.description = product[:description]
-        p.price = product[:price]
-      end
+    products.each do |attrs|
+      p = Product.find_or_initialize_by(title: attrs[:title])
+      p.assign_attributes(attrs)
+      p.save!
+      puts "  ✓ #{p.title} [#{p.billing_type}]"
     end
   end
 
+  # ── Starter kits ─────────────────────────────────────────────────────────────
+  # standard: appear on both quote forms and invoices
+  puts "Creating starter kits"
   starter_kit_products = [
-    { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
-    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
-    { title: "Commercial Starter Buckets (45L)", description: "45L bucket, informative poster and gooi branding", price: 300 }
+    { title: "Standard Starter Kit",        description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200,  billing_type: "standard" },
+    { title: "XL Starter Kit",              description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (25L)", description: "25L commercial collection bucket with branding", price: 150, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (45L)", description: "45L commercial collection bucket with branding", price: 210, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (50L)", description: "50L commercial collection drum with branding",  price: 850, billing_type: "standard" }
   ]
-
   seed_products(starter_kit_products)
-  STARTER_KIT = Product.first
+  STARTER_KIT = Product.find_by!(title: "Standard Starter Kit")
+  puts "#{starter_kit_products.size} starter kits seeded"
 
-  starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
-  puts "#{starter_kits} starter kits created"
-
+  # ── Standard subscriptions ───────────────────────────────────────────────────
+  # invoice_only: InvoiceBuilder resolves these by title, never shown on quotes
   puts "Creating standard subs"
-
   standard_sub_products = [
-    { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
-    { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
-    { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
-    { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
-    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 },
-    { title: "Referral discount standard 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -39 },
-    { title: "Referral discount standard 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -99 },
-    { title: "Referral discount standard 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -162 }
+    { title: "Standard 1 month subscription",           description: "Weekly collection of up to 10L your kitchen waste for one calendar month",                    price: 260,  billing_type: "invoice_only" },
+    { title: "Standard 3 month subscription",           description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)",        price: 660,  billing_type: "invoice_only" },
+    { title: "Standard 6 month subscription",           description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)",          price: 1080, billing_type: "invoice_only" },
+    { title: "Standard 12 month subscription",          description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)",           price: 2160, billing_type: "invoice_only" },
+    { title: "Standard 6 month OG subscription",        description: "Weekly collection of up to 10L your kitchen waste for six calendar months (OG rate)",        price: 720,  billing_type: "invoice_only" },
+    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month (OG rate)",         price: 120,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 1 month",      description: "You get 15% off and your friend gets a discount on their next subscription too!",             price: -39,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 3 month",      description: "You get 15% off and your friend gets a discount on their next subscription too!",             price: -99,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 6 month",      description: "You get 15% off and your friend gets a discount on their next subscription too!",             price: -162, billing_type: "invoice_only" }
   ]
-
   seed_products(standard_sub_products)
+  puts "#{standard_sub_products.size} standard subscription products seeded"
 
-  standard_subs = Product.where(title: standard_sub_products.map { |p| p[:title] }).count
-  puts "#{standard_subs} standard subscriptions created"
-
+  # ── XL subscriptions ─────────────────────────────────────────────────────────
   puts "Creating XL subs"
-
   xl_sub_products = [
-    { title: "XL 1 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for one calendar month", price: 300 },
-    { title: "XL 3 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810 },
-    { title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440 },
-    { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -45 },
-    { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -122 },
-    { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -216 }
+    { title: "XL 1 month subscription",    description: "Weekly collection of up to 20L of your kitchen waste for one calendar month",                    price: 300,  billing_type: "invoice_only" },
+    { title: "XL 3 month subscription",    description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)",        price: 810,  billing_type: "invoice_only" },
+    { title: "XL 6 month subscription",    description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)",          price: 1440, billing_type: "invoice_only" },
+    { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",              price: -45,  billing_type: "invoice_only" },
+    { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",              price: -122, billing_type: "invoice_only" },
+    { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",              price: -216, billing_type: "invoice_only" }
   ]
-
   seed_products(xl_sub_products)
+  puts "#{xl_sub_products.size} XL subscription products seeded"
 
-  xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
-  puts "#{xl_subs} XL subscriptions created"
-
-  puts "Creating Commercial products"
-
-  commercial_products = [
-    # Collection fees — flat monthly rate, varies by contract length
-    { title: "Commercial collection fee (6-month)",  description: "Monthly collection service fee, 6-month contract rate",  price: 220 },
-    { title: "Commercial collection fee (12-month)", description: "Monthly collection service fee, 12-month contract rate", price: 200 },
-    { title: "Commercial collection fee (3-month)",  description: "Monthly collection service fee, 3-month contract rate",  price: 240 },
-    # Volume processing — per bucket per visit, R1.70/L regardless of contract length
-    { title: "Commercial volume per 25L bucket", description: "Volume processing per 25L bucket per collection visit (R1.70/L)", price: 42.50 },
-    { title: "Commercial volume per 45L bucket", description: "Volume processing per 45L bucket per collection visit (R1.70/L)", price: 76.50 },
-    { title: "Commercial volume per 50L bucket", description: "Volume processing per 50L bucket per collection visit (R1.70/L)", price: 85.00 },
-    # Starter buckets — one-off, amortised over contract duration for monthly billing
-    { title: "Commercial Starter Bucket (25L)", description: "25L commercial collection bucket with branding", price: 150 },
-    { title: "Commercial Starter Bucket (45L)", description: "45L commercial collection bucket with branding", price: 210 },
-    { title: "Commercial Starter Bucket (50L)", description: "50L commercial collection drum with branding", price: 850 },
+  # ── Commercial rate-card products (invoice_only) ──────────────────────────────
+  # Used exclusively by InvoiceBuilder's rate-card path (non-quote commercial subs).
+  # Never shown on quote forms.
+  puts "Creating Commercial rate-card products"
+  commercial_invoice_products = [
+    { title: "Commercial collection fee (6-month)",  description: "Monthly collection service fee, 6-month contract rate",  price: 220,   billing_type: "invoice_only" },
+    { title: "Commercial collection fee (12-month)", description: "Monthly collection service fee, 12-month contract rate", price: 200,   billing_type: "invoice_only" },
+    { title: "Commercial collection fee (3-month)",  description: "Monthly collection service fee, 3-month contract rate",  price: 240,   billing_type: "invoice_only" },
+    { title: "Commercial volume per 25L bucket",     description: "Volume processing per 25L bucket per collection visit",  price: 85.00, billing_type: "invoice_only" },
+    { title: "Commercial volume per 45L bucket",     description: "Volume processing per 45L bucket per collection visit",  price: 76.50, billing_type: "invoice_only" },
+    { title: "Commercial volume per 50L bucket",     description: "Volume processing per 50L bucket per collection visit",  price: 85.00, billing_type: "invoice_only" }
   ]
+  seed_products(commercial_invoice_products)
+  puts "#{commercial_invoice_products.size} Commercial rate-card products seeded"
 
-  seed_products(commercial_products)
+  # ── Commercial quote-only products ───────────────────────────────────────────
+  # quote_only: shown on quote forms, map to invoice equivalents via invoice_product_id.
+  # Prices represent the full 6-month contract value per unit (what appears on the quote).
+  puts "Creating Commercial quote-only products"
+  commercial_quote_products = [
+    { title: "Weekly collection (6-month rate @ R220pm)",        description: "Full 6-month collection contract per weekly slot (6 × R220)", price: 1320, billing_type: "quote_only" },
+    { title: "Volume Processing per 25L (Premium 6-month rate)", description: "Full 6-month volume processing contract per 25L bucket",       price: 300,  billing_type: "quote_only" },
+    { title: "Volume Processing per 45L (Premium 6-month rate)", description: "Full 6-month volume processing contract per 45L bucket",       price: 459,  billing_type: "quote_only" }
+  ]
+  seed_products(commercial_quote_products)
+  puts "#{commercial_quote_products.size} Commercial quote-only products seeded"
 
-  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
-  puts "#{commercial_products_count} Commercial products created"
-
+  # ── Additional stock & misc ───────────────────────────────────────────────────
   puts "Creating additional stock"
-  referred_friends = 2
-  def pluralize(count, singular, plural = nil)
-    "#{count} #{count == 1 ? singular : (plural || "#{singular}s")}"
-  end
   additional_stock_products = [
-    { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
-    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 },
-    { title: "Referred a friend discount (R50)", description: "You referred #{pluralize(referred_friends, 'friend')}!", price: -50 }
+    { title: "Compost bin bags",               description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90,  billing_type: "standard" },
+    { title: "Soil for Life Compost",          description: "5kg of Soil for Life potting soil",                        price: 80,  billing_type: "standard" },
+    { title: "Referred a friend discount (R50)", description: "Referral reward discount",                               price: -50, billing_type: "invoice_only" },
+    { title: "Once-off Collection",            description: "Single kitchen scrap collection",                          price: 400, billing_type: "invoice_only" }
   ]
-
   seed_products(additional_stock_products)
+  puts "Additional stock and once-off seeded"
 
-  puts "Additional stock created"
+  # ── Wire quote → invoice product mappings ────────────────────────────────────
+  puts "Wiring quote → invoice product mappings"
+  {
+    "Weekly collection (6-month rate @ R220pm)"         => "Commercial collection fee (6-month)",
+    "Volume Processing per 25L (Premium 6-month rate)"  => "Commercial volume per 25L bucket",
+    "Volume Processing per 45L (Premium 6-month rate)"  => "Commercial volume per 45L bucket"
+  }.each do |quote_title, invoice_title|
+    quote_p   = Product.find_by!(title: quote_title)
+    invoice_p = Product.find_by!(title: invoice_title)
+    quote_p.update!(invoice_product_id: invoice_p.id)
+    puts "  ✓ #{quote_title} → #{invoice_title}"
+  end
 
-  once_off_products = [
-    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
-  ]
-
-  seed_products(once_off_products)
-  puts "Once-off Collection product created"
-
-  puts "A total of #{Product.count} products have been seeded to the DB."
+  puts "\nProduct taxonomy summary:"
+  Product.group(:billing_type).count.each { |type, count| puts "  #{type}: #{count}" }
+  puts "Total: #{Product.count} products seeded."
 
 elsif proceed == "dropoffs"
   ## DROP-OFF SITES
@@ -339,97 +346,113 @@ elsif proceed == "dropoffs"
 
 elsif proceed == "y"
   ## PRODUCTS
-  puts "Creating starter kits"
+  puts "Creating products"
 
   def seed_products(products)
-    products.each do |product|
-      Product.find_or_create_by!(title: product[:title]) do |p|
-        p.description = product[:description]
-        p.price = product[:price]
-      end
+    products.each do |attrs|
+      p = Product.find_or_initialize_by(title: attrs[:title])
+      p.assign_attributes(attrs)
+      p.save!
+      puts "  ✓ #{p.title} [#{p.billing_type}]"
     end
   end
 
+  # ── Starter kits ─────────────────────────────────────────────────────────────
+  puts "Creating starter kits"
   starter_kit_products = [
-    { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
-    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
-    { title: "Commercial Starter Buckets (45L)", description: "45L buckets plus signage for kitchen staff and customers", price: 150 },
-    { title: "Commercial Starter Buckets (25L)", description: "25L buckets plus signage for kitchen staff and customers", price: 100 }
+    { title: "Standard Starter Kit",            description: "Countertop Gooi bucket and first roll of compostable bin liners",  price: 200, billing_type: "standard" },
+    { title: "XL Starter Kit",                  description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (25L)", description: "25L commercial collection bucket with branding",                   price: 150, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (45L)", description: "45L commercial collection bucket with branding",                   price: 210, billing_type: "standard" },
+    { title: "Commercial Starter Bucket (50L)", description: "50L commercial collection drum with branding",                     price: 850, billing_type: "standard" }
   ]
-
   seed_products(starter_kit_products)
-  STARTER_KIT = Product.first
+  STARTER_KIT = Product.find_by!(title: "Standard Starter Kit")
+  puts "#{starter_kit_products.size} starter kits seeded"
 
-  starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
-  puts "#{starter_kits} starter kits created"
-
+  # ── Standard subscriptions ───────────────────────────────────────────────────
   puts "Creating standard subs"
-
   standard_sub_products = [
-    { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
-    { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
-    { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
-    { title: "Standard 12 month subscription", description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)", price: 2160 },
-    { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
-    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 }
+    { title: "Standard 1 month subscription",            description: "Weekly collection of up to 10L your kitchen waste for one calendar month",             price: 260,  billing_type: "invoice_only" },
+    { title: "Standard 3 month subscription",            description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660,  billing_type: "invoice_only" },
+    { title: "Standard 6 month subscription",            description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)",   price: 1080, billing_type: "invoice_only" },
+    { title: "Standard 12 month subscription",           description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)",    price: 2160, billing_type: "invoice_only" },
+    { title: "Standard 6 month OG subscription",         description: "Weekly collection of up to 10L your kitchen waste for six calendar months (OG rate)",  price: 720,  billing_type: "invoice_only" },
+    { title: "Standard 1 month OG ad hoc subscription",  description: "Weekly collection of up to 10L your kitchen waste for one calendar month (OG rate)",   price: 120,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 1 month",       description: "You get 15% off and your friend gets a discount on their next subscription too!",       price: -39,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 3 month",       description: "You get 15% off and your friend gets a discount on their next subscription too!",       price: -99,  billing_type: "invoice_only" },
+    { title: "Referral discount standard 6 month",       description: "You get 15% off and your friend gets a discount on their next subscription too!",       price: -162, billing_type: "invoice_only" }
   ]
-
   seed_products(standard_sub_products)
+  puts "#{standard_sub_products.size} standard subscription products seeded"
 
-  standard_subs = Product.where(title: standard_sub_products.map { |p| p[:title] }).count
-  puts "#{standard_subs} standard subscriptions created"
-
+  # ── XL subscriptions ─────────────────────────────────────────────────────────
   puts "Creating XL subs"
-
   xl_sub_products = [
-    { title: "XL 1 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for one calendar month", price: 300 },
-    { title: "XL 3 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810 },
-    { title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440 }
+    { title: "XL 1 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for one calendar month",             price: 300,  billing_type: "invoice_only" },
+    { title: "XL 3 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810,  billing_type: "invoice_only" },
+    { title: "XL 6 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)",   price: 1440, billing_type: "invoice_only" },
+    { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -45,  billing_type: "invoice_only" },
+    { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -122, billing_type: "invoice_only" },
+    { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -216, billing_type: "invoice_only" }
   ]
-
   seed_products(xl_sub_products)
+  puts "#{xl_sub_products.size} XL subscription products seeded"
 
-  xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
-  puts "#{xl_subs} XL subscriptions created"
-
-  puts "Creating Commercial products"
-
-  commercial_products = [
-    { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
-    { title: "Weekly Collection Service (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
-    { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
-    { title: "Volume Processing per 45L (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    { title: "Volume Processing per 45L (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
-    { title: "Volume Processing per 45L (3-month rate)", description: "Volume charge per 45L bucket", price: 30 },
-    { title: "Volume Processing per 25L (12-month rate)", description: "Volume charge per 25L bucket", price: 24 },
-    { title: "Volume Processing per 25L (6-month rate)", description: "Volume charge per 25L bucket", price: 27 },
-    { title: "Volume Processing per 25L (3-month rate)", description: "Volume charge per 25L bucket", price: 30 }
+  # ── Commercial rate-card products (invoice_only) ──────────────────────────────
+  # Canonical titles that InvoiceBuilder uses for title-string lookups.
+  # Old "Weekly Collection Service" titles from this branch are replaced here.
+  puts "Creating Commercial rate-card products"
+  commercial_invoice_products = [
+    { title: "Commercial collection fee (6-month)",  description: "Monthly collection service fee, 6-month contract rate",  price: 220,   billing_type: "invoice_only" },
+    { title: "Commercial collection fee (12-month)", description: "Monthly collection service fee, 12-month contract rate", price: 200,   billing_type: "invoice_only" },
+    { title: "Commercial collection fee (3-month)",  description: "Monthly collection service fee, 3-month contract rate",  price: 240,   billing_type: "invoice_only" },
+    { title: "Commercial volume per 25L bucket",     description: "Volume processing per 25L bucket per collection visit",  price: 85.00, billing_type: "invoice_only" },
+    { title: "Commercial volume per 45L bucket",     description: "Volume processing per 45L bucket per collection visit",  price: 76.50, billing_type: "invoice_only" },
+    { title: "Commercial volume per 50L bucket",     description: "Volume processing per 50L bucket per collection visit",  price: 85.00, billing_type: "invoice_only" }
   ]
+  seed_products(commercial_invoice_products)
+  puts "#{commercial_invoice_products.size} Commercial rate-card products seeded"
 
-  seed_products(commercial_products)
+  # ── Commercial quote-only products ───────────────────────────────────────────
+  # Shown on quote forms; prices are full 6-month contract values per unit.
+  # Each maps to an invoice rate-card product via invoice_product_id (wired below).
+  puts "Creating Commercial quote-only products"
+  commercial_quote_products = [
+    { title: "Weekly collection (6-month rate @ R220pm)",        description: "Full 6-month collection contract per weekly slot (6 × R220)", price: 1320, billing_type: "quote_only" },
+    { title: "Volume Processing per 25L (Premium 6-month rate)", description: "Full 6-month volume processing contract per 25L bucket",       price: 300,  billing_type: "quote_only" },
+    { title: "Volume Processing per 45L (Premium 6-month rate)", description: "Full 6-month volume processing contract per 45L bucket",       price: 459,  billing_type: "quote_only" }
+  ]
+  seed_products(commercial_quote_products)
+  puts "#{commercial_quote_products.size} Commercial quote-only products seeded"
 
-  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
-  puts "#{commercial_products_count} Commercial products created"
-
+  # ── Additional stock & misc ───────────────────────────────────────────────────
   puts "Creating additional stock"
-
   additional_stock_products = [
-    { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
-    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 }
+    { title: "Compost bin bags",                description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90,  billing_type: "standard" },
+    { title: "Soil for Life Compost",           description: "5kg of Soil for Life potting soil",                        price: 80,  billing_type: "standard" },
+    { title: "Referred a friend discount (R50)", description: "Referral reward discount",                                price: -50, billing_type: "invoice_only" },
+    { title: "Once-off Collection",             description: "Single kitchen scrap collection",                          price: 400, billing_type: "invoice_only" }
   ]
-
   seed_products(additional_stock_products)
+  puts "Additional stock and once-off seeded"
 
-  puts "Additional stock created"
+  # ── Wire quote → invoice product mappings ────────────────────────────────────
+  puts "Wiring quote → invoice product mappings"
+  {
+    "Weekly collection (6-month rate @ R220pm)"         => "Commercial collection fee (6-month)",
+    "Volume Processing per 25L (Premium 6-month rate)"  => "Commercial volume per 25L bucket",
+    "Volume Processing per 45L (Premium 6-month rate)"  => "Commercial volume per 45L bucket"
+  }.each do |quote_title, invoice_title|
+    quote_p   = Product.find_by!(title: quote_title)
+    invoice_p = Product.find_by!(title: invoice_title)
+    quote_p.update!(invoice_product_id: invoice_p.id)
+    puts "  ✓ #{quote_title} → #{invoice_title}"
+  end
 
-  once_off_products = [
-    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
-  ]
-
-  seed_products(once_off_products)
-  puts "Once-off Collection product created"
-
-  puts "A total of #{Product.count} products have been seeded to the DB."
+  puts "\nProduct taxonomy summary:"
+  Product.group(:billing_type).count.each { |type, count| puts "  #{type}: #{count}" }
+  puts "Total: #{Product.count} products seeded to the DB."
 
   # DEV ONLY SEEDS
 

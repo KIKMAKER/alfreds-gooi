@@ -7,7 +7,27 @@
     <%= f.input :price, label: "Price (Rands)" %>
     <%= f.input :stock, label: "Stock Quantity" %>
     <%= f.input :is_active, label: "Active in Shop?", as: :boolean %>
-    <%= f.input :quote_only, label: "Quote only (hide from invoices)", as: :boolean %>
+
+    <%= f.input :billing_type,
+        as: :select,
+        collection: [
+          ["Standard — shown on quotes and invoices", "standard"],
+          ["Quote only — maps to an invoice product", "quote_only"],
+          ["Invoice only — never shown on quote forms", "invoice_only"]
+        ],
+        include_blank: false,
+        label: "Billing type",
+        hint: "Controls where this product appears",
+        input_html: { id: "product_billing_type" } %>
+
+    <div id="invoice-product-mapping" style="<%= @product.billing_type == 'quote_only' ? '' : 'display:none;' %>">
+      <%= f.input :invoice_product_id,
+          as: :select,
+          collection: @invoice_eligible_products.map { |p| ["#{p.title} (R#{p.price.to_i})", p.id] },
+          include_blank: "— select invoice equivalent —",
+          label: "Invoice equivalent product",
+          hint: "When building an invoice from a quote, this product is used in place of the quote product" %>
+    </div>
 
     <%= f.input :images,
                 as: :file,
@@ -30,3 +50,13 @@
 
   <%= link_to "← Back to Products", admin_products_path, class: "mt-3 d-block" %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const select = document.getElementById("product_billing_type");
+    const mapping = document.getElementById("invoice-product-mapping");
+    function toggle() { mapping.style.display = select.value === "quote_only" ? "" : "none"; }
+    select.addEventListener("change", toggle);
+    toggle();
+  });
+</script>

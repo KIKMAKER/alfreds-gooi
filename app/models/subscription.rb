@@ -9,6 +9,9 @@ class Subscription < ApplicationRecord
   has_many :contacts, dependent: :destroy
   accepts_nested_attributes_for :contacts, allow_destroy: true, reject_if: :all_blank
 
+  # Records which accepted quotation created this subscription (nil for non-quote subscriptions).
+  belongs_to :quotation, optional: true
+
   # Satellite subscriptions exist only to generate collections on a second collection day.
   # All billing flows through the primary. Satellites are never invoiced independently.
   belongs_to :primary_subscription, class_name: "Subscription", optional: true

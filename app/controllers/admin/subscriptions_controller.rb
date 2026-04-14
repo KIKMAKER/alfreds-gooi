@@ -47,11 +47,15 @@ class Admin::SubscriptionsController < ApplicationController
         )
       end
 
+      quotation = Quotation.find_by(id: params[:quotation_id]) if params[:quotation_id].present?
+      @subscription.update_column(:quotation_id, quotation.id) if quotation
+
       referee = User.find_by(referral_code: @subscription.referral_code) if @subscription.referral_code.present?
       InvoiceBuilder.new(
         subscription: @subscription,
         is_new:       @subscription.is_new_customer,
-        referee:      referee
+        referee:      referee,
+        quotation:    quotation
       ).call
       CreateFirstCollectionJob.perform_now(@subscription) if @subscription.once_off?
       redirect_to admin_user_path(@user), notice: "Subscription created and invoice sent."

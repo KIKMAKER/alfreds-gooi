@@ -12,7 +12,7 @@ class Admin::QuotationsController < ApplicationController
     @quotation.expires_at   = Date.today + 30.days
     @quotation.duration_months ||= 6
     @quotation.quotation_items.build
-    @products = Product.all.order(:title)
+    @products = Product.quote_eligible.order(:title)
     @users    = User.where(role: :customer).order(:first_name, :last_name)
   end
 
@@ -24,14 +24,14 @@ class Admin::QuotationsController < ApplicationController
       @quotation.calculate_total
       redirect_to quotation_path(@quotation), notice: 'Quotation was successfully created.'
     else
-      @products = Product.all.order(:title)
+      @products = Product.quote_eligible.order(:title)
       @users = User.where(role: :customer).order(:first_name, :last_name)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @products = Product.all.order(:title)
+    @products = Product.quote_eligible.order(:title)
     @users = User.where(role: :customer).order(:first_name, :last_name)
     @quotation.quotation_items.build if @quotation.quotation_items.empty?
   end
