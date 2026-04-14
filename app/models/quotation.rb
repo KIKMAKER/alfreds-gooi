@@ -90,7 +90,17 @@ class Quotation < ApplicationRecord
   end
 
   def needs_satellite?
-    collections_per_week > 1
+    effective_collections_per_week > 1
+  end
+
+  # Returns the stored collections_per_week, falling back to the line-item qty
+  # of the "Weekly collection" product if the stored value is still the default.
+  def effective_collections_per_week
+    return collections_per_week if collections_per_week > 1
+
+    weekly_item = quotation_items.joins(:product)
+                                 .find { |i| i.product.title.match?(/weekly collection/i) }
+    weekly_item ? weekly_item.quantity.to_i : collections_per_week
   end
 
   # Scans product titles for "25L" or "45L" to infer bucket size.

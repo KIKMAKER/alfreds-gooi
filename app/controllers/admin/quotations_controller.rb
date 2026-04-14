@@ -37,9 +37,9 @@ class Admin::QuotationsController < ApplicationController
   end
 
   def update
-    if params[:quotation][:quotation_items_attributes].present?
-      @quotation.update(quotation_params)
+    @quotation.update(quotation_params.except(:quotation_items_attributes))
 
+    if params[:quotation][:quotation_items_attributes].present?
       params[:quotation][:quotation_items_attributes].each do |key, item_params|
         next unless key.to_s.start_with?('new_')
         next if item_params[:quantity].blank? || item_params[:quantity].to_f <= 0
@@ -51,12 +51,10 @@ class Admin::QuotationsController < ApplicationController
           amount: product.price
         )
       end
-
-      @quotation.calculate_total
-      redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
-    else
-      render :edit, status: :unprocessable_entity
     end
+
+    @quotation.calculate_total
+    redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
   end
 
   def destroy

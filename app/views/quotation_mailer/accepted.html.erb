@@ -62,7 +62,7 @@
     </tr>
     <tr>
       <td style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">Collections per week</td>
-      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.collections_per_week %></td>
+      <td style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb;"><%= @quotation.effective_collections_per_week %></td>
     </tr>
     <% if @quotation.buckets_per_collection.present? %>
     <tr style="background: #f9fafb;">
@@ -127,9 +127,9 @@
   </table>
 
   <div style="text-align: center; margin-bottom: 24px;">
-    <a href="<%= admin_quotations_url %>"
+    <a href="<%= edit_admin_quotation_url(@quotation) %>"
        style="display: inline-block; padding: 12px 24px; background: #1d4ed8; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">
-      Open Admin Quotations
+      Edit Quotation #<%= @quotation.number %>
     </a>
   </div>
 
