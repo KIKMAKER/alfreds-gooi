@@ -14,86 +14,89 @@ end
 
 today = Date.today
 
-# Helper: first occurrence of wday on or after a given date
+# First occurrence of wday on or after a given date
 def first_wday_on_or_after(date, wday)
   days_ahead = (wday - date.wday) % 7
   date + days_ahead.days
 end
 
-# Helper: realistic bag/bucket count for a collection
+# Realistic bag/bucket count for a completed collection
 def collection_volume(plan, buckets_per_collection)
   case plan
-  when "XL"       then { buckets: [1.0, 1.0, 2.0, 1.5, 2.0].sample }
+  when "XL"         then { buckets: [1.0, 1.0, 2.0, 1.5, 2.0].sample }
   when "Commercial" then { buckets_45l: buckets_per_collection.to_i.clamp(1, 10) }
-  else                 { bags: [1, 1, 2, 2, 2, 3].sample }
+  else                   { bags: [1, 1, 2, 2, 2, 3].sample }
   end
 end
 
 created_collections = 0
-created_driver_days = 0
+sentinel = Date.new(2001, 1, 1)  # sentinel for "unset" holiday dates (DB default 2000-01-01)
 
 Subscription.find_each do |sub|
   next if sub.collection_day.blank? || sub.start_date.blank?
-  next if sub.pending?  # Pending subs haven't started yet
+  next if sub.pending?   # pending subs haven't started
+  next if sub.once_off?  # once-off handled by single CreateFirstCollectionJob; skip in bulk seed
 
-  target_wday  = Date::DAYNAMES.index(sub.collection_day)
-  sub_start    = sub.start_date.to_date
+  target_wday = Date::DAYNAMES.index(sub.collection_day)
+  sub_start   = sub.start_date.to_date
 
-  # End of range: completed subs stop at their end_date; active/paused extend one week ahead
-  sub_end = case sub.status.to_sym
-            when :completed
-              (sub.end_date || sub_start + sub.duration.to_i.months).to_date
-            else
-              today + 7.days
-            end
+  # Number of non-skipped collections needed for this subscription to complete.
+  # Mirrors CheckSubscriptionsForCompletionJob exactly.
+  required = (4.2 * sub.duration.to_i).ceil + 1
 
-  next if sub_start > sub_end
-
-  # Detect real holiday windows (default DB value is 2000-01-01 — ignore those)
-  sentinel      = Date.new(2001, 1, 1)
+  # Real holiday window, if set (ignore the 2000-01-01 placeholder)
   has_holiday   = sub.holiday_start.present? && sub.holiday_start > sentinel &&
                   sub.holiday_end.present?   && sub.holiday_end   > sentinel
   holiday_range = has_holiday ? (sub.holiday_start..sub.holiday_end) : nil
 
-  date = first_wday_on_or_after(sub_start, target_wday)
+  date         = first_wday_on_or_after(sub_start, target_wday)
+  non_skipped  = 0
+  first_pickup = true
 
-  first_collection = true
+  loop do
+    # ── Stop condition ──────────────────────────────────────────────────────
+    if sub.completed?
+      # Completed subs stop as soon as the quota is fulfilled.
+      # Also cap at today as a safety net for any data oddities.
+      break if non_skipped >= required
+      break if date > today
+    else
+      # Active / paused: generate up through next week (the scheduled-but-not-yet-done window).
+      # These subs haven't reached `required` yet because their start_date was set recently.
+      break if date > today + 7.days
+    end
 
-  while date <= sub_end
-    on_holiday = holiday_range&.cover?(date) || false
-
-    # ~8% random skips for past collections that are old enough to not be "just happened"
+    # ── Determine skip status ───────────────────────────────────────────────
+    on_holiday  = holiday_range&.cover?(date) || false
+    # ~8% random skip for collections older than 2 weeks (not recent ones — those are reliable)
     random_skip = !on_holiday && date < (today - 14.days) && rand(12) == 0
+    skip        = on_holiday || random_skip
+    is_done     = date < today && !skip
 
-    skip    = on_holiday || random_skip
-    is_done = date < today && !skip
+    non_skipped += 1 unless skip
 
-    # Find or create the DriversDay for this date
+    # ── Driver's day ────────────────────────────────────────────────────────
     dd = DriversDay.find_or_create_by!(user: alfred, date: date) do |d|
-      # Only set kms for past days; leave future days bare so driver can fill in
       if date < today
         d.start_kms = rand(50_000..60_000)
         d.end_kms   = rand(60_001..62_000)
       end
-      created_driver_days += 1
     end
 
+    # ── Collection record ───────────────────────────────────────────────────
     attrs = {
       subscription: sub,
       drivers_day:  dd,
       date:         date,
       is_done:      is_done,
       skip:         skip,
-      new_customer: first_collection && !skip
+      new_customer: first_pickup && !skip
     }
-
-    if is_done && !skip
-      attrs.merge!(collection_volume(sub.plan, sub.buckets_per_collection))
-    end
+    attrs.merge!(collection_volume(sub.plan, sub.buckets_per_collection)) if is_done
 
     Collection.create!(attrs)
     created_collections += 1
-    first_collection = false
+    first_pickup = false
 
     date += 7.days
   end
@@ -106,8 +109,6 @@ puts "    upcoming: #{Collection.where(is_done: false, skip: false).count}"
 puts "  ✓ #{DriversDay.count} driver days"
 
 # ── Stats for the most recent completed driver day ────────────────────────────
-# Find the most recent past day that has collections, and give it bucket weight
-# data so the DayStatistic is populated for the impact dashboard.
 
 most_recent = DriversDay.where(user: alfred)
                         .where("date < ?", today)
@@ -115,26 +116,20 @@ most_recent = DriversDay.where(user: alfred)
                         .first
 
 if most_recent
-  bucket_count = most_recent.collections.where(skip: false).count.clamp(4, 12)
+  household_count = most_recent.collections.where(skip: false).count.clamp(4, 12)
 
-  bucket_count.times do
-    size = [25, 25, 45].sample
-    # Net weight after tare: ~4–11 kg realistic for a 25L household bucket
-    weight = case size
-             when 45 then rand(6.0..14.0).round(1)
-             else         rand(3.5..9.0).round(1)
-             end
+  household_count.times do
+    size   = [25, 25, 45].sample
+    weight = size == 45 ? rand(6.0..14.0).round(1) : rand(3.5..9.0).round(1)
     Bucket.create!(drivers_day: most_recent, bucket_size: size, weight_kg: weight)
   end
 
-  # Bucket.after_commit has already updated total_net_kg/total_buckets on the DriversDay.
-  # Now generate the full DayStatistic (CO₂, trees, per-bucket averages, etc.)
   most_recent.calculate_and_save_statistics!
+  stat = most_recent.day_statistic
 
   puts "\n  ✓ Stats generated for #{most_recent.date.strftime('%A %-d %b')}:"
-  stat = most_recent.day_statistic
   puts "    #{most_recent.collections.where(skip: false).count} households  ·  #{most_recent.total_net_kg.round(1)} kg  ·  #{most_recent.total_buckets} buckets"
   puts "    #{stat.avoided_co2e_kg.round(2)} kg CO₂e avoided  ·  #{stat.trees_gross.round(2)} tree-years gross"
 else
-  puts "  ⚠ No past driver days found — run again after creating subscriptions with past start dates"
+  puts "  ⚠ No past driver days found"
 end

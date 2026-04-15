@@ -24,6 +24,21 @@ User.find_or_create_by!(email: "gooi@gooi.com") do |u|
 end
 puts "  ✓ Kiki Kenn (admin)"
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+# How many non-skipped collections does a subscription need to complete?
+# Mirrors CheckSubscriptionsForCompletionJob exactly.
+def required_collections_for(duration)
+  (4.2 * duration).ceil + 1
+end
+
+# Approximate real-world weeks to complete a subscription given ~8% skip rate.
+# Used to correctly space completed subs in the history chain.
+def weeks_to_complete(duration, skip_rate: 0.08)
+  required = required_collections_for(duration)
+  (required / (1.0 - skip_rate)).ceil + 1  # +1 week buffer
+end
+
 # ── CSV import ────────────────────────────────────────────────────────────────
 
 unless File.exist?(CSV_PATH)
@@ -35,10 +50,10 @@ end
 # Weighted toward active to reflect a healthy customer base.
 CURRENT_STATUSES = ([:active] * 13) + ([:pause] * 3) + ([:pending] * 2) + ([:completed] * 2)
 
-# Plan can change on renewal — use this to vary renewals slightly
+# Plan can change on renewal — Standard customers sometimes upgrade to XL.
 RENEWAL_PLANS = {
-  "Standard" => [:Standard, :Standard, :Standard, :XL],  # 75% stay Standard, 25% upgrade
-  "XL"       => [:XL, :XL, :XL],
+  "Standard"   => [:Standard, :Standard, :Standard, :XL],
+  "XL"         => [:XL, :XL, :XL],
   "Commercial" => [:Commercial]
 }
 
@@ -60,15 +75,15 @@ CSV.foreach(CSV_PATH, headers: :first_row) do |row|
 
   begin
     user = User.create!(
-      first_name:  first_name,
-      last_name:   last_name,
-      email:       email,
+      first_name:   first_name,
+      last_name:    last_name,
+      email:        email,
       phone_number: phone,
-      password:    "password",
-      role:        "customer",
-      customer_id: customer_id.presence
+      password:     "password",
+      role:         "customer",
+      customer_id:  customer_id.presence
     )
-  rescue ActiveRecord::RecordInvalid => e
+  rescue ActiveRecord::RecordInvalid
     failed += 1
     next
   end
@@ -81,33 +96,46 @@ CSV.foreach(CSV_PATH, headers: :first_row) do |row|
   current_start = csv_start
 
   total_subs.times do |i|
-    is_last = (i == total_subs - 1)
+    is_last  = (i == total_subs - 1)
+    status   = is_last ? CURRENT_STATUSES.sample : :completed
 
-    # Pick plan: CSV plan for first sub, allow upgrades on renewal
     sub_plan = if i == 0
                  base_plan.to_sym
                else
                  (RENEWAL_PLANS[base_plan] || [:Standard]).sample
                end
 
-    if is_last
-      status         = CURRENT_STATUSES.sample
-      end_date_val   = status == :completed ? current_start + sub_duration.months : nil
-      holiday_start  = nil
-      holiday_end    = nil
+    if is_last && status != :completed
+      # ── Active / paused / pending sub ──────────────────────────────────
+      # Anchor start_date so the sub is mid-way through (40–75% complete).
+      # Without this, a 3-month sub started in Oct 2024 would already be
+      # done 12 months later; this keeps it plausibly in-progress today.
+      required      = required_collections_for(sub_duration)
+      done_so_far   = rand((required * 0.40).ceil..(required * 0.75).ceil)
+      weeks_so_far  = (done_so_far / 0.92).ceil
+      anchored_start = Date.today - weeks_so_far.weeks
 
-      # Paused users have an active holiday window
+      # Use whichever is more recent: the chain calculation or the anchor.
+      # This avoids a start_date in the future for very short chains.
+      current_start = [current_start, anchored_start].max
+
+      end_date_val  = nil
+      holiday_start = nil
+      holiday_end   = nil
+
       if status == :pause
         holiday_start = Date.today - rand(0..14).days
         holiday_end   = Date.today + rand(7..28).days
-      # ~12% of active users happen to be on holiday right now
       elsif status == :active && rand < 0.12
+        # 12% of active users currently on holiday
         holiday_start = Date.today - rand(0..5).days
         holiday_end   = Date.today + rand(3..18).days
       end
     else
-      status        = :completed
-      end_date_val  = current_start + sub_duration.months
+      # ── Completed historical sub ────────────────────────────────────────
+      # Use weeks_to_complete so the end_date reflects actual collection
+      # cadence (skips extend the contract), not just duration.months.
+      end_date_val  = current_start + weeks_to_complete(sub_duration).weeks
       holiday_start = nil
       holiday_end   = nil
     end
@@ -124,12 +152,12 @@ CSV.foreach(CSV_PATH, headers: :first_row) do |row|
     )
     sub.holiday_start = holiday_start if holiday_start
     sub.holiday_end   = holiday_end   if holiday_end
-    # Use save (not save!) — some legacy CSV suburbs/addresses may not pass strict validation
+    # Use save (not save!) — some legacy CSV suburbs may not pass strict validation
     sub.save
 
     unless is_last
-      next_start   = end_date_val + rand(5..30).days
-      # Don't build a chain of future subs
+      # Next sub starts a short break after this one completes
+      next_start = end_date_val + rand(5..30).days
       break if next_start > Date.today
       current_start = next_start
       sub_duration  = [3, 6].sample
