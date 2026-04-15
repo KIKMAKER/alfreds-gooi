@@ -75,6 +75,7 @@ elsif proceed == "users"
   puts "Clearing user data..."
   [OrderItem, Order, InvoiceItem,
    Collection, Invoice, BusinessProfile, Referral,
+   WhatsappMessage, Contact, RevenueRecognition,
    DriversDay, QuotationItem, Quotation, Subscription].each(&:destroy_all)
   User.destroy_all
   puts "Cleared."
@@ -115,6 +116,7 @@ elsif proceed == "y"
     Bucket, DropOffEvent,
     DriversDay,
     QuotationItem, Quotation,
+    WhatsappMessage, Contact, RevenueRecognition,
     Subscription,
     DropOffSite,
     User,
