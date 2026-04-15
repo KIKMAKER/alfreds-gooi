@@ -456,11 +456,15 @@ class SubscriptionsController < ApplicationController
     driver = User.find_by(first_name: "Alfred", role: 'driver')
     @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
 
+    # Exclude users who have already resubscribed (active or pending sub exists)
+    resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq
+
     # Completed subs on today's collection day that ended in the last 2 weeks
     candidates = Subscription
       .where(collection_day: Date::DAYNAMES[today.wday])
       .where(status: 'completed')
       .where(end_date: (today - 2.weeks)..today)
+      .where.not(user_id: resubscribed_user_ids)
 
     # Exclude any sub that still has a non-skipped collection scheduled today or later.
     # This covers both today's route AND pre-created future collections — the old check
