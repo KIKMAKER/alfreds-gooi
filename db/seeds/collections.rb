@@ -1,6 +1,8 @@
 puts "\n--- Seeding collections (date-relative) ---"
 puts "  Clearing existing collections and driver days..."
 Collection.destroy_all
+Bucket.destroy_all
+DropOffEvent.destroy_all
 DriversDay.destroy_all
 puts "  Cleared."
 
