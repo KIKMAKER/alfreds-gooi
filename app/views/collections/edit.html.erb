@@ -91,6 +91,7 @@
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
+          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
           <p>Users subs:</p>
           <% @collection.subscription.user.subscriptions.each do |sub| %>
             <%= sub.id %>
@@ -118,6 +119,7 @@
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
+          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
           <p>Users subs:</p>
           <% @collection.subscription.user.subscriptions.each do |sub| %>
             <%= sub.id %>
@@ -151,6 +153,7 @@
         <% if current_user.admin? %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
+          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
           <p>Users subs:</p>
           <% @collection.subscription.user.subscriptions.each do |sub| %>
             <%= sub.id %>
