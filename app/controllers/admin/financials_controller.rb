@@ -3,6 +3,7 @@ class Admin::FinancialsController < ApplicationController
   before_action :require_admin
 
   def dashboard
+    @operational = OperationalMetrics.new.calculate
     @date_range = parse_date_range(params[:range] || 'this_month')
 
     # Get financial metrics for the date range

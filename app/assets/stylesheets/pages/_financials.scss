@@ -1,0 +1,81 @@
+// ── Financial dashboard ─────────────────────────────────────────────────
+
+.fin-section {
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-bottom: 2px solid var(--gooi-green, #3a7d44);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+// Grid of stat cards
+.fin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fin-stat {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  &--highlight {
+    background: #fff8e7;
+    border-color: #ffc107;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #212529;
+  }
+
+  &__note {
+    font-size: 0.72rem;
+    color: #6c757d;
+  }
+}
+
+// Pay yourself section
+.fin-payself-summary {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 480px;
+}
+
+.fin-payself-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 0.95rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--total {
+    font-weight: 700;
+    font-size: 1.05rem;
+    background: #ffffff;
+  }
+}
