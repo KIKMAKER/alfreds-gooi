@@ -229,6 +229,62 @@
     </div>
 
     <%# ─────────────────────────────────────────────────────────
+        PRICE PER LITRE BY PLAN
+    ──────────────────────────────────────────────────────────── %>
+    <% litre_pricing = @operational[:litre_pricing] %>
+    <% if litre_pricing.any? %>
+      <div class="fin-section mb-5">
+        <h2 class="fin-section__title">What You Charge Per Litre</h2>
+        <p class="text-muted mb-3">
+          Based on actual collections in the last 3 months.
+          Standard customers bring bags (5L each); XL bring 25L buckets; Commercial have tracked 25L/45L buckets.
+        </p>
+
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th class="text-end">Active subs</th>
+              <th class="text-end">Volume unit</th>
+              <th class="text-end">Avg L/visit</th>
+              <th class="text-end">Visits/month</th>
+              <th class="text-end">Avg L/month</th>
+              <th class="text-end">Avg charge/month</th>
+              <th class="text-end fw-bold">R per litre</th>
+              <th class="text-end">Total revenue/month</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% litre_pricing.each do |plan, data| %>
+              <tr>
+                <td><strong><%= plan %></strong></td>
+                <td class="text-end"><%= data[:active_count] %></td>
+                <td class="text-end text-muted"><small><%= data[:volume_unit] %></small></td>
+                <td class="text-end"><%= number_with_delimiter(data[:avg_litres_per_visit]) %>L</td>
+                <td class="text-end"><%= data[:avg_visits_per_month] %></td>
+                <td class="text-end"><%= number_with_delimiter(data[:avg_litres_per_month]) %>L</td>
+                <td class="text-end">R <%= number_with_delimiter(data[:avg_monthly_charge].to_i) %></td>
+                <td class="text-end">
+                  <% if data[:price_per_litre] %>
+                    <strong>R <%= data[:price_per_litre] %>/L</strong>
+                  <% else %>
+                    <span class="text-muted">—</span>
+                  <% end %>
+                </td>
+                <td class="text-end">R <%= number_with_delimiter(data[:total_monthly_revenue].to_i) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <p class="text-muted mt-2" style="font-size: 0.8rem;">
+          <em>Price per litre = average monthly charge ÷ average litres collected per month.
+          Visits/month is averaged across all active subscriptions of that plan.</em>
+        </p>
+      </div>
+    <% end %>
+
+    <%# ─────────────────────────────────────────────────────────
         PAY YOURSELF — salary sustainability calculator
     ──────────────────────────────────────────────────────────── %>
     <div class="fin-section mb-5">

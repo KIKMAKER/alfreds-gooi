@@ -9,11 +9,12 @@ class OperationalMetrics
 
   def calculate
     {
-      operational:    operational_data,
-      bakkie:         bakkie_metrics,
-      revenue:        subscription_revenue,
-      sustainability: sustainability_scenarios,
-      data_quality:   data_quality_notes
+      operational:       operational_data,
+      bakkie:            bakkie_metrics,
+      revenue:           subscription_revenue,
+      litre_pricing:     price_per_litre_by_plan,
+      sustainability:    sustainability_scenarios,
+      data_quality:      data_quality_notes
     }
   end
 
@@ -152,6 +153,126 @@ class OperationalMetrics
       }
     end
     result
+  end
+
+  # ── Price per litre by plan ─────────────────────────────────────────────
+
+  def price_per_litre_by_plan
+    three_months_ago = 3.months.ago.to_date
+    result = {}
+
+    # Standard — volume unit is bags (5L each)
+    std_subs = Subscription.active.where(plan: :Standard)
+    if std_subs.any?
+      std_ids = std_subs.pluck(:id)
+
+      # Avg litres per active collection in recent 3 months
+      std_cols = Collection.where(subscription_id: std_ids, skip: false)
+                           .where("date >= ?", three_months_ago)
+                           .where("bags > 0")
+      avg_litres = if std_cols.any?
+                     (std_cols.sum("bags * 5").to_f / std_cols.count).round(1)
+                   else
+                     5.0  # 1 standard bag fallback
+                   end
+
+      # Avg collections per subscription per month over last 3 months
+      avg_cols_per_month = collections_per_month(std_ids, three_months_ago)
+      monthly_litres     = (avg_litres * avg_cols_per_month).round(1)
+
+      avg_monthly = subscription_revenue.dig(:Standard, :avg_monthly).to_f.nonzero? || 220.0
+
+      result[:Standard] = {
+        volume_unit:          "bag (5L)",
+        avg_litres_per_visit: avg_litres,
+        avg_visits_per_month: avg_cols_per_month,
+        avg_litres_per_month: monthly_litres,
+        avg_monthly_charge:   avg_monthly,
+        total_monthly_revenue: subscription_revenue.dig(:Standard, :total_monthly).to_f,
+        active_count:         std_subs.count,
+        price_per_litre:      monthly_litres.positive? ? (avg_monthly / monthly_litres).round(2) : nil
+      }
+    end
+
+    # XL — volume unit is 25L buckets
+    xl_subs = Subscription.active.where(plan: :XL)
+    if xl_subs.any?
+      xl_ids = xl_subs.pluck(:id)
+
+      xl_cols = Collection.where(subscription_id: xl_ids, skip: false)
+                          .where("date >= ?", three_months_ago)
+                          .where("buckets > 0")
+      avg_litres = if xl_cols.any?
+                     (xl_cols.sum("buckets * 25").to_f / xl_cols.count).round(1)
+                   else
+                     25.0  # 1 × 25L bucket fallback
+                   end
+
+      avg_cols_per_month = collections_per_month(xl_ids, three_months_ago)
+      monthly_litres     = (avg_litres * avg_cols_per_month).round(1)
+
+      avg_monthly = subscription_revenue.dig(:XL, :avg_monthly).to_f.nonzero? || 300.0
+
+      result[:XL] = {
+        volume_unit:          "25L bucket",
+        avg_litres_per_visit: avg_litres,
+        avg_visits_per_month: avg_cols_per_month,
+        avg_litres_per_month: monthly_litres,
+        avg_monthly_charge:   avg_monthly,
+        total_monthly_revenue: subscription_revenue.dig(:XL, :total_monthly).to_f,
+        active_count:         xl_subs.count,
+        price_per_litre:      monthly_litres.positive? ? (avg_monthly / monthly_litres).round(2) : nil
+      }
+    end
+
+    # Commercial — volume unit is 25L or 45L buckets (tracked explicitly)
+    com_subs = Subscription.active.where(plan: :Commercial)
+    if com_subs.any?
+      com_ids = com_subs.pluck(:id)
+
+      com_cols = Collection.where(subscription_id: com_ids, skip: false)
+                           .where("date >= ?", three_months_ago)
+                           .where("buckets_25l > 0 OR buckets_45l > 0")
+      avg_litres = if com_cols.any?
+                     (com_cols.sum("buckets_25l * 25 + buckets_45l * 45").to_f / com_cols.count).round(1)
+                   else
+                     45.0  # 1 × 45L bucket fallback
+                   end
+
+      avg_cols_per_month = collections_per_month(com_ids, three_months_ago)
+      monthly_litres     = (avg_litres * avg_cols_per_month).round(1)
+
+      avg_monthly = subscription_revenue.dig(:Commercial, :avg_monthly).to_f.nonzero? || 500.0
+
+      result[:Commercial] = {
+        volume_unit:          "25L/45L bucket",
+        avg_litres_per_visit: avg_litres,
+        avg_visits_per_month: avg_cols_per_month,
+        avg_litres_per_month: monthly_litres,
+        avg_monthly_charge:   avg_monthly,
+        total_monthly_revenue: subscription_revenue.dig(:Commercial, :total_monthly).to_f,
+        active_count:         com_subs.count,
+        price_per_litre:      monthly_litres.positive? ? (avg_monthly / monthly_litres).round(2) : nil
+      }
+    end
+
+    result
+  end
+
+  # Average active collections per subscription per month over a window.
+  # Uses SQL aggregation rather than loading every collection record.
+  def collections_per_month(subscription_ids, since_date)
+    months_in_window = ((Date.current - since_date) / 30.44).round.clamp(1, 36).to_f
+
+    total_cols = Collection
+      .where(subscription_id: subscription_ids, skip: false)
+      .where("date >= ?", since_date)
+      .count
+
+    return 4.0 if total_cols.zero?  # fallback: weekly service ≈ 4/month
+
+    # Total collections / number of subs / months in window
+    (total_cols.to_f / subscription_ids.size / months_in_window).round(2)
   end
 
   def current_mrr
