@@ -19,7 +19,7 @@
             (<%= dq[:earliest_day]&.strftime("%b %Y") %> – <%= dq[:latest_day]&.strftime("%b %Y") %>)
           </p>
         </div>
-        <%= link_to "↓ Export last 2 months (CSV)", export_drivers_days_financials_path, class: "btn-today-green" %>
+        <%= link_to "↓ Export last 2 months (CSV)", admin_export_drivers_days_financials_path, class: "btn-today-green" %>
       </div>
 
       <div class="fin-stat-grid mb-3">
