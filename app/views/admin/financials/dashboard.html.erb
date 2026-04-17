@@ -48,9 +48,20 @@
           <span class="fin-stat__label">Avg stops / day</span>
           <% if op[:avg_stops_per_day] %>
             <span class="fin-stat__value"><%= op[:avg_stops_per_day] %></span>
-            <span class="fin-stat__note">last 3 months</span>
+            <span class="fin-stat__note">last 3 months, excl. skipped</span>
           <% else %>
             <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Stops / hour</span>
+          <% if op[:stops_per_hour] %>
+            <span class="fin-stat__value"><%= op[:stops_per_hour] %></span>
+            <span class="fin-stat__note">last <%= dq[:reliable_day_count] %> days, excl. skipped</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">needs reliable hours data</span>
           <% end %>
         </div>
 

@@ -71,11 +71,18 @@ class OperationalMetrics
 
   def avg_stops_per_day
     return nil if recent_days_for_stops.empty?
-    counts = recent_days_for_stops.map do |d|
-      d.collections.where(skip: false).where.not(is_done: false).count +
-        d.collections.where(skip: true).count
-    end
+    counts = recent_days_for_stops.map { |d| d.collections.where(skip: false).count }
     (counts.sum.to_f / counts.size).round(1)
+  end
+
+  # Stops per hour derived from the same reliable-hours window so both sides
+  # of the ratio come from identical days.
+  def stops_per_hour
+    return nil if reliable_days.empty?
+    total_hours = reliable_days.sum { |d| (d.end_time - d.start_time) / 3600.0 }
+    return nil unless total_hours.positive?
+    total_stops = reliable_days.sum { |d| d.collections.where(skip: false).count }
+    (total_stops.to_f / total_hours).round(2)
   end
 
   def avg_buckets_per_day
@@ -352,18 +359,19 @@ class OperationalMetrics
 
   def operational_data
     {
-      avg_hours_per_day:  avg_hours_per_day,
-      avg_kms_per_day:    avg_kms_per_day,
-      avg_stops_per_day:  avg_stops_per_day,
+      avg_hours_per_day:   avg_hours_per_day,
+      avg_kms_per_day:     avg_kms_per_day,
+      avg_stops_per_day:   avg_stops_per_day,
+      stops_per_hour:      stops_per_hour,
       avg_buckets_per_day: avg_buckets_per_day,
-      avg_days_per_month: avg_days_per_month,
-      monthly_hours:      monthly_hours,
-      monthly_kms:        monthly_kms,
-      cost_per_hour:      cost_per_hour,
-      cost_per_km:        cost_per_km,
-      cost_per_stop:      cost_per_stop,
-      avg_monthly_costs:  avg_monthly_costs,
-      current_mrr:        current_mrr
+      avg_days_per_month:  avg_days_per_month,
+      monthly_hours:       monthly_hours,
+      monthly_kms:         monthly_kms,
+      cost_per_hour:       cost_per_hour,
+      cost_per_km:         cost_per_km,
+      cost_per_stop:       cost_per_stop,
+      avg_monthly_costs:   avg_monthly_costs,
+      current_mrr:         current_mrr
     }
   end
 end
