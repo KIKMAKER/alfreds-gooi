@@ -140,10 +140,7 @@ class OperationalMetrics
       subs = Subscription.active.where(plan: plan)
       next if subs.empty?
 
-      monthly_amounts = subs.filter_map do |s|
-        total = s.monthly_subscription_amount.to_f + s.monthly_volume_amount.to_f
-        total.positive? ? total : nil
-      end
+      monthly_amounts = subs.filter_map { |s| effective_monthly_amount(s) }
 
       result[plan] = {
         count:         subs.count,
@@ -153,6 +150,19 @@ class OperationalMetrics
       }
     end
     result
+  end
+
+  # Returns the effective monthly charge for a subscription.
+  # Prefers the explicitly-stored monthly amounts (set at invoice creation),
+  # falls back to contract_total / duration for older records (common on
+  # Commercial subscriptions set up before the monthly_amount columns existed).
+  def effective_monthly_amount(sub)
+    explicit = sub.monthly_subscription_amount.to_f + sub.monthly_volume_amount.to_f
+    return explicit if explicit.positive?
+
+    if sub.contract_total.to_f.positive? && sub.duration.to_f.positive?
+      (sub.contract_total.to_f / sub.duration.to_f).round(2)
+    end
   end
 
   # ── Price per litre by plan ─────────────────────────────────────────────
