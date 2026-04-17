@@ -144,7 +144,7 @@ class OperationalMetrics
   def subscription_revenue
     result = {}
     %i[Standard XL Commercial once_off].each do |plan|
-      subs = Subscription.active.where(plan: plan)
+      subs = Subscription.active.where(plan: plan).includes(:invoices)
       next if subs.empty?
 
       monthly_amounts = subs.filter_map { |s| effective_monthly_amount(s) }
@@ -160,15 +160,33 @@ class OperationalMetrics
   end
 
   # Returns the effective monthly charge for a subscription.
-  # Prefers the explicitly-stored monthly amounts (set at invoice creation),
-  # falls back to contract_total / duration for older records (common on
-  # Commercial subscriptions set up before the monthly_amount columns existed).
+  # Three-level fallback:
+  #   1. Explicit monthly amounts stored at invoice creation (newest subscriptions)
+  #   2. contract_total / duration (set on many subscriptions at signup)
+  #   3. Implied from avg of last 2 paid invoices:
+  #        - monthly_invoicing? → invoice amount IS the monthly charge
+  #        - upfront billing    → invoice amount / duration = monthly charge
   def effective_monthly_amount(sub)
     explicit = sub.monthly_subscription_amount.to_f + sub.monthly_volume_amount.to_f
     return explicit if explicit.positive?
 
     if sub.contract_total.to_f.positive? && sub.duration.to_f.positive?
-      (sub.contract_total.to_f / sub.duration.to_f).round(2)
+      return (sub.contract_total.to_f / sub.duration.to_f).round(2)
+    end
+
+    # Invoices are already loaded via includes(:invoices)
+    paid = sub.invoices.select(&:paid).sort_by { |i| i.issued_date || Date.new(2000) }.last(2)
+    return nil if paid.empty?
+
+    avg_invoice = paid.sum(&:total_amount).to_f / paid.size
+    return nil unless avg_invoice.positive?
+
+    if sub.monthly_invoicing?
+      avg_invoice.round(2)
+    elsif sub.duration.to_f.positive?
+      (avg_invoice / sub.duration.to_f).round(2)
+    else
+      avg_invoice.round(2)
     end
   end
 
