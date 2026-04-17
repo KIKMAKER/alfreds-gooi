@@ -1,3 +1,5 @@
+require 'csv'
+
 class Admin::FinancialsController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
@@ -53,6 +55,67 @@ class Admin::FinancialsController < ApplicationController
     )
     @period_churn = @churn_calculator.period_churn_rate
     @churn_history = @churn_calculator.churn_history
+  end
+
+  def export_drivers_days
+    since = 2.months.ago.to_date
+    days  = DriversDay.where("date >= ?", since)
+                      .order(:date)
+                      .includes(collections: :subscription)
+
+    csv = CSV.generate(headers: true) do |csv|
+      csv << [
+        "Date", "Day",
+        "Hours worked", "KMs driven",
+        "Total stops", "Skipped stops",
+        "Standard stops", "XL stops", "Commercial stops", "Once-off stops",
+        "Standard litres", "XL litres", "Commercial litres",
+        "Total litres", "Total buckets", "Total net kg"
+      ]
+
+      days.each do |dd|
+        hours = dd.start_time && dd.end_time ? ((dd.end_time - dd.start_time) / 3600.0).round(2) : nil
+        kms   = dd.start_kms  && dd.end_kms  ? (dd.end_kms - dd.start_kms).round(1) : nil
+
+        active_cols  = dd.collections.reject(&:skip)
+        skipped_cols = dd.collections.select(&:skip)
+
+        by_plan = active_cols.group_by { |c| c.subscription&.plan }
+
+        std_cols  = by_plan["Standard"] || []
+        xl_cols   = by_plan["XL"]       || []
+        com_cols  = by_plan["Commercial"] || []
+        oo_cols   = by_plan["once_off"]  || []
+
+        std_litres = std_cols.sum { |c| c.bags.to_i * 5 }
+        xl_litres  = xl_cols.sum  { |c| c.buckets.to_i * 25 }
+        com_litres = com_cols.sum { |c| (c.buckets_25l.to_i * 25) + (c.buckets_45l.to_i * 45) }
+
+        csv << [
+          dd.date.iso8601,
+          dd.date.strftime("%A"),
+          hours,
+          kms,
+          active_cols.size,
+          skipped_cols.size,
+          std_cols.size,
+          xl_cols.size,
+          com_cols.size,
+          oo_cols.size,
+          std_litres,
+          xl_litres,
+          com_litres,
+          std_litres + xl_litres + com_litres,
+          dd.total_buckets,
+          dd.total_net_kg
+        ]
+      end
+    end
+
+    send_data csv,
+              filename: "gooi-drivers-days-#{Date.current}.csv",
+              type: "text/csv",
+              disposition: "attachment"
   end
 
   def chart_data
