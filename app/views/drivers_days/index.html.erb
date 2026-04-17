@@ -41,14 +41,14 @@
                 <% end %>
               </td>
               <td>
-                <%= drivers_day.collections.where(skip: false).count %>
+                <%= drivers_day.active_collection_count %>
               </td>
               <td>
                 <% if drivers_day.buckets.any? %>
                   <%= number_with_precision(drivers_day.total_litres, precision: 0) %>L
                   <small class="text-muted d-block">
-                    <%= drivers_day.buckets.where(bucket_size: 25).count %> × 25L,
-                    <%= drivers_day.buckets.where(bucket_size: 45).count %> × 45L
+                    <%= drivers_day.buckets.count { |b| b.bucket_size == 25 } %> × 25L,
+                    <%= drivers_day.buckets.count { |b| b.bucket_size == 45 } %> × 45L
                   </small>
                 <% else %>
                   —
@@ -56,7 +56,7 @@
               </td>
               <td>
                 <%= drivers_day.total_dropoff_duration_display %>
-                <% timed_count = drivers_day.drop_off_events.where.not(duration_minutes: nil).count %>
+                <% timed_count = drivers_day.drop_off_events.count { |e| e.duration_minutes.present? } %>
                 <% if timed_count > 0 %>
                   <small class="text-muted d-block">
                     <%= timed_count %> <%= 'drop-off'.pluralize(timed_count) %>

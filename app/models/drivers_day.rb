@@ -6,6 +6,13 @@ class DriversDay < ApplicationRecord
   has_one :day_statistic, dependent: :destroy
   belongs_to :current_drop_off_event, class_name: 'DropOffEvent', optional: true
 
+  scope :with_active_collection_counts, -> {
+    left_joins(:collections)
+      .where("collections.skip = false OR collections.id IS NULL")
+      .select("drivers_days.*, COUNT(collections.id) AS active_collection_count")
+      .group("drivers_days.id")
+  }
+
     # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -34,7 +41,11 @@ class DriversDay < ApplicationRecord
 
   # Calculate total time spent at drop-offs for this day
   def total_dropoff_duration_minutes
-    drop_off_events.where.not(duration_minutes: nil).sum(:duration_minutes)
+    if drop_off_events.loaded?
+      drop_off_events.sum { |e| e.duration_minutes.to_i }
+    else
+      drop_off_events.where.not(duration_minutes: nil).sum(:duration_minutes)
+    end
   end
 
   # Human-readable total drop-off duration

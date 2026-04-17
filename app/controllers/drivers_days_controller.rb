@@ -213,8 +213,10 @@ class DriversDaysController < ApplicationController
   end
 
   def index
-    # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.includes(:day_statistic).order(date: :desc)
+    @drivers_days = DriversDay
+      .with_active_collection_counts
+      .includes(:day_statistic, :buckets, :drop_off_events)
+      .order(date: :desc)
   end
 
   def show
@@ -297,23 +299,28 @@ class DriversDaysController < ApplicationController
     @trees_equivalent = stats.sum(&:trees_net).round
     @buckets_diverted = stats.sum(&:full_equiv).round
 
-    # Calculate unique customers served throughout the year
-    all_subscription_ids = @drivers_days.flat_map { |dd| dd.collections.pluck(:subscription_id) }.uniq
+    day_ids = @drivers_days.map(&:id)
+    collections_by_day = Collection.where(drivers_day_id: day_ids)
+                                   .pluck(:drivers_day_id, :subscription_id, :new_customer)
+                                   .group_by(&:first)
+
+    all_subscription_ids = collections_by_day.values.flat_map { |rows| rows.map { |r| r[1] } }.uniq
     @customers_served = all_subscription_ids.count
 
-    # Calculate new customers (first collection in the year)
-    @new_customers = @drivers_days.flat_map do |dd|
-      dd.collections.where(new_customer: true).pluck(:subscription_id)
-    end.uniq.count
+    @new_customers = collections_by_day.values
+                                       .flat_map { |rows| rows.select { |r| r[2] }.map { |r| r[1] } }
+                                       .uniq.count
 
     # Monthly breakdown
     @monthly_data = @drivers_days.group_by { |dd| dd.date.beginning_of_month }.map do |month, days|
       month_stats = days.map(&:day_statistic).compact
+      month_day_ids = days.map(&:id)
+      month_sub_ids = collections_by_day.values_at(*month_day_ids).compact.flat_map { |rows| rows.map { |r| r[1] } }.uniq
       {
         month: month,
         days_count: days.count,
         kg_collected: month_stats.sum(&:net_kg).round,
-        households: days.flat_map { |d| d.collections.pluck(:subscription_id) }.uniq.count,
+        households: month_sub_ids.count,
         co2_avoided: month_stats.sum(&:avoided_co2e_kg).round
       }
     end.sort_by { |m| m[:month] }
