@@ -144,7 +144,7 @@ class OperationalMetrics
   def subscription_revenue
     result = {}
     %i[Standard XL Commercial once_off].each do |plan|
-      subs = Subscription.active.where(plan: plan).includes(:invoices)
+      subs = Subscription.active.where(plan: plan).includes(invoices: { invoice_items: :product })
       next if subs.empty?
 
       monthly_amounts = subs.filter_map { |s| effective_monthly_amount(s) }
@@ -174,16 +174,17 @@ class OperationalMetrics
     # 2. Implied from avg of last 2 paid invoices — preferred over contract_total
     #    because contract_total is derived from product prices at signup, which may
     #    not match negotiated rates (especially for Commercial clients on quotations).
+    # invoices eager-loaded with invoice_items and products
     paid = sub.invoices.select(&:paid).sort_by { |i| i.issued_date || Date.new(2000) }.last(2)
     if paid.any?
-      avg_invoice = paid.sum(&:total_amount).to_f / paid.size
-      if avg_invoice.positive?
+      avg_recurring = paid.sum { |inv| recurring_total(inv) } / paid.size.to_f
+      if avg_recurring.positive?
         monthly = if sub.monthly_invoicing?
-                    avg_invoice
+                    avg_recurring
                   elsif sub.duration.to_f.positive?
-                    avg_invoice / sub.duration.to_f
+                    avg_recurring / sub.duration.to_f
                   else
-                    avg_invoice
+                    avg_recurring
                   end
         return monthly.round(2)
       end
@@ -315,6 +316,16 @@ class OperationalMetrics
 
     # Total collections / number of subs / months in window
     (total_cols.to_f / subscription_ids.size / months_in_window).round(2)
+  end
+
+  # Sum of invoice line items that represent recurring charges only.
+  # Excludes starter kit purchases (one-time cost identifiable by "Starter"
+  # in the product title) so they don't inflate the implied monthly rate.
+  def recurring_total(invoice)
+    invoice.invoice_items.sum do |item|
+      next 0 if item.product&.title.to_s.match?(/starter/i)
+      (item.amount.to_f * item.quantity.to_f)
+    end
   end
 
   def current_mrr
