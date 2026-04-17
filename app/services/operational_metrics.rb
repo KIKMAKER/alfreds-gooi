@@ -167,26 +167,31 @@ class OperationalMetrics
   #        - monthly_invoicing? → invoice amount IS the monthly charge
   #        - upfront billing    → invoice amount / duration = monthly charge
   def effective_monthly_amount(sub)
+    # 1. Explicit monthly amounts stored at invoice creation (newest subscriptions)
     explicit = sub.monthly_subscription_amount.to_f + sub.monthly_volume_amount.to_f
     return explicit if explicit.positive?
 
-    if sub.contract_total.to_f.positive? && sub.duration.to_f.positive?
-      return (sub.contract_total.to_f / sub.duration.to_f).round(2)
+    # 2. Implied from avg of last 2 paid invoices — preferred over contract_total
+    #    because contract_total is derived from product prices at signup, which may
+    #    not match negotiated rates (especially for Commercial clients on quotations).
+    paid = sub.invoices.select(&:paid).sort_by { |i| i.issued_date || Date.new(2000) }.last(2)
+    if paid.any?
+      avg_invoice = paid.sum(&:total_amount).to_f / paid.size
+      if avg_invoice.positive?
+        monthly = if sub.monthly_invoicing?
+                    avg_invoice
+                  elsif sub.duration.to_f.positive?
+                    avg_invoice / sub.duration.to_f
+                  else
+                    avg_invoice
+                  end
+        return monthly.round(2)
+      end
     end
 
-    # Invoices are already loaded via includes(:invoices)
-    paid = sub.invoices.select(&:paid).sort_by { |i| i.issued_date || Date.new(2000) }.last(2)
-    return nil if paid.empty?
-
-    avg_invoice = paid.sum(&:total_amount).to_f / paid.size
-    return nil unless avg_invoice.positive?
-
-    if sub.monthly_invoicing?
-      avg_invoice.round(2)
-    elsif sub.duration.to_f.positive?
-      (avg_invoice / sub.duration.to_f).round(2)
-    else
-      avg_invoice.round(2)
+    # 3. contract_total / duration as last resort (product-price-based, may be stale)
+    if sub.contract_total.to_f.positive? && sub.duration.to_f.positive?
+      (sub.contract_total.to_f / sub.duration.to_f).round(2)
     end
   end
 
