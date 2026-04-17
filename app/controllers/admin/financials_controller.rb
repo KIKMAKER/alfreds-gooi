@@ -87,9 +87,9 @@ class Admin::FinancialsController < ApplicationController
         com_cols  = by_plan["Commercial"] || []
         oo_cols   = by_plan["once_off"]  || []
 
-        std_litres = std_cols.sum { |c| c.bags.to_i * 5 }
-        xl_litres  = xl_cols.sum  { |c| c.buckets.to_i * 25 }
-        com_litres = com_cols.sum { |c| (c.buckets_25l.to_i * 25) + (c.buckets_45l.to_i * 45) }
+        std_litres = std_cols.sum(&:volume_litres)
+        xl_litres  = xl_cols.sum(&:volume_litres)
+        com_litres = com_cols.sum(&:volume_litres)
 
         csv << [
           dd.date.iso8601,

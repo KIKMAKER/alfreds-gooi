@@ -45,12 +45,13 @@ class Collection < ApplicationRecord
     sub = subscription
     return 0 unless sub
 
-    if sub.Commercial?
-      (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
-    elsif sub.XL?
-      buckets.to_i * 25
-    else
+    if sub.Standard? || sub.once_off?
       bags.to_i * 5
+    else
+      # XL and Commercial: use actual tracked bucket sizes where available,
+      # fall back to total buckets × 25L if sizes haven't been recorded yet.
+      sized = (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
+      sized.positive? ? sized : (buckets.to_i * 25)
     end
   end
 
