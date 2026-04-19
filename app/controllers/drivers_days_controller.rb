@@ -209,7 +209,10 @@ class DriversDaysController < ApplicationController
 
   def collections
     date = @drivers_day.date
-    @collections = @drivers_day.collections.includes(:subscription).where(date: date).order(date: :desc)
+    @collections = @drivers_day.collections
+                               .includes(subscription: :user)
+                               .where(date: date)
+                               .order(position: :asc)
   end
 
   def index

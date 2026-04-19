@@ -223,6 +223,89 @@
   &--message { background: #e8f5e9; i { color: $medium-green; } }
 }
 
+// ── Collections list ──────────────────────────────────────────────────────────
+
+.dd-collection-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: rgba(100, 100, 111, 0.1) 0 2px 8px 0;
+  transition: box-shadow 0.2s ease;
+
+  &:hover { box-shadow: rgba(100, 100, 111, 0.2) 0 4px 16px 0; }
+
+  &--skip {
+    opacity: 0.55;
+    background: #f8f8f8;
+  }
+}
+
+.dd-collection-item__pos {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $dark-green 0%, $medium-green 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dd-collection-item__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.dd-collection-item__name {
+  font-weight: 700;
+  color: $dark-green;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dd-collection-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.dd-collection-item__note {
+  color: #888;
+  font-style: italic;
+
+  i { margin-right: 2px; font-size: 0.75rem; }
+
+  &--alfred { color: $medium-green; }
+}
+
+.dd-collection-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+
+  &--new  { background: #e8f5e9; color: $medium-green; }
+  &--skip { background: #fdecea; color: #c0392b; }
+  &--done { background: #e3f2fd; color: #1976d2; }
+}
+
 // ── Edit form card ────────────────────────────────────────────────────────────
 
 .dd-form-card {
@@ -251,4 +334,19 @@
   @media (max-width: 430px) { padding: 1rem; }
 
   .form-group { margin-bottom: 1rem; }
+}
+
+.dd-date-input {
+  // Override the datetime-local appearance for consistency
+  &::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+}
+
+.dd-form-kms-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+
+  &__field { min-width: 0; }
 }

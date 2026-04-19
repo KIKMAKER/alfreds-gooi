@@ -1,32 +1,81 @@
-<div class="gooi-container">
-  <div class="outline">
-    <h1 class="m-3">Collections for <%= @drivers_day.date.strftime("%e %b %Y") %></h1>
-    <div class="grid-container-sub-show">
-      <div class="grid-header">
-        <div class="grid-item "><strong>ID</strong></div>
-        <div class="grid-item"><strong>DATE</strong></div>
-        <div class="grid-item"><strong>BAGS/BUCKETS</strong></div>
-        <div class="grid-item"><strong>KIKI:</strong></div>
-        <div class="grid-item"><strong>ALFRED:</strong></div>
-      </div>
-      <% @collections.each do |collection| %>
-        <div class="grid-row">
-          <div class="grid-item grid-item-flexed"><%= collection.id %><%= link_to "edit", edit_collection_path(collection) %> <%= link_to "delete", collection_path(collection), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></div>
-          <div class="grid-item"><%= collection.date&.strftime("%e %b %Y") %></div>
-          <% if collection.subscription.Commercial? %>
-            <div class="grid-item"><%= collection.buckets_45l %> x 45L, <%= collection.buckets_25l %> x 25L</div>
-          <% elsif collection.subscription.XL? %>
-            <div class="grid-item"><%= collection.buckets %></div>
-          <% else %>
-            <div class="grid-item"><%= collection.bags %></div>
-          <% end %>
-          <div class="grid-item"><%= collection.kiki_note %></div>
-          <div class="grid-item"><%= collection.alfred_message %></div>
-        </div>
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Collections</h1>
+      <p class="dd-header__sub"><%= @drivers_day.date.strftime('%A, %d %B %Y') %> &middot; <%= @collections.length %> stops</p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to drivers_day_path(@drivers_day), class: "tiny-yellow-btn" do %>
+        <i class="fa-solid fa-arrow-left"></i> Back
       <% end %>
     </div>
-    <div class="outline">
-      <%= link_to "home", root_path, class: "btn-yellow" %>
-    </div>
   </div>
+
+  <div class="dd-list">
+    <% @collections.each_with_index do |collection, i| %>
+      <div class="dd-collection-item <%= 'dd-collection-item--skip' if collection.skip? %>">
+
+        <div class="dd-collection-item__pos"><%= i + 1 %></div>
+
+        <div class="dd-collection-item__main">
+          <div class="dd-collection-item__name">
+            <%= collection.subscription&.display_name || "Unknown" %>
+            <% if collection.new_customer %>
+              <span class="dd-collection-badge dd-collection-badge--new">New</span>
+            <% end %>
+            <% if collection.skip? %>
+              <span class="dd-collection-badge dd-collection-badge--skip">Skipped</span>
+            <% end %>
+            <% if collection.done? %>
+              <span class="dd-collection-badge dd-collection-badge--done">Done</span>
+            <% end %>
+          </div>
+
+          <div class="dd-collection-item__meta">
+            <% sub = collection.subscription %>
+            <% if sub&.Commercial? %>
+              <span><%= collection.buckets_45l %>&times;45L, <%= collection.buckets_25l %>&times;25L</span>
+            <% elsif sub&.XL? %>
+              <span><%= collection.buckets %> buckets</span>
+            <% else %>
+              <span><%= collection.bags %> bags</span>
+            <% end %>
+            <% if collection.kiki_note.present? %>
+              <span class="dd-collection-item__note">
+                <i class="fa-solid fa-note-sticky"></i> <%= collection.kiki_note %>
+              </span>
+            <% end %>
+            <% if collection.alfred_message.present? %>
+              <span class="dd-collection-item__note dd-collection-item__note--alfred">
+                <i class="fa-solid fa-message"></i> <%= collection.alfred_message %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="dd-list-item__actions">
+          <%= link_to edit_collection_path(collection), class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-pen"></i>
+          <% end %>
+          <%= link_to collection_path(collection),
+              data: { turbo_method: :delete, turbo_confirm: "Delete this collection?" },
+              class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-trash"></i>
+          <% end %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+
+  <div class="quick-actions">
+    <%= link_to drivers_day_path(@drivers_day), class: "action-btn" do %>
+      <i class="fa-solid fa-chart-bar"></i> Day Summary
+    <% end %>
+    <%= link_to drivers_days_path, class: "action-btn" do %>
+      <i class="fa-solid fa-list"></i> All Days
+    <% end %>
+  </div>
+
 </div>

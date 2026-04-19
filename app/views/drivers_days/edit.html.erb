@@ -21,13 +21,32 @@
         <h3>Route Times & Distance</h3>
       </div>
       <div class="dd-form-card__body">
-        <%= f.input :date, as: :datetime, required: true %>
-        <%= f.input :start_time, as: :datetime %>
-        <%= f.input :end_time, as: :datetime %>
-        <%= f.input :sfl_time, as: :datetime, label: "SFL Time" %>
-        <%= f.input :start_kms, input_html: { min: 0 } %>
-        <%= f.input :end_kms, input_html: { min: 0 } %>
-        <%= f.input :total_buckets, input_html: { min: 0 } %>
+        <%= f.input :date, as: :date, input_html: { class: "form-control dd-date-input" } %>
+
+        <%= f.input :start_time, as: :string, label: "Start Time",
+            input_html: {
+              type: "datetime-local",
+              class: "form-control dd-date-input",
+              value: @drivers_day.start_time&.strftime('%Y-%m-%dT%H:%M')
+            } %>
+
+        <%= f.input :end_time, as: :string, label: "End Time",
+            input_html: {
+              type: "datetime-local",
+              class: "form-control dd-date-input",
+              value: @drivers_day.end_time&.strftime('%Y-%m-%dT%H:%M')
+            } %>
+
+        <div class="dd-form-kms-row">
+          <div class="dd-form-kms-row__field">
+            <%= f.input :start_kms, label: "Start KMs", input_html: { min: 0, class: "form-control" } %>
+          </div>
+          <div class="dd-form-kms-row__field">
+            <%= f.input :end_kms, label: "End KMs", input_html: { min: 0, class: "form-control" } %>
+          </div>
+        </div>
+
+        <%= f.input :total_buckets, input_html: { min: 0, class: "form-control" } %>
       </div>
     </div>
 
@@ -37,8 +56,8 @@
         <h3>Notes</h3>
       </div>
       <div class="dd-form-card__body">
-        <%= f.input :note %>
-        <%= f.input :message_from_alfred %>
+        <%= f.input :note, input_html: { class: "form-control" } %>
+        <%= f.input :message_from_alfred, input_html: { class: "form-control" } %>
       </div>
     </div>
 
