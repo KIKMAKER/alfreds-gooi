@@ -223,6 +223,224 @@
   &--message { background: #e8f5e9; i { color: $medium-green; } }
 }
 
+// ── Bucket entry page ─────────────────────────────────────────────────────────
+
+.bucket-totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 480px) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.bucket-total-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: rgba(100, 100, 111, 0.1) 0 2px 8px 0;
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: $dark-green;
+    line-height: 1.1;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 0.2rem;
+  }
+}
+
+// Scale input
+.bucket-scale-wrap {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.bucket-scale-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.bucket-scale-input {
+  width: 100%;
+  font-size: 4rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  color: $dark-green;
+  text-align: center;
+  border: none;
+  border-bottom: 3px solid $dark-green;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.25rem 0;
+  line-height: 1;
+  outline: none;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  &::placeholder { color: #ccc; }
+  &:focus { border-bottom-color: $medium-green; }
+}
+
+.bucket-net-preview {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  color: #bbb;
+  min-height: 1.4em;
+  transition: color 0.2s;
+
+  &--ready { color: $medium-green; font-weight: 600; }
+}
+
+// Size toggle buttons
+.bucket-size-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bucket-size-btn {
+  padding: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  background: white;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &--active {
+    border-color: $dark-green;
+    background: $dark-green;
+    color: white;
+    box-shadow: rgba(1, 63, 58, 0.3) 0 4px 16px 0;
+  }
+
+  &:active { transform: scale(0.97); }
+}
+
+// Half-full toggle
+.bucket-half-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.bucket-half-checkbox {
+  display: none; // visually hidden — label acts as the button
+}
+
+.bucket-half-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.875rem;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+
+  &--active {
+    border-color: $dark-yellow;
+    background: $dark-yellow;
+    color: white;
+  }
+}
+
+// Bucket list
+.bucket-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.bucket-list-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child { border-bottom: none; }
+
+  &__num {
+    width: 24px;
+    font-size: 0.75rem;
+    color: #bbb;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  &__size {
+    font-weight: 700;
+    color: $dark-green;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  &__farm {
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  &__kg {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: $medium-green;
+    flex-shrink: 0;
+  }
+
+  &__time {
+    font-size: 0.75rem;
+    color: #bbb;
+    flex-shrink: 0;
+    width: 36px;
+    text-align: right;
+  }
+
+  &__del {
+    color: #ddd;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: color 0.15s;
+    text-decoration: none;
+
+    &:hover { color: $red; }
+  }
+}
+
 // ── Collections list ──────────────────────────────────────────────────────────
 
 .dd-collection-item {
