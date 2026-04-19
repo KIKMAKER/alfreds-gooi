@@ -1,46 +1,110 @@
-<div class="driver-wrapper">
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Before you go…</h1>
+      <p class="dd-header__sub">A few things to check first</p>
+    </div>
+  </div>
+
   <% if @subscriptions.empty? %>
-    <h2>There are no subscriptions waiting for you.</h2>
+    <div class="dd-form-card">
+      <div class="dd-form-card__body">
+        <p>No subscriptions waiting for you today.</p>
+      </div>
+    </div>
+
   <% else %>
     <% if @skip_subscriptions.nil? %>
-      <p>hang tight, not all collections have been loaded.</p>
-      <p>Maybe give kiki a call?</p>
+      <div class="dd-form-card">
+        <div class="dd-form-card__body">
+          <p>Collections haven't all loaded yet. Maybe give Kiki a call?</p>
+        </div>
+      </div>
+
     <% else %>
-      <h2>Before you get started...</h2>
-      <br>
-      <h6><strong> <%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped:</strong></h6>
-      <% @skip_subscriptions.each do |sub| %>
-        <p><%= sub.display_name %> at <%= sub.street_address %> </p>
+
+      <% if @skip_subscriptions.any? %>
+        <div class="dd-form-card">
+          <div class="dd-form-card__header">
+            <i class="fa-solid fa-ban"></i>
+            <h3><%= pluralize(@skip_subscriptions.count, 'house') %> asked to be skipped</h3>
+          </div>
+          <div class="dd-form-card__body">
+            <% @skip_subscriptions.each do |sub| %>
+              <p class="mb-1"><strong><%= sub.display_name %></strong> — <%= sub.street_address %></p>
+            <% end %>
+          </div>
+        </div>
       <% end %>
-      <h3><strong>And <%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</strong></h3>
-      <% @bags_needed.each do |sub| %>
-        <p><%= sub.collections.last.needs_bags %> for <%= sub.display_name %> at <%= sub.street_address %></p>
+
+      <% if @bags_needed.any? %>
+        <div class="dd-form-card">
+          <div class="dd-form-card__header">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <h3><%= pluralize(@bags_needed.count, 'house needs') %> <%= @total_bags_needed %> bags</h3>
+          </div>
+          <div class="dd-form-card__body">
+            <% @bags_needed.each do |sub| %>
+              <p class="mb-1"><strong><%= sub.collections.max_by(&:id).needs_bags %> bags</strong> for <%= sub.display_name %> — <%= sub.street_address %></p>
+            <% end %>
+          </div>
+        </div>
       <% end %>
 
       <% if @products_needed.any? %>
-        <br>
-        <h3><strong>Products to Deliver Today:</strong></h3>
-        <% @products_needed.each do |item| %>
-          <p><strong><%= item[:quantity] %>x</strong> <%= item[:product].title %></p>
-        <% end %>
-        <p>Make sure to take them with you!</p>
+        <div class="dd-form-card">
+          <div class="dd-form-card__header">
+            <i class="fa-solid fa-box"></i>
+            <h3>Products to deliver today</h3>
+          </div>
+          <div class="dd-form-card__body">
+            <% @products_needed.each do |item| %>
+              <p class="mb-1"><strong><%= item[:quantity] %>×</strong> <%= item[:product].title %></p>
+            <% end %>
+            <p class="text-muted mt-2">Make sure to take them with you!</p>
+          </div>
+        </div>
       <% end %>
 
       <% if @recently_lapsed.any? %>
-        <br>
-        <h3><strong><%= pluralize(@recently_lapsed.count, 'customer') %> recently lapsed</strong></h3>
-        <p>Their subscriptions ended in the last 2 weeks. You can collect from them as a courtesy.</p>
-        <br>
-        <%= link_to "Message recently lapsed customers", recently_lapsed_subscriptions_path, class: "small-yellow-btn mb-3" %>
+        <div class="dd-form-card">
+          <div class="dd-form-card__header">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <h3><%= pluralize(@recently_lapsed.count, 'customer') %> recently lapsed</h3>
+          </div>
+          <div class="dd-form-card__body">
+            <p class="text-muted mb-2">Their subscriptions ended in the last 2 weeks. You can collect from them as a courtesy.</p>
+            <%= link_to "Message recently lapsed customers", recently_lapsed_subscriptions_path, class: "btn-yellow btn-sm" %>
+          </div>
+        </div>
       <% end %>
+
     <% end %>
   <% end %>
-  <br>
-  <h2>Let's get to it!</h2>
-  <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
-    <div class="drivers-form">
-      <%= f.input :start_kms, label: false, placeholder: "Enter starting kms", required: true, input_html: { min: 0 } %>
-      <%= f.submit "Time to vamos!", class: "small-yellow-btn" %>
+
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-car"></i>
+      <h3>Let's get to it!</h3>
     </div>
-  <% end %>
+    <div class="dd-form-card__body">
+      <%= simple_form_for @drivers_day, url: start_drivers_day_path do |f| %>
+        <div class="bucket-scale-wrap">
+          <label class="bucket-scale-label">Starting KMs</label>
+          <%= f.input_field :start_kms,
+                as: :integer,
+                min: 0,
+                placeholder: "0",
+                autofocus: true,
+                required: true,
+                class: "bucket-scale-input" %>
+        </div>
+        <div class="mt-3">
+          <%= f.submit "Time to vamos!", class: "submit-btn w-100" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
 </div>

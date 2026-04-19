@@ -104,6 +104,7 @@ class DriversDay < ApplicationRecord
   def products_needed_for_delivery
     # Find all orders attached to today's collections
     orders = Order.where(collection_id: collections.pluck(:id), status: [:pending, :paid])
+                  .includes(:order_items)
 
     # Group order items by product and sum quantities
     product_summary = {}

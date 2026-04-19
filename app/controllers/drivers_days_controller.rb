@@ -30,7 +30,7 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.find(params[:id])
 
     if @drivers_day
-      @collections = @drivers_day.collections
+      @collections = @drivers_day.collections.includes(:subscription)
       @skip_collections = @collections.where(skip: true)
       @new_customers = @collections.select { |collection| collection.new_customer == true }
       @count = @collections.count - @skip_collections.count - (@new_customers.any? ? @new_customers.count : 0)
@@ -83,11 +83,11 @@ class DriversDaysController < ApplicationController
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
-    @subscriptions = Subscription.where(collection_day: @today, status: 'active')
-    @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
-    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
-    @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
-    @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active').preload(:collections)
+    @skip_subscriptions = @subscriptions.select { |s| s.collections.max_by(&:id)&.skip == true }
+    @bags_needed        = @subscriptions.select { |s| (c = s.collections.max_by(&:id)) && c.needs_bags.to_i > 0 }
+    @total_bags_needed  = @bags_needed.sum { |s| s.collections.max_by(&:id).needs_bags }
+    @new_customer       = @subscriptions.select { |s| s.collections.max_by(&:id)&.new_customer == true }
     @products_needed = @drivers_day.products_needed_for_delivery
 
     # Check for recently lapsed customers
@@ -104,10 +104,10 @@ class DriversDaysController < ApplicationController
       .includes(:user, :collections)
       .order(end_date: :desc)
 
-    # Filter to only those who had collections in their last week
+    # Filter to only those who had collections in their last week (in-memory — collections already preloaded)
     @recently_lapsed = @recently_lapsed.select do |sub|
       last_week = sub.end_date - 1.week
-      sub.collections.where('date >= ? AND date <= ?', last_week, sub.end_date).where(skip: false).any?
+      sub.collections.any? { |c| c.date >= last_week && c.date <= sub.end_date && !c.skip }
     end
 
     if request.patch?

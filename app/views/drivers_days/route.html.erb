@@ -1,4 +1,16 @@
-<div class="driver-wrapper">
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title"><%= @drivers_day.date.strftime("%A, %-d %b") %></h1>
+      <p class="dd-header__sub">Today's route</p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to "Someone missing?", missing_customers_drivers_day_path(@drivers_day), class: "tiny-yellow-btn" %>
+      <%= button_to "Optimise", optimise_route_path(drivers_day_id: @drivers_day.id), method: :patch, class: "tiny-yellow-btn", form: { data: { turbo: false } } %>
+    </div>
+  </div>
+
   <div class="route-day-nav">
     <% if @prev_day %>
       <%= link_to "←", route_drivers_days_path(date: @prev_day.date), class: "route-day-nav__arrow" %>
@@ -12,22 +24,14 @@
       <span class="route-day-nav__arrow route-day-nav__arrow--disabled">→</span>
     <% end %>
   </div>
-  <%= link_to "Someone missing from the list?", recently_lapsed_subscriptions_path, class: "btn btn-info mb-3" %>
-  <%= button_to "Optimize Route", optimise_route_path(drivers_day_id: @drivers_day.id), method: :patch, class: "btn btn-success mb-3", form: { data: { turbo: false } } %>
-  <div class="collection-header">
-    <div class="name">
-      <p>Name</p>
-    </div>
-    <div class="bag">
-      <p>Collect</p>
-    </div>
-    <div class="address">
-      <p>Address</p>
-    </div>
-  </div>
-  <div class="collections"  >
-    <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
 
+  <div class="collection-header">
+    <div class="name"><p>Name</p></div>
+    <div class="bag"><p>Collect</p></div>
+    <div class="address"><p>Address</p></div>
+  </div>
+
+  <div class="collections">
     <ul data-controller="sortable"
         data-sortable-url-value="<%= reorder_drivers_day_path(@drivers_day) %>">
       <% @route_items.each do |item| %>
@@ -37,13 +41,13 @@
               data-sortable-id="<%= item.id %>">
             <span class="drag-handle">⠿</span>
             <div class="name">
-              <p><%= link_to "#{item.drop_off_site.name.split.first}", drivers_day_drop_off_event_path(@drivers_day, item)%></p>
+              <p><%= link_to "#{item.drop_off_site.name.split.first}", drivers_day_drop_off_event_path(@drivers_day, item) %></p>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
             </div>
             <div class="address">
-              <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
+              <%= link_to item.drop_off_site.street_address&.truncate(20), "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
           </li>
 
@@ -55,7 +59,7 @@
             <div class="name">
               <p><%= link_to item.subscription.display_name.truncate(13), admin_subscription_path(item.subscription) %></p>
               <% if current_user.admin? %>
-                <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
+                <p><%= link_to 'X', collection_path(item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></p>
               <% end %>
             </div>
             <div class="bag">
@@ -63,17 +67,17 @@
                 <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
               <% else %>
                 <% if (item.bags || 0) >= 1 %>
-                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                  <%= link_to pluralize(item.bags, 'bag'), edit_collection_path(item), class: "small-yellow-btn" %>
                 <% elsif (item.buckets || 0) >= 1 %>
-                  <%= link_to "#{pluralize(item.buckets, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn" %>
+                  <%= link_to pluralize(item.buckets, 'bucket'), edit_collection_path(item), class: "small-yellow-btn" %>
                 <% elsif item.new_customer %>
-                  <%= link_to "Meet #{item.subscription.display_name}", edit_collection_path(item) , class: "small-yellow-btn"%>
+                  <%= link_to "Meet #{item.subscription.display_name.split.first}", edit_collection_path(item), class: "small-yellow-btn" %>
                 <% elsif item.subscription.user.drop_off? %>
-                  <%= link_to "Drop off", edit_collection_path(item) , class: "small-yellow-btn"%>
-                  <% elsif item.subscription.Commercial? %>
-                <%= link_to "#{pluralize(item.buckets_45l.to_i + item.buckets_25l.to_i, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
+                  <%= link_to "Drop off", edit_collection_path(item), class: "small-yellow-btn" %>
+                <% elsif item.subscription.Commercial? %>
+                  <%= link_to pluralize(item.buckets_45l.to_i + item.buckets_25l.to_i, 'bucket'), edit_collection_path(item), class: "small-yellow-btn" %>
                 <% else %>
-                  <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
+                  <%= link_to "Collect", edit_collection_path(item), class: "small-yellow-btn" %>
                 <% end %>
               <% end %>
             </div>
@@ -84,17 +88,15 @@
         <% end %>
       <% end %>
     </ul>
-
-    <!--</ul>-->
   </div>
-  <div class="drivers-form">
+
+  <div class="mt-4">
     <% if current_user.admin? %>
-      <%= link_to "NOTES", today_notes_path, class: "sign-up-btn mb-3" %>
-      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
-    <% elsif current_user.driver? && @drivers_day.nil? %>
-      <p><em>No collections without a driver</em></p>
-    <% elsif current_user.driver? %>
-      <%= link_to "END DAY", end_drivers_day_path(@drivers_day), class: "sign-up-btn" %>
+      <%= link_to "Notes", today_notes_path, class: "tiny-yellow-btn mb-2" %>
+    <% end %>
+    <% if current_user.driver? || current_user.admin? %>
+      <%= link_to "End Day", end_drivers_day_path(@drivers_day), class: "btn-yellow w-100" %>
     <% end %>
   </div>
+
 </div>
