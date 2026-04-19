@@ -1,161 +1,188 @@
-<div class="driver-wrapper">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><%= @drivers_day.date.strftime('%A, %B %d, %Y') %> done!</h1>
-    <%= link_to "Edit", edit_drivers_day_path(@drivers_day), class: "btn btn-sm btn-secondary-outline" %>
+<div class="drivers-day-container">
 
+  <%# ── Header ──────────────────────────────────────────────────────────────── %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title"><%= @drivers_day.date.strftime('%A, %d %B %Y') %></h1>
+      <% if @drivers_day.end_time.present? %>
+        <span class="dd-status-badge dd-status-badge--done">Completed</span>
+      <% elsif @drivers_day.start_time.present? %>
+        <span class="dd-status-badge dd-status-badge--partial">In progress</span>
+      <% else %>
+        <span class="dd-status-badge dd-status-badge--pending">Not started</span>
+      <% end %>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to edit_drivers_day_path(@drivers_day), class: "tiny-yellow-btn" do %>
+        <i class="fa-solid fa-pen"></i> Edit
+      <% end %>
+      <%= link_to drivers_day_buckets_path(@drivers_day), class: "tiny-yellow-btn" do %>
+        <i class="fa-solid fa-bucket"></i> Buckets
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Route summary ───────────────────────────────────────────────────────── %>
+  <div class="dd-route-summary">
+    <div class="dd-route-stat">
+      <div class="dd-route-stat__value">
+        <%= @drivers_day.start_time&.strftime('%H:%M') || '—' %>
+      </div>
+      <div class="dd-route-stat__label">Start</div>
+    </div>
+
+    <div class="dd-route-stat">
+      <div class="dd-route-stat__value">
+        <%= @drivers_day.end_time&.strftime('%H:%M') || '—' %>
+      </div>
+      <div class="dd-route-stat__label">End</div>
+      <% if @stat&.route_hours %>
+        <div class="dd-route-stat__sub"><%= number_with_precision(@stat.route_hours, precision: 1) %>h total</div>
+      <% end %>
+    </div>
+
+    <div class="dd-route-stat">
+      <div class="dd-route-stat__value">
+        <% if @drivers_day.start_kms && @drivers_day.end_kms %>
+          <%= @drivers_day.end_kms - @drivers_day.start_kms %> km
+        <% else %>—<% end %>
+      </div>
+      <div class="dd-route-stat__label">Distance</div>
+      <% if @drivers_day.start_kms && @drivers_day.end_kms %>
+        <div class="dd-route-stat__sub"><%= @drivers_day.start_kms %> → <%= @drivers_day.end_kms %></div>
+      <% end %>
+    </div>
+
+    <div class="dd-route-stat">
+      <div class="dd-route-stat__value"><%= @stat&.households || @collections.count %></div>
+      <div class="dd-route-stat__label">Households</div>
+    </div>
   </div>
 
   <% if @stat %>
-
-    <div class="mb-4">
-      <strong>
-        <p>Time: <%= @drivers_day.start_time&.strftime('%I:%M %p') %> - <%= @drivers_day.end_time&.strftime('%I:%M %p') %>
-          <% if @stat.route_hours %>
-            (<%= number_with_precision(@stat.route_hours, precision: 1) %>h)
-          <% end %>
-        </p>
-      </strong>
-      <strong>
-        <p>Distance: <%= @drivers_day.start_kms %> → <%= @drivers_day.end_kms %> km
-          <% if @stat.kms %>
-            (<%= @stat.kms %> km total)
-          <% end %>
-        </p>
-      </strong>
-      <%= link_to "buckets", drivers_day_buckets_path(@drivers_day) %>
-    </div>
-
-    <div>
-      <h3>Collection Stats</h3>
-      <div class="row g-3 my-3 text-center">
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Net kg</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.net_kg, precision: 2) %></div>
-          </div>
+    <%# ── Operational stats ──────────────────────────────────────────────────── %>
+    <p class="dd-section-heading">Collection Stats</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #108A63 100%);">
+          <i class="fa-solid fa-weight-hanging"></i>
         </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Buckets (F / H)</div>
-            <div class="fs-6 fw-bold">
-              <%= @stat.bucket_count %>
-              <small class="text-muted">(<%= @stat.full_count %> / <%= @stat.half_count %>)</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Full-equiv</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.full_equiv, precision: 2) %></div>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Avg kg / bucket</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@stat.avg_kg_bucket, precision: 2) %></div>
-            <small class="text-muted">per full-equiv: <%= number_with_precision(@stat.avg_kg_full, precision: 2) %></small>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Households</div>
-            <div class="fs-4 fw-bold"><%= @stat.households %></div>
-            <small class="text-muted">Bags: <%= @stat.bags_sum %></small>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Route time</div>
-            <div class="fs-4 fw-bold">
-              <% if @stat.route_hours %>
-                <%= number_with_precision(@stat.route_hours, precision: 2) %> h
-              <% else %>—<% end %>
-            </div>
-            <small class="text-muted">
-              <% if @stat.stops_per_hr %>
-                <%= number_with_precision(@stat.stops_per_hr, precision: 2) %> stops/h ·
-                <%= number_with_precision(@stat.kg_per_hr, precision: 2) %> kg/h
-              <% else %>—<% end %>
-            </small>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">Distance</div>
-            <div class="fs-4 fw-bold">
-              <% if @stat.kms %>
-                <%= @stat.kms %> km
-              <% else %>—<% end %>
-            </div>
-            <small class="text-muted">
-              <% if @stat.kg_per_km %>
-                <%= number_with_precision(@stat.kg_per_km, precision: 2) %> kg/km
-              <% else %>—<% end %>
-            </small>
-          </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="card p-3" style="border-radius:1em">
-            <div class="text-muted">CO₂e Impact</div>
-            <div class="fs-6 fw-bold text-success">
-              <%= number_with_precision(@stat.net_co2e_kg, precision: 1) %> kg
-            </div>
-            <small class="text-muted d-block">Avoided: <%= number_with_precision(@stat.avoided_co2e_kg, precision: 1) %></small>
-            <small class="text-muted d-block">Driving: <%= number_with_precision(@stat.driving_co2e_kg, precision: 1) %></small>
-          </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_precision(@stat.net_kg, precision: 1) %></div>
+          <div class="stat-label">Net kg</div>
         </div>
       </div>
 
-      <br>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #FBB718 0%, #f0a500 100%);">
+          <i class="fa-solid fa-bucket"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= @stat.bucket_count %></div>
+          <div class="stat-label">Buckets (<%= @stat.full_count %>F / <%= @stat.half_count %>H)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #84cba3 0%, #108A63 100%);">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_precision(@stat.avg_kg_bucket, precision: 1) %></div>
+          <div class="stat-label">Avg kg / bucket</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #023f3a 100%);">
+          <i class="fa-solid fa-gauge-high"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">
+            <% if @stat.stops_per_hr %>
+              <%= number_with_precision(@stat.stops_per_hr, precision: 1) %>
+            <% else %>—<% end %>
+          </div>
+          <div class="stat-label">Stops / hr</div>
+        </div>
+      </div>
+
+      <% if @stat.kms && @stat.kms > 0 %>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #108A63 0%, #84cba3 100%);">
+            <i class="fa-solid fa-road"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value"><%= number_with_precision(@stat.kg_per_km, precision: 2) %></div>
+            <div class="stat-label">kg / km</div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);">
+          <i class="fa-solid fa-leaf"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_precision(@stat.net_co2e_kg, precision: 1) %> kg</div>
+          <div class="stat-label">Net CO₂e saved</div>
+        </div>
+      </div>
     </div>
 
+    <%# ── Notes & messages ─────────────────────────────────────────────────── %>
     <% if @drivers_day.note.present? %>
-      <div class="card p-3 mb-4" style="border-radius:1em; background-color: #fff3cd;">
-        <h5>Note:</h5>
-        <p class="mb-0"><%= @drivers_day.note %></p>
+      <div class="dd-note dd-note--note">
+        <i class="fa-solid fa-note-sticky"></i>
+        <p><%= @drivers_day.note %></p>
       </div>
     <% end %>
 
     <% if @drivers_day.message_from_alfred.present? %>
-      <div class="card p-3 mb-4" style="border-radius:1em; background-color: #d1ecf1;">
-        <h5>Message from Alfred:</h5>
-        <p class="mb-0"><%= @drivers_day.message_from_alfred %></p>
+      <div class="dd-note dd-note--message">
+        <i class="fa-solid fa-message"></i>
+        <p><%= @drivers_day.message_from_alfred %></p>
       </div>
     <% end %>
-    <h3 class="mb-3">Customer Stats</h3>
 
-    <%= render 'daily_snapshot', drivers_day: @drivers_day, new_customers: @new_customers, compost_kg: @compost_kg, landfill_m3: @landfill_m3, kg_diverted: @kg_diverted, customers_served: @customers_served, buckets_diverted: @buckets_diverted, co2_avoided: @co2_avoided, trees_equivalent: @trees_equivalent %>
+    <%# ── Customer snapshot ────────────────────────────────────────────────── %>
+    <p class="dd-section-heading">Customer Impact</p>
+    <%= render 'daily_snapshot',
+          drivers_day: @drivers_day,
+          new_customers: @new_customers,
+          compost_kg: @compost_kg,
+          landfill_m3: @landfill_m3,
+          kg_diverted: @kg_diverted,
+          customers_served: @customers_served,
+          buckets_diverted: @buckets_diverted,
+          co2_avoided: @co2_avoided,
+          trees_equivalent: @trees_equivalent %>
 
   <% else %>
     <div class="alert alert-warning">
-      <strong>No statistics calculated yet.</strong>
-      <p>Stats are calculated when the day is completed in the "End Day" flow.</p>
+      <strong>No statistics yet.</strong>
+      Stats are calculated when the day is completed in the End Day flow.
     </div>
 
-    <div class="mb-4">
-      <strong>
-        <p>Time: <%= @drivers_day.start_time&.strftime('%I:%M %p') || '—' %> - <%= @drivers_day.end_time&.strftime('%I:%M %p') || '—' %></p>
-      </strong>
-      <strong>
-        <p>Distance: <%= @drivers_day.start_kms || '—' %> → <%= @drivers_day.end_kms || '—' %> km</p>
-      </strong>
-      <strong>
-        <p>Buckets: <%= @drivers_day.total_buckets || '—' %> - <%= link_to 'view', drivers_day_buckets_path(@drivers_day)  %>
-        </p>
-      </strong>
-    </div>
+    <% if @drivers_day.note.present? %>
+      <div class="dd-note dd-note--note">
+        <i class="fa-solid fa-note-sticky"></i>
+        <p><%= @drivers_day.note %></p>
+      </div>
+    <% end %>
   <% end %>
 
-  <br>
-  <div class="d-flex gap-2 mb-3">
-    <%= link_to "All Days", drivers_days_path, class: "submit-btn" %>
-    <%= link_to "View Collections", collections_drivers_day_path(@drivers_day), class: "submit-btn" %>
+  <%# ── Actions ──────────────────────────────────────────────────────────────── %>
+  <div class="quick-actions">
+    <%= link_to drivers_days_path, class: "action-btn" do %>
+      <i class="fa-solid fa-list"></i> All Days
+    <% end %>
+    <%= link_to collections_drivers_day_path(@drivers_day), class: "action-btn" do %>
+      <i class="fa-solid fa-route"></i> View Collections
+    <% end %>
+    <%= link_to edit_drivers_day_path(@drivers_day), class: "action-btn" do %>
+      <i class="fa-solid fa-pen"></i> Edit
+    <% end %>
   </div>
+
 </div>

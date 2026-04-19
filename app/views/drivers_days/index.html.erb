@@ -1,90 +1,72 @@
-<div class="gooi-container">
-  <div class="outline">
+<div class="drivers-day-container">
+
+  <div class="dd-header">
     <div>
-      <br>
-      <h1>Driver's Days</h1>
-
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Start</th>
-            <th scope="col">End</th>
-            <th scope="col">KMs</th>
-            <th scope="col">Stops</th>
-            <th scope="col">Litres</th>
-            <th scope="col">⏱️ Drop-off Time</th>
-            <th scope="col">Trees 🌳</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @drivers_days.each do |drivers_day| %>
-            <tr>
-              <td>
-                <%= link_to drivers_day.date.strftime('%a, %b %d, %Y'), drivers_day_path(drivers_day), class: "link-green" %>
-              </td>
-              <td>
-                <%= drivers_day.start_time&.strftime('%I:%M %p') || '—' %>
-              </td>
-              <td>
-                <%= drivers_day.end_time&.strftime('%I:%M %p') || '—' %>
-              </td>
-              <td>
-                <% if drivers_day.start_kms && drivers_day.end_kms %>
-                  <%= drivers_day.end_kms - drivers_day.start_kms %> km
-                  <small class="text-muted d-block">
-                    <%= drivers_day.start_kms %> → <%= drivers_day.end_kms %>
-                  </small>
-                <% else %>
-                  —
-                <% end %>
-              </td>
-              <td>
-                <%= drivers_day.active_collection_count %>
-              </td>
-              <td>
-                <% if drivers_day.buckets.any? %>
-                  <%= number_with_precision(drivers_day.total_litres, precision: 0) %>L
-                  <small class="text-muted d-block">
-                    <%= drivers_day.buckets.count { |b| b.bucket_size == 25 } %> × 25L,
-                    <%= drivers_day.buckets.count { |b| b.bucket_size == 45 } %> × 45L
-                  </small>
-                <% else %>
-                  —
-                <% end %>
-              </td>
-              <td>
-                <%= drivers_day.total_dropoff_duration_display %>
-                <% timed_count = drivers_day.drop_off_events.count { |e| e.duration_minutes.present? } %>
-                <% if timed_count > 0 %>
-                  <small class="text-muted d-block">
-                    <%= timed_count %> <%= 'drop-off'.pluralize(timed_count) %>
-                  </small>
-                <% end %>
-              </td>
-              <td>
-                <% if drivers_day.day_statistic %>
-                  <%= number_with_precision(drivers_day.day_statistic.trees_net, precision: 1) %>
-                  <small class="text-muted d-block">
-                    <%= number_with_precision(drivers_day.day_statistic.net_kg, precision: 1) %> kg
-                  </small>
-                <% else %>
-                  —
-                <% end %>
-              </td>
-              <td>
-                <%= link_to "View", drivers_day_path(drivers_day), class: "btn-secondary-outline btn-sm" %>
-                <%= link_to "Edit", edit_drivers_day_path(drivers_day), class: "btn-secondary-outline btn-sm" %>
-                <%= link_to "Delete", drivers_day_path(drivers_day),
-                    data: {turbo_method: :delete, turbo_confirm: "Are you sure? This will remove the driver's day but collections will remain."},
-                    class: "btn-secondary-outline btn-sm" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-
+      <h1 class="dd-header__title">Driver's Days</h1>
+      <p class="dd-header__sub"><%= @drivers_days.count %> days recorded</p>
     </div>
   </div>
+
+  <div class="dd-list">
+    <% @drivers_days.each do |drivers_day| %>
+      <div class="dd-list-item">
+        <div class="dd-list-item__icon">
+          <i class="fa-solid fa-truck"></i>
+        </div>
+
+        <div class="dd-list-item__main">
+          <div class="dd-list-item__date">
+            <%= link_to drivers_day.date.strftime('%a, %d %b %Y'), drivers_day_path(drivers_day), class: "dd-list-item__date" %>
+          </div>
+          <div class="dd-list-item__time">
+            <%= drivers_day.start_time&.strftime('%I:%M %p') || '—' %>
+            &rarr;
+            <%= drivers_day.end_time&.strftime('%I:%M %p') || '—' %>
+            <% if drivers_day.start_kms && drivers_day.end_kms %>
+              &middot; <%= drivers_day.end_kms - drivers_day.start_kms %> km
+            <% end %>
+          </div>
+        </div>
+
+        <div class="dd-metrics">
+          <div class="dd-metric">
+            <div class="dd-metric__value"><%= drivers_day.active_collection_count %></div>
+            <div class="dd-metric__label">Stops</div>
+          </div>
+
+          <% if drivers_day.buckets.any? %>
+            <div class="dd-metric">
+              <div class="dd-metric__value"><%= number_with_precision(drivers_day.total_litres, precision: 0) %>L</div>
+              <div class="dd-metric__label">
+                <%= drivers_day.buckets.count { |b| b.bucket_size == 25 } %>&times;25 +
+                <%= drivers_day.buckets.count { |b| b.bucket_size == 45 } %>&times;45
+              </div>
+            </div>
+          <% end %>
+
+          <% if drivers_day.day_statistic %>
+            <div class="dd-metric">
+              <div class="dd-metric__value"><%= number_with_precision(drivers_day.day_statistic.net_kg, precision: 1) %> kg</div>
+              <div class="dd-metric__label"><%= number_with_precision(drivers_day.day_statistic.trees_net, precision: 1) %> 🌳</div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="dd-list-item__actions">
+          <%= link_to drivers_day_path(drivers_day), class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-eye"></i>
+          <% end %>
+          <%= link_to edit_drivers_day_path(drivers_day), class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-pen"></i>
+          <% end %>
+          <%= link_to drivers_day_path(drivers_day),
+              data: { turbo_method: :delete, turbo_confirm: "Delete this driver's day? Collections will remain." },
+              class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-trash"></i>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
 </div>
