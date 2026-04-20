@@ -71,12 +71,18 @@
         </p>
       <% elsif @subscription.once_off? %>
         <p style="color: #525560;">
-          Your once-off collection is booked for
-          <strong><%= @subscription.start_date.strftime("%A, %-d %B %Y") %></strong>.
+          Have your organic waste ready in a bag or bucket before Alfred arrives on
+          <strong><%= @subscription.start_date&.strftime("%A, %-d %B %Y") || @subscription.collection_day %></strong>.
+          Leave it outside and he'll collect it on the way past.
         </p>
-        <p style="color: #525560;">
-          Leave your compostable bag outside before we arrive and we'll collect it on the way past.
-          No starter kit is included with a once-off booking.
+        <p style="margin: 1rem 0 0;">
+          <a href="https://wa.me/27785325513"
+             style="display: inline-flex; align-items: center; gap: 0.4rem; background-color: #25D366; color: white; padding: 8px 18px; border-radius: 40px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
+            <i class="fa-brands fa-whatsapp"></i> Message Alfred
+          </a>
+          <span style="color: #525560; font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+            Help the driver coordinate your collection.
+          </span>
         </p>
       <% else %>
         <p style="color: #525560;">
@@ -88,13 +94,11 @@
           full bag outside before we arrive and we'll collect it on our way past.
         </p>
       <% end %>
-      <p style="color: #525560; margin-bottom: 0;">
-        <% if @subscription.once_off? %>
-          To confirm your collection booking, please settle your invoice as soon as possible.
-        <% else %>
+      <% unless @subscription.once_off? %>
+        <p style="color: #525560; margin-bottom: 0;">
           To ensure your starter kit arrives on time, please settle your invoice as soon as possible.
-        <% end %>
-      </p>
+        </p>
+      <% end %>
     </div>
   </div>
 
@@ -106,13 +110,24 @@
         <h3>Your Invoice</h3>
       </div>
       <div class="info-card-body">
-        <p style="color: #525560; margin-bottom: 1rem;">
-          <% if @subscription.once_off? %>
-            Your invoice is ready — pay to confirm your collection booking.
-          <% else %>
-            Your invoice is ready — please pay to confirm your starter kit delivery.
-          <% end %>
-        </p>
+        <% if @invoice.paid? %>
+          <p style="color: #108A63; margin-bottom: 1rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i>
+            <% if @subscription.once_off? %>
+              Payment received — your collection is confirmed!
+            <% else %>
+              Payment received — your starter kit is on its way!
+            <% end %>
+          </p>
+        <% else %>
+          <p style="color: #525560; margin-bottom: 1rem;">
+            <% if @subscription.once_off? %>
+              Your invoice is ready — pay to confirm your collection booking.
+            <% else %>
+              Your invoice is ready — please pay to confirm your starter kit delivery.
+            <% end %>
+          </p>
+        <% end %>
         <%= link_to invoice_path(@invoice), class: "action-btn" do %>
           <i class="fa-solid fa-arrow-up-right-from-square"></i> View invoice
         <% end %>

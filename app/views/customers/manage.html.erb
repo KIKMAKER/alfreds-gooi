@@ -157,7 +157,7 @@
                   <%= next_col.date.strftime("%A, %d %b") %>
                 <% end %>
               <% elsif sub.is_new_customer %>
-                Starter kit delivery
+                <%= sub.once_off? ? "Collection booked" : "Starter kit delivery" %>
               <% else %>
                 <span class="text-muted">No upcoming</span>
               <% end %>
@@ -224,11 +224,16 @@
 
         <% if @subscription.is_new_customer %>
           <div class="text-center py-2">
-            <p class="mb-1"><strong>Your starter kit is on its way!</strong></p>
-            <p class="text-muted mb-4 small">Alfred will deliver your first bag and bucket <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <% if @subscription.once_off? %>
+              <p class="mb-1"><strong>Your collection is booked!</strong></p>
+              <p class="text-muted mb-4 small">Have your organic waste ready — Alfred will collect on <strong><%= @subscription.start_date&.strftime("%-d %B") || @subscription.collection_day %></strong>.</p>
+            <% else %>
+              <p class="mb-1"><strong>Your starter kit is on its way!</strong></p>
+              <p class="text-muted mb-4 small">Alfred will deliver your first bag and bucket <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <% end %>
             <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
                         target: "_blank", class: "action-btn" do %>
-              <i class="fa-brands fa-whatsapp"></i> Say hi to Alfred
+              <i class="fa-brands fa-whatsapp"></i> <%= @subscription.once_off? ? "Message Alfred" : "Say hi to Alfred" %>
             <% end %>
           </div>
 
