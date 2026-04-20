@@ -168,7 +168,6 @@
       </div>
     </div>
 
-    <%= link_to "View today's collections", today_subscriptions_path, class: "btn-yellow w-100 mb-4" %>
 
     <%= render 'daily_snapshot',
           drivers_day: @drivers_day,
@@ -181,6 +180,7 @@
           co2_avoided: @co2_avoided,
           trees_equivalent: @trees_equivalent %>
 
+    <%= link_to "View today's collections", today_subscriptions_path, class: "btn-yellow w-100 mb-4" %>
   <% else %>
     <div class="dd-header">
       <div>
