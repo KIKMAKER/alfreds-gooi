@@ -103,7 +103,7 @@
                   <% end %>
                 </td>
                 <td>
-                  <% dur = subscription.duration || "unpaid" %>
+                  <% dur = subscription.once_off? ? "once-off" : (subscription.duration || "unpaid") %>
                   <% if completed %><s><%= dur %></s><% else %><%= dur %><% end %>
                 </td>
 
@@ -128,6 +128,8 @@
                     <% else %>
                       <%= rem.to_i.truncate %>
                     <% end %>
+                  <% elsif subscription.once_off? %>
+                    &mdash;
                   <% else %>
                     unpaid
                   <% end %>
@@ -135,12 +137,12 @@
 
                 <td>
                   <% hs = subscription.holiday_start&.strftime('%e %B %Y') %>
-                  <% if completed && hs.present? %><s><%= hs %></s><% else %><%= hs || "unpaid" %><% end %>
+                  <% if completed && hs.present? %><s><%= hs %></s><% elsif hs.present? %><%= hs %><% elsif subscription.once_off? %>&mdash;<% else %>unpaid<% end %>
                 </td>
 
                 <td>
                   <% he = subscription.holiday_end&.strftime('%e %B %Y') %>
-                  <% if completed && he.present? %><s><%= he %></s><% else %><%= he || "unpaid" %><% end %>
+                  <% if completed && he.present? %><s><%= he %></s><% elsif he.present? %><%= he %><% elsif subscription.once_off? %>&mdash;<% else %>unpaid<% end %>
                 </td>
               </tr>
             <% end %>
