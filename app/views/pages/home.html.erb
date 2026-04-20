@@ -449,13 +449,13 @@
 
       <div class="other-option-card other-option-card--once-off">
         <h3>Once-off Collection</h3>
-        <p>Not ready for a subscription? Book a single collection.</p>
-        <p class="other-option-price">R<%= @once_off_price %></p>
+        <p>Dinner party or overflowing worm bin, we're happy to help get your extra waste into the soil.</p>
         <ul>
           <li>One collection of your organic waste</li>
           <li>No commitment, no recurring charges</li>
-          <li>Pick your collection date at checkout</li>
+          <li>Pick your collection date based on our route</li>
         </ul>
+        <p class="other-option-price">R<%= @once_off_price %></p>
         <div class="mt-auto pt-3">
           <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
         </div>
@@ -480,46 +480,6 @@
   <br>
   <br>
 
-</section>
-
-<!--testimonial section-->
-<section class="testimonial-section">
-  <h1>Testimonials</h1>
-  <p class="section-subtitle">What our community says</p>
-  <div class="content-wrapper" style="max-width: 960px; margin: 0 auto;">
-    <% if @testimonials.count >= 3 %>
-      <!-- Show 3 random new testimonials with images -->
-      <div class="testimonials-container">
-        <% @testimonials.sample(3).each do |testimonial| %>
-          <div class="testimonial-card">
-            <% if testimonial.photo.attached? %>
-              <div class="testimonial-image">
-                <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
-              </div>
-            <% end %>
-            <p><%= testimonial.content %></p>
-            <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <!-- Show old static testimonials until we have 3 new ones -->
-      <div class="testimonials-container">
-        <div class="testimonial-card">
-          <p>We love composting our waste, and Alfred is the sweetest man.</p>
-          <h4>Megan</h4>
-        </div>
-        <div class="testimonial-card">
-          <p>It's been so helpful and has really made composting so much easier and more convenient!</p>
-          <h4>Simone</h4>
-        </div>
-        <div class="testimonial-card">
-          <p>Alfred is always on time and always so kind and with a happy smile.</p>
-          <h4>Ryan</h4>
-        </div>
-      </div>
-    <% end %>
-  </div>
 </section>
 
 <!--where we collect section-->
@@ -609,6 +569,46 @@
 
   </div>
 
+</section>
+
+<!--testimonial section-->
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <p class="section-subtitle">What our community says</p>
+  <div class="content-wrapper" style="max-width: 960px; margin: 0 auto;">
+    <% if @testimonials.count >= 3 %>
+      <!-- Show 3 random new testimonials with images -->
+      <div class="testimonials-container">
+        <% @testimonials.sample(3).each do |testimonial| %>
+          <div class="testimonial-card">
+            <% if testimonial.photo.attached? %>
+              <div class="testimonial-image">
+                <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
+              </div>
+            <% end %>
+            <p><%= testimonial.content %></p>
+            <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Show old static testimonials until we have 3 new ones -->
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p>We love composting our waste, and Alfred is the sweetest man.</p>
+          <h4>Megan</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>It's been so helpful and has really made composting so much easier and more convenient!</p>
+          <h4>Simone</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>Alfred is always on time and always so kind and with a happy smile.</p>
+          <h4>Ryan</h4>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </section>
 
 <section class="map-section" style="margin-top: 0; padding-top: 0;">
