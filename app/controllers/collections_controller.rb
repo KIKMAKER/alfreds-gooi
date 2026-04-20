@@ -121,10 +121,12 @@ class CollectionsController < ApplicationController
         )
         @collection.update!(drivers_day_id: drivers_day.id)
       end
+      if @collection.saved_change_to_position? && @collection.drivers_day
+        move_to_position!(@collection, @collection.position)
+      end
       if current_user.admin?
         redirect_to admin_users_path, notice: 'updated'
       else
-
         redirect_to today_subscriptions_path, notice: 'updated'
       end
     else
@@ -194,23 +196,9 @@ class CollectionsController < ApplicationController
   def update_position
     @collection = Collection.find(params[:id])
     new_position = params[:position].to_i
-    drivers_day = @collection.drivers_day
-    return head :no_content unless drivers_day
+    return head :no_content unless @collection.drivers_day
 
-    # Get all collections ordered by current position (nulls last = new collections at end)
-    ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
-
-    # Move dragged item to new 1-based position
-    ordered.delete(@collection)
-    ordered.insert(new_position - 1, @collection)
-
-    # Reassign positions
-    ordered.each_with_index do |c, i|
-      c.update_column(:position, i + 1)
-    end
-
-    update_collection_order(drivers_day)
-
+    move_to_position!(@collection, new_position)
     head :no_content
   end
 
@@ -228,9 +216,17 @@ class CollectionsController < ApplicationController
 
   private
 
+  def move_to_position!(collection, new_position)
+    drivers_day = collection.drivers_day
+    ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
+    ordered.delete(collection)
+    ordered.insert([new_position - 1, 0].max, collection)
+    ordered.each_with_index { |c, i| c.update_column(:position, i + 1) }
+    update_collection_order(drivers_day)
+  end
+
   def update_collection_order(drivers_day)
     drivers_day.collections.order(:position).each_with_index do |collection, index|
-      # Update the associated subscription's collection_order
       subscription = collection.subscription
       subscription.update(collection_order: index + 1) if subscription.present?
     end
