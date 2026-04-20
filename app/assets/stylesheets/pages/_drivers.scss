@@ -272,6 +272,79 @@
   }
 }
 
+// ── Driver messages page ──────────────────────────────────────────────────────
+
+.msg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s ease;
+
+  &:last-child { border-bottom: none; }
+
+  &--sent {
+    background: #f0faf4;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: $dark-green;
+  }
+
+  &__meta {
+    font-size: 0.78rem;
+    color: #888;
+  }
+
+  &__action {
+    flex-shrink: 0;
+  }
+
+  &__hint {
+    font-size: 0.78rem;
+    color: #bbb;
+    font-style: italic;
+  }
+}
+
+.msg-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: $dark-yellow;
+  color: white;
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover  { background: darken($dark-yellow, 8%); color: white; }
+  &:active { transform: scale(0.96); }
+
+  &__sent  { display: none; }
+
+  &--sent {
+    background: $medium-green;
+    pointer-events: none;
+
+    .msg-link__unsent { display: none; }
+    .msg-link__sent   { display: inline-flex; align-items: center; gap: 0.4rem; }
+  }
+}
+
 // ── Quick message rows (collection edit) ─────────────────────────────────────
 
 .quick-msg-row {

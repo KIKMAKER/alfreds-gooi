@@ -123,6 +123,8 @@ Rails.application.routes.draw do
   post 'commercial/inquiries', to: 'commercial_inquiries#create', as: :create_commercial_inquiries
   get 'commercial/confirmation', to: 'commercial_inquiries#confirmation', as: :commercial_inquiry_confirmation
 
+  get 'driver_messages', to: 'driver_messages#index', as: :driver_messages
+
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
   # drop-off site managers
