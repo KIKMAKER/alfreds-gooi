@@ -30,16 +30,14 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.find(params[:id])
 
     if @drivers_day
-      @collections = @drivers_day.collections.includes(:subscription)
-      @skip_collections = @collections.where(skip: true)
-      @new_customers = @collections.select { |collection| collection.new_customer == true }
-      @count = @collections.count - @skip_collections.count - (@new_customers.any? ? @new_customers.count : 0)
-      @bags_needed = @collections.select { |collection| collection.needs_bags }
+      @collections      = @drivers_day.collections.includes(:subscription).to_a
+      @skip_collections = @collections.select(&:skip)
+      @new_customers    = @collections.select(&:new_customer)
+      @count            = @collections.count - @skip_collections.count - @new_customers.count
+      @bags_needed      = @collections.select { |c| c.needs_bags.to_i > 0 }
     else
-      @collections = []
-      @new_customers = []
+      @collections = @skip_collections = @new_customers = @bags_needed = []
       @count = 0
-      @bags_needed = []
     end
   end
 
@@ -48,7 +46,7 @@ class DriversDaysController < ApplicationController
     today = Date.today
     @today = today.strftime("%A")
 
-    @drivers_day = DriversDay.find(params[:id])
+    @drivers_day = DriversDay.includes(:day_statistic).find(params[:id])
     @collections = @drivers_day.collections
     @stat = @drivers_day.day_statistic
 
@@ -83,11 +81,12 @@ class DriversDaysController < ApplicationController
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
-    @subscriptions = Subscription.where(collection_day: @today, status: 'active').preload(:collections)
-    @skip_subscriptions = @subscriptions.select { |s| s.collections.max_by(&:id)&.skip == true }
-    @bags_needed        = @subscriptions.select { |s| (c = s.collections.max_by(&:id)) && c.needs_bags.to_i > 0 }
-    @total_bags_needed  = @bags_needed.sum { |s| s.collections.max_by(&:id).needs_bags }
-    @new_customer       = @subscriptions.select { |s| s.collections.max_by(&:id)&.new_customer == true }
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active').preload(:collections).to_a
+    last_coll = @subscriptions.each_with_object({}) { |s, h| h[s.id] = s.collections.max_by(&:id) }
+    @skip_subscriptions = @subscriptions.select { |s| last_coll[s.id]&.skip == true }
+    @bags_needed        = @subscriptions.select { |s| last_coll[s.id]&.needs_bags.to_i > 0 }
+    @total_bags_needed  = @bags_needed.sum { |s| last_coll[s.id].needs_bags }
+    @new_customer       = @subscriptions.select { |s| last_coll[s.id]&.new_customer == true }
     @products_needed = @drivers_day.products_needed_for_delivery
 
     # Check for recently lapsed customers

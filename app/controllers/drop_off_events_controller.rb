@@ -7,7 +7,7 @@ class DropOffEventsController < ApplicationController
   end
 
   def show
-    @buckets = @drop_off_event.buckets.order(created_at: :desc)
+    @buckets = @drop_off_event.buckets.sort_by(&:created_at).reverse
   end
 
   def edit
@@ -79,7 +79,9 @@ class DropOffEventsController < ApplicationController
   end
 
   def set_drop_off_event
-    @drop_off_event = @drivers_day.drop_off_events.find(params[:id])
+    @drop_off_event = @drivers_day.drop_off_events
+                                  .includes(:drop_off_site, :buckets)
+                                  .find(params[:id])
   end
 
   def drop_off_event_params
