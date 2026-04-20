@@ -7,7 +7,14 @@ class DropOffEventsController < ApplicationController
   end
 
   def show
-    @buckets = @drop_off_event.buckets.sort_by(&:created_at).reverse
+    @buckets    = @drop_off_event.buckets.sort_by(&:created_at).reverse
+    @new_bucket = Bucket.new
+    @totals = {
+      total_buckets:  @drop_off_event.buckets.size,
+      total_net_kg:   @drop_off_event.total_weight_from_buckets,
+      full_equiv:     @drop_off_event.full_equivalent_count,
+      avg_per_bucket: @drop_off_event.avg_weight_per_bucket
+    }
   end
 
   def edit

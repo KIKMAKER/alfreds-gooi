@@ -1,138 +1,164 @@
-<div class="container driver-wrapper my-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="drivers-day-container"
+     data-controller="bucket-form"
+     data-bucket-form-tare25-value="<%= Bucket::TARE_25L_KG %>"
+     data-bucket-form-tare45-value="<%= Bucket::TARE_45L_KG %>">
+
+  <%# ── Header ────────────────────────────────────────────────────────────────── %>
+  <div class="dd-header">
     <div>
-      <h1><%= @drop_off_event.drop_off_site.name %></h1>
-      <p class="text-muted mb-0"><%= @drop_off_event.drop_off_site.street_address %>, <%= @drop_off_event.drop_off_site.suburb %></p>
+      <h1 class="dd-header__title"><%= @drop_off_event.drop_off_site.name %></h1>
+      <p class="dd-header__sub"><%= @drop_off_event.drop_off_site.street_address %>, <%= @drop_off_event.drop_off_site.suburb %></p>
     </div>
-    <% if @drop_off_event.is_done %>
-      <span class="badge bg-success">Completed</span>
-      <%= link_to 'End the day', end_drivers_day_path(@drivers_day), class:"link-title text-success"  %>
-    <% else %>
-      <%= link_to "Mark Complete", complete_drivers_day_drop_off_event_path(@drivers_day, @drop_off_event),
-          data: { turbo_method: :post, turbo_confirm: "Mark this drop-off as complete?" },
-          class: "submit-btn" %>
-    <% end %>
+    <div class="dd-header__actions">
+      <% if @drop_off_event.is_done %>
+        <%= link_to end_drivers_day_path(@drivers_day), class: "tiny-yellow-btn" do %>
+          <i class="fa-solid fa-flag-checkered"></i> End Day
+        <% end %>
+      <% else %>
+        <%= link_to "Mark Done",
+            complete_drivers_day_drop_off_event_path(@drivers_day, @drop_off_event),
+            data: { turbo_method: :post, turbo_confirm: "Mark this drop-off as complete?" },
+            class: "tiny-yellow-btn" %>
+      <% end %>
+      <%= link_to today_subscriptions_path, class: "tiny-yellow-btn" do %>
+        <i class="fa-solid fa-arrow-left"></i> Route
+      <% end %>
+    </div>
   </div>
 
-  <!-- Timing Info -->
+  <%# ── Running totals ─────────────────────────────────────────────────────────── %>
+  <div class="bucket-totals">
+    <div class="bucket-total-stat">
+      <div class="bucket-total-stat__value"><%= @totals[:total_buckets] %></div>
+      <div class="bucket-total-stat__label">Buckets</div>
+    </div>
+    <div class="bucket-total-stat">
+      <div class="bucket-total-stat__value"><%= number_with_precision(@totals[:total_net_kg], precision: 1) %></div>
+      <div class="bucket-total-stat__label">Net kg</div>
+    </div>
+    <div class="bucket-total-stat">
+      <div class="bucket-total-stat__value"><%= number_with_precision(@totals[:full_equiv], precision: 1) %></div>
+      <div class="bucket-total-stat__label">Full-equiv</div>
+    </div>
+    <div class="bucket-total-stat">
+      <div class="bucket-total-stat__value"><%= number_with_precision(@totals[:avg_per_bucket], precision: 1) %></div>
+      <div class="bucket-total-stat__label">Avg kg</div>
+    </div>
+  </div>
+
+  <%# ── Timing (conditional) ───────────────────────────────────────────────────── %>
   <% if @drop_off_event.arrival_time || @drop_off_event.departure_time %>
-    <div class="alert alert-info mb-3">
-      <strong>⏱️ Timing:</strong>
-      <% if @drop_off_event.arrival_time %>
-        Arrived at <%= @drop_off_event.arrival_time.strftime("%I:%M %p") %>
-      <% end %>
-      <% if @drop_off_event.departure_time %>
-        • Left at <%= @drop_off_event.departure_time.strftime("%I:%M %p") %>
-      <% end %>
-      <% if @drop_off_event.timing_complete? %>
-        • <strong>Duration: <%= @drop_off_event.duration_display %></strong>
-      <% elsif @drop_off_event.in_progress? %>
-        • <em>In progress...</em>
-      <% end %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-clock"></i>
+        <h3>
+          <% if @drop_off_event.timing_complete? %>
+            Duration: <%= @drop_off_event.duration_display %>
+          <% elsif @drop_off_event.in_progress? %>
+            In progress…
+          <% end %>
+        </h3>
+      </div>
+      <div class="dd-form-card__body">
+        <% if @drop_off_event.arrival_time %>
+          <p class="mb-1">Arrived at <strong><%= @drop_off_event.arrival_time.strftime("%H:%M") %></strong></p>
+        <% end %>
+        <% if @drop_off_event.departure_time %>
+          <p class="mb-0">Left at <strong><%= @drop_off_event.departure_time.strftime("%H:%M") %></strong></p>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
-  <div class="row g-3">
-    <!-- Left: Entry form -->
-    <div class="col-12 col-lg-6">
-      <div class="card p-3" style="border-radius:1em">
-        <h5 class="mb-3">Weigh a bucket</h5>
-
-        <%= simple_form_for [@drivers_day, @drop_off_event, @drop_off_event.buckets.build],
-            url: drivers_day_drop_off_event_buckets_path(@drivers_day, @drop_off_event) do |f| %>
-
-          <%= f.input :gross_kg,
-                label: "Scale reading (kg, incl. bucket/tare)",
-                input_html: { step: 0.01, min: 0, autofocus: true },
-                hint: "Tare will be subtracted automatically (25L: #{Bucket::TARE_25L_KG}kg, 45L: #{Bucket::TARE_45L_KG}kg)" %>
-
-          <%= f.input :bucket_size,
-                as: :radio_buttons,
-                collection: [[25, '25L'], [45, '45L']],
-                label: "Bucket size",
-                item_wrapper_class: 'form-check form-check-inline radio-buttons',
-                wrapper_html: { class: 'mb-3' } %>
-
-          <%= f.input :half,
-                as: :boolean,
-                label: "Half-full bucket" %>
-
-          <div class="mt-2">
-            <%= f.button :submit, "Save & add next", class: "submit-btn" %>
-          </div>
-        <% end %>
-      </div>
+  <%# ── Entry form ─────────────────────────────────────────────────────────────── %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-weight-hanging"></i>
+      <h3>Weigh a bucket</h3>
     </div>
+    <div class="dd-form-card__body">
 
-    <!-- Right: Summary -->
-    <div class="col-12 col-lg-6">
-      <div class="card p-3" style="border-radius:1em">
-        <h5 class="mb-3">Drop-off totals</h5>
-        <div class="row text-center">
-          <div class="col-6 col-md-3 mb-2">
-            <div class="text-muted">Buckets</div>
-            <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_25l %> 25L</div>
-            <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_45l %> 45L</div>
-          </div>
-          <div class="col-6 col-md-3 mb-2">
-            <div class="text-muted">Net kg</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@drop_off_event.total_weight_from_buckets, precision: 2) %></div>
-          </div>
-          <div class="col-6 col-md-3 mb-2">
-            <div class="text-muted">Full-equiv</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@drop_off_event.full_equivalent_count, precision: 2) %></div>
-          </div>
-          <div class="col-6 col-md-3 mb-2">
-            <div class="text-muted">Avg kg / bucket</div>
-            <div class="fs-4 fw-bold"><%= number_with_precision(@drop_off_event.avg_weight_per_bucket, precision: 2) %></div>
-          </div>
+      <%= simple_form_for @new_bucket,
+          url: drivers_day_drop_off_event_buckets_path(@drivers_day, @drop_off_event) do |f| %>
+
+        <div class="bucket-scale-wrap">
+          <label class="bucket-scale-label">Scale reading (kg)</label>
+          <%= f.input_field :gross_kg,
+                as: :decimal,
+                step: 0.01, min: 0,
+                placeholder: "0.00",
+                autofocus: true,
+                class: "bucket-scale-input",
+                data: { "bucket-form-target": "grossInput", action: "input->bucket-form#grossChanged" } %>
+          <div class="bucket-net-preview" data-bucket-form-target="netPreview">—</div>
         </div>
-        <div class="text-center mt-2">
-          <small class="text-muted">Avg kg / full-equivalent: <%= number_with_precision(@drop_off_event.avg_weight_per_full_equiv, precision: 2) %></small>
+
+        <%= f.hidden_field :bucket_size, data: { "bucket-form-target": "sizeField" } %>
+
+        <div class="bucket-size-btns">
+          <button type="button"
+                  class="bucket-size-btn"
+                  data-bucket-size="25"
+                  data-bucket-form-target="btn25"
+                  data-action="click->bucket-form#selectSize">
+            25L
+          </button>
+          <button type="button"
+                  class="bucket-size-btn"
+                  data-bucket-size="45"
+                  data-bucket-form-target="btn45"
+                  data-action="click->bucket-form#selectSize">
+            45L
+          </button>
         </div>
-      </div>
+
+        <div class="bucket-half-wrap">
+          <%= f.check_box :half,
+                class: "bucket-half-checkbox",
+                data: {
+                  "bucket-form-target": "halfField",
+                  action: "change->bucket-form#toggleHalf"
+                } %>
+          <label class="bucket-half-btn"
+                 for="bucket_half"
+                 data-bucket-form-target="halfLabel">
+            Full bucket
+          </label>
+        </div>
+
+        <div class="mt-3">
+          <%= f.button :submit, "Save & add next", class: "submit-btn w-100" %>
+        </div>
+      <% end %>
+
     </div>
   </div>
 
-  <!-- Table of buckets -->
-  <div class="card p-3 mt-3" style="border-radius:1em">
-    <h5 class="mb-2">Weighed buckets</h5>
-    <table class="table table-sm align-middle">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Size</th>
-          <th>Net kg</th>
-          <th>Half?</th>
-          <th>Added</th>
-          <th class="text-end"></th>
-        </tr>
-      </thead>
-      <tbody>
+  <%# ── Entered buckets ────────────────────────────────────────────────────────── %>
+  <% if @buckets.any? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-list"></i>
+        <h3>Entered buckets</h3>
+      </div>
+      <div class="bucket-list">
         <% @buckets.each_with_index do |b, i| %>
-          <tr class="align-middle">
-            <td><%= i + 1 %></td>
-            <td><%= b.bucket_size %>L</td>
-            <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
-            <td><%= b.half? ? "Yes" : "No" %></td>
-            <td><%= l b.created_at, format: :short %></td>
-            <td class="text-end">
-              <%= link_to drivers_day_drop_off_event_bucket_path(@drivers_day, @drop_off_event, b),
-                          data: { turbo_method: :delete, turbo_confirm: "Delete this entry?" },
-                          class: "text-danger text-decoration-none", title: "Delete", aria: { label: "Delete" } do %>
-                <i class="fa-solid fa-trash" style="font-size=1rem"></i>
-              <% end %>
-            </td>
-          </tr>
+          <div class="bucket-list-row">
+            <div class="bucket-list-row__num"><%= @buckets.length - i %></div>
+            <div class="bucket-list-row__main">
+              <span class="bucket-list-row__size"><%= b.bucket_size %>L<% if b.half? %> ½<% end %></span>
+            </div>
+            <div class="bucket-list-row__kg"><%= number_with_precision(b.weight_kg, precision: 2) %> kg</div>
+            <div class="bucket-list-row__time"><%= b.created_at.strftime('%H:%M') %></div>
+            <%= link_to drivers_day_drop_off_event_bucket_path(@drivers_day, @drop_off_event, b),
+                data: { turbo_method: :delete, turbo_confirm: "Delete?" },
+                class: "bucket-list-row__del" do %>
+              <i class="fa-solid fa-trash"></i>
+            <% end %>
+          </div>
         <% end %>
-        <% if @buckets.empty? %>
-          <tr><td colspan="6" class="text-center text-muted">No buckets weighed yet.</td></tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+      </div>
+    </div>
+  <% end %>
 
-  <div class="mt-3">
-    <%= link_to "← Back to route", today_subscriptions_path, class: "btn btn-secondary-outline" %>
-  </div>
 </div>
