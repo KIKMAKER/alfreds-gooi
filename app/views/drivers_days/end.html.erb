@@ -56,9 +56,8 @@
     </div>
     <div class="dd-form-card__body">
       <p class="text-muted mb-3">Let tomorrow's customers know collection is coming.</p>
-      <%# Phase 2: replace href with gooi_message_drivers_day_path(@drivers_day) %>
-      <%= link_to "#", class: "btn-yellow w-100 disabled", aria: { disabled: true } do %>
-        <i class="fa-brands fa-whatsapp"></i> Send Gooi Message
+      <%= link_to driver_messages_path, class: "btn-yellow w-100" do %>
+        <i class="fa-brands fa-whatsapp"></i> Message a Day
       <% end %>
     </div>
   </div>
