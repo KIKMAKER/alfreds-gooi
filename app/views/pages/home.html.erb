@@ -442,37 +442,38 @@
     <% end %>
   </div>
 
-  <!-- Once-off collection option -->
-  <div class="once-off-signup-section mt-4">
-    <div class="once-off-card">
-      <h3>Once-off Collection</h3>
-      <p>Not ready for a subscription? Book a single collection.</p>
-      <p class="once-off-price"><strong>R<%= @once_off_price %></strong></p>
-      <ul>
-        <li>One collection of your organic waste</li>
-        <li>No commitment, no recurring charges</li>
-        <li>Pick your collection date at checkout</li>
-      </ul>
-      <div class="mt-3">
-        <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
-      </div>
-    </div>
-  </div>
+  <!-- Other options: once-off + commercial -->
+  <div class="other-options-section mt-5">
+    <h2 class="other-options-title">Other options</h2>
+    <div class="other-options-row">
 
-  <!-- Commercial signup section -->
-
-  <div class="commercial-signup-section mt-5">
-    <div class="commercial-card">
-      <h3>Commercial Collection</h3>
-      <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
-      <ul>
-        <li>Weekly or multiple collections per week</li>
-        <li>Volume-based pricing (45L buckets)</li>
-        <li>Flexible contract lengths (3, 6, or 12 months)</li>
-      </ul>
-      <div class="mt-3">
-        <%= link_to 'Get Started', new_commercial_inquiry_account_path, class: 'btn-gooi' %>
+      <div class="other-option-card other-option-card--once-off">
+        <h3>Once-off Collection</h3>
+        <p>Not ready for a subscription? Book a single collection.</p>
+        <p class="other-option-price">R<%= @once_off_price %></p>
+        <ul>
+          <li>One collection of your organic waste</li>
+          <li>No commitment, no recurring charges</li>
+          <li>Pick your collection date at checkout</li>
+        </ul>
+        <div class="mt-auto pt-3">
+          <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
+        </div>
       </div>
+
+      <div class="other-option-card other-option-card--commercial">
+        <h3>Commercial Collection</h3>
+        <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
+        <ul>
+          <li>Weekly or multiple collections per week</li>
+          <li>Volume-based pricing (45L buckets)</li>
+          <li>Flexible contract lengths (3, 6, or 12 months)</li>
+        </ul>
+        <div class="mt-auto pt-3">
+          <%= link_to 'Get Started', new_commercial_inquiry_account_path, class: 'btn-gooi' %>
+        </div>
+      </div>
+
     </div>
   </div>
 
