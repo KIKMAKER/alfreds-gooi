@@ -34,16 +34,7 @@
                           value: @message,
                           rows: 5,
                           class: "form-control",
-                          placeholder: "Hi {first_name}! Just a reminder that your collection is this {collection_day}, {collection_date}. See you then 🪴" %>
-          <div class="mt-2 d-flex flex-wrap gap-2">
-            <% [
-              ['{first_name}',      "Contact's first name"],
-              ['{collection_day}',  "Day of week, e.g. Tuesday"],
-              ['{collection_date}', "Full date, e.g. Tuesday, 22 April"]
-            ].each do |token, tip| %>
-              <span class="badge bg-light text-dark border" title="<%= tip %>"><%= token %></span>
-            <% end %>
-          </div>
+                          placeholder: "Hi! Just a reminder that your collection is coming up. See you then 🪴" %>
         </div>
 
         <%= f.submit "Generate links", class: "submit-btn w-100" %>
@@ -83,12 +74,10 @@
 
         <div class="dd-form-card__body p-0">
           <% @recipients.each do |r| %>
-            <% sub   = r[:subscription] %>
             <% phone = r[:phone] %>
 
             <% if @message.present? && phone.present? %>
-              <% msg    = personalize(@message, r[:first_name], sub, @collection_date) %>
-              <% wa_url = "https://wa.me/#{phone.delete('+')}?text=#{ERB::Util.url_encode(msg)}" %>
+              <% wa_url = "https://wa.me/#{phone.delete('+')}?text=#{ERB::Util.url_encode(@message)}" %>
             <% end %>
 
             <div class="msg-row">
