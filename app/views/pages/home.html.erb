@@ -455,7 +455,7 @@
           <li>No commitment, no recurring charges</li>
           <li>Pick your collection date based on our route</li>
         </ul>
-        <p class="other-option-price">R<%= @once_off_price %></p>
+        <p class="other-option-price">R<%= number_with_precision(@once_off_price, precision: 2) %></p>
         <div class="mt-auto pt-3">
           <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
         </div>
