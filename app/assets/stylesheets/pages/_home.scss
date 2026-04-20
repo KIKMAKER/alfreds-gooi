@@ -691,6 +691,9 @@ input[type="checkbox"].toggle:checked+label::before {
 
 // Other options section (once-off + commercial side by side)
 .other-options-section {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 5%;
   width: 100%;
 }
 
