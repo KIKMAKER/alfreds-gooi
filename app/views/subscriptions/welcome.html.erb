@@ -43,6 +43,11 @@
         <p style="color: #525560; margin: 0;">
           We'll be in your neighbourhood every <strong><%= @subscription.collection_day %></strong>.
         </p>
+        <% if @subscription.once_off? && @subscription.start_date.present? %>
+          <p style="color: #525560; margin: 0.5rem 0 0;">
+            Booked date: <strong><%= @subscription.start_date.strftime("%-d %B %Y") %></strong>
+          </p>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -64,6 +69,15 @@
           On week one we'll deliver your commercial buckets. Once you have organic waste ready,
           fill your buckets and have them out on your scheduled collection day.
         </p>
+      <% elsif @subscription.once_off? %>
+        <p style="color: #525560;">
+          Your once-off collection is booked for
+          <strong><%= @subscription.start_date.strftime("%A, %-d %B %Y") %></strong>.
+        </p>
+        <p style="color: #525560;">
+          Leave your compostable bag outside before we arrive and we'll collect it on the way past.
+          No starter kit is included with a once-off booking.
+        </p>
       <% else %>
         <p style="color: #525560;">
           Your invoice for the Gooi starter kit has been generated and is ready for payment.
@@ -75,7 +89,11 @@
         </p>
       <% end %>
       <p style="color: #525560; margin-bottom: 0;">
-        To ensure your starter kit arrives on time, please settle your invoice as soon as possible.
+        <% if @subscription.once_off? %>
+          To confirm your collection booking, please settle your invoice as soon as possible.
+        <% else %>
+          To ensure your starter kit arrives on time, please settle your invoice as soon as possible.
+        <% end %>
       </p>
     </div>
   </div>
@@ -88,7 +106,13 @@
         <h3>Your Invoice</h3>
       </div>
       <div class="info-card-body">
-        <p style="color: #525560; margin-bottom: 1rem;">Your invoice is ready — please pay to confirm your starter kit delivery.</p>
+        <p style="color: #525560; margin-bottom: 1rem;">
+          <% if @subscription.once_off? %>
+            Your invoice is ready — pay to confirm your collection booking.
+          <% else %>
+            Your invoice is ready — please pay to confirm your starter kit delivery.
+          <% end %>
+        </p>
         <%= link_to invoice_path(@invoice), class: "action-btn" do %>
           <i class="fa-solid fa-arrow-up-right-from-square"></i> View invoice
         <% end %>

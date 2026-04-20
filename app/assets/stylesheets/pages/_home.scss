@@ -741,6 +741,63 @@ input[type="checkbox"].toggle:checked+label::before {
   }
 }
 
+// Once-off collection section
+.once-off-signup-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.once-off-card {
+  background-color: rgba(251, 183, 24, 0.08);
+  border: 2px solid $dark-yellow;
+  border-radius: 12px;
+  padding: 2rem 3rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+
+  h3 {
+    font-family: 'Libre Baskerville', serif;
+    color: $dark-green;
+    font-size: 28px;
+    margin-bottom: 1rem;
+  }
+
+  .once-off-price {
+    font-size: 1.75rem;
+    color: $dark-green;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $dark-green;
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    text-align: left;
+
+    li {
+      color: $dark-green;
+      padding: 0.5rem 0;
+      font-size: 1rem;
+
+      &::before {
+        content: "✓ ";
+        color: $dark-yellow;
+        font-weight: bold;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
 // play button Style
 
 

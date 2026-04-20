@@ -79,7 +79,7 @@ additional_stock_products = [
   { title: "Compost bin bags",                description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90,  billing_type: "standard" },
   { title: "Soil for Life Compost",           description: "5kg of Soil for Life potting soil",                        price: 80,  billing_type: "standard" },
   { title: "Referred a friend discount (R50)", description: "Referral reward discount",                                price: -50, billing_type: "invoice_only" },
-  { title: "Once-off Collection",             description: "Single kitchen scrap collection",                          price: 400, billing_type: "invoice_only" }
+  { title: "Once-off Collection",             description: "Single kitchen scrap collection",                          price: 140, billing_type: "invoice_only" }
 ]
 seed_products(additional_stock_products)
 puts "Additional stock and once-off seeded"

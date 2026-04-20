@@ -7,11 +7,17 @@
     </p>
 
     <p style="font-size: 1.1rem;">
-      Your once-off collection is done. Every bit of organic waste you keep out of landfill makes a real difference — thank you for giving it a go.
+      Your once-off collection on <strong><%= @subscription.start_date.strftime("%-d %B") %></strong> is done.
+      Every bag of kitchen scraps kept out of landfill is a real contribution to a greener Cape Town — thank you for giving it a go.
     </p>
 
     <p style="font-size: 1.1rem;">
-      If you'd like to make it a regular thing, a weekly subscription means Alfred comes every <%= @subscription.collection_day %> and your scraps go straight to compost. No fuss.
+      Alfred collected your scraps and they're on their way to compost, not a landfill somewhere under Table Mountain. That's the gooi way. 🌱
+    </p>
+
+    <p style="font-size: 1.1rem;">
+      If you liked the experience, a weekly subscription means Alfred comes every <strong><%= @subscription.collection_day %></strong>
+      and your kitchen scraps go straight to compost — no fuss, no trips, just one less thing to worry about.
     </p>
 
     <p style="margin: 2rem 0;">

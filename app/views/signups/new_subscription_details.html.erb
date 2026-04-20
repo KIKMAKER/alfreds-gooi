@@ -15,7 +15,11 @@
     </div>
   </div>
 
-  <% if @plan.present? && @duration.present? %>
+  <% if @plan == 'once_off' %>
+    <div class="alert alert-info mb-4">
+      <strong>Selected Plan:</strong> Once-off Collection &mdash; R<%= @once_off_price %>
+    </div>
+  <% elsif @plan.present? && @duration.present? %>
     <div class="alert alert-info mb-4">
       <strong>Selected Plan:</strong> <%= @plan %> - <%= @duration %> month<%= @duration.to_i > 1 ? 's' : '' %>
       <% if @discount_code.present? %>
@@ -27,10 +31,15 @@
   <% end %>
 
   <div class="user-form mt-4"
-       data-controller="form-abandonment"
+       data-controller="form-abandonment once-off-date"
        data-form-abandonment-form-name-value="signup-subscription"
        data-form-abandonment-plan-value="<%= @plan %>"
-       data-form-abandonment-duration-value="<%= @duration %>">
+       data-form-abandonment-duration-value="<%= @duration %>"
+       data-once-off-date-monday-suburbs-value="<%= Subscription::MONDAY_SUBURBS.to_json %>"
+       data-once-off-date-tuesday-suburbs-value="<%= Subscription::TUESDAY_SUBURBS.to_json %>"
+       data-once-off-date-wednesday-suburbs-value="<%= Subscription::WEDNESDAY_SUBURBS.to_json %>"
+       data-once-off-date-thursday-suburbs-value="<%= Subscription::THURSDAY_SUBURBS.to_json %>"
+       data-once-off-date-selected-date-value="<%= @subscription&.start_date %>">
     <%= form_with model: @subscription, url: create_subscription_path, method: :post, local: true, html: { data: { action: "submit->form-abandonment#formSubmit" } } do |f| %>
       <% if @subscription && @subscription.errors.any? %>
         <div class="alert alert-danger">
@@ -50,8 +59,27 @@
         <%= f.select :suburb,
             options_for_select(Subscription::SUBURBS, @subscription&.suburb),
             { prompt: "Select a suburb" },
-            { required: true, class: "form-select", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+            { required: true,
+              class: "form-select",
+              data: {
+                form_abandonment_target: "field",
+                action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur change->once-off-date#suburbChanged",
+                once_off_date_target: "suburbSelect"
+              } } %>
       </div>
+
+      <% if @plan == 'once_off' %>
+        <div class="mb-3" data-once-off-date-target="dateContainer" hidden>
+          <%= f.label :start_date, "Select your collection date", class: "form-label" %>
+          <select name="subscription[start_date]"
+                  id="subscription_start_date"
+                  required
+                  class="form-select"
+                  data-once-off-date-target="dateSelect">
+          </select>
+          <div class="form-text text-muted">Dates shown for your suburb's collection day, at least 3 days from today.</div>
+        </div>
+      <% end %>
 
       <div class="mb-3">
         <%= f.label :apartment_unit_number, "Building name and unit number (if relevant)", class: "form-label" %>
