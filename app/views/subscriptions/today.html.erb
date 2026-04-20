@@ -1,31 +1,28 @@
 <!--ALFREDS PAGE-->
-<div class="driver-wrapper"
+<div class="drivers-day-container"
      data-controller="drop-off-timer"
      data-drop-off-timer-drivers-day-value="<%= @drivers_day.id %>"
      data-drop-off-timer-current-drop-off-value="<%= @current_drop_off&.id || 0 %>"
      data-drop-off-timer-arrival-time-value="<%= @current_drop_off&.arrival_time&.iso8601 || '' %>"
      data-drop-off-timer-site-name-value="<%= @current_drop_off&.drop_off_site&.name || '' %>">
-  <div class="mb-3 text-center link-decorations">
-    <h2 class="mb-2">Today's Route</h2>
 
-    <%= link_to "Someone missing from the list?", recently_lapsed_subscriptions_path, class: "link-text" %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Today's Route</h1>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to "Someone missing?", recently_lapsed_subscriptions_path, class: "btn-secondary-outline btn-sm" %>
+    </div>
   </div>
 
   <div class="collection-header">
-
-    <div class="name">
-      <p>Name</p>
-    </div>
-    <div class="bag">
-      <p>Collect</p>
-    </div>
-    <div class="address">
-      <p>Address</p>
-    </div>
+    <div class="name"><p>Name</p></div>
+    <div class="bag"><p>Collect</p></div>
+    <div class="address"><p>Address</p></div>
     <p>Message</p>
   </div>
-  <div class="collections"  >
-    <%#= button_to 'Reset Collection Order', reset_order_drivers_day_collections_path(@drivers_day), method: :post, class: "btn btn-warning", data: { turbo: false } %>
+
+  <div class="collections">
     <ul data-controller="sortable"
         data-sortable-url-value="<%= reorder_drivers_day_path(@drivers_day) %>">
       <% @route_items.each do |item| %>
@@ -34,15 +31,13 @@
               data-sortable-type="drop_off_event"
               data-sortable-id="<%= item.id %>">
             <span class="drag-handle">⠿</span>
-            <div class="name" style="display: flex; gap: 8px; align-items: center;">
+            <div class="name drop-off-name">
               <span
                 data-drop-off-id="<%= item.id %>"
                 data-action="click->drop-off-timer#selectDropOff"
-                style="cursor: pointer; font-size: 20px; user-select: none;"
-                title="Click to start timer">
-                ⏱️
-              </span>
-              <p><%= link_to "#{item.drop_off_site.name.split.first}", drivers_day_drop_off_event_path(@drivers_day, item)%></p>
+                class="drop-off-timer-icon"
+                title="Click to start timer">⏱️</span>
+              <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
@@ -54,9 +49,10 @@
               <% omw_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>
               <p class="emoji"><%= link_to "🚗", "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(omw_message)}", target: :_blank %></p>
               <% here_message = "Hello #{item.drop_off_site.contact_name}. I am here!" %>
-              <p class="emoji"><%= link_to "🏠",  "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
+              <p class="emoji"><%= link_to "🏠", "https://wa.me/#{item.drop_off_site.phone_number}?text=#{ERB::Util.url_encode(here_message)}", target: :_blank %></p>
             </div>
           </li>
+
         <% else %>
           <li class="collection sortable-item"
               data-sortable-type="collection"
@@ -65,28 +61,26 @@
             <div class="name">
               <p><%= link_to item.subscription.display_name.truncate(13), admin_subscription_path(item.subscription) %></p>
               <% if current_user.admin? %>
-                <p><%= link_to 'X', collection_path(item), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %></p>
+                <p><%= link_to 'X', collection_path(item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></p>
               <% end %>
             </div>
             <div class="bag">
               <% if item.skip %>
                 <%= link_to "skip", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif (item.bags || 0) >= 1 %>
+                <%= link_to pluralize(item.bags, 'bag'), edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif (item.buckets || 0) >= 1 %>
+                <%= link_to pluralize(item.buckets, 'bucket'), edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif item.new_customer %>
+                <%= link_to "Meet", edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif item.subscription.Standard? %>
+                <%= link_to pluralize(item.bags, 'bag'), edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif item.subscription.XL? %>
+                <%= link_to pluralize(item.buckets&.floor, 'bucket'), edit_collection_path(item), class: "small-yellow-btn" %>
+              <% elsif item.subscription.Commercial? %>
+                <%= link_to pluralize(item.buckets_45l.to_i + item.buckets_25l.to_i, 'bucket'), edit_collection_path(item), class: "small-yellow-btn" %>
               <% else %>
-                <% if (item.bags || 0) >= 1 %>
-                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% elsif (item.buckets || 0) >= 1 %>
-                  <%= link_to "#{pluralize(item.buckets, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% elsif item.new_customer %>
-                  <%= link_to "Meet", edit_collection_path(item) , class: "small-yellow-btn"%>
-                <% elsif item.subscription.Standard? %>
-                  <%= link_to "#{pluralize(item.bags, 'bag')}", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% elsif item.subscription.XL? %>
-                  <%= link_to "#{pluralize(item.buckets&.floor, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
-                <% elsif item.subscription.Commercial? %>
-                  <%= link_to "#{pluralize(item.buckets_45l.to_i + item.buckets_25l.to_i, 'bucket')}", edit_collection_path(item), class: "small-yellow-btn"  %>
-                <% else %>
-                  <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
-                <% end %>
+                <%= link_to "collect", edit_collection_path(item), class: "small-yellow-btn" %>
               <% end %>
             </div>
             <div class="address">
@@ -101,7 +95,6 @@
         <% end %>
       <% end %>
     </ul>
-    <!--</ul>-->
   </div>
 
   <!-- Floating Timer Button -->
@@ -114,8 +107,7 @@
       <button
         class="timer-btn"
         data-drop-off-timer-target="button"
-        <%= 'disabled' unless @current_drop_off %>
-      >
+        <%= 'disabled' unless @current_drop_off %>>
         <%= @current_drop_off&.arrival_time ? 'Leaving' : "I'm Here" %>
       </button>
       <div class="timer-status" data-drop-off-timer-target="status">

@@ -295,6 +295,18 @@
   }
 }
 
+.drop-off-name {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.drop-off-timer-icon {
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
 .route-day-nav {
   display: flex;
   align-items: center;

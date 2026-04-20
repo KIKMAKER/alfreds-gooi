@@ -1,28 +1,30 @@
-<div class="collection-container user-wrapper">
-  <div class="collection-body">
-    <!--div containing back and whatsapp button-->
-    <div class="collection-body-heading">
-      <div class="back small-yellow-btn'">
-        <%= link_to 'Back', today_subscriptions_path, class: 'small-yellow-btn' %>
-      </div>
-      <div class="whatsapp">
-        <h1><strong><%= @subscription.display_name %></strong></h1>
-        <%= link_to "https://wa.me/#{@subscription.user.phone_number}" do %>
-          <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
-        <% end %>
-      </div>
+<div class="drivers-day-container">
+
+  <%# ── Header ── %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title"><%= @subscription.display_name %></h1>
+      <p class="dd-header__sub"><%= @subscription.street_address %></p>
     </div>
-    <!--div containing collection details-->
-    <div class="collection-notes">
-
-      <p>Issue bags:</p>
-      <%= link_to issue_bags_collection_path(@collection) do %>
-        <i class="fa-solid fa-sack-dollar" style="font-size: 32px"></i>
-        <%#= image_tag 'empty_bucket.jpg', alt: "bucket", class:"bucket-img" %>
+    <div class="dd-header__actions">
+      <%= link_to today_subscriptions_path, class: "btn-secondary-outline btn-sm" do %>
+        <i class="fa-solid fa-arrow-left"></i> Back
       <% end %>
+      <%= link_to "https://wa.me/#{@subscription.user.phone_number}", target: :_blank, class: "btn-yellow btn-sm" do %>
+        <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
+      <% end %>
+    </div>
+  </div>
 
-      <% whatsapp_contacts = @subscription.contacts.can_receive_whatsapp %>
-      <% if whatsapp_contacts.any? %>
+  <%# ── Household contacts ── %>
+  <% whatsapp_contacts = @subscription.contacts.can_receive_whatsapp %>
+  <% if whatsapp_contacts.any? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-brands fa-whatsapp"></i>
+        <h3>Household contacts</h3>
+      </div>
+      <div class="dd-form-card__body">
         <div class="collection-whatsapp-contacts">
           <% whatsapp_contacts.each do |contact| %>
             <% message = "Hello #{contact.first_name}, I'm here to collect your gooi!" %>
@@ -32,143 +34,165 @@
             <% end %>
           <% end %>
         </div>
-      <% end %>
+      </div>
+    </div>
+  <% end %>
 
-      <strong>
-        <p>Address:</p>
-      </strong>
-      <p><%= @subscription.street_address %></p>
-      <% if @subscription.access_code %>
-        <p>Access code: <%= @subscription.access_code %></p>
-      <% end %>
-      <% unless @collection.kiki_note_nil_zero? %>
-        <strong>
-          <p class = "collection-notes">Kiki's note:</p>
-        </strong>
-        <p><%= @collection.kiki_note %></p>
-      <% end %>
-      <% if @orders.any? %>
-        <div class="outline p-3 mb-3">
-          <strong>
-            <p>Product Orders to Deliver:</p>
-          </strong>
-          <% @orders.each do |order| %>
-            <% order.order_items.each do |item| %>
-              <p><%= item.quantity %>x <%= item.product.title %></p>
-            <% end %>
-            <%= button_to "Mark Order ##{order.id} as Delivered",
-                          mark_delivered_order_path(order),
-                          method: :post,
-                          class: "small-yellow-btn mt-2",
-                          data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
-            <%= button_to "Postpone Order ##{order.id} to Next Week",
-                          postpone_delivery_order_path(order),
-                          method: :post,
-                          class: "btn btn-outline-secondary btn-sm mt-1",
-                          data: { turbo_confirm: "Postpone order ##{order.id} to next week's collection?" } %>
+  <%# ── Notes (access code + kiki note) ── %>
+  <% if @subscription.access_code.present? || !@collection.kiki_note_nil_zero? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-note-sticky"></i>
+        <h3>Notes</h3>
+      </div>
+      <div class="dd-form-card__body">
+        <% if @subscription.access_code.present? %>
+          <p class="mb-1"><strong>Access code:</strong> <%= @subscription.access_code %></p>
+        <% end %>
+        <% unless @collection.kiki_note_nil_zero? %>
+          <p class="mb-0"><%= @collection.kiki_note %></p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ── Orders to deliver ── %>
+  <% if @orders.any? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-box"></i>
+        <h3>Orders to deliver</h3>
+      </div>
+      <div class="dd-form-card__body">
+        <% @orders.each do |order| %>
+          <% order.order_items.each do |item| %>
+            <p class="mb-1"><strong><%= item.quantity %>×</strong> <%= item.product.title %></p>
           <% end %>
+          <%= button_to "Mark Order ##{order.id} as Delivered",
+                        mark_delivered_order_path(order),
+                        method: :post,
+                        class: "btn-yellow btn-sm mt-2",
+                        data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
+          <%= button_to "Postpone to Next Week",
+                        postpone_delivery_order_path(order),
+                        method: :post,
+                        class: "btn-secondary-outline btn-sm mt-1",
+                        data: { turbo_confirm: "Postpone order ##{order.id} to next week's collection?" } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ── Collection form ── %>
+  <% submit_label = @collection.new_customer ? 'Dropped Off!' : 'Done!' %>
+
+  <%= simple_form_for [@collection] do |f| %>
+
+    <%# Count card — what did you collect? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-scale-balanced"></i>
+        <h3><%= @collection.new_customer ? "Starter kit delivery" : "What did you collect?" %></h3>
+      </div>
+      <div class="dd-form-card__body">
+        <% if current_user.admin? %>
+          <% if @subscription.user.drop_off? %>
+            <div class="bucket-scale-wrap">
+              <label class="bucket-scale-label">Buckets dropped off</label>
+              <%= f.input_field :dropped_off_buckets, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+            </div>
+          <% end %>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">Bags</label>
+            <%= f.input_field :bags, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">XL Buckets</label>
+            <%= f.input_field :buckets, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">45L Buckets</label>
+            <%= f.input_field :buckets_45l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">25L Buckets</label>
+            <%= f.input_field :buckets_25l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+        <% elsif @subscription.user.drop_off? %>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">Buckets dropped off</label>
+            <%= f.input_field :dropped_off_buckets, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+        <% elsif @subscription.Commercial? %>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">45L buckets</label>
+            <%= f.input_field :buckets_45l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">25L buckets</label>
+            <%= f.input_field :buckets_25l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+        <% elsif @subscription.XL? %>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">Buckets collected</label>
+            <%= f.input_field :buckets, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+        <% else %>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">Bags collected</label>
+            <%= f.input_field :bags, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+        <% end %>
+
+        <%# Skip toggle — inline below the count %>
+        <div class="mt-3 pt-3 border-top">
+          <%= f.input :skip, label: "Skip this collection" %>
         </div>
-      <% end %>
+      </div>
     </div>
 
-    <!--div containing forms-->
-    <% if @collection.new_customer %>
-      <%= simple_form_for [@collection] do |f| %>
-        <%= f.input :skip %>
-        <% if current_user.admin? %>
-          <%= f.input :bags, label: "Bags", placeholder: "0" %>
-          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
-          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
-          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
-        <% elsif @collection.subscription.Commercial? %>
-          <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
-          <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
-        <% elsif @collection.subscription.XL? %>
-          <%= f.input :buckets, placeholder: "0" %>
-        <% else %>
-          <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
-        <% end %>
-        <% if current_user.admin? %>
+    <%# Message for Kiki %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-comment"></i>
+        <h3>Message for Kiki</h3>
+      </div>
+      <div class="dd-form-card__body">
+        <%= f.input :alfred_message, as: :text, label: false,
+                    input_html: { placeholder: "Any notes for Kiki?", rows: 3, class: "form-control" } %>
+      </div>
+    </div>
+
+    <%# Admin tools %>
+    <% if current_user.admin? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__header">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          <h3>Admin</h3>
+        </div>
+        <div class="dd-form-card__body">
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
-          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
-          <p>Users subs:</p>
-          <% @collection.subscription.user.subscriptions.each do |sub| %>
-            <%= sub.id %>
-          <% end %>
+          <%= f.input :position, label: "Route position", as: :integer,
+                      hint: "Order within the driver's day route" %>
+          <p class="text-muted small mb-1">Subscription IDs for this user:</p>
+          <p class="text-muted small mb-3"><%= @subscription.user.subscriptions.map(&:id).join(', ') %></p>
           <%= f.input :subscription_id %>
-        <% end %>
-        <hr>
-        <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
-        <!-- Hidden field for start_time -->
-        <%= f.hidden_field :time, value: Time.current %>
-        <div class="text-center">
-          <%= f.submit 'Dropped Off!', class: 'submit-btn' %>
+          <div class="mt-3">
+            <%= link_to issue_bags_collection_path(@collection), class: "btn-secondary-outline btn-sm" do %>
+              <i class="fa-solid fa-sack-dollar"></i> Issue bags invoice
+            <% end %>
+          </div>
         </div>
-      <% end %>
-    <% elsif @collection.subscription.user.drop_off? %>
-      <%= simple_form_for [@collection] do |f| %>
-        <%= f.input :skip %>
-        <%= f.input :dropped_off_buckets, placeholder: "0" %>
-        <% if current_user.admin? %>
-          <%= f.input :bags, label: "Bags", placeholder: "0" %>
-          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
-          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
-          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
-        <% end %>
-        <% if current_user.admin? %>
-          <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
-          <%= f.input :date %>
-          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
-          <p>Users subs:</p>
-          <% @collection.subscription.user.subscriptions.each do |sub| %>
-            <%= sub.id %>
-          <% end %>
-          <%= f.input :subscription_id %>
-        <% end %>
-        <hr>
-        <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
-        <!-- Hidden field for start_time -->
-        <%= f.hidden_field :time, value: Time.current %>
-        <div class="text-center">
-          <%= f.submit 'Done!', class: 'submit-btn' %>
-        </div>
-      <% end %>
-    <% else %>
-      <%= simple_form_for [@collection] do |f| %>
-        <%= f.input :skip %>
-        <% if current_user.admin? %>
-          <%= f.input :bags, label: "Bags", placeholder: "0" %>
-          <%= f.input :buckets, label: "XL Buckets", placeholder: "0" %>
-          <%= f.input :buckets_45l, label: "45L Buckets", placeholder: "0" %>
-          <%= f.input :buckets_25l, label: "25L Buckets", placeholder: "0" %>
-        <% elsif @subscription.Standard? %>
-          <%= f.input :bags, label: "Number of bags collected", placeholder: "0" %>
-        <% elsif @subscription.Commercial? %>
-          <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
-          <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
-        <% elsif @subscription.XL? %>
-          <%= f.input :buckets, label: "Number of buckets collected", placeholder: "0" %>
-        <% end %>
-        <% if current_user.admin? %>
-          <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
-          <%= f.input :date %>
-          <%= f.input :position, label: "Route position", as: :integer, hint: "Order within the driver's day route" %>
-          <p>Users subs:</p>
-          <% @collection.subscription.user.subscriptions.each do |sub| %>
-            <%= sub.id %>
-          <% end %>
-          <%= f.input :subscription_id %>
-        <% end %>
-        <hr>
-        <%= f.input :alfred_message, as: :text, label: "Message for Kiki" %>
-        <!-- Hidden field for start_time -->
-        <%= f.hidden_field :time, value: Time.current %>
-        <div class="centre">
-          <%= f.submit 'Done!', class: 'small-yellow-btn' %>
-        </div>
-      <% end %>
+      </div>
     <% end %>
-  </div>
+
+    <%= f.hidden_field :time, value: Time.current %>
+
+    <div class="mt-2 mb-4">
+      <%= f.submit submit_label, class: "submit-btn w-100" %>
+    </div>
+
+  <% end %>
 
 </div>
