@@ -81,46 +81,23 @@
 
 
 .collection-header {
-  font-family: "Inter";
-  text-align: center;
-  font-size: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   min-width: 80vw;
-  border-bottom: 2px solid #2c3e50;
+  border-bottom: 2px solid #e0e0e0;
   padding-bottom: 0.5rem;
-  margin: 0 auto;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
 
-  h2 {
-    margin: 0;
-  }
-
-  .name {
-    width: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-
-  }
-
-  .bag {
-    width: 15%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .address {
-    width: 30%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-
-  }
-
+  .name    { width: 10%; }
+  .bag     { width: 20%; text-align: center; }
+  .address { width: 30%; }
+  .emojies { width: 20%; text-align: right; }
 }
 
 .collections {
@@ -293,6 +270,49 @@
 
     i { font-size: 1.2rem; }
   }
+}
+
+// ── Quick message rows (collection edit) ─────────────────────────────────────
+
+.quick-msg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child { border-bottom: none; }
+
+  &--contact {
+    background: #fafafa;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: $dark-green;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.25rem;
+  }
+}
+
+.quick-msg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  &:hover { background: #f0f0f0; }
+  &:active { transform: scale(0.92); }
 }
 
 .drop-off-name {

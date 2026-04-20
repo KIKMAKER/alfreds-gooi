@@ -16,27 +16,61 @@
     </div>
   </div>
 
-  <%# ── Household contacts ── %>
+  <%# ── Quick messages ── %>
   <% whatsapp_contacts = @subscription.contacts.can_receive_whatsapp %>
-  <% if whatsapp_contacts.any? %>
-    <div class="dd-form-card">
-      <div class="dd-form-card__header">
-        <i class="fa-brands fa-whatsapp"></i>
-        <h3>Household contacts</h3>
-      </div>
-      <div class="dd-form-card__body">
-        <div class="collection-whatsapp-contacts">
-          <% whatsapp_contacts.each do |contact| %>
-            <% message = "Hello #{contact.first_name}, I'm here to collect your gooi!" %>
-            <% wa_url = "https://wa.me/#{contact.formatted_phone.gsub('+', '')}?text=#{URI.encode_www_form_component(message)}" %>
-            <%= link_to wa_url, target: :_blank, class: "collection-whatsapp-contacts__link" do %>
-              <i class="fa-brands fa-whatsapp"></i> <%= contact.display_name %>
-            <% end %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-brands fa-whatsapp"></i>
+      <h3>Quick messages</h3>
+    </div>
+    <div class="dd-form-card__body p-0">
+
+      <%# Primary user %>
+      <% user = @subscription.user %>
+      <% first = user.first_name %>
+      <div class="quick-msg-row">
+        <span class="quick-msg-row__name"><%= first %></span>
+        <div class="quick-msg-row__actions">
+          <%= link_to user.generate_whatsapp_link("Hello #{first}, I'm on my way!"),
+                      target: :_blank, class: "quick-msg-btn", title: "On my way" do %>
+            🚗
+          <% end %>
+          <%= link_to user.generate_whatsapp_link("Hello #{first}, I'm here to collect your gooi!"),
+                      target: :_blank, class: "quick-msg-btn", title: "I'm here" do %>
+            🏠
+          <% end %>
+          <%= link_to user.generate_whatsapp_link("Thank you #{first}, I've got your gooi. Hope you have a wonderful week!"),
+                      target: :_blank, class: "quick-msg-btn", title: "Done, thanks" do %>
+            🪴
           <% end %>
         </div>
       </div>
+
+      <%# Household contacts %>
+      <% whatsapp_contacts.each do |contact| %>
+        <% cf = contact.first_name %>
+        <% wa_base = "https://wa.me/#{contact.formatted_phone.gsub('+', '')}" %>
+        <div class="quick-msg-row quick-msg-row--contact">
+          <span class="quick-msg-row__name"><%= contact.display_name %></span>
+          <div class="quick-msg-row__actions">
+            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Hello #{cf}, I'm on my way!")}",
+                        target: :_blank, class: "quick-msg-btn", title: "On my way" do %>
+              🚗
+            <% end %>
+            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Hello #{cf}, I'm here to collect your gooi!")}",
+                        target: :_blank, class: "quick-msg-btn", title: "I'm here" do %>
+              🏠
+            <% end %>
+            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Thank you #{cf}, I've got your gooi. Have a wonderful week!")}",
+                        target: :_blank, class: "quick-msg-btn", title: "Done, thanks" do %>
+              🪴
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
     </div>
-  <% end %>
+  </div>
 
   <%# ── Notes (access code + kiki note) ── %>
   <% if @subscription.access_code.present? || !@collection.kiki_note_nil_zero? %>
