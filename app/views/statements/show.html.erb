@@ -65,7 +65,7 @@
                 </span>
                 <span style="font-size: 0.75rem; color: #888;">
                   #<%= invoice.number || invoice.id %>
-                  &middot; <%= subscription.plan %>
+                  &middot; <%= subscription.human_plan %>
                   <% if invoice.due_date %>
                     &middot; due <%= invoice.due_date.strftime('%d %b') %>
                   <% end %>

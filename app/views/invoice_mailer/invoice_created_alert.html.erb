@@ -9,7 +9,7 @@
       <strong>Email:</strong> <%= @user&.email %>
     </p>
     <p style="margin: 0 0 12px; font-size: 16px;">
-      <strong>Subscription:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> months)
+      <strong>Subscription:</strong> <%= @subscription.human_plan %> (<%= @subscription.duration %> months)
     </p>
     <p style="margin: 0 0 12px; font-size: 16px;">
       <strong>Installment:</strong> <%= @installment_number %> of <%= @subscription.duration %>

@@ -182,11 +182,15 @@ class Subscription < ApplicationRecord
 
   def self.humanized_plans
     {
-      once_off: 'Once Off',
+      once_off: 'Once-off',
       Standard: 'Standard',
       XL: 'Extra Large',
       Commercial: 'Commercial'
     }
+  end
+
+  def human_plan
+    self.class.humanized_plans[plan.to_sym] || plan
   end
 
   def is_paused?(on_date: Date.today)

@@ -2,7 +2,7 @@ ACTION REQUIRED: Approve Monthly Invoice
 =========================================
 
 Customer: <%= @user&.first_name %> <%= @user&.last_name %> (<%= @user&.email %>)
-Subscription: <%= @subscription.plan %> — <%= @subscription.duration %>-month contract
+Subscription: <%= @subscription.human_plan %> — <%= @subscription.duration %>-month contract
 Installment: <%= @installment_number %> of <%= @subscription.duration %>
 
 Line Items

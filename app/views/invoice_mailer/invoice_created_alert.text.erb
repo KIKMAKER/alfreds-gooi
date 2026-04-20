@@ -3,7 +3,7 @@ Monthly Invoice Generated
 
 Customer: <%= @user&.first_name %> <%= @user&.last_name %>
 Email: <%= @user&.email %>
-Subscription: <%= @subscription.plan %> (<%= @subscription.duration %> months)
+Subscription: <%= @subscription.human_plan %> (<%= @subscription.duration %> months)
 Installment: <%= @installment_number %> of <%= @subscription.duration %>
 
 Invoice Details

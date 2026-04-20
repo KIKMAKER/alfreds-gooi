@@ -48,7 +48,7 @@
             <tr>
               <td><%= referral.referrer&.email %></td>
               <td><%= referral.referee&.email %></td>
-              <td><%= referral.subscription&.plan&.humanize || "—" %></td>
+              <td><%= referral.subscription&.human_plan || "—" %></td>
               <td><%= referral.subscription&.status&.humanize || "—" %></td>
               <td><%= referral.created_at.strftime('%-d %b %Y') %></td>
             </tr>
