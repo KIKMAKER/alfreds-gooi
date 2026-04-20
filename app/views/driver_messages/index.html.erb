@@ -31,10 +31,9 @@
         <div class="mb-3">
           <%= f.label :message, "Message", class: "bucket-scale-label" %>
           <%= f.text_area :message,
-                          value: @message,
+                          value: @message || "Reminder, tomorrow is gooi day! Please let us know if you won't be needing collection.",
                           rows: 5,
-                          class: "form-control",
-                          placeholder: "Hi! Just a reminder that your collection is coming up. See you then 🪴" %>
+                          class: "form-control" %>
         </div>
 
         <%= f.submit "Generate links", class: "submit-btn w-100" %>
