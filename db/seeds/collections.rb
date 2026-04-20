@@ -32,7 +32,13 @@ end
 created_collections = 0
 sentinel = Date.new(2001, 1, 1)  # sentinel for "unset" holiday dates (DB default 2000-01-01)
 
-Subscription.find_each do |sub|
+# Track users who have already received their first collection in this seed run.
+# new_customer: true belongs only on the very first collection a user ever has.
+users_with_a_collection = Set.new
+
+# Process subscriptions oldest-first so a user's first sub is always handled
+# before their renewals — ensuring new_customer lands on the right record.
+Subscription.order(start_date: :asc).find_each do |sub|
   next if sub.collection_day.blank? || sub.start_date.blank?
   next if sub.pending?   # pending subs haven't started
   next if sub.once_off?  # once-off handled by single CreateFirstCollectionJob; skip in bulk seed
@@ -52,6 +58,7 @@ Subscription.find_each do |sub|
   date         = first_wday_on_or_after(sub_start, target_wday)
   non_skipped  = 0
   first_pickup = true
+  is_users_first_sub = !users_with_a_collection.include?(sub.user_id)
 
   loop do
     # ── Stop condition ──────────────────────────────────────────────────────
@@ -84,18 +91,23 @@ Subscription.find_each do |sub|
     end
 
     # ── Collection record ───────────────────────────────────────────────────
+    # new_customer is only true on a user's very first collection ever —
+    # not the first of each renewal, just the absolute first pickup.
+    is_first_ever = first_pickup && !skip && is_users_first_sub
+
     attrs = {
       subscription: sub,
       drivers_day:  dd,
       date:         date,
       is_done:      is_done,
       skip:         skip,
-      new_customer: first_pickup && !skip
+      new_customer: is_first_ever
     }
     attrs.merge!(collection_volume(sub.plan, sub.buckets_per_collection)) if is_done
 
     Collection.create!(attrs)
     created_collections += 1
+    users_with_a_collection.add(sub.user_id)
     first_pickup = false
 
     date += 7.days
@@ -107,6 +119,27 @@ puts "    done:     #{Collection.where(is_done: true).count}"
 puts "    skipped:  #{Collection.where(skip: true).count}"
 puts "    upcoming: #{Collection.where(is_done: false, skip: false).count}"
 puts "  ✓ #{DriversDay.count} driver days"
+
+# ── Guarantee at least 2 new customers in the current week ───────────────────
+# The main loop sets new_customer naturally for each user's first-ever collection.
+# If none of those happen to fall this week, promote a few upcoming collections.
+
+this_week_dates = [2, 3, 4].filter_map do |wday|
+  d = first_wday_on_or_after(today, wday)
+  d if d <= today + 7.days
+end
+
+already_new = Collection.where(date: this_week_dates, new_customer: true, skip: false).count
+needed      = [0, 2 - already_new].max
+
+if needed > 0
+  Collection.where(date: this_week_dates, skip: false, new_customer: false)
+            .order("RANDOM()").limit(needed)
+            .update_all(new_customer: true)
+  puts "  ✓ Promoted #{needed} upcoming collection(s) to new_customer: true"
+end
+
+puts "  #{Collection.where(date: this_week_dates, new_customer: true).count} new customer(s) in this week's route"
 
 # ── Stats for the most recent completed driver day ────────────────────────────
 
