@@ -155,6 +155,19 @@
 
     <p class="text-muted text-center mt-2 mb-4">Travel safe, see you next time.</p>
 
+    <div class="dd-form-card dd-form-card--highlight mb-3">
+      <div class="dd-form-card__header">
+        <i class="fa-brands fa-whatsapp"></i>
+        <h3>Message tomorrow's customers</h3>
+      </div>
+      <div class="dd-form-card__body">
+        <p class="text-muted mb-3">Send a heads-up to tomorrow's route before you head off.</p>
+        <%= link_to driver_messages_path, class: "btn-yellow w-100" do %>
+          <i class="fa-brands fa-whatsapp"></i> Message a Day
+        <% end %>
+      </div>
+    </div>
+
     <%= link_to "View today's collections", today_subscriptions_path, class: "btn-yellow w-100 mb-4" %>
 
     <%= render 'daily_snapshot',

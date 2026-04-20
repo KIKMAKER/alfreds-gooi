@@ -532,6 +532,19 @@
   box-shadow: rgba(100, 100, 111, 0.15) 0 4px 16px 0;
   overflow: hidden;
   margin-bottom: 1.5rem;
+
+  &--highlight {
+    border: 2px solid #25D366;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.25);
+
+    .dd-form-card__header {
+      background: linear-gradient(135deg, #e8faf0 0%, #d0f5e0 100%);
+      border-bottom-color: #b2e8c8;
+
+      i  { color: #25D366; font-size: 1.3rem; }
+      h3 { color: #1a7a45; }
+    }
+  }
 }
 
 .dd-form-card__header {
