@@ -567,6 +567,18 @@
   .form-group { margin-bottom: 1rem; }
 }
 
+.dd-order-item {
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+
+    .btn-yellow,
+    .btn-secondary-outline { flex: 1; text-align: center; }
+  }
+}
+
 .dd-date-input {
   // Override the datetime-local appearance for consistency
   &::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }

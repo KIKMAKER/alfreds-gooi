@@ -76,19 +76,23 @@
       </div>
       <div class="dd-form-card__body">
         <% @orders.each do |order| %>
-          <% order.order_items.each do |item| %>
-            <p class="mb-1"><strong><%= item.quantity %>×</strong> <%= item.product.title %></p>
-          <% end %>
-          <%= button_to "Mark Order ##{order.id} as Delivered",
-                        mark_delivered_order_path(order),
-                        method: :post,
-                        class: "btn-yellow btn-sm mt-2",
-                        data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
-          <%= button_to "Postpone to Next Week",
-                        postpone_delivery_order_path(order),
-                        method: :post,
-                        class: "btn-secondary-outline btn-sm mt-1",
-                        data: { turbo_confirm: "Postpone order ##{order.id} to next week's collection?" } %>
+          <div class="dd-order-item">
+            <% order.order_items.each do |item| %>
+              <p class="mb-1"><strong><%= item.quantity %>×</strong> <%= item.product.title %></p>
+            <% end %>
+            <div class="dd-order-item__actions">
+              <%= button_to "Mark ##{order.id} Delivered",
+                            mark_delivered_order_path(order),
+                            method: :post,
+                            class: "btn-yellow btn-sm",
+                            data: { turbo_confirm: "Confirm delivery of order ##{order.id}?" } %>
+              <%= button_to "Postpone",
+                            postpone_delivery_order_path(order),
+                            method: :post,
+                            class: "btn-secondary-outline btn-sm",
+                            data: { turbo_confirm: "Postpone order ##{order.id} to next week's collection?" } %>
+            </div>
+          </div>
         <% end %>
       </div>
     </div>
