@@ -3,42 +3,34 @@
   <%= link_to "← Back to Today's List", today_subscriptions_path, class: "link-title my-3" %>
 
   <% if @drop_off_events.any? %>
-    <div class="collection-header">
-      <div class="name"><p>Site</p></div>
-      <div class="bag"><p>Weight</p></div>
-      <div class="address"><p>Location</p></div>
-      <div class="status"><p>Status</p></div>
-    </div>
-
-    <div class="collections">
-      <ul>
-        <% @drop_off_events.each do |event| %>
-          <li class="collection">
-            <div class="name">
-              <p><%= event.drop_off_site.name %></p>
+    <div class="fad-event-list mt-3">
+      <% @drop_off_events.each do |event| %>
+        <div class="fad-event-row">
+          <div class="fad-event-row__main">
+            <span class="fad-event-row__name">
+              <%= event.drop_off_site.name %>
               <% if event.is_done %>
-                <i class="fa-solid fa-check"></i>
+                <i class="fa-solid fa-check ms-1" style="color: var(--bs-success); font-size: 0.85em;"></i>
               <% end %>
-            </div>
-            <div class="bag">
-              <% if event.buckets.count > 0 %>
-                <%= link_to "#{number_with_precision(event.total_weight_from_buckets, precision: 1)} kg",
-                    drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn" %>
-              <% else %>
-                <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn" %>
-              <% end %>
-            </div>
-            <div class="address">
-              <%= link_to event.drop_off_site.suburb.truncate(20),
+            </span>
+            <span class="fad-event-row__dates">
+              <%= link_to event.drop_off_site.suburb,
                   "https://maps.google.com/?q=#{event.drop_off_site.street_address}, #{event.drop_off_site.suburb}",
-                  target: :_blank %>
-            </div>
-            <div class="status">
-              <p><%= event.buckets.count %> buckets</p>
-            </div>
-          </li>
-        <% end %>
-      </ul>
+                  target: :_blank %> &middot;
+              <%= event.buckets.count %> buckets
+            </span>
+          </div>
+          <div class="fad-event-row__actions">
+            <% if event.buckets.count > 0 %>
+              <%= link_to "#{number_with_precision(event.total_weight_from_buckets, precision: 1)} kg",
+                  drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn btn-sm" %>
+            <% else %>
+              <%= link_to "Weigh",
+                  drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn btn-sm" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     </div>
   <% else %>
     <div class="outline my-5">
