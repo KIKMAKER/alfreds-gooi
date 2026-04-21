@@ -17,7 +17,6 @@
   </div>
 
   <%# ── Quick messages ── %>
-  <% whatsapp_contacts = @subscription.contacts.can_receive_whatsapp %>
   <div class="dd-form-card">
     <div class="dd-form-card__header">
       <i class="fa-brands fa-whatsapp"></i>
@@ -46,28 +45,6 @@
         </div>
       </div>
 
-      <%# Household contacts %>
-      <% whatsapp_contacts.each do |contact| %>
-        <% cf = contact.first_name %>
-        <% wa_base = "https://wa.me/#{contact.formatted_phone.gsub('+', '')}" %>
-        <div class="quick-msg-row quick-msg-row--contact">
-          <span class="quick-msg-row__name"><%= contact.display_name %></span>
-          <div class="quick-msg-row__actions">
-            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Hello #{cf}, I'm on my way!")}",
-                        target: :_blank, class: "quick-msg-btn", title: "On my way" do %>
-              🚗
-            <% end %>
-            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Hello #{cf}, I'm here to collect your gooi!")}",
-                        target: :_blank, class: "quick-msg-btn", title: "I'm here" do %>
-              🏠
-            <% end %>
-            <%= link_to "#{wa_base}?text=#{URI.encode_www_form_component("Thank you #{cf}, I've got your gooi. Have a wonderful week!")}",
-                        target: :_blank, class: "quick-msg-btn", title: "Done, thanks" do %>
-              🪴
-            <% end %>
-          </div>
-        </div>
-      <% end %>
 
     </div>
   </div>
@@ -212,11 +189,7 @@
           <p class="text-muted small mb-1">Subscription IDs for this user:</p>
           <p class="text-muted small mb-3"><%= @subscription.user.subscriptions.map(&:id).join(', ') %></p>
           <%= f.input :subscription_id %>
-          <div class="mt-3">
-            <%= link_to issue_bags_collection_path(@collection), class: "btn-secondary-outline btn-sm" do %>
-              <i class="fa-solid fa-sack-dollar"></i> Issue bags invoice
-            <% end %>
-          </div>
+
         </div>
       </div>
     <% end %>
