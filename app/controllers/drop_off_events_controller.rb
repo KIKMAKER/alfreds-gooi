@@ -30,7 +30,8 @@ class DropOffEventsController < ApplicationController
 
   def destroy
     @drop_off_event.destroy!
-    redirect_to today_subscriptions_path, notice: "Drop-off event removed from today's route."
+    redirect_back fallback_location: route_drivers_days_path(date: @drivers_day.date),
+                  notice: "Drop-off event removed from today's route."
   end
 
   def complete

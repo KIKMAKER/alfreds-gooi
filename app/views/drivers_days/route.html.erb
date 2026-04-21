@@ -47,6 +47,11 @@
             <div class="address">
               <%= link_to item.drop_off_site.street_address&.truncate(20), "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
             </div>
+            <% if current_user.admin? %>
+              <%= link_to '✕', drivers_day_drop_off_event_path(@drivers_day, item),
+                          data: { turbo_method: :delete, turbo_confirm: "Remove this drop-off from today's route?" },
+                          class: "route-delete-btn" %>
+            <% end %>
           </li>
 
         <% else %>
