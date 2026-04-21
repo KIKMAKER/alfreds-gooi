@@ -367,6 +367,13 @@
     color: $dark-green;
   }
 
+  &__meta {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
   &__actions {
     display: flex;
     gap: 0.25rem;
