@@ -50,8 +50,9 @@
     <div class="inner-header-container mb-4">
       <h1>Organic waste recycling made easy</h1>
       <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
         Gooi offers weekly collection of food scraps from your doorstep.
+        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
+        Since 2023 we have collected <strong class="yellow-txt"><%= number_with_delimiter(@total_kg) %> kg</strong> of organic waste.
         Ready to join the food waste revolution?</p>
       <div class="mt-5 mb-3">
         <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
@@ -455,7 +456,7 @@
           <li>No commitment, no recurring charges</li>
           <li>Pick your collection date based on our route</li>
         </ul>
-        <p class="other-option-price">R<%= number_with_precision(@once_off_price, precision: 2) %></p>
+        <p class="other-option-price">R<%= number_with_precision(@once_off_price, precision: 0) %></p>
         <div class="mt-auto pt-3">
           <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
         </div>

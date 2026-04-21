@@ -18,6 +18,7 @@ class PagesController < ApplicationController
     @pct = (@discount_percent || 0.0).to_f
     @amt = (@discount_amount || 0.0).to_f
     @referral_code = params[:referral]
+    @total_kg = DriversDay.sum(:total_net_kg).round
   end
 
   def today
