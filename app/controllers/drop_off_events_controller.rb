@@ -1,6 +1,6 @@
 class DropOffEventsController < ApplicationController
   before_action :set_drivers_day
-  before_action :set_drop_off_event, only: [:show, :edit, :update, :complete, :record_arrival, :record_departure, :set_current_drop_off]
+  before_action :set_drop_off_event, only: [:show, :edit, :update, :destroy, :complete, :record_arrival, :record_departure, :set_current_drop_off]
 
   def index
     @drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
@@ -26,6 +26,11 @@ class DropOffEventsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @drop_off_event.destroy!
+    redirect_to today_subscriptions_path, notice: "Drop-off event removed from today's route."
   end
 
   def complete

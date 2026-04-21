@@ -38,6 +38,9 @@
                 class="drop-off-timer-icon"
                 title="Click to start timer">⏱️</span>
               <p><%= link_to item.drop_off_site.name.split.first, drivers_day_drop_off_event_path(@drivers_day, item) %></p>
+              <% if current_user.admin? %>
+                <p><%= link_to 'X', drivers_day_drop_off_event_path(@drivers_day, item), data: { turbo_method: :delete, turbo_confirm: "Remove this drop-off from today's route?" } %></p>
+              <% end %>
             </div>
             <div class="bag">
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
