@@ -1,40 +1,58 @@
-<div class="driver-wrapper">
-  <h1>Drop-Off Sites for <%= @drivers_day.date.strftime("%A, %B %e") %></h1>
-  <%= link_to "← Back to Today's List", today_subscriptions_path, class: "link-title my-3" %>
+<div class="drivers-day-container">
 
-  <% if @drop_off_events.any? %>
-    <div class="fad-event-list mt-3">
-      <% @drop_off_events.each do |event| %>
-        <div class="fad-event-row">
-          <div class="fad-event-row__main">
-            <span class="fad-event-row__name">
-              <%= event.drop_off_site.name %>
-              <% if event.is_done %>
-                <i class="fa-solid fa-check ms-1" style="color: var(--bs-success); font-size: 0.85em;"></i>
-              <% end %>
-            </span>
-            <span class="fad-event-row__dates">
-              <%= link_to event.drop_off_site.suburb,
-                  "https://maps.google.com/?q=#{event.drop_off_site.street_address}, #{event.drop_off_site.suburb}",
-                  target: :_blank %> &middot;
-              <%= event.buckets.count %> buckets
-            </span>
-          </div>
-          <div class="fad-event-row__actions">
-            <% if event.buckets.count > 0 %>
-              <%= link_to "#{number_with_precision(event.total_weight_from_buckets, precision: 1)} kg",
-                  drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn btn-sm" %>
-            <% else %>
-              <%= link_to "Weigh",
-                  drivers_day_drop_off_event_path(@drivers_day, event), class: "small-yellow-btn btn-sm" %>
-            <% end %>
-          </div>
-        </div>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Drop-Offs</h1>
+      <p class="dd-header__sub"><%= @drivers_day.date.strftime("%A, %-d %B") %></p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to today_subscriptions_path, class: "btn-secondary-outline btn-sm" do %>
+        <i class="fa-solid fa-arrow-left"></i> Today's List
       <% end %>
     </div>
+  </div>
+
+  <% if @drop_off_events.any? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-truck-ramp-box"></i>
+        <h3><%= pluralize(@drop_off_events.count, 'site') %> to drop off at</h3>
+      </div>
+      <div class="dd-form-card__body p-0">
+        <% @drop_off_events.each do |event| %>
+          <div class="quick-msg-row">
+            <div>
+              <div class="quick-msg-row__name">
+                <%= link_to event.drop_off_site.name, drivers_day_drop_off_event_path(@drivers_day, event) %>
+                <% if event.is_done? %>
+                  <i class="fa-solid fa-check ms-1" style="color: var(--bs-success); font-size: 0.8em;"></i>
+                <% end %>
+              </div>
+              <div class="quick-msg-row__meta">
+                <%= link_to event.drop_off_site.suburb,
+                    "https://maps.google.com/?q=#{event.drop_off_site.street_address}, #{event.drop_off_site.suburb}",
+                    target: :_blank %> &middot;
+                <%= pluralize(event.buckets.count, 'bucket') %>
+              </div>
+            </div>
+            <div class="quick-msg-row__actions">
+              <% if event.buckets.count > 0 %>
+                <%= link_to "#{number_with_precision(event.total_weight_from_buckets, precision: 1)} kg",
+                    drivers_day_drop_off_event_path(@drivers_day, event), class: "tiny-yellow-btn" %>
+              <% else %>
+                <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, event), class: "tiny-yellow-btn" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
   <% else %>
-    <div class="outline my-5">
-      <p>No drop-off sites scheduled for today.</p>
+    <div class="dd-form-card">
+      <div class="dd-form-card__body">
+        <p class="text-muted mb-0">No drop-off sites scheduled for today.</p>
+      </div>
     </div>
   <% end %>
+
 </div>
