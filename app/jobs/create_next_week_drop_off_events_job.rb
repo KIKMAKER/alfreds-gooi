@@ -32,22 +32,26 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
       this_week_events = this_week_drivers_day.drop_off_events
 
       this_week_events.each do |this_event|
-        # Create drop-off event for the same site this week
         drop_off_event = DropOffEvent.find_or_create_by!(
           drivers_day: drivers_day,
           drop_off_site: this_event.drop_off_site,
           date: drop_off_date
         ) do |event|
-          # Copy attributes from this week's event on creation
-          event.position = this_event.position
           event.is_final_destination = this_event.is_final_destination
+          # Set position before save so acts_as_list doesn't auto-append to bottom.
+          # Use the most recent previous event for this site as the source of truth,
+          # so any reordering the driver has done this week is carried forward.
+          prev = DropOffEvent
+            .where(drop_off_site_id: this_event.drop_off_site_id)
+            .where.not(position: nil)
+            .where("date < ?", drop_off_date)
+            .order(date: :desc)
+            .first
+          event.position = prev.position if prev
         end
 
-        # Update attributes if event already exists
-        drop_off_event.update!(
-          position: this_event.position,
-          is_final_destination: this_event.is_final_destination
-        )
+        # Keep is_final_destination in sync on existing events; leave position alone
+        drop_off_event.update!(is_final_destination: this_event.is_final_destination)
 
         puts "Created drop-off event for #{this_event.drop_off_site&.name} on #{drop_off_date} (ID: #{drop_off_event.id})"
       end
