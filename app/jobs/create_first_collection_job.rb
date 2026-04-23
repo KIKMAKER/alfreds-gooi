@@ -26,6 +26,7 @@ class CreateFirstCollectionJob < ApplicationJob
 
     collection = Collection.find_or_create_by!(subscription: subscription, date: collection_date)
     collection.update!(drivers_day: drivers_day) if drivers_day && collection.drivers_day.nil?
+    collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
     puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
 
     collection.update!(new_customer: true) if subscription.is_new_customer

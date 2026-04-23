@@ -31,6 +31,7 @@ class CreateTomorrowCollectionsJob < ApplicationJob
           date: tomorrow,
           skip: subscription.is_paused?
         )
+        collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
         puts ">> >> >> #{subscription.customer_id}"
         collection.update!(new_customer: true) if subscription.is_new_customer
       end

@@ -25,6 +25,8 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
   end
+  before_create :inherit_collection_order
+  after_save :sync_collection_positions
   before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
   before_validation :normalize_referral_code
@@ -488,6 +490,18 @@ class Subscription < ApplicationRecord
 
 
   private
+
+  def inherit_collection_order
+    return if collection_order.present?
+    previous = Subscription.where(user_id: user_id).where.not(collection_order: nil).order(created_at: :desc).first
+    self.collection_order = previous.collection_order if previous
+  end
+
+  def sync_collection_positions
+    return unless saved_change_to_collection_order?
+    return if collection_order.blank?
+    collections.where("date > ?", Date.today).update_all(position: collection_order)
+  end
 
   def normalize_referral_code
     self.referral_code = referral_code.strip.upcase if referral_code.present?
