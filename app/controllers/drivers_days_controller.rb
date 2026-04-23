@@ -364,9 +364,10 @@ class DriversDaysController < ApplicationController
       end
     end
 
-    # Keep subscription collection_order in sync
+    # Keep subscription collection_order in sync — uses update (not update_column) so
+    # sync_collection_positions fires and propagates the new order to future collections
     @drivers_day.collections.order(:position).each_with_index do |c, i|
-      c.subscription&.update_column(:collection_order, i + 1)
+      c.subscription&.update(collection_order: i + 1)
     end
 
     head :no_content
