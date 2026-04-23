@@ -7,7 +7,7 @@
       <p class="dd-header__sub"><%= @subscription.street_address %></p>
     </div>
     <div class="dd-header__actions">
-      <%= link_to today_subscriptions_path, class: "btn-secondary-outline btn-sm" do %>
+      <%= link_to @return_to, class: "btn-secondary-outline btn-sm" do %>
         <i class="fa-solid fa-arrow-left"></i> Back
       <% end %>
       <%= link_to "https://wa.me/#{@subscription.user.phone_number}", target: :_blank, class: "btn-yellow btn-sm" do %>
@@ -103,6 +103,20 @@
 
   <%= simple_form_for [@collection] do |f| %>
 
+    <%# ── Skip card — prominent, at top of form ── %>
+    <div class="dd-form-card <%= 'dd-form-card--skip-active' if @collection.skip? %>">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-ban"></i>
+        <h3>Skip this collection<% if @collection.skip? %> — currently skipped<% end %></h3>
+      </div>
+      <div class="dd-form-card__body">
+        <% if @collection.skip? %>
+          <p class="dd-skip-notice">This collection is marked as skipped. Uncheck below to collect.</p>
+        <% end %>
+        <%= f.input :skip, label: "Skip this collection", wrapper_html: { class: "mb-0" } %>
+      </div>
+    </div>
+
     <%# Count card — what did you collect? %>
     <div class="dd-form-card">
       <div class="dd-form-card__header">
@@ -159,10 +173,6 @@
           </div>
         <% end %>
 
-        <%# Skip toggle — inline below the count %>
-        <div class="mt-3 pt-3 border-top">
-          <%= f.input :skip, label: "Skip this collection" %>
-        </div>
       </div>
     </div>
 

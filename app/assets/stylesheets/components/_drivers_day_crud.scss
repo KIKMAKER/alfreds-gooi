@@ -545,6 +545,26 @@
       h3 { color: #1a7a45; }
     }
   }
+
+  &--skip-active {
+    border: 2px solid #e74c3c;
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.2);
+
+    .dd-form-card__header {
+      background: linear-gradient(135deg, #fdecea 0%, #fad7d5 100%);
+      border-bottom-color: #f5b7b1;
+
+      i  { color: #c0392b; }
+      h3 { color: #c0392b; }
+    }
+  }
+}
+
+.dd-skip-notice {
+  font-size: 0.875rem;
+  color: #c0392b;
+  margin-bottom: 0.75rem;
+  font-style: italic;
 }
 
 .dd-form-card__header {

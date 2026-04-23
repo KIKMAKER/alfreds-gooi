@@ -97,6 +97,8 @@ class CollectionsController < ApplicationController
   def edit
     @subscription = @collection.subscription
     @orders = @collection.orders.pending_delivery
+    @return_to = validated_return_path(request.referer)
+    session[:collection_return_to] = @return_to
   end
 
   def update
@@ -124,12 +126,11 @@ class CollectionsController < ApplicationController
       if @collection.saved_change_to_position? && @collection.drivers_day
         move_to_position!(@collection, @collection.position)
       end
-      if current_user.admin?
-        redirect_to admin_users_path, notice: 'updated'
-      else
-        redirect_to today_subscriptions_path, notice: 'updated'
-      end
+      redirect_to session.delete(:collection_return_to) || today_subscriptions_path, notice: 'updated'
     else
+      @return_to = session[:collection_return_to] || today_subscriptions_path
+      @subscription = @collection.subscription
+      @orders = @collection.orders.pending_delivery
       render :edit, status: :unprocessable_entity
     end
   end
@@ -249,6 +250,14 @@ class CollectionsController < ApplicationController
       puts "Subscription not found for customer_id: #{row['customer_id']}"
       nil
     end
+  end
+
+  def validated_return_path(url)
+    return today_subscriptions_path unless url.present?
+    uri = URI.parse(url)
+    (uri.host.nil? || uri.host == request.host) ? url : today_subscriptions_path
+  rescue URI::InvalidURIError
+    today_subscriptions_path
   end
 
   def set_collection
