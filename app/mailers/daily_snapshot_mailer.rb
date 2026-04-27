@@ -8,7 +8,7 @@ class DailySnapshotMailer < ApplicationMailer
     @snapshot_url = snapshot_drivers_day_url(@drivers_day)
 
     mail(
-      to: "howzit@gooi.me",
+      to: (["howzit@gooi.me"] + User.admin.pluck(:email)).uniq,
       subject: "Daily Impact Snapshot: #{@drivers_day.date.strftime('%A, %B %d, %Y')}"
     )
   end
