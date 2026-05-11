@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_14_000003) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_11_074001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -189,6 +189,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_000003) do
     t.integer "position"
     t.integer "buckets_45l", default: 0
     t.integer "buckets_25l", default: 0
+    t.string "skip_reason"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
@@ -511,6 +512,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_000003) do
     t.bigint "invoice_id"
     t.string "payment_type"
     t.boolean "manual", default: false, null: false
+    t.text "note"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end

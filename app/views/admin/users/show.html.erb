@@ -47,6 +47,64 @@
         <%= link_to "view collections (#{@user.collections.count})", collections_admin_user_path(@user), class: "link-title" %>
       </div>
 
+      <div class="outline p-3 mb-4">
+        <h3 class="mb-3">Log Manual Payment</h3>
+        <%= form_with url: admin_user_payments_path(@user), method: :post, local: true do |f| %>
+          <div class="row g-2">
+            <div class="col-md-2">
+              <%= f.date_field :date, value: Date.today, class: "form-control form-control-sm", required: true %>
+            </div>
+            <div class="col-md-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">R</span>
+                <%= f.number_field :amount_rands, placeholder: "0.00", step: "0.01", min: "0.01", class: "form-control", required: true %>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <%= f.select :payment_type, Payment.payment_types.keys.map { |k| [k.titleize, k] }, {}, class: "form-select form-select-sm" %>
+            </div>
+            <div class="col-md-4">
+              <%= f.text_field :note, placeholder: "Note (e.g. EFT ref ABC123)", class: "form-control form-control-sm" %>
+            </div>
+            <div class="col-md-2">
+              <%= f.submit "Log Payment", class: "btn btn-sm btn-success w-100" %>
+            </div>
+          </div>
+        <% end %>
+
+        <% payments = @user.payments.order(date: :desc) %>
+        <% if payments.any? %>
+          <table class="table table-sm mt-3 mb-0">
+            <thead>
+              <tr>
+                <th>Date</th><th>Amount</th><th>Type</th><th>Note / Reference</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% payments.each do |p| %>
+                <tr>
+                  <td><%= p.date&.strftime('%d %b %Y') %></td>
+                  <td>R<%= number_with_delimiter((p.total_amount / 100.0).to_i) %></td>
+                  <td><%= p.payment_type&.upcase || (p.snapscan_id.present? ? 'SNAPSCAN' : '—') %></td>
+                  <td>
+                    <%= p.note.presence || p.user_reference.presence || '—' %>
+                    <% if p.manual? %><small class="text-muted">(manual)</small><% end %>
+                  </td>
+                  <td>
+                    <% if p.manual? %>
+                      <%= button_to "×", admin_user_payment_path(@user, p),
+                          method: :delete,
+                          class: "btn btn-sm btn-outline-danger py-0 px-1",
+                          form: { data: { turbo_confirm: "Delete this manual payment?" } } %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+
       <% if @lifetime_litres > 0 %>
         <div class="outline p-3 mb-4">
           <h3 class="mb-3">♻️ Lifetime Environmental Impact</h3>
