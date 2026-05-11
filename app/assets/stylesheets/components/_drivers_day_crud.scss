@@ -45,23 +45,6 @@
   margin: 0.25rem 0 0;
 }
 
-.dd-header__remaining {
-  opacity: 1;
-  font-weight: 500;
-  margin-top: 0.4rem;
-
-  strong { color: white; }
-}
-
-.dd-header__wa-link {
-  margin-left: 0.2rem;
-  text-decoration: none;
-  opacity: 0.8;
-  transition: opacity 0.15s;
-
-  &:hover { opacity: 1; }
-}
-
 .dd-header__actions {
   display: flex;
   gap: 0.5rem;

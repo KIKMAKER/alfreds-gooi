@@ -4,23 +4,6 @@
   <div class="dd-header">
     <div>
       <h1 class="dd-header__title"><%= @subscription.display_name %></h1>
-      <% rem = @subscription.remaining_collections %>
-      <% if rem %>
-        <% remaining_display = [rem, 0].max %>
-        <% first_name = @subscription.user.first_name %>
-        <% collected = @subscription.total_collections %>
-        <% sub_desc = @subscription.once_off? ? "once-off subscription" : "#{@subscription.duration} month subscription" %>
-        <% wa_msg = "hello #{first_name}, you have #{remaining_display} gooi collections remaining on this #{sub_desc}. We have collected #{collected} times. Click www.gooi.me/subscriptions/new to resubscribe." %>
-        <p class="dd-header__sub dd-header__remaining">
-          Collections remaining: <strong><%= remaining_display %></strong>
-          <%= link_to @subscription.user.generate_whatsapp_link(wa_msg),
-                      target: :_blank,
-                      class: "dd-header__wa-link",
-                      title: "Send renewal reminder on WhatsApp" do %>
-            📅
-          <% end %>
-        </p>
-      <% end %>
       <p class="dd-header__sub"><%= @subscription.street_address %></p>
     </div>
     <div class="dd-header__actions">
@@ -62,6 +45,22 @@
         </div>
       </div>
 
+      <% rem = @subscription.remaining_collections %>
+      <% if rem %>
+        <% remaining_display = [rem, 0].max %>
+        <% collected = @subscription.total_collections %>
+        <% sub_desc = @subscription.once_off? ? "once-off subscription" : "#{@subscription.duration} month subscription" %>
+        <% wa_msg = "hello #{first}, you have #{remaining_display} gooi collections remaining on this #{sub_desc}. We have collected #{collected} times. Click www.gooi.me/subscriptions/new to resubscribe." %>
+        <div class="quick-msg-row">
+          <span class="quick-msg-row__name">Collections remaining: <strong><%= remaining_display %></strong></span>
+          <div class="quick-msg-row__actions">
+            <%= link_to user.generate_whatsapp_link(wa_msg),
+                        target: :_blank, class: "quick-msg-btn", title: "Send renewal reminder" do %>
+              📅
+            <% end %>
+          </div>
+        </div>
+      <% end %>
 
     </div>
   </div>
