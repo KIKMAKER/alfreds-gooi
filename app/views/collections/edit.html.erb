@@ -50,7 +50,7 @@
         <% remaining_display = [rem, 0].max %>
         <% collected = @subscription.total_collections %>
         <% sub_desc = @subscription.once_off? ? "once-off subscription" : "#{@subscription.duration} month subscription" %>
-        <% wa_msg = "hello #{first}, you have #{remaining_display} gooi collections remaining on this #{sub_desc}. We have collected #{collected} times. Click www.gooi.me/subscriptions/new to resubscribe." %>
+        <% wa_msg = "Hello #{first}, you have #{remaining_display} gooi collections remaining on this #{sub_desc}. We have collected #{collected} times. Click www.gooi.me/subscriptions/new to resubscribe." %>
         <div class="quick-msg-row">
           <span class="quick-msg-row__name">Collections remaining: <strong><%= remaining_display %></strong></span>
           <div class="quick-msg-row__actions">
