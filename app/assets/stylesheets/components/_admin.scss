@@ -13,3 +13,167 @@
     padding: 0 3rem 4rem;
   }
 }
+
+// ===================================
+// Payment panel (admin user show)
+// ===================================
+.payment-form {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 1.25rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+
+    label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888;
+      font-weight: 700;
+    }
+
+    input, select {
+      border: 1px solid #d8dee4;
+      border-radius: 8px;
+      padding: 0.45rem 0.7rem;
+      font-size: 0.875rem;
+      color: $dark-green;
+      background: white;
+      height: 36px;
+
+      &:focus {
+        outline: none;
+        border-color: $dark-green;
+        box-shadow: 0 0 0 3px rgba($dark-green, 0.08);
+      }
+    }
+
+    select {
+      padding-right: 1.5rem;
+      appearance: auto;
+    }
+  }
+
+  &__amount-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d8dee4;
+    border-radius: 8px;
+    background: white;
+    height: 36px;
+    overflow: hidden;
+
+    &:focus-within {
+      border-color: $dark-green;
+      box-shadow: 0 0 0 3px rgba($dark-green, 0.08);
+    }
+
+    span {
+      padding: 0 0.25rem 0 0.7rem;
+      color: #aaa;
+      font-size: 0.875rem;
+      line-height: 1;
+    }
+
+    input {
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0.45rem 0.7rem 0.45rem 0.1rem;
+      width: 90px;
+      height: 100%;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__submit {
+    height: 36px;
+    white-space: nowrap;
+    align-self: flex-end;
+    margin: 0;
+    padding: 0 1.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child { border-bottom: none; }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__date {
+    font-weight: 600;
+    color: $dark-green;
+    font-size: 0.875rem;
+  }
+
+  &__detail {
+    font-size: 0.75rem;
+    color: #999;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__amount {
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: $dark-green;
+    font-size: 0.95rem;
+  }
+
+  &__delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+
+    &:hover {
+      color: $red;
+      background: rgba($red, 0.06);
+    }
+  }
+}
+
+.payment-type-chip {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &--eft      { background: #e8f4ea; color: #2d7a3a; }
+  &--snapscan { background: #fff3e0; color: #bf6000; }
+  &--cash     { background: #e3f2fd; color: #1565c0; }
+  &--other    { background: #f0edfa; color: #6a3fa0; }
+  &--unknown  { background: #f0f0f0; color: #999; }
+}
