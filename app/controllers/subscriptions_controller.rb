@@ -358,7 +358,7 @@ class SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     next_collection = @subscription.collections.where("date >= ?", Date.today).order(:date).first
     if next_collection
-      next_collection.update!(skip: true)
+      next_collection.mark_skipped!(by: current_user, reason: "manual")
       redirect_to manage_path, notice: "Collection schedule updated"
     else
       redirect_to manage_path, notice: "Something went wrong, please try again or contact us for help"
@@ -400,7 +400,7 @@ class SubscriptionsController < ApplicationController
       if @subscription.holiday_start && @subscription.holiday_end
         @subscription.collections
                      .where(date: @subscription.holiday_start..@subscription.holiday_end)
-                     .update_all(skip: true)
+                     .update_all(skip: true, skip_reason: "holiday")
       end
       redirect_to manage_path, notice: "Holiday set!"
     else
@@ -412,11 +412,10 @@ class SubscriptionsController < ApplicationController
   def clear_holiday
     @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
-      unless @subscription.is_paused
-        @subscription.collections
-               .where('date >= ?', Date.current)
-               .update_all(skip: false)
-      end
+      @subscription.collections
+             .where('date >= ?', Date.current)
+             .where(skip_reason: "holiday")
+             .update_all(skip: false, skip_reason: nil)
       redirect_to manage_path, notice: "Holiday Canceled!"
     else
       redirect_to manage_path, status: :unprocessable_entity

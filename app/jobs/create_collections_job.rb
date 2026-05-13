@@ -55,18 +55,19 @@ class CreateCollectionsJob < ApplicationJob
     subscriptions.find_each do |subscription|
       next if subscription.once_off?
 
+      skip_reason = if subscription.holiday_covers?(collection_date)
+        "holiday"
+      elsif subscription.is_paused
+        "paused"
+      end
+
       collection = Collection.find_or_create_by!(
         drivers_day: drivers_day,
         subscription: subscription,
         date: collection_date
       )
       collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
-      if subscription.holiday_start && subscription.holiday_end && collection.date.between?(subscription.holiday_start, subscription.holiday_end)
-        collection.mark_skipped!(by: nil, reason: "holiday")
-      end
-
-      collection.mark_skipped!(by: nil, reason: "paused") if subscription.is_paused?
-
+      collection.skip_silently!(reason: skip_reason) if skip_reason
       collection.update!(new_customer: true) if subscription.is_new_customer
 
       Rails.logger.info "Created collection for #{subscription.customer_id} on #{collection_date}"

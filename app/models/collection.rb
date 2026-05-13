@@ -8,12 +8,13 @@ class Collection < ApplicationRecord
   scope :recent, -> { order(date: :desc) }
 
   # Custom methods
-  # One-shot helper to mark skip + email (use this everywhere instead of bare update)
+  # One-shot helper to mark skip + send email notification.
+  # Use this for human-triggered skips (admin, customer "skip next week").
   def mark_skipped!(by: nil, reason: "unspecified", at: Time.zone.now)
     return false if skip? # avoid double-emails
 
     transaction do
-      update!(skip: true)
+      update!(skip: true, skip_reason: reason)
       CollectionMailer.skipped(
         collection_id: id,
         actor_id: by&.id,
@@ -21,6 +22,14 @@ class Collection < ApplicationRecord
         occurred_at: at
       ).deliver_now
     end
+    true
+  end
+
+  # Silently mark as skipped with a reason — no email.
+  # Use this in jobs creating collections for already-paused/holiday periods.
+  def skip_silently!(reason:)
+    return false if skip?
+    update!(skip: true, skip_reason: reason)
     true
   end
 
