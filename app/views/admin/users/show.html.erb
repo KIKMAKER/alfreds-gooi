@@ -39,6 +39,14 @@
               class: "btn-today-green my-2",
               form: { data: { turbo_confirm: "This will set end_date and reassign collections for all completed subs. Continue?" } } %>
 
+      <% if @user.subscriptions.where(monthly_invoicing: true, primary_subscription_id: nil).any? %>
+        <%= button_to "Generate all monthly invoices",
+                generate_all_monthly_invoices_admin_user_path(@user),
+                method: :post,
+                class: "btn-yellow my-2",
+                form: { data: { turbo_confirm: "Run the monthly invoice generator for all eligible subscriptions for #{@user.first_name}? They will be combined into one invoice." } } %>
+      <% end %>
+
       <hr>
 
       <div class="mb-3">

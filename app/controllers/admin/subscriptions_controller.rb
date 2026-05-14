@@ -96,6 +96,30 @@ class Admin::SubscriptionsController < ApplicationController
     @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
   end
 
+  def link_as_satellite
+    @subscription = Subscription.find(params[:id])
+    primary = @subscription.user.subscriptions.find_by(id: params[:primary_subscription_id])
+
+    unless primary
+      return redirect_to admin_subscription_path(@subscription), alert: "Parent subscription not found."
+    end
+
+    if primary.id == @subscription.id
+      return redirect_to admin_subscription_path(@subscription), alert: "A subscription cannot be a satellite of itself."
+    end
+
+    @subscription.update!(primary_subscription_id: primary.id)
+    redirect_to admin_subscription_path(@subscription),
+                notice: "Linked as satellite of ##{primary.id} — #{primary.display_name}. This subscription will no longer generate its own invoices."
+  end
+
+  def unlink_satellite
+    @subscription = Subscription.find(params[:id])
+    @subscription.update!(primary_subscription_id: nil)
+    redirect_to admin_subscription_path(@subscription),
+                notice: "Satellite link removed. This subscription will now bill independently."
+  end
+
   def generate_monthly_invoice
     @subscription = Subscription.find(params[:id])
 

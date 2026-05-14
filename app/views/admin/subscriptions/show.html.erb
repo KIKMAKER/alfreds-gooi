@@ -328,6 +328,54 @@
       <% end %>
     </div>
 
+    <!-- Satellite Management -->
+    <% other_subs = @subscription.user.subscriptions.where.not(id: @subscription.id).order(:collection_day) %>
+    <% if other_subs.any? || @subscription.satellite? %>
+      <div class="info-card mt-4">
+        <div class="info-card-header">
+          <i class="fa-solid fa-link"></i>
+          <h3>Satellite Billing</h3>
+        </div>
+        <div class="info-card-body">
+          <% if @subscription.satellite? %>
+            <p class="mb-2">
+              This subscription is a satellite of
+              <%= link_to "##{@subscription.primary_subscription_id} — #{@subscription.primary_subscription.display_name}", admin_subscription_path(@subscription.primary_subscription), class: "link-title" %>.
+              It will not generate its own invoice.
+            </p>
+            <%= button_to unlink_satellite_admin_subscription_path(@subscription),
+                          method: :post,
+                          class: "btn btn-outline-secondary btn-sm",
+                          form: { data: { turbo_confirm: "Unlink? This subscription will bill independently again." } } do %>
+              <i class="fa-solid fa-link-slash"></i> Remove satellite link
+            <% end %>
+          <% else %>
+            <p class="text-muted small mb-3">
+              Link this subscription as a satellite to combine it onto another subscription's invoice.
+              Satellites never generate their own invoices.
+            </p>
+            <%= form_with url: link_as_satellite_admin_subscription_path(@subscription), method: :post, data: { turbo: false } do |f| %>
+              <div class="d-flex gap-2 align-items-end">
+                <div class="flex-grow-1">
+                  <%= label_tag :primary_subscription_id, "Billing parent subscription", class: "form-label" %>
+                  <%= select_tag :primary_subscription_id,
+                                 options_from_collection_for_select(
+                                   other_subs,
+                                   :id,
+                                   ->(s) { "##{s.id} — #{s.plan.titleize} #{s.collection_day} (#{s.status})" }
+                                 ),
+                                 prompt: "Select parent…",
+                                 class: "form-select" %>
+                </div>
+                <%= f.submit "Link as satellite", class: "btn-today-green",
+                             data: { turbo_confirm: "This will stop this subscription from generating its own invoices. Continue?" } %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
     <!-- Quick Actions -->
     <div class="quick-actions mt-4">
       <%= link_to new_subscription_collection_path(@subscription), class: 'action-btn' do %>

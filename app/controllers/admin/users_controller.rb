@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -168,6 +168,25 @@ class Admin::UsersController < ApplicationController
     end
   rescue StandardError => e
     redirect_to admin_user_path(@user), alert: "Error: #{e.message}"
+  end
+
+  def generate_all_monthly_invoices
+    eligible = @user.subscriptions
+                    .where(monthly_invoicing: true, primary_subscription_id: nil, status: :active)
+                    .where("next_invoice_date <= ?", Date.today)
+
+    if eligible.none?
+      return redirect_to admin_user_path(@user),
+                         alert: "No invoices due. Check that subscriptions have monthly invoicing enabled and next_invoice_date is today or earlier."
+    end
+
+    invoices = eligible.filter_map { |sub| MonthlyInvoiceService.new(sub).call }
+    unique_invoices = invoices.uniq(&:id)
+
+    redirect_to admin_user_path(@user),
+                notice: "#{unique_invoices.count} invoice#{'s' if unique_invoices.count != 1} generated across #{eligible.count} subscription#{'s' if eligible.count != 1}."
+  rescue => e
+    redirect_to admin_user_path(@user), alert: "Error generating invoices: #{e.message}"
   end
 
   def transfer_subscriptions
