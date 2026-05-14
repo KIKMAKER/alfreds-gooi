@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -168,6 +168,32 @@ class Admin::UsersController < ApplicationController
     end
   rescue StandardError => e
     redirect_to admin_user_path(@user), alert: "Error: #{e.message}"
+  end
+
+  def transfer_subscriptions
+    @destination_user = @user
+    @all_users = User.customer.order(:first_name, :last_name)
+
+    if params[:from_user_id].present?
+      @source_user = User.find_by(id: params[:from_user_id])
+      @transferable_subscriptions = @source_user&.subscriptions&.order(created_at: :desc) || []
+    end
+
+    if request.post?
+      ids = Array(params[:subscription_ids]).map(&:to_i).reject(&:zero?)
+
+      if ids.empty?
+        flash.now[:alert] = "No subscriptions selected."
+        render :transfer_subscriptions, status: :unprocessable_entity
+        return
+      end
+
+      transferred = Subscription.where(id: ids, user_id: @source_user.id)
+                                .update_all(user_id: @destination_user.id)
+
+      redirect_to admin_user_path(@destination_user),
+                  notice: "#{transferred} subscription#{'s' if transferred != 1} transferred to #{@destination_user.first_name}."
+    end
   end
 
   private

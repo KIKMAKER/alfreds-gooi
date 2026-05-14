@@ -19,6 +19,8 @@
 
       <%= link_to "New Subscription", new_admin_subscription_path(user_id: @user.id), class: "btn-today-green my-2" %>
 
+      <%= link_to "Transfer subscriptions in", transfer_subscriptions_admin_user_path(@user), class: "btn-today-green my-2" %>
+
       <%= button_to "Duplicate last sub",
               renew_last_subscription_admin_user_path(@user),
               method: :post,

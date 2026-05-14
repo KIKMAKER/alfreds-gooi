@@ -48,6 +48,8 @@ Rails.application.routes.draw do
       post :renew_last_subscription,  on: :member
       post :fix_subscription_boundaries, on: :member
       get  :collections,              on: :member
+      get  :transfer_subscriptions,   on: :member
+      post :transfer_subscriptions,   on: :member
       resources :payments, only: [:create, :destroy], controller: 'payments'
     end
     resources :subscriptions, only: [:show, :new, :create]
