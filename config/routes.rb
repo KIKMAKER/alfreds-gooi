@@ -55,9 +55,10 @@ Rails.application.routes.draw do
     end
     resources :subscriptions, only: [:show, :new, :create] do
       member do
-        post :generate_monthly_invoice
-        post :link_as_satellite
-        post :unlink_satellite
+        post  :generate_monthly_invoice
+        post  :link_as_satellite
+        post  :unlink_satellite
+        patch :update_monthly_billing
       end
     end
     resources :whatsapp_messages, only: [:index] do

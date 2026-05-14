@@ -96,6 +96,17 @@ class Admin::SubscriptionsController < ApplicationController
     @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
   end
 
+  def update_monthly_billing
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(monthly_billing_params)
+      redirect_to admin_subscription_path(@subscription),
+                  notice: "Monthly billing settings updated."
+    else
+      redirect_to admin_subscription_path(@subscription),
+                  alert: "Could not save: #{@subscription.errors.full_messages.to_sentence}"
+    end
+  end
+
   def link_as_satellite
     @subscription = Subscription.find(params[:id])
     primary = @subscription.user.subscriptions.find_by(id: params[:primary_subscription_id])
@@ -166,6 +177,16 @@ class Admin::SubscriptionsController < ApplicationController
       :primary_subscription_id,
       :buckets_per_collection, :bucket_size, :collections_per_week,
       :collection_day, :title, :monthly_invoicing
+    )
+  end
+
+  def monthly_billing_params
+    params.require(:subscription).permit(
+      :monthly_invoicing,
+      :next_invoice_date,
+      :monthly_subscription_amount,
+      :monthly_volume_amount,
+      :starter_kit_installment
     )
   end
 
