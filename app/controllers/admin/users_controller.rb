@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices, :claim_orphaned_payments, :transfer_payments]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -168,6 +168,46 @@ class Admin::UsersController < ApplicationController
     end
   rescue StandardError => e
     redirect_to admin_user_path(@user), alert: "Error: #{e.message}"
+  end
+
+  def claim_orphaned_payments
+    invoice_ids = Invoice.joins(:subscription).where(subscriptions: { user_id: @user.id }).pluck(:id)
+    orphaned = Payment.where(invoice_id: invoice_ids).where.not(user_id: @user.id)
+    count = orphaned.update_all(user_id: @user.id)
+
+    if count > 0
+      redirect_to admin_user_path(@user),
+                  notice: "#{count} payment#{'s' if count != 1} claimed — they were linked to this user's invoices but sat on another account."
+    else
+      redirect_to admin_user_path(@user),
+                  alert: "No orphaned payments found. All payments linked to this user's invoices are already on this account."
+    end
+  end
+
+  def transfer_payments
+    @destination_user = @user
+    @all_users = User.order(:first_name, :last_name)
+
+    if params[:from_user_id].present?
+      @source_user = User.find_by(id: params[:from_user_id])
+      @available_payments = @source_user&.payments&.order(date: :desc) || []
+    end
+
+    if request.post?
+      ids = Array(params[:payment_ids]).map(&:to_i).reject(&:zero?)
+
+      if ids.empty?
+        flash.now[:alert] = "No payments selected."
+        render :transfer_payments, status: :unprocessable_entity
+        return
+      end
+
+      transferred = Payment.where(id: ids, user_id: @source_user.id)
+                           .update_all(user_id: @destination_user.id)
+
+      redirect_to admin_user_path(@destination_user),
+                  notice: "#{transferred} payment#{'s' if transferred != 1} moved to #{@destination_user.first_name}."
+    end
   end
 
   def generate_all_monthly_invoices

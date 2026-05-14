@@ -51,6 +51,9 @@ Rails.application.routes.draw do
       get  :transfer_subscriptions,          on: :member
       post :transfer_subscriptions,          on: :member
       post :generate_all_monthly_invoices,   on: :member
+      post :claim_orphaned_payments,         on: :member
+      get  :transfer_payments,               on: :member
+      post :transfer_payments,               on: :member
       resources :payments, only: [:create, :destroy], controller: 'payments'
     end
     resources :subscriptions, only: [:show, :new, :create] do

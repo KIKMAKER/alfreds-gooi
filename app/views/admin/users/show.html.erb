@@ -21,6 +21,14 @@
 
       <%= link_to "Transfer subscriptions in", transfer_subscriptions_admin_user_path(@user), class: "btn-today-green my-2" %>
 
+      <%= button_to "Claim payments for my invoices",
+              claim_orphaned_payments_admin_user_path(@user),
+              method: :post,
+              class: "btn-today-green my-2",
+              form: { data: { turbo_confirm: "Find all payments linked to #{@user.first_name}'s invoices that are sitting on other accounts, and move them here?" } } %>
+
+      <%= link_to "Transfer payments in", transfer_payments_admin_user_path(@user), class: "btn-today-green my-2" %>
+
       <%= button_to "Duplicate last sub",
               renew_last_subscription_admin_user_path(@user),
               method: :post,
