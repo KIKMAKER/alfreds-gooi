@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
       # Determine where to redirect based on next_action parameter
       case params[:next_action]
       when 'subscription'
-        redirect_to new_subscription_path(user_id: @user.id),
+        redirect_to new_admin_subscription_path(user_id: @user.id),
                     notice: "User created! Now create their subscription."
       when 'drop_off'
         redirect_to admin_drop_off_sites_path,
