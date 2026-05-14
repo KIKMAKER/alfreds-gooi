@@ -96,6 +96,43 @@ class Admin::SubscriptionsController < ApplicationController
     @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
   end
 
+  def generate_monthly_invoice
+    @subscription = Subscription.find(params[:id])
+
+    if !@subscription.monthly_invoicing?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "This subscription does not use monthly invoicing."
+    end
+
+    if @subscription.satellite?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "Satellites never generate invoices — trigger on the primary subscription."
+    end
+
+    if @subscription.next_invoice_date.nil?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "No next_invoice_date set on this subscription."
+    end
+
+    if @subscription.next_invoice_date > Date.today
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "Invoice not due yet — next invoice date is #{@subscription.next_invoice_date.strftime('%d %b %Y')}."
+    end
+
+    invoice = MonthlyInvoiceService.new(@subscription).call
+
+    if invoice
+      redirect_to admin_subscription_path(@subscription),
+                  notice: "Invoice ##{invoice.id} generated (R#{invoice.total_amount / 100}) and sent for approval."
+    else
+      redirect_to admin_subscription_path(@subscription),
+                  alert: "Service ran but did not generate an invoice. Check subscription state."
+    end
+  rescue => e
+    redirect_to admin_subscription_path(@subscription),
+                alert: "Error generating invoice: #{e.message}"
+  end
+
   private
 
   def subscription_params

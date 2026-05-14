@@ -336,6 +336,14 @@
       <%= link_to subscription_collections_path(@subscription), class: 'action-btn' do %>
         <i class="fa-solid fa-list"></i> View All Collections
       <% end %>
+      <% if @subscription.monthly_invoicing? && !@subscription.satellite? %>
+        <%= button_to generate_monthly_invoice_admin_subscription_path(@subscription),
+                      method: :post,
+                      class: 'action-btn',
+                      form: { data: { turbo_confirm: 'Generate the monthly invoice for this subscription now?' } } do %>
+          <i class="fa-solid fa-file-invoice-dollar"></i> Generate Monthly Invoice
+        <% end %>
+      <% end %>
       <% unless @subscription.completed? %>
         <%= link_to complete_subscription_path(@subscription), class: 'action-btn',
                     data: { turbo_confirm: 'Mark this subscription as completed?' } do %>

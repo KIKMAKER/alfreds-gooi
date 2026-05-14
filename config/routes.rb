@@ -52,7 +52,11 @@ Rails.application.routes.draw do
       post :transfer_subscriptions,   on: :member
       resources :payments, only: [:create, :destroy], controller: 'payments'
     end
-    resources :subscriptions, only: [:show, :new, :create]
+    resources :subscriptions, only: [:show, :new, :create] do
+      member do
+        post :generate_monthly_invoice
+      end
+    end
     resources :whatsapp_messages, only: [:index] do
       collection do
         post :trigger_reminders
