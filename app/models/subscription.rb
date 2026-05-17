@@ -26,6 +26,7 @@ class Subscription < ApplicationRecord
     # self.set_suburb
   end
   before_create :inherit_collection_order
+  after_create :create_owner_contact
   after_save :sync_collection_positions
   before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
@@ -490,6 +491,19 @@ class Subscription < ApplicationRecord
 
 
   private
+
+  def create_owner_contact
+    return if contacts.exists?(is_primary: true)
+    return if user.phone_number.blank?
+
+    contacts.create(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone_number: user.phone_number,
+      is_primary: true,
+      whatsapp_opt_out: false
+    )
+  end
 
   def inherit_collection_order
     return if collection_order.present?

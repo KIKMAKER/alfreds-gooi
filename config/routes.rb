@@ -199,6 +199,9 @@ Rails.application.routes.draw do
       member do
         post :toggle_whatsapp
       end
+      collection do
+        post :add_owner
+      end
     end
     # - here I am creating /subscriptions/today
     collection do

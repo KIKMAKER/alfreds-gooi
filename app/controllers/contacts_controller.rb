@@ -50,6 +50,27 @@ class ContactsController < ApplicationController
                 notice: 'Contact removed successfully.'
   end
 
+  def add_owner
+    if @subscription.contacts.exists?(is_primary: true)
+      redirect_to subscription_contacts_path(@subscription), alert: 'Owner contact already exists.'
+      return
+    end
+
+    contact = @subscription.contacts.build(
+      first_name: @subscription.user.first_name,
+      last_name: @subscription.user.last_name,
+      phone_number: @subscription.user.phone_number,
+      is_primary: true,
+      whatsapp_opt_out: false
+    )
+
+    if contact.save
+      redirect_to subscription_contacts_path(@subscription), notice: 'Owner contact added.'
+    else
+      redirect_to subscription_contacts_path(@subscription), alert: "Couldn't add owner: #{contact.errors.full_messages.to_sentence}"
+    end
+  end
+
   def toggle_whatsapp
     if @contact.whatsapp_opt_out?
       @contact.opt_in_to_whatsapp!
