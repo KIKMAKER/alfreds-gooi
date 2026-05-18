@@ -10,7 +10,8 @@
       <%= link_to @return_to, class: "btn-secondary-outline btn-sm" do %>
         <i class="fa-solid fa-arrow-left"></i> Back
       <% end %>
-      <%= link_to "https://wa.me/#{@subscription.user.phone_number}", target: :_blank, class: "btn-yellow btn-sm" do %>
+      <% _wa_recipient = @subscription.primary_contact || @subscription.user %>
+      <%= link_to "https://wa.me/#{_wa_recipient.phone_number.gsub(/\D/, '')}", target: :_blank, class: "btn-yellow btn-sm" do %>
         <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
       <% end %>
     </div>
@@ -24,8 +25,8 @@
     </div>
     <div class="dd-form-card__body p-0">
 
-      <%# Primary user %>
-      <% user = @subscription.user %>
+      <%# Primary contact (falls back to user if no contact exists) %>
+      <% user = @subscription.primary_contact || @subscription.user %>
       <% first = user.first_name %>
       <div class="quick-msg-row">
         <span class="quick-msg-row__name"><%= first %></span>

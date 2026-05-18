@@ -44,6 +44,10 @@ class Contact < ApplicationRecord
     end
   end
 
+  def generate_whatsapp_link(message)
+    "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
+  end
+
   # WhatsApp capability check
   def can_receive_whatsapp?
     phone_number.present? && !whatsapp_opt_out
