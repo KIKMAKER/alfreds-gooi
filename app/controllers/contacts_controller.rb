@@ -114,6 +114,6 @@ class ContactsController < ApplicationController
 
   def contact_params
     params.require(:contact).permit(:first_name, :last_name, :phone_number,
-                                     :relationship, :whatsapp_opt_out)
+                                     :relationship, :whatsapp_opt_out, :email)
   end
 end

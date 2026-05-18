@@ -179,6 +179,12 @@
                   <i class="fa-solid fa-phone"></i>
                   <span><%= contact.phone_number %></span>
                 </div>
+                <% if contact.email.present? %>
+                  <div class="contact-detail-row">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span><%= contact.email %></span>
+                  </div>
+                <% end %>
                 <div class="contact-detail-row">
                   <i class="fa-brands fa-whatsapp"></i>
                   <% if contact.can_receive_whatsapp? %>
@@ -197,6 +203,42 @@
           <p class="text-muted mt-2">No contacts yet</p>
         </div>
       <% end %>
+    </div>
+
+    <!-- Resend Emails Panel -->
+    <div class="info-card mt-4">
+      <div class="info-card-header">
+        <i class="fa-solid fa-paper-plane"></i>
+        <h3>Resend Signup Emails</h3>
+      </div>
+      <div class="info-card-body">
+        <% contact_emails = @subscription.contacts.with_email.map { |c| ["#{c.full_name} — #{c.email}", c.email] } %>
+        <% recipient_options = [["#{@subscription.user.first_name} (account) — #{@subscription.user.email}", @subscription.user.email]] + contact_emails %>
+
+        <%= form_with url: resend_email_admin_subscription_path(@subscription), method: :post, data: { turbo: false } do |f| %>
+          <div class="row g-3">
+            <div class="col-md-5">
+              <%= label_tag :email_type, "Email", class: "form-label" %>
+              <%= select_tag :email_type,
+                             options_for_select([["Welcome email", "welcome"], ["Payment received", "payment_received"]]),
+                             class: "form-select" %>
+            </div>
+            <div class="col-md-5">
+              <%= label_tag :recipient_email, "Send to", class: "form-label" %>
+              <%= select_tag :recipient_email,
+                             options_for_select(recipient_options),
+                             class: "form-select" %>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <%= submit_tag "Send", class: "btn-yellow w-100",
+                             data: { turbo_confirm: "Resend this email now?" } %>
+            </div>
+          </div>
+          <small class="text-muted d-block mt-2">
+            Contacts only appear if they have a saved email address.
+          </small>
+        <% end %>
+      </div>
     </div>
 
     <!-- Statistics Section -->

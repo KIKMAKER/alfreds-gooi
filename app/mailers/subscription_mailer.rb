@@ -52,8 +52,9 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @user = @subscription.user
     @is_new = params[:is_new]
+    recipient = params[:to_email].presence || @user.email
     subject = @subscription.once_off? ? "Your once-off collection is booked!" : "Payment received - your gooi subscription is now active!"
-    mail(to: @user.email, subject: subject)
+    mail(to: recipient, subject: subject)
   end
 
   def referral_completed

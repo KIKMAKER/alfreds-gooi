@@ -168,6 +168,32 @@ class Admin::SubscriptionsController < ApplicationController
                 alert: "Error generating invoice: #{e.message}"
   end
 
+  RESENDABLE_EMAIL_TYPES = %w[welcome payment_received].freeze
+
+  def resend_email
+    @subscription = Subscription.find(params[:id])
+    email_type = params[:email_type]
+    recipient  = params[:recipient_email]
+
+    unless RESENDABLE_EMAIL_TYPES.include?(email_type)
+      return redirect_to admin_subscription_path(@subscription), alert: "Unknown email type."
+    end
+
+    if recipient.blank? || recipient !~ URI::MailTo::EMAIL_REGEXP
+      return redirect_to admin_subscription_path(@subscription), alert: "Please choose a valid recipient."
+    end
+
+    case email_type
+    when "welcome"
+      UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_later
+    when "payment_received"
+      SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_later
+    end
+
+    redirect_to admin_subscription_path(@subscription),
+                notice: "#{email_type.humanize} email queued for #{recipient}."
+  end
+
   private
 
   def subscription_params
