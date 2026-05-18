@@ -90,6 +90,13 @@
           <% end %>
 
           <% unless contact.is_primary? %>
+            <%= button_to make_primary_subscription_contact_path(@subscription, contact),
+                          method: :post,
+                          class: "action-btn",
+                          style: "border-color: #023F3A; color: #023F3A;",
+                          data: { turbo_confirm: "Make #{contact.first_name} the owner contact? The current owner will be demoted." } do %>
+              <i class="fa-solid fa-star"></i> Make owner
+            <% end %>
             <%= button_to subscription_contact_path(@subscription, contact),
                           method: :delete,
                           class: "action-btn",

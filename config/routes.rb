@@ -198,6 +198,7 @@ Rails.application.routes.draw do
     resources :contacts do
       member do
         post :toggle_whatsapp
+        post :make_primary
       end
       collection do
         post :add_owner

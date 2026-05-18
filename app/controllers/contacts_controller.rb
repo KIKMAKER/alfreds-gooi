@@ -50,6 +50,19 @@ class ContactsController < ApplicationController
                 notice: 'Contact removed successfully.'
   end
 
+  def make_primary
+    return redirect_to subscription_contacts_path(@subscription) if @contact.is_primary?
+
+    ActiveRecord::Base.transaction do
+      @subscription.contacts.where(is_primary: true).update_all(is_primary: false)
+      @contact.update!(is_primary: true)
+    end
+
+    redirect_to subscription_contacts_path(@subscription), notice: "#{@contact.first_name} is now the owner contact."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to subscription_contacts_path(@subscription), alert: "Could not update owner: #{e.message}"
+  end
+
   def add_owner
     if @subscription.contacts.exists?(is_primary: true)
       redirect_to subscription_contacts_path(@subscription), alert: 'Owner contact already exists.'
