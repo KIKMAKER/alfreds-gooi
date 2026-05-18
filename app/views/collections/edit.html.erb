@@ -3,7 +3,7 @@
   <%# ── Header ── %>
   <div class="dd-header">
     <div>
-      <h1 class="dd-header__title"><%= @subscription.display_name %></h1>
+      <h1 class="dd-header__title"><%= link_to @subscription.display_name, admin_subscription_path(@subscription) %></h1>
       <p class="dd-header__sub"><%= @subscription.street_address %></p>
     </div>
     <div class="dd-header__actions">

@@ -9,7 +9,7 @@
       <div>
         <h1>Household Contacts</h1>
         <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
-          <%= @subscription.short_address %>, <%= @subscription.suburb %>
+          <%= link_to "#{@subscription.short_address}, #{@subscription.suburb}", admin_subscription_path(@subscription), class: "text-white text-decoration-underline" %>
         </p>
       </div>
     </div>
