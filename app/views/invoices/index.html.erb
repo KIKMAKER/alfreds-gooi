@@ -9,7 +9,7 @@
         <% if @user.present? %>
           <h1>Invoices</h1>
           <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
-            <%= @user.first_name %> <%= @user.last_name %>
+            <%= link_to "#{@user.first_name} #{@user.last_name}", admin_user_path(@user), class: "text-white text-decoration-underline" %>
           </p>
         <% else %>
           <h1>Invoices</h1>
