@@ -24,7 +24,8 @@
       "@type": "ImageObject",
       "url": "<%= image_url('gooi_logo_CR.png') %>"
     }
-    "image": "<%= post_cover_image_url(@post) %>"
+  },
+  "image": "<%= post_cover_image_url(@post) %>"
 }
 </script>
 <script type="application/ld+json">
@@ -50,7 +51,7 @@
       </p>
       <h1><%= @post.title %></h1>
       <% if @post.excerpt.present? %>
-        <h4 class="text-white blog-header-subheader"><%= @post.excerpt %></h4>
+        <p class="blog-header-excerpt"><%= @post.excerpt %></p>
       <% end %>
       <p class="blog-header-date"><%= @post.published_at&.strftime("%-d %B %Y") %></p>
     </div>
@@ -76,7 +77,7 @@
     </nav>
   </div>
 
-  <section class="blog-text-section blog-article-body">
+  <section class="blog-article-body">
     <%= markdown(@post.body) %>
   </section>
 

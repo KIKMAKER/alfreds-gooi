@@ -135,19 +135,39 @@
 
 
 
-// ARTICLE HEADER MODIFIER — dark overlay so any cover image stays readable
+// ARTICLE HEADER MODIFIER
 .blog-header--article {
+  height: auto;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-position: center;
+
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 0;
   }
 
   .inner-header-container {
     position: relative;
     z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 10% 2rem;
+    text-align: center;
+  }
+
+  // Override base h1 — use flex centering, not padding-top
+  h1 {
+    padding-top: 0;
+    font-size: 2.5rem;
+    text-align: center;
   }
 
   .wave-container {
@@ -158,11 +178,11 @@
 
 .blog-header-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
   margin-bottom: 1.5rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 
   a {
@@ -173,18 +193,29 @@
   }
 }
 
+.blog-header-excerpt {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0.75rem auto 0;
+}
+
 .blog-header-date {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 1.25rem;
+  letter-spacing: 0.05em;
 }
 
 // ARTICLE BODY — wrapper for markdown-rendered post content
 .blog-article-body {
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 720px;
+  margin: 4rem auto 3rem;
+  padding: 0 1.5rem;
 
   p {
     line-height: 1.8;
