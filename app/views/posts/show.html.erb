@@ -67,19 +67,17 @@
     </div>
   </section>
 
-  <div class="container mt-3">
-    <nav aria-label="breadcrumb">
+  <div class="blog-article-body">
+    <nav aria-label="breadcrumb" class="mb-4">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
         <li class="breadcrumb-item"><%= link_to "Blog", posts_path %></li>
         <li class="breadcrumb-item active" aria-current="page"><%= @post.title %></li>
       </ol>
     </nav>
-  </div>
 
-  <section class="blog-article-body">
     <%= markdown(@post.body) %>
-  </section>
+  </div>
 
   <div class="yellow-block">
     <h1>Ready to join the food waste revolution?</h1>
