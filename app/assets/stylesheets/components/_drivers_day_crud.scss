@@ -37,6 +37,15 @@
   margin: 0;
   font-size: 1.4rem !important;
   text-align: left !important;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .dd-header__sub {
