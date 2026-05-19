@@ -138,7 +138,7 @@
 // ARTICLE HEADER MODIFIER
 .blog-header--article {
   height: auto;
-  min-height: 60vh;
+  min-height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -213,7 +213,7 @@
 
 // ARTICLE BODY — wrapper for markdown-rendered post content
 .blog-article-body {
-  max-width: 720px;
+  max-width: 860px;
   margin: 4rem auto 3rem;
   padding: 0 1.5rem;
 
