@@ -32,6 +32,16 @@ module ApplicationHelper
     end
   end
 
+  def post_cover_image_url(post)
+    if post.cover_image.attached?
+      url_for(post.cover_image)
+    elsif post.cover_image_url.present?
+      post.cover_image_url
+    else
+      image_url("header-gooi-3.png")
+    end
+  end
+
   def markdown(text)
     renderer = GooiBlogRenderer.new(safe_links_only: true)
     Redcarpet::Markdown.new(renderer, autolink: true, no_intra_emphasis: true, tables: true).render(text).html_safe

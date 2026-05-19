@@ -1,7 +1,7 @@
 <% content_for :meta_title, "#{@post.title} | Gooi Blog" %>
 <% content_for :meta_description, @post.excerpt.presence || @post.body.truncate(160) %>
 <% content_for :og_type, "article" %>
-<% content_for :og_image, @post.cover_image_url.presence || image_url("header-gooi-3.png") %>
+<% content_for :og_image, post_cover_image_url(@post) %>
 
 <% content_for :structured_data do %>
 <script type="application/ld+json">
@@ -24,7 +24,7 @@
       "@type": "ImageObject",
       "url": "<%= image_url('gooi_logo_CR.png') %>"
     }
-  }<%= @post.cover_image_url.present? ? ",\n  \"image\": \"#{@post.cover_image_url}\"" : "" %>
+    "image": "<%= post_cover_image_url(@post) %>"
 }
 </script>
 <script type="application/ld+json">
@@ -43,7 +43,7 @@
 <div class="blog-container">
 
   <section class="blog-header blog-header--article"
-           style="background-image: url('<%= @post.cover_image_url.presence || image_url('header-gooi-3.png') %>')">
+           style="background-image: url('<%= post_cover_image_url(@post) %>')">
     <div class="inner-header-container">
       <p class="blog-header-label">
         <%= link_to "← Blog", posts_path, class: "text-white" %>
