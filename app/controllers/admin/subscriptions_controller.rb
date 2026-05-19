@@ -185,9 +185,9 @@ class Admin::SubscriptionsController < ApplicationController
 
     case email_type
     when "welcome"
-      UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_later
+      UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_now
     when "payment_received"
-      SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_later
+      SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_now
     end
 
     redirect_to admin_subscription_path(@subscription),
