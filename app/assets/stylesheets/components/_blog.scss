@@ -135,6 +135,142 @@
 
 
 
+// ARTICLE HEADER MODIFIER — dark overlay so any cover image stays readable
+.blog-header--article {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 0;
+  }
+
+  .inner-header-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .wave-container {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.blog-header-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover { opacity: 0.7; }
+  }
+}
+
+.blog-header-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 1rem;
+}
+
+// ARTICLE BODY — wrapper for markdown-rendered post content
+.blog-article-body {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+
+  p {
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    color: black;
+  }
+
+  // First paragraph gets a slightly larger lede treatment
+  > p:first-child {
+    font-size: 1.15rem;
+    line-height: 1.85;
+  }
+
+  strong { font-weight: 600; }
+
+  ul, ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    li { margin-bottom: 0.4rem; }
+  }
+}
+
+// ## Section heading — matches story page section titles
+.blog-section-heading {
+  font-family: 'Libre Baskerville', serif;
+  color: $dark-green;
+  font-size: 1.75rem;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+}
+
+// > Pullquote — large centred quote for key facts or memorable lines
+.blog-pullquote {
+  border: none;
+  text-align: center;
+  padding: 1.75rem 2.5rem;
+  margin: 2.5rem 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: $dark-yellow;
+    margin: 0 auto 1.25rem;
+  }
+
+  p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: $dark-green;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: $dark-yellow;
+    margin: 1.25rem auto 0;
+  }
+}
+
+// ![Caption](url) — full-width image with caption
+.blog-figure {
+  margin: 2rem 0;
+
+  &__img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+  }
+
+  &__caption {
+    font-size: 0.85rem;
+    color: $font-grey;
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+}
+
 // MEDIA QUERIES
 
 @media screen and (max-width:768px) {
