@@ -186,14 +186,19 @@ class Admin::SubscriptionsController < ApplicationController
     case email_type
     when "welcome"
       UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_now
+      UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
     when "payment_received"
       SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).payment_received_alert.deliver_now
     when "payment_prompt"
       SubscriptionMailer.with(subscription: @subscription, to_email: recipient).payment_prompt.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).payment_prompt_alert.deliver_now
     when "ad_hoc_nudge"
       SubscriptionMailer.with(subscription: @subscription).ad_hoc_nudge.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).ad_hoc_nudge_alert.deliver_now
     when "subscription_ending_soon"
       SubscriptionMailer.with(subscription: @subscription).subscription_ending_soon.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).subscription_ending_soon_alert.deliver_now
     end
 
     redirect_to admin_subscription_path(@subscription),

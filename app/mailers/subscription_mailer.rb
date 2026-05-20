@@ -87,6 +87,17 @@ class SubscriptionMailer < ApplicationMailer
     mail(to: recipient, subject: "Still thinking it over? Your gooi spot is ready")
   end
 
+  def payment_prompt_alert
+    @subscription = params[:subscription]
+    @invoice = @subscription.invoices.order(created_at: :asc).first
+    mail(
+      to: 'howzit@gooi.me',
+      subject: "Payment prompt sent → #{@subscription.display_name}",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
+
   def ad_hoc_nudge_alert
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
