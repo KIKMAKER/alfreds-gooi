@@ -7,6 +7,7 @@ class CustomersController < ApplicationController
     @subscriptions = current_user.subscriptions.where(status: [:active, :pending]).order(created_at: :asc)
     @subscription = @subscriptions.first || current_user.current_sub
     @commercial_inquiries = current_user.commercial_inquiries.order(created_at: :desc)
+    @draft_quotation = current_user.quotations.draft.order(created_at: :desc).first
 
     # Check if user has no subscriptions at all
     if current_user.subscriptions.empty?

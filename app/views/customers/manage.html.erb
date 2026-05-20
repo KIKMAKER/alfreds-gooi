@@ -45,6 +45,26 @@
     </div>
   <% end %>
 
+  <%# ─── DRAFT QUOTE PROMPT ─── %>
+  <% if @draft_quotation %>
+    <div class="info-card mb-3 draft-quote-banner">
+      <div class="info-card-body d-flex align-items-center justify-content-between gap-3">
+        <div>
+          <p class="mb-0" style="font-weight: 600; color: #023F3A;">You have a quote waiting</p>
+          <small class="text-muted">
+            Quote #<%= @draft_quotation.id %>
+            <% if @draft_quotation.expires_at.present? %>
+              &middot; valid until <%= @draft_quotation.expires_at.strftime("%-d %b %Y") %>
+            <% end %>
+          </small>
+        </div>
+        <%= link_to quotation_path(@draft_quotation), class: "small-yellow-btn flex-shrink-0" do %>
+          View quote <i class="fa-solid fa-arrow-right ms-1"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <%# ──────────────────────────────────────────── %>
   <%# NO SUBSCRIPTION — account started, no subs  %>
   <%# ──────────────────────────────────────────── %>
