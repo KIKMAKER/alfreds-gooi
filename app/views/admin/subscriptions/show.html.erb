@@ -5,6 +5,7 @@
       <div class="subscription-header-content">
 
           <h1><%= @subscription.display_name %>'s Subscription</h1>
+          <p style="color: rgba(255,255,255,0.6); margin: 0; font-size: 0.8rem;">created <%= @subscription.created_at.strftime("%-d %b %Y") %></p>
           <% if @subscription.completed? %>
             <span class="subscription-status-badge completed">Completed</span>
           <% elsif @subscription.pause? %>
