@@ -29,23 +29,19 @@
   <% if @invoice %>
     <p style="font-size: 1.1rem;">
       Your invoice total is <strong>R<%= number_with_precision(@invoice.total_amount, precision: 2) %></strong>.
+      Please view and pay your invoice to get started:
     </p>
 
     <p style="margin: 1.5rem 0;">
       <a href="<%= invoice_url(@invoice) %>"
          style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
-        Pay &amp; Activate
+        View &amp; Pay Invoice
       </a>
-    </p>
-  <% else %>
-    <p style="font-size: 1.1rem;">
-      Please <a href="https://wa.me/27785325513" style="color: #1f4632; font-weight: bold; text-decoration: underline;">message Alfred on WhatsApp</a>
-      and we'll sort out your invoice right away.
     </p>
   <% end %>
 
   <p style="font-size: 1.1rem;">
-    Any questions? <a href="https://wa.me/27785325513" style="color: #25D366; font-weight: bold; text-decoration: underline;">Message Alfred on WhatsApp</a>.
+    If you have any questions, <a href="https://wa.me/27785325513" style="color: #25D366; font-weight: bold; text-decoration: underline;">message us on WhatsApp</a>.
   </p>
 
   <p style="font-size: 1.1rem;">Warm regards,</p>
