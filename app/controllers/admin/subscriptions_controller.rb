@@ -168,7 +168,7 @@ class Admin::SubscriptionsController < ApplicationController
                 alert: "Error generating invoice: #{e.message}"
   end
 
-  RESENDABLE_EMAIL_TYPES = %w[welcome payment_received].freeze
+  RESENDABLE_EMAIL_TYPES = %w[welcome payment_received payment_prompt ad_hoc_nudge subscription_ending_soon].freeze
 
   def resend_email
     @subscription = Subscription.find(params[:id])
@@ -188,6 +188,12 @@ class Admin::SubscriptionsController < ApplicationController
       UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_now
     when "payment_received"
       SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_now
+    when "payment_prompt"
+      SubscriptionMailer.with(subscription: @subscription, to_email: recipient).payment_prompt.deliver_now
+    when "ad_hoc_nudge"
+      SubscriptionMailer.with(subscription: @subscription).ad_hoc_nudge.deliver_now
+    when "subscription_ending_soon"
+      SubscriptionMailer.with(subscription: @subscription).subscription_ending_soon.deliver_now
     end
 
     redirect_to admin_subscription_path(@subscription),

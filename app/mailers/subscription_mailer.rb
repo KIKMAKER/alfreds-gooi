@@ -80,6 +80,13 @@ class SubscriptionMailer < ApplicationMailer
     mail(to: @subscription.user.email, subject: "Your gooi subscription is waiting for you")
   end
 
+  def payment_prompt
+    @subscription = params[:subscription]
+    @invoice = @subscription.invoices.order(created_at: :asc).first
+    recipient = params[:to_email].presence || @subscription.user.email
+    mail(to: recipient, subject: "Still thinking it over? Your gooi spot is ready")
+  end
+
   def ad_hoc_nudge_alert
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
