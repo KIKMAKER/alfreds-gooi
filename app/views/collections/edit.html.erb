@@ -130,7 +130,18 @@
         <% if @collection.skip? %>
           <p class="dd-skip-notice">This collection is marked as skipped. Uncheck below to collect.</p>
         <% end %>
-        <%= f.input :skip, label: "Skip this collection", wrapper_html: { class: "mb-0" } %>
+        <%= f.input :skip, label: "Skip this collection", wrapper_html: { class: "mb-2" } %>
+        <% if @subscription.holiday_start.present? %>
+          <p class="dd-holiday-badge">
+            <i class="fa-solid fa-umbrella-beach"></i>
+            On holiday: <strong><%= @subscription.holiday_start.strftime("%-d %b") %></strong> – <strong><%= @subscription.holiday_end.strftime("%-d %b") %></strong>
+            <button type="button" class="dd-holiday-badge__edit" data-bs-toggle="modal" data-bs-target="#holidayModal">Edit</button>
+          </p>
+        <% else %>
+          <button type="button" class="dd-holiday-link" data-bs-toggle="modal" data-bs-target="#holidayModal">
+            <i class="fa-solid fa-umbrella-beach"></i> Set holiday dates
+          </button>
+        <% end %>
       </div>
     </div>
 
@@ -233,4 +244,43 @@
 
   <% end %>
 
+</div>
+
+<%# Holiday dates modal %>
+<div class="modal fade" id="holidayModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-umbrella-beach me-2"></i>Holiday dates</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <%= form_with url: holiday_dates_subscription_path(@subscription), method: :patch, data: { turbo: false } do |hf| %>
+        <div class="modal-body">
+          <% if @subscription.holiday_start.present? %>
+            <p class="text-muted small mb-3">
+              Currently: <strong><%= @subscription.holiday_start.strftime("%-d %b") %> – <%= @subscription.holiday_end.strftime("%-d %b") %></strong>
+            </p>
+          <% end %>
+          <div class="mb-3">
+            <label class="form-label">Holiday start</label>
+            <%= hf.date_field "subscription[holiday_start]", value: @subscription.holiday_start, class: "form-control" %>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Holiday end</label>
+            <%= hf.date_field "subscription[holiday_end]", value: @subscription.holiday_end, class: "form-control" %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <% if @subscription.holiday_start.present? %>
+            <%= button_to "Clear holiday", clear_holiday_subscription_path(@subscription),
+                          method: :post,
+                          class: "btn btn-outline-danger btn-sm me-auto",
+                          data: { turbo: false, turbo_confirm: "Remove holiday dates?" } %>
+          <% end %>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <%= hf.submit "Save dates", class: "btn-yellow btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

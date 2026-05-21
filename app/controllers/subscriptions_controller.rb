@@ -402,9 +402,9 @@ class SubscriptionsController < ApplicationController
                      .where(date: @subscription.holiday_start..@subscription.holiday_end)
                      .update_all(skip: true, skip_reason: "holiday")
       end
-      redirect_to manage_path, notice: "Holiday set!"
+      redirect_back fallback_location: manage_path, notice: "Holiday set!"
     else
-      redirect_to manage_path, status: :unprocessable_entity
+      redirect_back fallback_location: manage_path, status: :unprocessable_entity
     end
   end
 
@@ -416,9 +416,9 @@ class SubscriptionsController < ApplicationController
              .where('date >= ?', Date.current)
              .where(skip_reason: "holiday")
              .update_all(skip: false, skip_reason: nil)
-      redirect_to manage_path, notice: "Holiday Canceled!"
+      redirect_back fallback_location: manage_path, notice: "Holiday Canceled!"
     else
-      redirect_to manage_path, status: :unprocessable_entity
+      redirect_back fallback_location: manage_path, status: :unprocessable_entity
     end
   end
 
