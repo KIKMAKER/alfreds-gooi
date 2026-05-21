@@ -263,11 +263,11 @@
           <% end %>
           <div class="mb-3">
             <label class="form-label">Holiday start</label>
-            <%= hf.date_field "subscription[holiday_start]", value: @subscription.holiday_start || Date.today, class: "form-control" %>
+            <%= hf.text_field "subscription[holiday_start]", value: @subscription.holiday_start&.strftime("%Y-%m-%d") || Date.today.strftime("%Y-%m-%d"), class: "form-control", data: { controller: "datepicker" } %>
           </div>
           <div class="mb-3">
             <label class="form-label">Holiday end</label>
-            <%= hf.date_field "subscription[holiday_end]", value: @subscription.holiday_end || Date.today + 7, class: "form-control" %>
+            <%= hf.text_field "subscription[holiday_end]", value: @subscription.holiday_end&.strftime("%Y-%m-%d") || (Date.today + 7).strftime("%Y-%m-%d"), class: "form-control", data: { controller: "datepicker" } %>
           </div>
         </div>
         <div class="modal-footer">
