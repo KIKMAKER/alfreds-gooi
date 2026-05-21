@@ -3,6 +3,6 @@ import flatpickr from "flatpickr";
 
 export default class extends Controller {
   connect() {
-    flatpickr(this.element)
+    flatpickr(this.element, { defaultDate: this.element.value || "today" })
   }
 }
