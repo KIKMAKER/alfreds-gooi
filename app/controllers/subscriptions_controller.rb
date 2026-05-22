@@ -139,56 +139,73 @@ class SubscriptionsController < ApplicationController
         render :new, status: :unprocessable_entity
       end
     else
-      # Regular user renewal - use RenewalService to duplicate last subscription
-      result = Subscriptions::RenewalService.new(
-        user: current_user,
-        new_params: subscription_params
-      ).call
-
-      if result.success?
-        @subscription = result.subscription
-
-        # Create primary contact for owner
-        @subscription.contacts.create!(
-          first_name: current_user.first_name,
-          last_name: current_user.last_name,
-          phone_number: current_user.phone_number || '',
-          relationship: 'owner',
-          is_primary: true,
-          whatsapp_opt_out: current_user.whatsapp_opt_out || false
-        )
-
-        # Copy contacts from previous subscription if requested
-        if params[:subscription][:copy_contacts_from_previous] == '1' &&
-           params[:subscription][:previous_subscription_id].present?
-          previous_sub = current_user.subscriptions.find_by(id: params[:subscription][:previous_subscription_id])
-          @subscription.copy_contacts_from(previous_sub) if previous_sub
+      # Idempotency guard: if a pending sub with the same plan/duration was created in the
+      # last 10 minutes, redirect to its invoice rather than creating a duplicate.
+      recent_pending = current_user.subscriptions.pending
+                                   .where(plan: subscription_params[:plan], duration: subscription_params[:duration])
+                                   .where(created_at: 10.minutes.ago..)
+                                   .order(created_at: :desc)
+                                   .first
+      if recent_pending
+        existing_invoice = recent_pending.invoices.order(created_at: :desc).first
+        if existing_invoice
+          redirect_to invoice_path(existing_invoice)
+          return
         end
+      end
 
-        # Calculate referred friends for invoice builder
-        referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
+      # Regular user renewal - use RenewalService to duplicate last subscription.
+      # Subscription + invoice are created inside one transaction so a failed InvoiceBuilder
+      # rolls back the subscription and doesn't leave an orphan.
+      @invoice = nil
+      begin
+        ActiveRecord::Base.transaction do
+          result = Subscriptions::RenewalService.new(
+            user: current_user,
+            new_params: subscription_params
+          ).call
 
-        # Create invoice AFTER subscription has correct plan/duration
-        @invoice = InvoiceBuilder.new(
-          subscription: @subscription,
-          og: current_user.og,
-          is_new: false,
-          referee: nil,
-          referred_friends: referred_friends,
-          auto_approve: true
-        ).call
+          unless result.success?
+            raise ActiveRecord::Rollback
+          end
 
-        # check for sub overlap and set proper start date
-        start_date = @subscription.suggested_start_date(payment_date: Date.current)
-        @subscription.update!(start_date: start_date)
+          @subscription = result.subscription
 
-        # check if future collections exist and move them to this sub
-        @subscription.adopt_future_collections!
+          # Copy contacts from previous subscription if requested
+          if params[:subscription][:copy_contacts_from_previous] == '1' &&
+             params[:subscription][:previous_subscription_id].present?
+            previous_sub = current_user.subscriptions.find_by(id: params[:subscription][:previous_subscription_id])
+            @subscription.copy_contacts_from(previous_sub) if previous_sub
+          end
 
-        flash.now[:notice] = "Your subscription has been created and will be active once payment is made."
+          referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
+
+          @invoice = InvoiceBuilder.new(
+            subscription: @subscription,
+            og: current_user.og,
+            is_new: false,
+            referee: nil,
+            referred_friends: referred_friends,
+            auto_approve: true
+          ).call
+
+          start_date = @subscription.suggested_start_date(payment_date: Date.current)
+          @subscription.update!(start_date: start_date)
+
+          @subscription.adopt_future_collections!
+        end
+      rescue => e
+        Rails.logger.error "Renewal failed for user #{current_user.id}: #{e.class} #{e.message}"
+        flash[:alert] = "Something went wrong creating your subscription. Please try again or contact us."
+        @subscription = Subscription.new(subscription_params)
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      if @invoice
         redirect_to invoice_path(@invoice)
       else
-        flash[:alert] = result.error
+        flash[:alert] = result&.error || "Could not create subscription."
         @subscription = Subscription.new(subscription_params)
         render :new, status: :unprocessable_entity
       end
