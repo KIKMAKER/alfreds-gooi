@@ -74,10 +74,20 @@
     line-height: 1.1;
   }
 
+  &__description {
+    color: rgba(white, 0.9);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0.75rem auto 0;
+
+    strong { color: white; }
+  }
+
   &__address {
-    color: rgba(white, 0.75);
-    font-size: 0.95rem;
-    margin: 0;
+    color: rgba(white, 0.65);
+    font-size: 0.9rem;
+    margin: 0.75rem 0 0;
 
     i { margin-right: 0.4em; }
   }
@@ -200,13 +210,14 @@
 // ── Cumulative stats ──────────────────────────────────────────────────────────
 
 .block-stats {
-  padding: 3.5rem 0;
+  padding: 2rem 0;
   background: white;
 
   &__title {
     text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
+    margin-bottom: 1.75rem;
+    font-size: 1.8rem;
+    color: $dark-green;
   }
 
   &__grid {
@@ -290,13 +301,14 @@
 // ── How it works ──────────────────────────────────────────────────────────────
 
 .block-how {
-  padding: 3.5rem 0;
-  background: white;
+  padding: 2rem 0;
+  background: #f3f8f5; // subtle green tint — visually separates from the white stats section
 
   &__title {
     text-align: center;
-    margin-bottom: 2.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: $dark-green;
   }
 
   &__steps {
