@@ -112,13 +112,13 @@
     <div class="container">
       <div class="block-about__inner">
         <h2>About this building's collection</h2>
+        <% if @block.description.present? %>
+          <p><%= @block.description %></p>
+        <% end %>
         <% if @collection_days_label.present? %>
           <p class="block-about__collection-day">
             🗓 We collect <strong><%= @collection_days_label %></strong>.
           </p>
-        <% end %>
-        <% if @block.description.present? %>
-          <p><%= @block.description %></p>
         <% end %>
       </div>
     </div>
