@@ -45,6 +45,20 @@ class Block < ApplicationRecord
     subscriptions.where(status: :active)
   end
 
+  # Unique collection days (as day-name strings, e.g. ["Tuesday"]) derived
+  # from active subscriptions. A block could theoretically span two routes.
+  def collection_days
+    active_subscriptions.map(&:collection_day).uniq.compact
+  end
+
+  # Human-readable collection day string for display.
+  # "every Tuesday"  /  "every Tuesday and Wednesday"
+  def collection_days_label
+    days = collection_days
+    return nil if days.empty?
+    "every #{days.to_sentence}"
+  end
+
   # ── Expected stats ──────────────────────────────────────────────────────────
 
   # How much we'd expect to collect this week if all active subscriptions

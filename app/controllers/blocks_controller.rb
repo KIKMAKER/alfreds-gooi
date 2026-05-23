@@ -10,5 +10,6 @@ class BlocksController < ApplicationController
     @stat_lifetime_l      = @block.lifetime_volume_l
     @stat_expected_l      = @block.expected_weekly_volume_l
     @estimated_households = @block.estimated_contributing_households
+    @collection_days_label = @block.collection_days_label
   end
 end

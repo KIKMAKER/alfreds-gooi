@@ -105,13 +105,21 @@
 
 <%# ══════════════════════════════════════════════════════════════
     ABOUT / DESCRIPTION
+    Always renders if there's a description or a known collection day.
 ══════════════════════════════════════════════════════════════ %>
-<% if @block.description.present? %>
+<% if @block.description.present? || @collection_days_label.present? %>
   <section class="block-about">
     <div class="container">
       <div class="block-about__inner">
         <h2>About this building's collection</h2>
-        <p><%= @block.description %></p>
+        <% if @collection_days_label.present? %>
+          <p class="block-about__collection-day">
+            🗓 We collect <strong><%= @collection_days_label %></strong>.
+          </p>
+        <% end %>
+        <% if @block.description.present? %>
+          <p><%= @block.description %></p>
+        <% end %>
       </div>
     </div>
   </section>
@@ -153,7 +161,7 @@
       <p>Sign up for your own household collection and start reducing your food waste today.</p>
       <%= link_to "Sign up", new_account_signup_path, class: "block-cta__btn" %>
       <p class="block-cta__footer">
-        Questions? <a href="mailto:hello@alfredsgooi.co.za">hello@alfredsgooi.co.za</a>
+        Questions? <a href="mailto:howzit@gooi.me">howzit@gooi.me</a>
       </p>
     </div>
   </div>
