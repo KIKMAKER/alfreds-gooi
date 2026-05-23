@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_18_154342) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_23_122543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -139,6 +139,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_154342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "blocks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "address"
+    t.text "description"
+    t.integer "resident_count"
+    t.float "latitude"
+    t.float "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_blocks_on_slug", unique: true
   end
 
   create_table "buckets", force: :cascade do |t|
@@ -772,6 +785,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_154342) do
     t.decimal "monthly_subscription_amount", precision: 10, scale: 2
     t.bigint "primary_subscription_id"
     t.bigint "quotation_id"
+    t.bigint "block_id"
+    t.index ["block_id"], name: "index_subscriptions_on_block_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
     t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
@@ -883,6 +898,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_18_154342) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscriptions", "blocks"
   add_foreign_key "subscriptions", "quotations"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"

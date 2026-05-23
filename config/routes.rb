@@ -87,6 +87,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :blocks do
+      member do
+        post :assign_subscription
+        delete :remove_subscription
+      end
+    end
     resources :posts
     resources :expenses do
       member do
@@ -310,6 +316,9 @@ Rails.application.routes.draw do
 
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug
+
+  # blocks (apartment blocks / estates — public landing pages)
+  resources :blocks, only: [:show], param: :slug
 
 
 

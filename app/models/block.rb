@@ -1,0 +1,103 @@
+class Block < ApplicationRecord
+  has_many :subscriptions, dependent: :nullify
+  has_many_attached :photos
+
+  validates :name, presence: true
+  validates :slug, presence: true, uniqueness: true,
+                   format: { with: /\A[a-z0-9\-]+\z/, message: "only lowercase letters, numbers, and hyphens" }
+  validates :resident_count, numericality: { greater_than: 0, allow_nil: true }
+
+  before_validation :generate_slug, on: :create, if: -> { slug.blank? }
+
+  # ── Volume constants ────────────────────────────────────────────────────────
+  # Expected litres per collection per subscription plan per week.
+  # Based on: Standard allows ~10L/week; XL double that.
+  EXPECTED_WEEKLY_L = {
+    "Standard"  => 10,
+    "XL"        => 20,
+    "once_off"  => 10,
+    "Commercial" => 50
+  }.freeze
+
+  # Kitchen scraps density: ~0.6 kg per litre (conservative estimate)
+  DENSITY_KG_PER_L = 0.6
+
+  # CO₂ equivalent avoidance per kg food waste diverted from landfill
+  # (methane avoidance basis — IPCC figures)
+  CO2E_PER_KG = 1.9
+
+  # ── Scopes ──────────────────────────────────────────────────────────────────
+  def active_subscriptions
+    subscriptions.where(status: :active)
+  end
+
+  # ── Expected stats ──────────────────────────────────────────────────────────
+
+  # How much scraps we'd expect to collect this week if all active
+  # subscriptions put out their full allocation.
+  def expected_weekly_volume_l
+    active_subscriptions.sum do |sub|
+      EXPECTED_WEEKLY_L[sub.plan] || 10
+    end
+  end
+
+  # ── Actual stats ─────────────────────────────────────────────────────────────
+
+  # All non-skipped collections for this block within a date range,
+  # with their subscriptions eager-loaded for volume_litres calculations.
+  def collections_in_range(date_range)
+    Collection
+      .joins(:subscription)
+      .where(subscriptions: { block_id: id })
+      .where(date: date_range, skip: false)
+      .includes(:subscription)
+  end
+
+  def actual_volume_l(date_range)
+    collections_in_range(date_range).sum(&:volume_litres)
+  end
+
+  # Convenience methods for common time windows
+  def actual_volume_this_week_l
+    actual_volume_l(Date.current.beginning_of_week..Date.current.end_of_week)
+  end
+
+  def actual_volume_this_month_l
+    actual_volume_l(Date.current.beginning_of_month..Date.current.end_of_month)
+  end
+
+  def lifetime_volume_l
+    actual_volume_l(Date.new(2000)..Date.current)
+  end
+
+  # ── Weight & climate stats ───────────────────────────────────────────────────
+
+  def weight_kg(volume_l)
+    (volume_l * DENSITY_KG_PER_L).round(1)
+  end
+
+  def co2e_kg(volume_l)
+    (weight_kg(volume_l) * CO2E_PER_KG).round(1)
+  end
+
+  # ── Subscription count helpers ───────────────────────────────────────────────
+
+  def active_subscription_count
+    active_subscriptions.count
+  end
+
+  # ── Slug generation ──────────────────────────────────────────────────────────
+
+  private
+
+  def generate_slug
+    base = name.to_s.downcase.gsub(/[^a-z0-9\s\-]/, "").gsub(/\s+/, "-").strip
+    candidate = base
+    n = 1
+    while Block.exists?(slug: candidate)
+      candidate = "#{base}-#{n}"
+      n += 1
+    end
+    self.slug = candidate
+  end
+end

@@ -1,5 +1,6 @@
 class Subscription < ApplicationRecord
   belongs_to :user
+  belongs_to :block, optional: true
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
