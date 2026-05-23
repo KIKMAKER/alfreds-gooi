@@ -10,6 +10,11 @@ class Block < ApplicationRecord
   before_validation :generate_slug, on: :create, if: -> { slug.blank? }
 
   # ── Physical constants ──────────────────────────────────────────────────────
+  # Assumed kitchen scrap volume per participating household per week.
+  # Used to back-calculate an estimated number of contributing households
+  # from the collection volume without needing individual household sign-ups.
+  LITRES_PER_HOUSEHOLD = 5
+
   # Kitchen scraps density: ~0.6 kg per litre (conservative estimate)
   DENSITY_KG_PER_L = 0.6
 
@@ -90,10 +95,18 @@ class Block < ApplicationRecord
     (weight_kg(volume_l) * CO2E_PER_KG).round(1)
   end
 
-  # ── Subscription count helpers ───────────────────────────────────────────────
+  # ── Household estimates ──────────────────────────────────────────────────────
 
   def active_subscription_count
     active_subscriptions.count
+  end
+
+  # Estimated number of households contributing based on expected weekly volume,
+  # assuming LITRES_PER_HOUSEHOLD (5L) per household per week.
+  # e.g. 135L expected ÷ 5L = ~27 households
+  def estimated_contributing_households
+    return nil if expected_weekly_volume_l.zero?
+    (expected_weekly_volume_l.to_f / LITRES_PER_HOUSEHOLD).ceil
   end
 
   # ── Slug generation ──────────────────────────────────────────────────────────

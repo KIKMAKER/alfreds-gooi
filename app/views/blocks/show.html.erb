@@ -91,14 +91,16 @@
       </div>
 
       <div class="block-stats__item">
-        <% if @block.resident_count.present? %>
+        <% estimated = @block.estimated_contributing_households %>
+        <% if estimated %>
+          <span class="block-stats__number">~<%= estimated %></span>
+          <span class="block-stats__desc">households diverting food waste</span>
+          <% if @block.resident_count.present? %>
+            <span class="block-stats__sub">out of <%= @block.resident_count %> units in the building</span>
+          <% end %>
+        <% elsif @block.resident_count.present? %>
           <span class="block-stats__number"><%= @block.resident_count %></span>
-          <span class="block-stats__desc">residents contributing</span>
-          <span class="block-stats__sub">one collection covering the whole building</span>
-        <% else %>
-          <span class="block-stats__number">🌱</span>
-          <span class="block-stats__desc">building-wide collection</span>
-          <span class="block-stats__sub">scraps from every floor, one pickup</span>
+          <span class="block-stats__desc">units in the building</span>
         <% end %>
       </div>
     </div>
