@@ -19,21 +19,17 @@
       </div>
     </div>
 
-    <%# ── Stats row ───────────────────────────────────────────────── %>
+    <%# ── Stats row — use pre-computed ivars; no repeated DB hits ─── %>
     <div class="row g-3 mb-5">
       <div class="col-md-4">
         <div class="card h-100">
           <div class="card-body">
             <h6 class="text-muted text-uppercase small mb-1">This Week</h6>
-            <p class="mb-1">
-              <strong>Expected:</strong> <%= @block.expected_weekly_volume_l %>L
-            </p>
-            <p class="mb-1">
-              <strong>Collected:</strong> <%= @block.actual_volume_this_week_l %>L
-            </p>
+            <p class="mb-1"><strong>Expected:</strong> <%= @stat_expected_l %>L</p>
+            <p class="mb-1"><strong>Collected:</strong> <%= @stat_week_l %>L</p>
             <p class="mb-0 text-muted small">
-              ~<%= @block.weight_kg(@block.actual_volume_this_week_l) %>kg &nbsp;·&nbsp;
-              ~<%= @block.co2e_kg(@block.actual_volume_this_week_l) %>kg CO₂e saved
+              ~<%= @block.weight_kg(@stat_week_l) %>kg &nbsp;·&nbsp;
+              ~<%= @block.co2e_kg(@stat_week_l) %>kg CO₂e saved
             </p>
           </div>
         </div>
@@ -42,12 +38,10 @@
         <div class="card h-100">
           <div class="card-body">
             <h6 class="text-muted text-uppercase small mb-1">This Month</h6>
-            <p class="mb-1">
-              <strong>Collected:</strong> <%= @block.actual_volume_this_month_l %>L
-            </p>
+            <p class="mb-1"><strong>Collected:</strong> <%= @stat_month_l %>L</p>
             <p class="mb-0 text-muted small">
-              ~<%= @block.weight_kg(@block.actual_volume_this_month_l) %>kg &nbsp;·&nbsp;
-              ~<%= @block.co2e_kg(@block.actual_volume_this_month_l) %>kg CO₂e saved
+              ~<%= @block.weight_kg(@stat_month_l) %>kg &nbsp;·&nbsp;
+              ~<%= @block.co2e_kg(@stat_month_l) %>kg CO₂e saved
             </p>
           </div>
         </div>
@@ -56,12 +50,10 @@
         <div class="card h-100">
           <div class="card-body">
             <h6 class="text-muted text-uppercase small mb-1">All Time</h6>
-            <p class="mb-1">
-              <strong>Collected:</strong> <%= @block.lifetime_volume_l %>L
-            </p>
+            <p class="mb-1"><strong>Collected:</strong> <%= @stat_lifetime_l %>L</p>
             <p class="mb-0 text-muted small">
-              ~<%= @block.weight_kg(@block.lifetime_volume_l) %>kg &nbsp;·&nbsp;
-              ~<%= @block.co2e_kg(@block.lifetime_volume_l) %>kg CO₂e saved
+              ~<%= @block.weight_kg(@stat_lifetime_l) %>kg &nbsp;·&nbsp;
+              ~<%= @block.co2e_kg(@stat_lifetime_l) %>kg CO₂e saved
             </p>
           </div>
         </div>
@@ -96,6 +88,8 @@
     </div>
 
     <%# ── Subscriptions ───────────────────────────────────────────── %>
+    <%# @subscriptions is a plain Array (.to_a in controller) — .count and
+        .any? here use Ruby, not SQL. No extra DB queries. %>
     <div class="mb-5">
       <h5>Linked Subscriptions (<%= @subscriptions.count %>)</h5>
 
@@ -139,10 +133,12 @@
     </div>
 
     <%# ── Assign subscription ─────────────────────────────────────── %>
+    <%# @unassigned_subscriptions is also a plain Array; sub.user is
+        already loaded via eager_load — no N+1 in the <select>. %>
     <% if @unassigned_subscriptions.any? %>
       <div>
         <h5>Assign a subscription</h5>
-        <p class="text-muted small">Only active subscriptions not already in a block are shown.</p>
+        <p class="text-muted small">Pending, active, and paused subscriptions not already in a block.</p>
 
         <%= form_with url: assign_subscription_admin_block_path(@block), method: :post, local: true do |f| %>
           <div class="d-flex gap-2 align-items-end">
@@ -152,7 +148,7 @@
                 <% @unassigned_subscriptions.each do |sub| %>
                   <option value="<%= sub.id %>">
                     <%= sub.user.first_name %> <%= sub.user.last_name %>
-                    &mdash; <%= sub.suburb %> (<%= sub.plan %>)
+                    — <%= sub.suburb %> (<%= sub.plan %>, <%= sub.status %>)
                   </option>
                 <% end %>
               </select>
