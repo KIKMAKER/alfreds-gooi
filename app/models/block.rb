@@ -82,7 +82,9 @@ class Block < ApplicationRecord
   end
 
   def lifetime_volume_l
-    actual_volume_l(Date.new(2000)..Date.current)
+    # Endless range → no upper date bound, so future-dated pre-scheduled
+    # collections (e.g. next Tuesday's route) are included correctly.
+    actual_volume_l(Date.new(2000)..)
   end
 
   # ── Weight & climate stats ───────────────────────────────────────────────────
@@ -101,12 +103,16 @@ class Block < ApplicationRecord
     active_subscriptions.count
   end
 
-  # Estimated number of households contributing based on expected weekly volume,
-  # assuming LITRES_PER_HOUSEHOLD (5L) per household per week.
-  # e.g. 135L expected ÷ 5L = ~27 households
+  # Estimated households contributing, derived from the average volume
+  # per collection (lifetime actual ÷ number of collections) rather than
+  # contracted capacity. This reflects real participation, not maximum possible.
+  # e.g. 1 collection × 90L → avg 90L → 90 ÷ 5L = ~18 households
+  # Over time the average stabilises as more data accumulates.
   def estimated_contributing_households
-    return nil if expected_weekly_volume_l.zero?
-    (expected_weekly_volume_l.to_f / LITRES_PER_HOUSEHOLD).ceil
+    total_collections = collections_in_range(Date.new(2000)..).count
+    return nil if total_collections.zero?
+    avg_l_per_collection = lifetime_volume_l.to_f / total_collections
+    (avg_l_per_collection / LITRES_PER_HOUSEHOLD).ceil
   end
 
   # ── Slug generation ──────────────────────────────────────────────────────────

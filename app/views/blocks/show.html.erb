@@ -32,9 +32,9 @@
 <%# ══════════════════════════════════════════════════════════════
     WEEKLY IMPACT SNAPSHOT — the headline stat
 ══════════════════════════════════════════════════════════════ %>
-<% this_week_l    = @block.actual_volume_this_week_l
-   expected_l     = @block.expected_weekly_volume_l
-   pct            = expected_l > 0 ? [(this_week_l * 100.0 / expected_l).round, 100].min : 0 %>
+<% this_week_l = @stat_week_l
+   expected_l  = @stat_expected_l
+   pct         = expected_l > 0 ? [(this_week_l * 100.0 / expected_l).round, 100].min : 0 %>
 
 <section class="block-snapshot">
   <div class="container">
@@ -68,32 +68,28 @@
 <%# ══════════════════════════════════════════════════════════════
     CUMULATIVE STATS
 ══════════════════════════════════════════════════════════════ %>
-<% month_l    = @block.actual_volume_this_month_l
-   lifetime_l = @block.lifetime_volume_l %>
-
 <section class="block-stats">
   <div class="container">
     <h2 class="block-stats__title">Our collective impact</h2>
 
     <div class="block-stats__grid">
       <div class="block-stats__item">
-        <span class="block-stats__number"><%= month_l %>L</span>
+        <span class="block-stats__number"><%= @stat_month_l %>L</span>
         <span class="block-stats__desc">scraps collected this month</span>
-        <span class="block-stats__sub">~<%= @block.co2e_kg(month_l) %>kg CO₂e saved</span>
+        <span class="block-stats__sub">~<%= @block.co2e_kg(@stat_month_l) %>kg CO₂e saved</span>
       </div>
 
       <div class="block-stats__item block-stats__item--featured">
-        <span class="block-stats__number"><%= lifetime_l %>L</span>
+        <span class="block-stats__number"><%= @stat_lifetime_l %>L</span>
         <span class="block-stats__desc">collected since we started</span>
         <span class="block-stats__sub">
-          ~<%= @block.weight_kg(lifetime_l) %>kg composted &nbsp;·&nbsp; ~<%= @block.co2e_kg(lifetime_l) %>kg CO₂e saved
+          ~<%= @block.weight_kg(@stat_lifetime_l) %>kg composted &nbsp;·&nbsp; ~<%= @block.co2e_kg(@stat_lifetime_l) %>kg CO₂e saved
         </span>
       </div>
 
       <div class="block-stats__item">
-        <% estimated = @block.estimated_contributing_households %>
-        <% if estimated %>
-          <span class="block-stats__number">~<%= estimated %></span>
+        <% if @estimated_households %>
+          <span class="block-stats__number">~<%= @estimated_households %></span>
           <span class="block-stats__desc">households diverting food waste</span>
           <% if @block.resident_count.present? %>
             <span class="block-stats__sub">out of <%= @block.resident_count %> units in the building</span>
