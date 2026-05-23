@@ -64,8 +64,8 @@ class Admin::BlocksController < Admin::BaseController
 
   def block_params
     params.require(:block).permit(
-      :name, :slug, :address, :description,
-      :resident_count, :latitude, :longitude,
+      :name, :slug, :description,
+      :resident_count,
       photos: []
     )
   end

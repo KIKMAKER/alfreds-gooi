@@ -73,8 +73,10 @@
       <div class="col-md-6">
         <h5>Details</h5>
         <dl class="row">
+          <dt class="col-sm-4">Suburb</dt>
+          <dd class="col-sm-8"><%= @block.suburb || "— (assign subscriptions to populate)" %></dd>
           <dt class="col-sm-4">Address</dt>
-          <dd class="col-sm-8"><%= @block.address.presence || "—" %></dd>
+          <dd class="col-sm-8 text-muted"><%= @block.derived_address || "—" %></dd>
           <dt class="col-sm-4">Residents</dt>
           <dd class="col-sm-8"><%= @block.resident_count || "—" %></dd>
           <dt class="col-sm-4">Description</dt>

@@ -26,6 +26,24 @@ class Block < ApplicationRecord
   # (methane avoidance basis — IPCC figures)
   CO2E_PER_KG = 1.9
 
+  # ── Address derived from subscriptions ──────────────────────────────────────
+  # The block's physical address is the same as the subscriptions at that building.
+  # We derive it from the linked subscriptions rather than storing it separately.
+
+  # Primary suburb (from the most common suburb among linked subscriptions, or the first one).
+  def suburb
+    return nil if subscriptions.none?
+    subscriptions.group(:suburb).order("count_all DESC").count.first&.first
+  end
+
+  # A human-readable display address: prefer the first subscription's street address
+  # plus the canonical suburb. Falls back to just the suburb.
+  def derived_address
+    first_sub = subscriptions.order(:created_at).first
+    return nil unless first_sub
+    [first_sub.street_address, first_sub.suburb].compact.join(", ")
+  end
+
   # ── Scopes ──────────────────────────────────────────────────────────────────
   def active_subscriptions
     subscriptions.where(status: :active)
