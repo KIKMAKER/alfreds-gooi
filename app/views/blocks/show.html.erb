@@ -116,9 +116,7 @@
           <p><%= @block.description %></p>
         <% end %>
         <% if @collection_days_label.present? %>
-          <p class="block-about__collection-day">
-            🗓 We collect <strong><%= @collection_days_label %></strong>.
-          </p>
+          <p><strong>We collect <%= @collection_days_label %>.</strong></p>
         <% end %>
       </div>
     </div>
