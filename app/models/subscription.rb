@@ -133,6 +133,12 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Expected litres collected per week based on this subscription's own config.
+  # Used by Block#expected_weekly_volume_l to sum across linked subscriptions.
+  def expected_weekly_volume_l
+    allowed_litres_per_collection * (collections_per_week || 1)
+  end
+
   def total_litres
     if Commercial?
       collections.sum("buckets_25l * 25 + buckets_45l * 45")

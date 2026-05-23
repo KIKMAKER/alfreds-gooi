@@ -9,16 +9,7 @@ class Block < ApplicationRecord
 
   before_validation :generate_slug, on: :create, if: -> { slug.blank? }
 
-  # ── Volume constants ────────────────────────────────────────────────────────
-  # Expected litres per collection per subscription plan per week.
-  # Based on: Standard allows ~10L/week; XL double that.
-  EXPECTED_WEEKLY_L = {
-    "Standard"  => 10,
-    "XL"        => 20,
-    "once_off"  => 10,
-    "Commercial" => 50
-  }.freeze
-
+  # ── Physical constants ──────────────────────────────────────────────────────
   # Kitchen scraps density: ~0.6 kg per litre (conservative estimate)
   DENSITY_KG_PER_L = 0.6
 
@@ -51,12 +42,13 @@ class Block < ApplicationRecord
 
   # ── Expected stats ──────────────────────────────────────────────────────────
 
-  # How much scraps we'd expect to collect this week if all active
-  # subscriptions put out their full allocation.
+  # How much we'd expect to collect this week if all active subscriptions
+  # put out their full allocation. Delegates to each sub's own configuration:
+  # Commercial → buckets_per_collection × bucket_size × collections_per_week
+  # XL         → 25L × collections_per_week
+  # Standard   → 5L  × collections_per_week (per bag; adjust if bag count tracked)
   def expected_weekly_volume_l
-    active_subscriptions.sum do |sub|
-      EXPECTED_WEEKLY_L[sub.plan] || 10
-    end
+    active_subscriptions.sum(&:expected_weekly_volume_l)
   end
 
   # ── Actual stats ─────────────────────────────────────────────────────────────
