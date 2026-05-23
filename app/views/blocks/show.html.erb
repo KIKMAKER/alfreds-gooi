@@ -20,6 +20,14 @@
   <div class="block-hero__overlay">
     <div class="block-hero__badge">Kitchen Scraps Collection</div>
     <h1 class="block-hero__title"><%= @block.name %></h1>
+    <% if @block.description.present? || @collection_days_label.present? %>
+      <p class="block-hero__description">
+        <%= @block.description %>
+        <% if @collection_days_label.present? %>
+          <%= " " if @block.description.present? %><strong>We collect <%= @collection_days_label %>.</strong>
+        <% end %>
+      </p>
+    <% end %>
     <% if @block.suburb.present? %>
       <p class="block-hero__address">
         <i class="fa fa-map-marker-alt"></i>
@@ -66,64 +74,6 @@
 </section>
 
 <%# ══════════════════════════════════════════════════════════════
-    CUMULATIVE STATS
-══════════════════════════════════════════════════════════════ %>
-<section class="block-stats">
-  <div class="container">
-    <h2 class="block-stats__title">Our collective impact</h2>
-
-    <div class="block-stats__grid">
-      <div class="block-stats__item">
-        <span class="block-stats__number"><%= @stat_month_l %>L</span>
-        <span class="block-stats__desc">scraps collected this month</span>
-        <span class="block-stats__sub">~<%= @block.co2e_kg(@stat_month_l) %>kg CO₂e saved</span>
-      </div>
-
-      <div class="block-stats__item block-stats__item--featured">
-        <span class="block-stats__number"><%= @stat_lifetime_l %>L</span>
-        <span class="block-stats__desc">collected since we started</span>
-        <span class="block-stats__sub">
-          ~<%= @block.weight_kg(@stat_lifetime_l) %>kg composted &nbsp;·&nbsp; ~<%= @block.co2e_kg(@stat_lifetime_l) %>kg CO₂e saved
-        </span>
-      </div>
-
-      <div class="block-stats__item">
-        <% if @estimated_households %>
-          <span class="block-stats__number">~<%= @estimated_households %></span>
-          <span class="block-stats__desc">households diverting food waste</span>
-          <% if @block.resident_count.present? %>
-            <span class="block-stats__sub">out of <%= @block.resident_count %> units in the building</span>
-          <% end %>
-        <% elsif @block.resident_count.present? %>
-          <span class="block-stats__number"><%= @block.resident_count %></span>
-          <span class="block-stats__desc">units in the building</span>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</section>
-
-<%# ══════════════════════════════════════════════════════════════
-    ABOUT / DESCRIPTION
-    Always renders if there's a description or a known collection day.
-══════════════════════════════════════════════════════════════ %>
-<% if @block.description.present? || @collection_days_label.present? %>
-  <section class="block-about">
-    <div class="container">
-      <div class="block-about__inner">
-        <h2>About this building's collection</h2>
-        <% if @block.description.present? %>
-          <p><%= @block.description %></p>
-        <% end %>
-        <% if @collection_days_label.present? %>
-          <p><strong>We collect <%= @collection_days_label %>.</strong></p>
-        <% end %>
-      </div>
-    </div>
-  </section>
-<% end %>
-
-<%# ══════════════════════════════════════════════════════════════
     HOW IT WORKS
 ══════════════════════════════════════════════════════════════ %>
 <section class="block-how">
@@ -144,6 +94,33 @@
         <div class="block-how__step-icon">🌱</div>
         <h4>It becomes compost</h4>
         <p>Your scraps go to a local composting facility and return to Cape Town's soil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ══════════════════════════════════════════════════════════════
+    CUMULATIVE IMPACT STATS
+══════════════════════════════════════════════════════════════ %>
+<section class="block-stats">
+  <div class="container">
+    <h2 class="block-stats__title">Our collective impact</h2>
+    <div class="block-stats__grid">
+      <div class="block-stats__item">
+        <span class="block-stats__number"><%= @stat_month_l %>L</span>
+        <span class="block-stats__desc">collected this month</span>
+        <span class="block-stats__sub">~<%= @block.weight_kg(@stat_month_l) %>kg diverted from landfill</span>
+      </div>
+      <div class="block-stats__item block-stats__item--featured">
+        <span class="block-stats__number"><%= @stat_lifetime_l %>L</span>
+        <span class="block-stats__desc">total collected since we started</span>
+        <span class="block-stats__sub">~<%= @block.co2e_kg(@stat_lifetime_l) %>kg CO₂e saved</span>
+      </div>
+      <div class="block-stats__item">
+        <% hh = @estimated_households %>
+        <span class="block-stats__number"><%= hh || "—" %></span>
+        <span class="block-stats__desc">households contributing<% if hh && @block.resident_count %> out of <%= @block.resident_count %><% end %></span>
+        <span class="block-stats__sub">based on average collection volume</span>
       </div>
     </div>
   </div>
