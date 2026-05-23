@@ -211,7 +211,7 @@
 
 .block-stats {
   padding: 2rem 0;
-  background: white;
+  background: $light-gray;
 
   &__title {
     text-align: center;
@@ -302,7 +302,7 @@
 
 .block-how {
   padding: 2rem 0;
-  background: #f3f8f5; // subtle green tint — visually separates from the white stats section
+  background: white;
 
   &__title {
     text-align: center;
