@@ -45,7 +45,12 @@ class Admin::BlocksController < Admin::BaseController
   def edit; end
 
   def update
-    if @block.update(block_params)
+    attrs = block_params
+    # has_many_attached replaces the whole collection when the key is present,
+    # even if no files were chosen. Strip it out so existing photos are kept
+    # whenever the file input is left blank.
+    attrs = attrs.except(:photos) if attrs[:photos].blank? || attrs[:photos].all?(&:blank?)
+    if @block.update(attrs)
       redirect_to admin_block_path(@block), notice: "Block updated."
     else
       render :edit, status: :unprocessable_entity
