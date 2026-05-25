@@ -50,8 +50,9 @@
     <div class="inner-header-container mb-4">
       <h1>Organic waste recycling made easy</h1>
       <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
         Gooi offers weekly collection of food scraps from your doorstep.
+        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
+        Since 2023 we have collected <strong class="yellow-txt"><%= number_with_delimiter(@total_kg) %> kg</strong> of organic waste.
         Ready to join the food waste revolution?</p>
       <div class="mt-5 mb-3">
         <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
@@ -442,66 +443,44 @@
     <% end %>
   </div>
 
-  <!-- Commercial signup section -->
+  <!-- Other options: once-off + commercial -->
+  <div class="other-options-section mt-5">
+    <h2 class="other-options-title">Other options</h2>
+    <div class="other-options-row">
 
-  <div class="commercial-signup-section mt-5">
-    <div class="commercial-card">
-      <h3>Commercial Collection</h3>
-      <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
-      <ul>
-        <li>Weekly or multiple collections per week</li>
-        <li>Volume-based pricing (45L buckets)</li>
-        <li>Flexible contract lengths (3, 6, or 12 months)</li>
-      </ul>
-      <div class="mt-3">
-        <%= link_to 'Get Started', new_commercial_inquiry_account_path, class: 'btn-gooi' %>
+      <div class="other-option-card other-option-card--once-off">
+        <h3>Once-off Collection</h3>
+        <p>Dinner party or overflowing worm bin, we're happy to help get your extra waste into the soil.</p>
+        <ul>
+          <li>One collection of your organic waste</li>
+          <li>No commitment, no recurring charges</li>
+          <li>Pick your collection date based on our route</li>
+        </ul>
+        <p class="other-option-price">R<%= number_with_precision(@once_off_price, precision: 0) %></p>
+        <div class="mt-auto pt-3">
+          <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
+        </div>
       </div>
+
+      <div class="other-option-card other-option-card--commercial">
+        <h3>Commercial Collection</h3>
+        <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
+        <ul>
+          <li>Weekly or multiple collections per week</li>
+          <li>Volume-based pricing (45L buckets)</li>
+          <li>Flexible contract lengths (3, 6, or 12 months)</li>
+        </ul>
+        <div class="mt-auto pt-3">
+          <%= link_to 'Get Started', new_commercial_inquiry_account_path, class: 'btn-gooi' %>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <br>
   <br>
 
-</section>
-
-<!--testimonial section-->
-<section class="testimonial-section">
-  <h1>Testimonials</h1>
-  <p class="section-subtitle">What our community says</p>
-  <div class="content-wrapper" style="max-width: 960px; margin: 0 auto;">
-    <% if @testimonials.count >= 3 %>
-      <!-- Show 3 random new testimonials with images -->
-      <div class="testimonials-container">
-        <% @testimonials.sample(3).each do |testimonial| %>
-          <div class="testimonial-card">
-            <% if testimonial.photo.attached? %>
-              <div class="testimonial-image">
-                <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
-              </div>
-            <% end %>
-            <p><%= testimonial.content %></p>
-            <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <!-- Show old static testimonials until we have 3 new ones -->
-      <div class="testimonials-container">
-        <div class="testimonial-card">
-          <p>We love composting our waste, and Alfred is the sweetest man.</p>
-          <h4>Megan</h4>
-        </div>
-        <div class="testimonial-card">
-          <p>It's been so helpful and has really made composting so much easier and more convenient!</p>
-          <h4>Simone</h4>
-        </div>
-        <div class="testimonial-card">
-          <p>Alfred is always on time and always so kind and with a happy smile.</p>
-          <h4>Ryan</h4>
-        </div>
-      </div>
-    <% end %>
-  </div>
 </section>
 
 <!--where we collect section-->
@@ -591,6 +570,46 @@
 
   </div>
 
+</section>
+
+<!--testimonial section-->
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <p class="section-subtitle">What our community says</p>
+  <div class="content-wrapper" style="max-width: 960px; margin: 0 auto;">
+    <% if @testimonials.count >= 3 %>
+      <!-- Show 3 random new testimonials with images -->
+      <div class="testimonials-container">
+        <% @testimonials.sample(3).each do |testimonial| %>
+          <div class="testimonial-card">
+            <% if testimonial.photo.attached? %>
+              <div class="testimonial-image">
+                <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
+              </div>
+            <% end %>
+            <p><%= testimonial.content %></p>
+            <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Show old static testimonials until we have 3 new ones -->
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p>We love composting our waste, and Alfred is the sweetest man.</p>
+          <h4>Megan</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>It's been so helpful and has really made composting so much easier and more convenient!</p>
+          <h4>Simone</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>Alfred is always on time and always so kind and with a happy smile.</p>
+          <h4>Ryan</h4>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </section>
 
 <section class="map-section" style="margin-top: 0; padding-top: 0;">

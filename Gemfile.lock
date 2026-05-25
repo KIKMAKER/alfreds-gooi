@@ -301,6 +301,7 @@ GEM
     rake (13.2.1)
     rdoc (6.9.0)
       psych (>= 4.0.0)
+    redcarpet (3.6.1)
     redis (4.8.1)
     regexp_parser (2.9.3)
     reline (0.5.12)
@@ -412,6 +413,7 @@ DEPENDENCIES
   puma (~> 6.0)
   rack-cors
   rails (~> 7.1)
+  redcarpet
   redis (~> 4.0)
   sassc-rails
   selenium-webdriver

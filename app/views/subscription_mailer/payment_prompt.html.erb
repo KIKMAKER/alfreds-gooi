@@ -1,0 +1,49 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <p style="font-size: 1.1rem;">Hi <%= @subscription.user.first_name %>,</p>
+
+  <p style="font-size: 1.1rem;">
+    You signed up on <strong><%= @subscription.created_at.strftime("%-d %B") %></strong> — and your spot is still holding.
+  </p>
+
+  <% if @subscription.once_off? %>
+
+    <p style="font-size: 1.1rem;">
+      Your once-off collection slot in <strong><%= @subscription.suburb %></strong> on
+      <strong><%= @subscription.collection_day %>s</strong> is all set up and ready to go.
+      We just need your payment to confirm the booking.
+    </p>
+
+  <% else %>
+
+    <p style="font-size: 1.1rem;">
+      Your <strong><%= @subscription.plan %></strong> subscription in <strong><%= @subscription.suburb %></strong>,
+      with collections every <strong><%= @subscription.collection_day %></strong>, is all set up and waiting.
+      We just need your payment to get things rolling.
+    </p>
+
+  <% end %>
+
+  <% if @invoice %>
+    <p style="font-size: 1.1rem;">
+      Your invoice total is <strong>R<%= number_with_precision(@invoice.total_amount, precision: 2) %></strong>.
+      Please view and pay your invoice to get started:
+    </p>
+
+    <p style="margin: 1.5rem 0;">
+      <a href="<%= invoice_url(@invoice) %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+        View &amp; Pay Invoice
+      </a>
+    </p>
+  <% end %>
+
+  <p style="font-size: 1.1rem;">
+    If you have any questions, <a href="https://wa.me/27785325513" style="color: #25D366; font-weight: bold; text-decoration: underline;">message us on WhatsApp</a>.
+  </p>
+
+  <p style="font-size: 1.1rem;">Warm regards,</p>
+
+  <p>
+    <%= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+  </p>
+</div>

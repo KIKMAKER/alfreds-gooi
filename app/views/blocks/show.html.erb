@@ -1,0 +1,143 @@
+<%# Public landing page for an apartment block / estate.
+    Linked from QR code on posters — no auth required. Mobile-first. %>
+
+<%# ══════════════════════════════════════════════════════════════
+    HERO
+══════════════════════════════════════════════════════════════ %>
+<div class="block-hero">
+  <% if @block.photos.attached? %>
+    <div class="block-hero__photos">
+      <% @block.photos.each_with_index do |photo, i| %>
+        <div class="block-hero__photo <%= 'block-hero__photo--primary' if i == 0 %>">
+          <%= image_tag photo, alt: @block.name %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="block-hero__placeholder"></div>
+  <% end %>
+
+  <div class="block-hero__overlay">
+    <div class="block-hero__badge">Kitchen Scraps Collection</div>
+    <h1 class="block-hero__title"><%= @block.name %></h1>
+    <% if @block.description.present? || @collection_days_label.present? %>
+      <p class="block-hero__description">
+        <%= @block.description %>
+        <% if @collection_days_label.present? %>
+          <%= " " if @block.description.present? %><strong>We collect <%= @collection_days_label %>.</strong>
+        <% end %>
+      </p>
+    <% end %>
+    <% if @block.suburb.present? %>
+      <p class="block-hero__address">
+        <i class="fa fa-map-marker-alt"></i>
+        <%= @block.suburb %>, Cape Town
+      </p>
+    <% end %>
+  </div>
+</div>
+
+<%# ══════════════════════════════════════════════════════════════
+    WEEKLY IMPACT SNAPSHOT — the headline stat
+══════════════════════════════════════════════════════════════ %>
+<% this_week_l = @stat_week_l
+   expected_l  = @stat_expected_l
+   pct         = expected_l > 0 ? [(this_week_l * 100.0 / expected_l).round, 100].min : 0 %>
+
+<section class="block-snapshot">
+  <div class="container">
+    <div class="block-snapshot__card">
+      <p class="block-snapshot__label">This week we've collected</p>
+      <div class="block-snapshot__headline">
+        <span class="block-snapshot__actual"><%= this_week_l %>L</span>
+        <span class="block-snapshot__of">of an expected</span>
+        <span class="block-snapshot__expected"><%= expected_l %>L</span>
+      </div>
+
+      <div class="block-snapshot__bar-wrap">
+        <div class="block-snapshot__bar" style="width: <%= pct %>%"></div>
+      </div>
+      <p class="block-snapshot__pct"><%= pct %>% of this week's allocation</p>
+
+      <div class="block-snapshot__mini-stats">
+        <div class="block-snapshot__mini">
+          <span class="block-snapshot__mini-value">~<%= @block.weight_kg(this_week_l) %>kg</span>
+          <span class="block-snapshot__mini-label">diverted from landfill</span>
+        </div>
+        <div class="block-snapshot__mini block-snapshot__mini--accent">
+          <span class="block-snapshot__mini-value">~<%= @block.co2e_kg(this_week_l) %>kg</span>
+          <span class="block-snapshot__mini-label">CO₂e emissions saved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ══════════════════════════════════════════════════════════════
+    HOW IT WORKS
+══════════════════════════════════════════════════════════════ %>
+<section class="block-how">
+  <div class="container">
+    <h2 class="block-how__title">How it works</h2>
+    <div class="block-how__steps">
+      <div class="block-how__step">
+        <div class="block-how__step-icon">🥬</div>
+        <h4>Collect your scraps</h4>
+        <p>Fruit peels, veg off-cuts, coffee grounds, eggshells — anything that grew from the ground.</p>
+      </div>
+      <div class="block-how__step">
+        <div class="block-how__step-icon">🪣</div>
+        <h4>Put your bag out</h4>
+        <p>On your collection day, leave your compostable bag at the agreed spot. Alfred does the rest.</p>
+      </div>
+      <div class="block-how__step">
+        <div class="block-how__step-icon">🌱</div>
+        <h4>It becomes compost</h4>
+        <p>Your scraps go to a local composting facility and return to Cape Town's soil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ══════════════════════════════════════════════════════════════
+    CUMULATIVE IMPACT STATS
+══════════════════════════════════════════════════════════════ %>
+<section class="block-stats">
+  <div class="container">
+    <h2 class="block-stats__title">Our collective impact</h2>
+    <div class="block-stats__grid">
+      <div class="block-stats__item">
+        <span class="block-stats__number"><%= @stat_month_l %>L</span>
+        <span class="block-stats__desc">collected this month</span>
+        <span class="block-stats__sub">~<%= @block.weight_kg(@stat_month_l) %>kg diverted from landfill</span>
+      </div>
+      <div class="block-stats__item block-stats__item--featured">
+        <span class="block-stats__number"><%= @stat_lifetime_l %>L</span>
+        <span class="block-stats__desc">total collected since we started</span>
+        <span class="block-stats__sub">~<%= @block.co2e_kg(@stat_lifetime_l) %>kg CO₂e saved</span>
+      </div>
+      <div class="block-stats__item">
+        <% hh = @estimated_households %>
+        <span class="block-stats__number"><%= hh || "—" %></span>
+        <span class="block-stats__desc">households contributing<% if hh && @block.resident_count %> out of <%= @block.resident_count %><% end %></span>
+        <span class="block-stats__sub">based on average collection volume</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ══════════════════════════════════════════════════════════════
+    CTA
+══════════════════════════════════════════════════════════════ %>
+<section class="block-cta">
+  <div class="container">
+    <div class="block-cta__inner">
+      <h2>Join your neighbours</h2>
+      <p>Sign up for your own household collection and start reducing your food waste today.</p>
+      <%= link_to "Sign up", new_account_signup_path, class: "block-cta__btn" %>
+      <p class="block-cta__footer">
+        Questions? <a href="mailto:howzit@gooi.me">howzit@gooi.me</a>
+      </p>
+    </div>
+  </div>
+</section>

@@ -97,6 +97,8 @@ class CollectionsController < ApplicationController
   def edit
     @subscription = @collection.subscription
     @orders = @collection.orders.pending_delivery
+    @return_to = validated_return_path(request.referer)
+    session[:collection_return_to] = @return_to
   end
 
   def update
@@ -121,13 +123,14 @@ class CollectionsController < ApplicationController
         )
         @collection.update!(drivers_day_id: drivers_day.id)
       end
-      if current_user.admin?
-        redirect_to admin_users_path, notice: 'updated'
-      else
-
-        redirect_to today_subscriptions_path, notice: 'updated'
+      if @collection.saved_change_to_position? && @collection.drivers_day
+        move_to_position!(@collection, @collection.position)
       end
+      redirect_to session.delete(:collection_return_to) || today_subscriptions_path, notice: 'updated'
     else
+      @return_to = session[:collection_return_to] || today_subscriptions_path
+      @subscription = @collection.subscription
+      @orders = @collection.orders.pending_delivery
       render :edit, status: :unprocessable_entity
     end
   end
@@ -194,23 +197,9 @@ class CollectionsController < ApplicationController
   def update_position
     @collection = Collection.find(params[:id])
     new_position = params[:position].to_i
-    drivers_day = @collection.drivers_day
-    return head :no_content unless drivers_day
+    return head :no_content unless @collection.drivers_day
 
-    # Get all collections ordered by current position (nulls last = new collections at end)
-    ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
-
-    # Move dragged item to new 1-based position
-    ordered.delete(@collection)
-    ordered.insert(new_position - 1, @collection)
-
-    # Reassign positions
-    ordered.each_with_index do |c, i|
-      c.update_column(:position, i + 1)
-    end
-
-    update_collection_order(drivers_day)
-
+    move_to_position!(@collection, new_position)
     head :no_content
   end
 
@@ -228,9 +217,17 @@ class CollectionsController < ApplicationController
 
   private
 
+  def move_to_position!(collection, new_position)
+    drivers_day = collection.drivers_day
+    ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
+    ordered.delete(collection)
+    ordered.insert([new_position - 1, 0].max, collection)
+    ordered.each_with_index { |c, i| c.update_column(:position, i + 1) }
+    update_collection_order(drivers_day)
+  end
+
   def update_collection_order(drivers_day)
     drivers_day.collections.order(:position).each_with_index do |collection, index|
-      # Update the associated subscription's collection_order
       subscription = collection.subscription
       subscription.update(collection_order: index + 1) if subscription.present?
     end
@@ -253,6 +250,14 @@ class CollectionsController < ApplicationController
       puts "Subscription not found for customer_id: #{row['customer_id']}"
       nil
     end
+  end
+
+  def validated_return_path(url)
+    return today_subscriptions_path unless url.present?
+    uri = URI.parse(url)
+    (uri.host.nil? || uri.host == request.host) ? url : today_subscriptions_path
+  rescue URI::InvalidURIError
+    today_subscriptions_path
   end
 
   def set_collection
@@ -293,7 +298,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :buckets_45l, :buckets_25l, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :invoice_items_attributes)
+    params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :buckets_45l, :buckets_25l, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :position, :invoice_items_attributes)
   end
 
   def bags_invoice_params

@@ -1,758 +1,154 @@
 require 'csv'
-puts "Welcome to the gooi seed file"
-puts "Enter 'y' to seed the whole database"
-puts "Enter 'products' to seed only products"
-puts "Enter 'ppayments' to seed only payments"
-puts "Enter 'dropoffs' to seed only drop-off sites"
+
+puts "Welcome to the Gooi seed file"
+puts ""
+puts "  [y]           → full reset + seed everything (dev only)"
+puts "  [products]    → re-seed product catalogue (idempotent)"
+puts "  [users]       → clear and re-seed users and subscriptions from CSV"
+puts "  [collections] → reset all collections to be realistic for today's date"
+puts "  [dropoffs]    → re-seed drop-off sites and event history"
+puts "  [quotes]      → re-seed quotations in all states"
+puts "  [payments]    → re-seed payment records"
+puts ""
 
 proceed = STDIN.gets.chomp.downcase
+
+def load_seed(file)
+  load Rails.root.join("db/seeds/#{file}.rb")
+end
+
+# Stub geocoder so creating subscriptions doesn't make Mapbox API calls
+def stub_geocoder!
+  require 'geocoder/lookups/test'
+  Geocoder.configure(lookup: :test)
+  Geocoder::Lookup::Test.set_default_stub([
+    { 'coordinates' => [-33.9249, 18.4241], 'address' => 'Cape Town, South Africa' }
+  ])
+end
+
+# ── Payments ──────────────────────────────────────────────────────────────────
 
 if proceed == "payments"
   puts "Clearing past payments"
   Payment.destroy_all
 
-  def seed_payments
-    payments_data = [
-      {
-        "id" => 284,
-        "status" => "error",
-        "totalAmount" => 27000,
-        "tipAmount" => 0,
-        "feeAmount" => 886,
-        "settleAmount" => 26114,
-        "date" => "2024-12-14T11:48:19Z",
-        "userReference" => "Amanda Hall",
-        "merchantReference" => "GFWC142"
-      },
-      {
-        "id" => 283,
-        "status" => "completed",
-        "totalAmount" => 9000,
-        "tipAmount" => 0,
-        "feeAmount" => 295,
-        "settleAmount" => 8705,
-        "date" => "2024-12-12T06:30:51Z",
-        "userReference" => "Sara araujo",
-        "merchantReference" => "GFWC123"
-      },
-      {
-        "id" => 282,
-        "status" => "completed",
-        "totalAmount" => 46000,
-        "tipAmount" => 0,
-        "feeAmount" => 1509,
-        "settleAmount" => 44491,
-        "date" => "2024-12-10T17:54:14Z",
-        "userReference" => "Peekay",
-        "merchantReference" => "GFWC001"
-      },
-      {
-        "id" => 281,
-        "status" => "completed",
-        "totalAmount" => 72000,
-        "tipAmount" => 0,
-        "feeAmount" => 2362,
-        "settleAmount" => 69638,
-        "date" => "2024-12-10T09:51:04Z",
-        "userReference" => "Maddy Bazil",
-        "merchantReference" => "GFWC095"
-      }
-    ]
+  payments_data = [
+    { "id" => 284, "status" => "error",     "totalAmount" => 27000, "tipAmount" => 0, "feeAmount" => 886,  "settleAmount" => 26114, "date" => "2024-12-14T11:48:19Z", "userReference" => "Amanda Hall",  "merchantReference" => "GFWC142" },
+    { "id" => 283, "status" => "completed", "totalAmount" => 9000,  "tipAmount" => 0, "feeAmount" => 295,  "settleAmount" => 8705,  "date" => "2024-12-12T06:30:51Z", "userReference" => "Sara araujo",  "merchantReference" => "GFWC123" },
+    { "id" => 282, "status" => "completed", "totalAmount" => 46000, "tipAmount" => 0, "feeAmount" => 1509, "settleAmount" => 44491, "date" => "2024-12-10T17:54:14Z", "userReference" => "Peekay",       "merchantReference" => "GFWC001" },
+    { "id" => 281, "status" => "completed", "totalAmount" => 72000, "tipAmount" => 0, "feeAmount" => 2362, "settleAmount" => 69638, "date" => "2024-12-10T09:51:04Z", "userReference" => "Maddy Bazil",  "merchantReference" => "GFWC095" }
+  ]
 
-    payments_data.each do |payment_data|
-      user = User.find_by(customer_id: payment_data["merchantReference"])
-
-      Payment.create!(
-        snapscan_id: payment_data["id"],
-        status: payment_data["status"],
-        total_amount: payment_data["totalAmount"],
-        tip_amount: payment_data["tipAmount"],
-        fee_amount: payment_data["feeAmount"],
-        settle_amount: payment_data["settleAmount"],
-        date: payment_data["date"],
-        user_reference: payment_data["userReference"],
-        merchant_reference: payment_data["merchantReference"],
-        user_id: user&.id # Assign user if found, otherwise nil
-      ) if user
-      puts "Payment for #{payment_data["userReference"]} created." if user
-    end
-
-    puts "Payments seeded successfully."
+  payments_data.each do |p|
+    user = User.find_by(customer_id: p["merchantReference"])
+    next unless user
+    Payment.create!(
+      snapscan_id: p["id"], status: p["status"],
+      total_amount: p["totalAmount"], tip_amount: p["tipAmount"],
+      fee_amount: p["feeAmount"], settle_amount: p["settleAmount"],
+      date: p["date"], user_reference: p["userReference"],
+      merchant_reference: p["merchantReference"], user_id: user.id
+    )
+    puts "  ✓ Payment for #{p["userReference"]}"
   end
+  puts "Payments seeded."
 
-  # Call the method to seed payments
-  seed_payments
+# ── Products ──────────────────────────────────────────────────────────────────
 
 elsif proceed == "products"
-  ## PRODUCTS
-  puts "Creating starter kits"
+  load_seed 'products'
 
-  def seed_products(products)
-    products.each do |product|
-      Product.find_or_create_by!(title: product[:title]) do |p|
-        p.description = product[:description]
-        p.price = product[:price]
-      end
-    end
-  end
-
-  starter_kit_products = [
-    { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
-    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
-    { title: "Commercial Starter Buckets (45L)", description: "45L bucket, informative poster and gooi branding", price: 300 }
-  ]
-
-  seed_products(starter_kit_products)
-  STARTER_KIT = Product.first
-
-  starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
-  puts "#{starter_kits} starter kits created"
-
-  puts "Creating standard subs"
-
-  standard_sub_products = [
-    { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
-    { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
-    { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
-    { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
-    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 },
-    { title: "Referral discount standard 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -39 },
-    { title: "Referral discount standard 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -99 },
-    { title: "Referral discount standard 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -162 }
-  ]
-
-  seed_products(standard_sub_products)
-
-  standard_subs = Product.where(title: standard_sub_products.map { |p| p[:title] }).count
-  puts "#{standard_subs} standard subscriptions created"
-
-  puts "Creating XL subs"
-
-  xl_sub_products = [
-    { title: "XL 1 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for one calendar month", price: 300 },
-    { title: "XL 3 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810 },
-    { title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440 },
-    { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -45 },
-    { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -122 },
-    { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!", price: -216 }
-  ]
-
-  seed_products(xl_sub_products)
-
-  xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
-  puts "#{xl_subs} XL subscriptions created"
-
-  puts "Creating Commercial products"
-
-  commercial_products = [
-    # Collection fees — flat monthly rate, varies by contract length
-    { title: "Commercial collection fee (6-month)",  description: "Monthly collection service fee, 6-month contract rate",  price: 220 },
-    { title: "Commercial collection fee (12-month)", description: "Monthly collection service fee, 12-month contract rate", price: 200 },
-    { title: "Commercial collection fee (3-month)",  description: "Monthly collection service fee, 3-month contract rate",  price: 240 },
-    # Volume processing — per bucket per visit, R1.70/L regardless of contract length
-    { title: "Commercial volume per 25L bucket", description: "Volume processing per 25L bucket per collection visit (R1.70/L)", price: 42.50 },
-    { title: "Commercial volume per 45L bucket", description: "Volume processing per 45L bucket per collection visit (R1.70/L)", price: 76.50 },
-    { title: "Commercial volume per 50L bucket", description: "Volume processing per 50L bucket per collection visit (R1.70/L)", price: 85.00 },
-    # Starter buckets — one-off, amortised over contract duration for monthly billing
-    { title: "Commercial Starter Bucket (25L)", description: "25L commercial collection bucket with branding", price: 150 },
-    { title: "Commercial Starter Bucket (45L)", description: "45L commercial collection bucket with branding", price: 210 },
-    { title: "Commercial Starter Bucket (50L)", description: "50L commercial collection drum with branding", price: 850 },
-  ]
-
-  seed_products(commercial_products)
-
-  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
-  puts "#{commercial_products_count} Commercial products created"
-
-  puts "Creating additional stock"
-  referred_friends = 2
-  def pluralize(count, singular, plural = nil)
-    "#{count} #{count == 1 ? singular : (plural || "#{singular}s")}"
-  end
-  additional_stock_products = [
-    { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
-    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 },
-    { title: "Referred a friend discount (R50)", description: "You referred #{pluralize(referred_friends, 'friend')}!", price: -50 }
-  ]
-
-  seed_products(additional_stock_products)
-
-  puts "Additional stock created"
-
-  once_off_products = [
-    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
-  ]
-
-  seed_products(once_off_products)
-  puts "Once-off Collection product created"
-
-  puts "A total of #{Product.count} products have been seeded to the DB."
+# ── Drop-off sites ────────────────────────────────────────────────────────────
 
 elsif proceed == "dropoffs"
-  ## DROP-OFF SITES
-  puts "Seeding drop-off sites..."
+  load_seed 'drop_off_sites'
 
-  def seed_drop_off_sites_with_users(sites)
-    sites.each do |site_data|
-      # Create or find the manager user
-      user = User.find_or_create_by!(email: site_data[:email]) do |u|
-        u.first_name = site_data[:contact_name].split.first
-        u.last_name = site_data[:contact_name].split.last || ""
-        u.password = "password"
-        u.role = "drop_off"
-        u.phone_number = site_data[:phone_number]
-      end
-      puts "  ✓ User created: #{user.first_name} (#{user.email})"
+# ── Users + subscriptions ─────────────────────────────────────────────────────
 
-      # Create or find the drop-off site
-      site = DropOffSite.find_or_create_by!(name: site_data[:name]) do |s|
-        s.street_address = site_data[:street_address]
-        s.suburb = site_data[:suburb]
-        s.contact_name = site_data[:contact_name]
-        s.phone_number = site_data[:phone_number]
-        s.notes = site_data[:notes]
-        s.collection_day = site_data[:collection_day]
-        s.user = user
-      end
+elsif proceed == "users"
+  abort "Users seed is for development only." unless Rails.env.development?
+  puts "This will clear all users, subscriptions, collections and invoices. Continue? (y/n)"
+  exit unless STDIN.gets.chomp.downcase == "y"
 
-      # Update existing sites to associate with user
-      site.update!(user: user) if site.user.nil?
+  stub_geocoder!
 
-      puts "  ✓ Site created: #{site.name} (#{site.collection_day}s) - Manager: #{site.contact_name}"
-    end
-  end
+  puts "Clearing user data..."
+  [OrderItem, Order, InvoiceItem,
+   Collection, Invoice, BusinessProfile, Referral,
+   WhatsappMessage, Contact, RevenueRecognition,
+   DriversDay, QuotationItem, Quotation, Subscription].each(&:destroy_all)
+  User.destroy_all
+  puts "Cleared."
 
-  drop_off_sites_data = [
-    {
-      name: "Neighbourhood Farm",
-      street_address: "Paris Road, Fish Hoek",
-      suburb: "Fish Hoek",
-      contact_name: "Sibusiso",
-      phone_number: "+27825551234",
-      email: "sibusiso@neighbourhoodfarm.co.za",
-      notes: "Last stop on Tuesday route. Enter through main gate.",
-      collection_day: "Tuesday"
-    },
-    {
-      name: "Soil For Life",
-      street_address: "Brounger Road, Sillery",
-      suburb: "Constantia",
-      contact_name: "Sarah Green",
-      phone_number: "+27217944982",
-      email: "sarah@soilforlife.co.za",
-      notes: "Last stop on Wednesday route. Drop-off area at back of property.",
-      collection_day: "Wednesday"
-    },
-    {
-      name: "Streetscapes Farm",
-      street_address: "Upper Orange Street",
-      suburb: "Vredehoek",
-      contact_name: "Richard",
-      phone_number: "+27834567890",
-      email: "richard@streetscapes.co.za",
-      notes: "Last stop on Thursday route. Ring bell at entrance.",
-      collection_day: "Thursday"
-    }
-  ]
+  load_seed 'users'
 
-  seed_drop_off_sites_with_users(drop_off_sites_data)
+# ── Collections (date-relative reset) ────────────────────────────────────────
 
-  ## SEED DROP-OFF EVENTS + BUCKETS
-  puts "\nSeeding drop-off events and buckets..."
+elsif proceed == "collections"
+  puts "This will clear and regenerate all collection records relative to today. Continue? (y/n)"
+  exit unless STDIN.gets.chomp.downcase == "y"
+  load_seed 'collections'
 
-  # Find or create Alfred the driver (reuse prod account if present)
-  alfred = User.find_or_create_by!(email: "driver@gooi.com") do |u|
-    u.first_name   = "Alfred"
-    u.last_name    = "Mbonjwa"
-    u.password     = "password"
-    u.role         = "driver"
-    u.phone_number = "+27785325513"
-  end
+# ── Quotations ────────────────────────────────────────────────────────────────
 
-  # Which weekday each site collects on
-  site_wday = {
-    "Neighbourhood Farm" => 2,  # Tuesday
-    "Soil For Life"      => 3,  # Wednesday
-    "Streetscapes Farm"  => 4   # Thursday
-  }
+elsif proceed == "quotes"
+  puts "This will clear and recreate all quotations. Continue? (y/n)"
+  exit unless STDIN.gets.chomp.downcase == "y"
+  [QuotationItem, Quotation].each(&:destroy_all)
+  load_seed 'quotations'
 
-  drop_off_sites_data.each do |site_data|
-    site = DropOffSite.find_by!(name: site_data[:name])
-    target_wday = site_wday[site.name]
-    next unless target_wday
-
-    # Collect the 5 most recent past dates for this weekday
-    past_dates = []
-    d = Date.today - 1
-    while past_dates.size < 5
-      past_dates << d if d.wday == target_wday
-      d -= 1
-    end
-
-    past_dates.each do |event_date|
-      # One DriversDay per (driver, date) — shared across sites on the same day
-      dd = DriversDay.find_or_create_by!(user: alfred, date: event_date) do |day|
-        day.start_time = event_date.to_time + 8.hours
-        day.end_time   = event_date.to_time + 14.hours
-        day.start_kms  = rand(50_000..60_000)
-        day.end_kms    = rand(60_001..61_500)
-      end
-
-      next if DropOffEvent.exists?(drop_off_site: site, date: event_date)
-
-      bucket_count    = rand(3..6)
-      total_weight_kg = rand(12.0..32.0).round(1)
-      per_bucket_kg   = (total_weight_kg / bucket_count).round(2)
-
-      event = DropOffEvent.create!(
-        drop_off_site:   site,
-        drivers_day:     dd,
-        date:            event_date,
-        is_done:         true,
-        weight_kg:       total_weight_kg,
-        buckets_dropped: bucket_count
-      )
-
-      bucket_count.times do
-        Bucket.create!(
-          drivers_day:    dd,
-          drop_off_event: event,
-          weight_kg:      per_bucket_kg,
-          bucket_size:    [25, 25, 45].sample
-        )
-      end
-
-      puts "  ✓ #{site.name} #{event_date}: #{bucket_count} buckets, #{total_weight_kg} kg"
-    end
-
-    site.recalc_totals!
-  end
-
-  puts "\n✓ #{DropOffSite.count} drop-off sites seeded."
-  puts "✓ #{DropOffEvent.count} drop-off events created."
-  puts "✓ #{Bucket.where.not(drop_off_event_id: nil).count} buckets attached to events."
-  puts "\nLog in to test drop-off site manager views (password: 'password'):"
-  drop_off_sites_data.each do |s|
-    site = DropOffSite.find_by!(name: s[:name])
-    puts "  - #{s[:email]}  →  #{site.name} (#{site.collection_day}s, #{site.total_dropoffs_count} events, #{site.total_weight_kg.round(1)} kg)"
-  end
+# ── Full reset ────────────────────────────────────────────────────────────────
 
 elsif proceed == "y"
-  ## PRODUCTS
-  puts "Creating starter kits"
+  abort "Full seed is for development only." unless Rails.env.development?
+  puts "This will clear ALL data. Are you sure? (y/n)"
+  exit unless STDIN.gets.chomp.downcase == "y"
 
-  def seed_products(products)
-    products.each do |product|
-      Product.find_or_create_by!(title: product[:title]) do |p|
-        p.description = product[:description]
-        p.price = product[:price]
-      end
-    end
+  stub_geocoder!
+
+  puts "\nClearing DB..."
+  [
+    OrderItem, Order,
+    InvoiceItem,
+    Collection,
+    Invoice, BusinessProfile,
+    Referral,
+    Bucket, DropOffEvent,
+    DriversDay,
+    QuotationItem, Quotation,
+    WhatsappMessage, Contact, RevenueRecognition,
+    Subscription,
+    DropOffSite,
+    User,
+    Payment, Interest, DiscountCode
+  ].each do |model|
+    count = model.count
+    model.destroy_all
+    puts "  Cleared #{model.name} (#{count})" if count > 0
   end
+  puts "DB cleared.\n"
+
+  load_seed 'products'
+  load_seed 'users'
+  load_seed 'drop_off_sites'
+  load_seed 'collections'
+  load_seed 'quotations'
+
+  puts "\n=== Seed complete ==="
+  puts "  Products:       #{Product.count}"
+  puts "  Users:          #{User.count} (#{User.where(role: :customer).count} customers)"
+  puts "  Subscriptions:  #{Subscription.count}"
+  puts "    active:     #{Subscription.where(status: :active).count}"
+  puts "    paused:     #{Subscription.where(status: :pause).count}"
+  puts "    pending:    #{Subscription.where(status: :pending).count}"
+  puts "    completed:  #{Subscription.where(status: :completed).count}"
+  puts "  Collections:    #{Collection.count} (#{Collection.where(is_done: true).count} done, #{Collection.where(skip: true).count} skipped)"
+  puts "  Driver days:    #{DriversDay.count} (#{DayStatistic.count} with stats)"
+  puts "  Drop-off sites: #{DropOffSite.count}"
+  puts "  Quotations:     #{Quotation.count}"
+  puts "\nAll test account passwords: 'password'"
+  puts "  driver@gooi.com  /  gooi@gooi.com"
 
-  starter_kit_products = [
-    { title: "Standard Starter Kit", description: "Countertop Gooi bucket and first roll of compostable bin liners", price: 200 },
-    { title: "XL Starter Kit", description: "Countertop Gooi bucket, XL bucket, and first roll of compostable bin liners", price: 300 },
-    { title: "Commercial Starter Buckets (45L)", description: "45L buckets plus signage for kitchen staff and customers", price: 150 },
-    { title: "Commercial Starter Buckets (25L)", description: "25L buckets plus signage for kitchen staff and customers", price: 100 }
-  ]
-
-  seed_products(starter_kit_products)
-  STARTER_KIT = Product.first
-
-  starter_kits = Product.where(title: starter_kit_products.map { |p| p[:title] }).count
-  puts "#{starter_kits} starter kits created"
-
-  puts "Creating standard subs"
-
-  standard_sub_products = [
-    { title: "Standard 1 month subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar month", price: 260 },
-    { title: "Standard 3 month subscription", description: "Weekly collection of up to 10L your kitchen waste for three calendar months (R220pm)", price: 660 },
-    { title: "Standard 6 month subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 1080 },
-    { title: "Standard 12 month subscription", description: "Weekly collection of up to 10L your kitchen waste for 12 calendar months (R180pm)", price: 2160 },
-    { title: "Standard 6 month OG subscription", description: "Weekly collection of up to 10L your kitchen waste for six calendar months (R180pm)", price: 720 },
-    { title: "Standard 1 month OG ad hoc subscription", description: "Weekly collection of up to 10L your kitchen waste for one calendar months (R120pm)", price: 120 }
-  ]
-
-  seed_products(standard_sub_products)
-
-  standard_subs = Product.where(title: standard_sub_products.map { |p| p[:title] }).count
-  puts "#{standard_subs} standard subscriptions created"
-
-  puts "Creating XL subs"
-
-  xl_sub_products = [
-    { title: "XL 1 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for one calendar month", price: 300 },
-    { title: "XL 3 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810 },
-    { title: "XL 6 month subscription", description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)", price: 1440 }
-  ]
-
-  seed_products(xl_sub_products)
-
-  xl_subs = Product.where(title: xl_sub_products.map { |p| p[:title] }).count
-  puts "#{xl_subs} XL subscriptions created"
-
-  puts "Creating Commercial products"
-
-  commercial_products = [
-    { title: "Weekly Collection Service (12-month rate)", description: "Base weekly collection fee per month", price: 200 },
-    { title: "Weekly Collection Service (6-month rate)", description: "Base weekly collection fee per month", price: 220 },
-    { title: "Weekly Collection Service (3-month rate)", description: "Base weekly collection fee per month", price: 240 },
-    { title: "Volume Processing per 45L (12-month rate)", description: "Volume charge per 45L bucket", price: 24 },
-    { title: "Volume Processing per 45L (6-month rate)", description: "Volume charge per 45L bucket", price: 27 },
-    { title: "Volume Processing per 45L (3-month rate)", description: "Volume charge per 45L bucket", price: 30 },
-    { title: "Volume Processing per 25L (12-month rate)", description: "Volume charge per 25L bucket", price: 24 },
-    { title: "Volume Processing per 25L (6-month rate)", description: "Volume charge per 25L bucket", price: 27 },
-    { title: "Volume Processing per 25L (3-month rate)", description: "Volume charge per 25L bucket", price: 30 }
-  ]
-
-  seed_products(commercial_products)
-
-  commercial_products_count = Product.where(title: commercial_products.map { |p| p[:title] }).count
-  puts "#{commercial_products_count} Commercial products created"
-
-  puts "Creating additional stock"
-
-  additional_stock_products = [
-    { title: "Compost bin bags", description: "Bonnie Bio garden compostable bin bags (20 bags per roll)", price: 90 },
-    { title: "Soil for Life Compost", description: "5ks of soil for life potting soil", price: 80 }
-  ]
-
-  seed_products(additional_stock_products)
-
-  puts "Additional stock created"
-
-  once_off_products = [
-    { title: "Once-off Collection", description: "Single kitchen scrap collection", price: 400 }
-  ]
-
-  seed_products(once_off_products)
-  puts "Once-off Collection product created"
-
-  puts "A total of #{Product.count} products have been seeded to the DB."
-
-  # DEV ONLY SEEDS
-
-  if Rails.env.development?
-
-    puts "This will clear all data. Are you sure? (y/n)"
-    exit unless STDIN.gets.chomp.downcase == "y"
-
-    puts "Clearing DB"
-
-
-    puts "1. Clearing OrderItems..."
-    OrderItem.destroy_all      # Depends on Order and Product
-    puts "2. Clearing Orders..."
-    Order.destroy_all          # Depends on User and Collection
-    puts "3. Clearing InvoiceItems..."
-    InvoiceItem.destroy_all    # Depends on Invoice and Product
-    puts "4. Clearing Buckets..."
-    Bucket.destroy_all         # Depends on Collection and DropOffEvent
-    puts "5. Clearing DropOffEvents..."
-    DropOffEvent.destroy_all   # Depends on DriversDay and DropOffSite
-    puts "6. Clearing Collections..."
-    Collection.destroy_all     # Depends on Subscription and DriversDay
-    puts "7. Clearing Invoices..."
-    Invoice.destroy_all        # Depends on Subscription
-    puts "8. Clearing BusinessProfiles..."
-    BusinessProfile.destroy_all # Depends on Subscription
-    puts "9. Clearing Referrals..."
-    Referral.destroy_all       # Depends on User
-    puts "10. Clearing DriversDay..."
-    DriversDay.destroy_all     # Depends on User
-    puts "11. Clearing Subscriptions..."
-    Subscription.destroy_all   # Depends on User
-    puts "12. Clearing DropOffSites..."
-    DropOffSite.destroy_all    # Depends on User
-    puts "13. Clearing Users..."
-    User.destroy_all           # Top-level model (referenced by multiple others)
-    puts "14. Clearing Payments..."
-    Payment.destroy_all        # Depends on User
-    puts "15. Clearing Interests..."
-    Interest.destroy_all       # No dependencies
-    puts "16. Clearing DiscountCodes..."
-    DiscountCode.destroy_all   # No dependencies
-    puts "DB Clear"
-
-    p STARTER_KIT
-
-    # USERS & SUBSCRIPTIONS **** DEV ENV ONLY***
-    puts "Uploading users and subscriptions from CSV"
-
-    @import_csv = Rails.root.join('db', 'LOGS for CSV - export_csv.csv')
-
-    def import_users_from_csv
-      CSV.foreach(@import_csv, headers: :first_row) do |row|
-        puts "importing a user"
-        new_user = User.create!(
-          first_name: row[0], last_name: row[1], email: row[2], phone_number: row[3],
-          password: "password", role: "customer"
-        )
-        puts "importing subscription"
-        new_subscription = Subscription.new(
-          street_address: row[4], plan: row[5], duration: row[6], start_date: row[7], suburb: row[9], customer_id: row[11]
-        )
-        new_subscription.user = new_user
-        new_subscription.save!
-        p "#{new_subscription.collection_day}"
-      end
-    end
-
-    import_users_from_csv
-
-    puts "#{User.count} users added"
-
-    puts "#{Subscription.count} subscriptions added"
-    puts "Dev Users and Subs Seed file complete with"
-    puts "#{Subscription.where(collection_day: 2).count} subscriptions for Tuesday"
-    puts "#{Subscription.where(collection_day: 3).count} subscriptions for Wednesday"
-    puts "#{Subscription.where(collection_day: 4).count} subscriptions for Thursday"
-
-
-
-    # a method that sets random past holiday start and end dates for all subscriptions
-    def set_random_holidays
-      subscriptions = Subscription.all.sample(20)
-      subscriptions.each do |subscription|
-      subscription.update!(holiday_start: Date.yesterday - rand(1..3), holiday_end: Date.tomorrow + rand(1..15))
-      puts "#{subscription.user.first_name} has a holiday from #{subscription.holiday_start.strftime('%A, %b %d')} to #{subscription.holiday_end.strftime('%A, %b %d')}"
-      end
-    end
-
-    puts "setting random holidays"
-
-    set_random_holidays
-
-    # # Create invoices
-
-    puts "Creating invoices"
-    invoices = Array.new(Subscription.count) do
-      Invoice.create!(
-        issued_date: Date.today,
-        due_date: Date.today + 30,
-        paid: [true, false].sample,
-        subscription: Subscription.all.sample
-      )
-    end
-
-    # # Create invoice items
-    invoices.each do |invoice|
-      # starter_kit = Product.first
-      InvoiceItem.create!(
-        invoice: invoice,
-        product: STARTER_KIT,
-        quantity: 1,
-        amount: STARTER_KIT.price
-      )
-      product = Product.find(STARTER_KIT.id + 4)
-
-      p STARTER_KIT
-      p product
-
-      InvoiceItem.create!(
-        invoice: invoice,
-        product: product,
-        quantity: 1,
-        amount: product.price
-      )
-    end
-    puts "#{Invoice.count} invoices created with #{InvoiceItem.count} invoice items"
-
-    puts "Creating Alfred"
-    alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
-      user.first_name = "Alfred"
-      user.last_name = "Mbonjwa"
-      user.password = "password"
-      user.role = "driver"
-      user.phone_number = "+27785325513"
-    end
-    puts "Alfred created with user id: #{alfred.id}"
-  end
-    # Create driver days
-
-    puts "Creating driver days"
-    drivers_days = (0..6).each do |i|
-      day = Date.today + i
-
-      # Only create for Tuesday (2), Wednesday (3), and Thursday (4)
-      next unless [2, 3, 4].include?(day.wday)
-      dd = DriversDay.create!(
-        start_time: Time.now + i,
-        end_time: Time.now + i + 1,
-        note: "generic note",
-        user: User.find_by(role: "driver"),
-        total_buckets: rand(5..20),
-        date: day,
-        sfl_time: day + 2,
-        start_kms: rand(100..200),
-        end_kms: rand(200..300),
-        message_from_alfred: "generic message from alfred"
-      )
-      # time_range = dd.start_time.to_datetime.step(dd.end_time.to_datetime, 1.hour).map(&:to_time)
-      number_of_subs = Subscription.where(collection_day: dd.date.wday).count
-      if Subscription.where(collection_day: dd.date.wday).any?
-        col = Collection.create!(
-          time: dd.start_time + (i/3),
-          kiki_note: "generic note from kiki",
-          alfred_message: "another note from alfred",
-
-          subscription: Subscription.where(collection_day: dd.date.wday).sample,
-          is_done: [true, true, true, true, false].sample,
-          skip: [true, false, false, false, false].sample,
-          needs_bags: rand(0..1),
-          date: dd.date,
-          new_customer: [true, false, false, false, false, false].sample,
-          soil_bag: rand(0..1),
-          drivers_day: dd
-        )
-        if col.subscription.XL?
-          col.update!(buckets: rand(0.0..5.0).round(2))
-        elsif col.subscription.user.drop_off?
-          col.update!(dropped_off_buckets: rand(0..5))
-        else
-          col.update!(bags: rand(1..3))
-        end
-      end
-
-    end
-
-  ## DROP-OFF SITES
-  puts "Seeding drop-off sites..."
-
-  def seed_drop_off_sites_with_users(sites)
-    sites.each do |site_data|
-      # Create or find the manager user
-      user = User.find_or_create_by!(email: site_data[:email]) do |u|
-        u.first_name = site_data[:contact_name].split.first
-        u.last_name = site_data[:contact_name].split.last || ""
-        u.password = "password"
-        u.role = "drop_off"
-        u.phone_number = site_data[:phone_number]
-      end
-      puts "  ✓ User created: #{user.first_name} (#{user.email})"
-
-      # Create or find the drop-off site
-      site = DropOffSite.find_or_create_by!(name: site_data[:name]) do |s|
-        s.street_address = site_data[:street_address]
-        s.suburb = site_data[:suburb]
-        s.contact_name = site_data[:contact_name]
-        s.phone_number = site_data[:phone_number]
-        s.notes = site_data[:notes]
-        s.collection_day = site_data[:collection_day]
-        s.user = user
-      end
-
-      # Update existing sites to associate with user
-      site.update!(user: user) if site.user.nil?
-
-      puts "  ✓ Site created: #{site.name} (#{site.collection_day}s) - Manager: #{site.contact_name}"
-    end
-  end
-
-  drop_off_sites_data = [
-    {
-      name: "Neighbourhood Farm",
-      street_address: "Paris Road, Fish Hoek",
-      suburb: "Fish Hoek",
-      contact_name: "Sibusiso",
-      phone_number: "+27825551234",
-      email: "sibusiso@neighbourhoodfarm.co.za",
-      notes: "Last stop on Tuesday route. Enter through main gate.",
-      collection_day: "Tuesday"
-    },
-    {
-      name: "Soil For Life",
-      street_address: "Brounger Road, Sillery",
-      suburb: "Constantia",
-      contact_name: "Sarah Green",
-      phone_number: "+27217944982",
-      email: "sarah@soilforlife.co.za",
-      notes: "Last stop on Wednesday route. Drop-off area at back of property.",
-      collection_day: "Wednesday"
-    },
-    {
-      name: "Streetscapes Farm",
-      street_address: "Upper Orange Street",
-      suburb: "Vredehoek",
-      contact_name: "Richard",
-      phone_number: "+27834567890",
-      email: "richard@streetscapes.co.za",
-      notes: "Last stop on Thursday route. Ring bell at entrance.",
-      collection_day: "Thursday"
-    }
-  ]
-
-  seed_drop_off_sites_with_users(drop_off_sites_data)
-
-  puts "\n✓ #{DropOffSite.count} drop-off sites have been seeded to the DB."
-  puts "✓ #{User.where(role: 'drop_off').count} drop-off manager users created."
-  puts "\nLogin credentials (all passwords: 'password'):"
-  User.where(role: 'drop_off').each do |user|
-    puts "  - #{user.email}"
-  end
-
-
-  # ADMIN + DRIVER
-  puts "Creating You"
-  kiki = User.find_or_create_by!(email: "gooi@gooi.com") do |user|
-    user.first_name = "Kiki"
-    user.last_name = "Kenn"
-    user.password = "password"
-    user.role = "admin"
-    user.phone_number = "+27836353126"
-  end
-
-  puts "Creating Alfred"
-  alfred = User.find_or_create_by!(email: "driver@gooi.com") do |user|
-    user.first_name = "Alfred"
-    user.last_name = "Mbonjwa"
-    user.password = "password"
-    user.role = "driver"
-    user.phone_number = "+27785325513"
-  end
-
-  # Create test collections for Ryan to test streak
-  puts "Creating test collections for Ryan..."
-  ryan = User.find_by(first_name: "Ryan")
-  if ryan
-    ryan_sub = ryan.current_sub
-    ryan_sub.update(is_new_customer: false)
-    if ryan_sub
-      collection_day_index = Date::DAYNAMES.index(ryan_sub.collection_day)
-
-      # Create 8 weeks of consecutive collections (with one skip to break streak at week 5)
-      8.times do |i|
-        weeks_ago = 8 - i
-        collection_date = Date.today - (weeks_ago * 7)
-
-        # Adjust to the correct collection day
-        while collection_date.wday != collection_day_index
-          collection_date += 1.day
-        end
-
-        next if collection_date > Date.today
-
-        drivers_day = DriversDay.find_or_create_by!(date: collection_date, user: alfred)
-
-        Collection.create!(
-          subscription: ryan_sub,
-          drivers_day: drivers_day,
-          date: collection_date,
-          skip: (i == 3), # Skip week 5 to test streak breaking
-          bags: rand(1..3),
-          is_done: true
-        )
-      end
-      puts "Created 8 test collections for #{ryan.first_name} (with 1 skip at week 5)"
-    else
-      puts "No subscription found for Ryan"
-    end
-  else
-    puts "User 'Ryan' not found in database"
-  end
-
-  puts "Seed data created successfully!"
 else
-  puts "'#{proceed}' wasn't an option, please run rails db:seed and try again."
+  puts "'#{proceed}' wasn't an option. Run rails db:seed and try again."
 end

@@ -13,7 +13,7 @@
     </p>
   <% elsif @subscription.Commercial? %>
     <p style="font-size: 1.1rem;">
-      Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong> and you are ready to gooi!
+      Thank you for your payment! Your <%= @subscription.human_plan %> subscription is now <strong>active</strong> and you are ready to gooi!
     </p>
     <p style="font-size: 1.1rem;">
       <strong>Your subscription details:</strong><br>
@@ -23,11 +23,11 @@
     </p>
   <% else %>
     <p style="font-size: 1.1rem;">
-      Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong> and you are ready to gooi!
+      Thank you for your payment! Your <%= @subscription.human_plan %> subscription is now <strong>active</strong> and you are ready to gooi!
     </p>
     <p style="font-size: 1.1rem;">
       <strong>Your subscription details:</strong><br>
-      Plan: <%= @subscription.plan %><br>
+      Plan: <%= @subscription.human_plan %><br>
       Duration: <%= @subscription.duration %> months<br>
       Collection day: <%= @subscription.collection_day %>
     </p>

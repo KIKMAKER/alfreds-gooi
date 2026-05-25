@@ -52,8 +52,9 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @user = @subscription.user
     @is_new = params[:is_new]
+    recipient = params[:to_email].presence || @user.email
     subject = @subscription.once_off? ? "Your once-off collection is booked!" : "Payment received - your gooi subscription is now active!"
-    mail(to: @user.email, subject: subject)
+    mail(to: recipient, subject: subject)
   end
 
   def referral_completed
@@ -77,6 +78,24 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
     mail(to: @subscription.user.email, subject: "Your gooi subscription is waiting for you")
+  end
+
+  def payment_prompt
+    @subscription = params[:subscription]
+    @invoice = @subscription.invoices.order(created_at: :asc).first
+    recipient = params[:to_email].presence || @subscription.user.email
+    mail(to: recipient, subject: "Still thinking it over? Your gooi spot is ready")
+  end
+
+  def payment_prompt_alert
+    @subscription = params[:subscription]
+    @invoice = @subscription.invoices.order(created_at: :asc).first
+    mail(
+      to: 'howzit@gooi.me',
+      subject: "Payment prompt sent → #{@subscription.display_name}",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
   end
 
   def ad_hoc_nudge_alert

@@ -33,9 +33,9 @@
                 <td class="text-end">
                   <%= link_to "Edit", edit_admin_post_path(post), class: "btn btn-sm btn-outline-secondary me-1" %>
                   <%= link_to "View", post_path(post), class: "btn btn-sm btn-outline-secondary me-1", target: "_blank" %>
-                  <%= button_to "Delete", admin_post_path(post), method: :delete,
+                  <%= link_to "Delete", admin_post_path(post),
                         class: "btn btn-sm btn-outline-danger",
-                        data: { turbo_confirm: "Delete this post?" } %>
+                        data: { turbo_method: :delete, turbo_confirm: "Delete this post?" } %>
                 </td>
               </tr>
             <% end %>

@@ -1,0 +1,120 @@
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Message a Day</h1>
+      <p class="dd-header__sub">Pick a collection day, write your message, open each link</p>
+    </div>
+  </div>
+
+  <%# ── Compose form ── %>
+  <%= form_with url: driver_messages_path, method: :get, local: true do |f| %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-calendar-day"></i>
+        <h3>Choose day & message</h3>
+      </div>
+      <div class="dd-form-card__body">
+
+        <div class="mb-3">
+          <%= f.label :collection_day, "Collection day", class: "bucket-scale-label" %>
+          <%= f.select :collection_day,
+                       options_for_select(
+                         [['— pick a day —', '']] +
+                         Subscription.collection_days.keys.map { |d| [d.titleize, d] },
+                         @collection_day
+                       ),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :message, "Message", class: "bucket-scale-label" %>
+          <%= f.text_area :message,
+                          value: @message || "Reminder, tomorrow is gooi day! Please let us know if you won't be needing collection.",
+                          rows: 5,
+                          class: "form-control" %>
+        </div>
+
+        <%= f.submit "Generate links", class: "submit-btn w-100" %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ── Results ── %>
+  <% if @collection_day.present? %>
+
+    <% if @collection_date.nil? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__body">
+          <p class="text-muted mb-0">Couldn't figure out the next date for that day.</p>
+        </div>
+      </div>
+
+    <% elsif @recipients.empty? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__body">
+          <p class="text-muted mb-0">No collections found for <strong><%= @collection_date.strftime('%A, %-d %B') %></strong>.</p>
+        </div>
+      </div>
+
+    <% else %>
+      <div class="dd-form-card"
+           data-controller="message-tracker"
+           data-message-tracker-date-value="<%= @collection_date.iso8601 %>">
+
+        <div class="dd-form-card__header">
+          <i class="fa-brands fa-whatsapp"></i>
+          <h3>
+            <%= pluralize(@recipients.count, 'contact') %> &middot;
+            <%= @collection_date.strftime('%A, %-d %B') %>
+          </h3>
+        </div>
+
+        <div class="dd-form-card__body p-0">
+          <% @recipients.each do |r| %>
+            <% phone = r[:phone] %>
+
+            <% if @message.present? && phone.present? %>
+              <% wa_url = "https://wa.me/#{phone.delete('+')}?text=#{ERB::Util.url_encode(@message)}" %>
+            <% end %>
+
+            <div class="msg-row">
+              <div class="msg-row__info">
+                <span class="msg-row__name"><%= r[:name] %></span>
+                <span class="msg-row__meta"><%= r[:suburb] %></span>
+              </div>
+
+              <div class="msg-row__action">
+                <% if @message.blank? %>
+                  <span class="msg-row__hint">enter a message</span>
+                <% elsif phone.blank? %>
+                  <span class="msg-row__hint">no phone</span>
+                <% else %>
+                  <%= link_to wa_url,
+                              target: "_blank",
+                              rel: "noopener",
+                              class: "msg-link",
+                              data: {
+                                contact_id: r[:id],
+                                message_tracker_target: "link",
+                                action: "message-tracker#track"
+                              } do %>
+                    <span class="msg-link__unsent">
+                      <i class="fa-brands fa-whatsapp"></i> Send
+                    </span>
+                    <span class="msg-link__sent">
+                      <i class="fa-solid fa-check"></i> Sent
+                    </span>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+      </div>
+    <% end %>
+  <% end %>
+
+</div>

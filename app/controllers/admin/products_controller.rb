@@ -7,6 +7,7 @@ class Admin::ProductsController < ApplicationController
 
   def new
     @product = Product.new
+    @invoice_eligible_products = Product.invoice_eligible.order(:title)
   end
 
   def create
@@ -19,6 +20,7 @@ class Admin::ProductsController < ApplicationController
   end
 
   def edit
+    @invoice_eligible_products = Product.invoice_eligible.order(:title)
   end
 
   def update
@@ -46,6 +48,6 @@ class Admin::ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:title, :description, :price, :is_active, :stock, :quote_only, images: [])
+    params.require(:product).permit(:title, :description, :price, :is_active, :stock, :billing_type, :invoice_product_id, images: [])
   end
 end

@@ -1,0 +1,40 @@
+<%= simple_form_for [:admin, @block] do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :name, input_html: { class: "form-control" } %>
+  <%= f.input :slug,
+      hint: "Auto-generated from name. Edit to customise the URL (/blocks/your-slug).",
+      input_html: { class: "form-control" } %>
+  <%= f.input :description,
+      as: :text,
+      input_html: { class: "form-control", rows: 5 },
+      hint: "Shown on the public landing page. Plain text." %>
+  <%= f.input :resident_count,
+      label: "Number of residents",
+      input_html: { class: "form-control" } %>
+
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Photos</label>
+    <% if @block.photos.attached? %>
+      <div class="d-flex flex-wrap gap-2 mb-2">
+        <% @block.photos.each do |photo| %>
+          <div>
+            <%= image_tag photo, class: "img-thumbnail", style: "max-height: 120px; max-width: 180px; object-fit: cover;" %>
+          </div>
+        <% end %>
+      </div>
+      <p class="text-muted small">Upload new files below to add more photos.</p>
+    <% end %>
+
+    <%= f.input :photos,
+        as: :file,
+        label: "Upload photos",
+        input_html: { class: "form-control", accept: "image/*", multiple: true },
+        hint: "JPG or PNG. Multiple photos allowed. Shown in the landing page gallery." %>
+  </div>
+
+  <div class="mt-4">
+    <%= f.submit class: "btn-gooi" %>
+    <%= link_to "Cancel", admin_blocks_path, class: "ms-3" %>
+  </div>
+<% end %>

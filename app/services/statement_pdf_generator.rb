@@ -6,8 +6,9 @@ class StatementPdfGenerator
   def initialize(user)
     @user = user
     @invoices = user.invoices.includes(subscription: :user).order(issued_date: :desc)
+    @payments = user.payments.order(date: :desc)
     @total_invoiced = @invoices.sum(:total_amount)
-    @total_paid = @invoices.where(paid: true).sum(:total_amount)
+    @total_paid = user.payments.sum(:total_amount) / 100.0
     @balance_owing = @total_invoiced - @total_paid
   end
 
@@ -24,6 +25,9 @@ class StatementPdfGenerator
 
       # All invoices table
       add_invoices_table(pdf)
+
+      # Payments received
+      add_payments_table(pdf) if @payments.any?
 
       # Payment details if balance owing
       add_payment_details(pdf) if @balance_owing > 0
@@ -168,6 +172,46 @@ class StatementPdfGenerator
     pdf.start_new_page if pdf.cursor < 200
   end
 
+  def add_payments_table(pdf)
+    pdf.font 'Helvetica', size: 12, style: :bold
+    pdf.text 'Payments Received'
+    pdf.move_down 10
+
+    table_data = [['Date', 'Type', 'Note / Reference', 'Amount']]
+
+    @payments.each do |payment|
+      type_label = payment.payment_type&.upcase || (payment.snapscan_id.present? ? 'SNAPSCAN' : '—')
+      note = [payment.note.presence, payment.user_reference.presence].compact.join(' · ').presence || '—'
+      amount = "R#{(payment.total_amount / 100.0).to_i}"
+      table_data << [
+        payment.date&.strftime('%e %b %Y') || '—',
+        type_label,
+        note,
+        amount
+      ]
+    end
+
+    pdf.font 'Helvetica', size: 8
+    pdf.table(table_data,
+              header: true,
+              column_widths: [65, 55, 280, 55],
+              cell_style: {
+                padding: [5, 3],
+                borders: [:bottom],
+                border_color: 'DDDDDD'
+              }) do |table|
+      table.row(0).font_style = :bold
+      table.row(0).background_color = 'F5F5F5'
+      table.row(0).borders = [:top, :bottom]
+      table.row(0).border_width = 1.5
+      table.row(0).size = 9
+      table.column(3).align = :right
+    end
+
+    pdf.move_down 20
+    pdf.start_new_page if pdf.cursor < 200
+  end
+
   def add_payment_details(pdf)
     pdf.font 'Helvetica', size: 12, style: :bold
     pdf.text 'Payment Details'
@@ -196,7 +240,7 @@ class StatementPdfGenerator
     pdf.font 'Helvetica', size: 9, style: :italic
     pdf.text 'Please use your Customer ID as the payment reference.'
     pdf.move_down 5
-    pdf.text "You can also pay via SnapScan at: https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@user.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}"
+    pdf.text "Pay via SnapScan: https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@user.customer_id}&amount=#{@balance_owing.to_i}00"
   end
 
   def add_footer(pdf)

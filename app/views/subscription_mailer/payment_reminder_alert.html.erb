@@ -4,7 +4,7 @@
     <strong>Customer:</strong> <%= @subscription.display_name %><br>
     <strong>Email:</strong> <%= @subscription.user.email %><br>
     <strong>Phone:</strong> <%= @subscription.user.phone_number %><br>
-    <strong>Plan:</strong> <%= @subscription.plan %> (<%= @subscription.duration %> month<%= @subscription.duration == 1 ? '' : 's' %>)
+    <strong>Plan:</strong> <%= @subscription.human_plan %> (<%= @subscription.duration %> month<%= @subscription.duration == 1 ? '' : 's' %>)
   </p>
   <% if @invoice %>
     <p>

@@ -30,16 +30,14 @@ class DriversDaysController < ApplicationController
     @drivers_day = DriversDay.find(params[:id])
 
     if @drivers_day
-      @collections = @drivers_day.collections
-      @skip_collections = @collections.where(skip: true)
-      @new_customers = @collections.select { |collection| collection.new_customer == true }
-      @count = @collections.count - @skip_collections.count - (@new_customers.any? ? @new_customers.count : 0)
-      @bags_needed = @collections.select { |collection| collection.needs_bags }
+      @collections      = @drivers_day.collections.includes(:subscription).to_a
+      @skip_collections = @collections.select(&:skip)
+      @new_customers    = @collections.select(&:new_customer)
+      @count            = @collections.count - @skip_collections.count - @new_customers.count
+      @bags_needed      = @collections.select { |c| c.needs_bags.to_i > 0 }
     else
-      @collections = []
-      @new_customers = []
+      @collections = @skip_collections = @new_customers = @bags_needed = []
       @count = 0
-      @bags_needed = []
     end
   end
 
@@ -48,7 +46,7 @@ class DriversDaysController < ApplicationController
     today = Date.today
     @today = today.strftime("%A")
 
-    @drivers_day = DriversDay.find(params[:id])
+    @drivers_day = DriversDay.includes(:day_statistic).find(params[:id])
     @collections = @drivers_day.collections
     @stat = @drivers_day.day_statistic
 
@@ -83,29 +81,32 @@ class DriversDaysController < ApplicationController
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)
-    @subscriptions = Subscription.where(collection_day: @today, status: 'active')
-    @skip_subscriptions = @subscriptions.select { |subscription| subscription.collections.last&.skip == true }
-    @bags_needed = @subscriptions.select { |subscription| subscription.collections.last&.needs_bags && subscription.collections.last.needs_bags > 0}
-    @total_bags_needed = @bags_needed.sum { |subscription| subscription.collections.last.needs_bags }
-    @new_customer = @subscriptions.select { |subscription| subscription.collections.last&.new_customer == true }
+    @subscriptions = Subscription.where(collection_day: @today, status: 'active').preload(:collections).to_a
+    last_coll = @subscriptions.each_with_object({}) { |s, h| h[s.id] = s.collections.max_by(&:id) }
+    @skip_subscriptions = @subscriptions.select { |s| last_coll[s.id]&.skip == true }
+    @bags_needed        = @subscriptions.select { |s| last_coll[s.id]&.needs_bags.to_i > 0 }
+    @total_bags_needed  = @bags_needed.sum { |s| last_coll[s.id].needs_bags }
+    @new_customer       = @subscriptions.select { |s| last_coll[s.id]&.new_customer == true }
     @products_needed = @drivers_day.products_needed_for_delivery
 
     # Check for recently lapsed customers
     two_weeks_ago = today - 2.weeks
     existing_ids = @drivers_day.collections.pluck(:subscription_id)
+    resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq
 
     @recently_lapsed = Subscription
       .where(collection_day: Date::DAYNAMES[today.wday])
       .where(status: 'completed')
       .where(end_date: two_weeks_ago..today)
       .where.not(id: existing_ids)
+      .where.not(user_id: resubscribed_user_ids)
       .includes(:user, :collections)
       .order(end_date: :desc)
 
-    # Filter to only those who had collections in their last week
+    # Filter to only those who had collections in their last week (in-memory — collections already preloaded)
     @recently_lapsed = @recently_lapsed.select do |sub|
       last_week = sub.end_date - 1.week
-      sub.collections.where('date >= ? AND date <= ?', last_week, sub.end_date).where(skip: false).any?
+      sub.collections.any? { |c| c.date >= last_week && c.date <= sub.end_date && !c.skip }
     end
 
     if request.patch?
@@ -207,12 +208,17 @@ class DriversDaysController < ApplicationController
 
   def collections
     date = @drivers_day.date
-    @collections = @drivers_day.collections.includes(:subscription).where(date: date).order(date: :desc)
+    @collections = @drivers_day.collections
+                               .includes(subscription: :user)
+                               .where(date: date)
+                               .order(position: :asc)
   end
 
   def index
-    # fetch all instances of drivers day with necessary data with .includes
-    @drivers_days = DriversDay.includes(:day_statistic).order(date: :desc)
+    @drivers_days = DriversDay
+      .with_active_collection_counts
+      .includes(:day_statistic, :buckets, :drop_off_events)
+      .order(date: :desc)
   end
 
   def show
@@ -244,17 +250,11 @@ class DriversDaysController < ApplicationController
     @collections = @drivers_day.collections
     @stat = @drivers_day.day_statistic
 
-    subscription_ids = @collections.pluck(:subscription_id)
-
     # Prepare snapshot card variables (same as show action)
     if @stat
-      @new_customers = Subscription.active
-        .where(id: subscription_ids)
-        .joins(:collections)
-        .group("subscriptions.id")
-        .having("MIN(collections.date) = ?", @drivers_day.date)
-        .count
-        .size
+      subscription_ids = @collections.where.not(subscription_id: nil).pluck(:subscription_id).uniq
+      collection_counts = Collection.where(subscription_id: subscription_ids).group(:subscription_id).count
+      @new_customers = collection_counts.count { |_, count| count <= 2 }
       @compost_kg = (@stat.net_kg * 0.35).round
       @landfill_m3 = (@stat.net_kg / 400.0).round(1)
       @kg_diverted = @stat.net_kg.round
@@ -295,23 +295,28 @@ class DriversDaysController < ApplicationController
     @trees_equivalent = stats.sum(&:trees_net).round
     @buckets_diverted = stats.sum(&:full_equiv).round
 
-    # Calculate unique customers served throughout the year
-    all_subscription_ids = @drivers_days.flat_map { |dd| dd.collections.pluck(:subscription_id) }.uniq
+    day_ids = @drivers_days.map(&:id)
+    collections_by_day = Collection.where(drivers_day_id: day_ids)
+                                   .pluck(:drivers_day_id, :subscription_id, :new_customer)
+                                   .group_by(&:first)
+
+    all_subscription_ids = collections_by_day.values.flat_map { |rows| rows.map { |r| r[1] } }.uniq
     @customers_served = all_subscription_ids.count
 
-    # Calculate new customers (first collection in the year)
-    @new_customers = @drivers_days.flat_map do |dd|
-      dd.collections.where(new_customer: true).pluck(:subscription_id)
-    end.uniq.count
+    @new_customers = collections_by_day.values
+                                       .flat_map { |rows| rows.select { |r| r[2] }.map { |r| r[1] } }
+                                       .uniq.count
 
     # Monthly breakdown
     @monthly_data = @drivers_days.group_by { |dd| dd.date.beginning_of_month }.map do |month, days|
       month_stats = days.map(&:day_statistic).compact
+      month_day_ids = days.map(&:id)
+      month_sub_ids = collections_by_day.values_at(*month_day_ids).compact.flat_map { |rows| rows.map { |r| r[1] } }.uniq
       {
         month: month,
         days_count: days.count,
         kg_collected: month_stats.sum(&:net_kg).round,
-        households: days.flat_map { |d| d.collections.pluck(:subscription_id) }.uniq.count,
+        households: month_sub_ids.count,
         co2_avoided: month_stats.sum(&:avoided_co2e_kg).round
       }
     end.sort_by { |m| m[:month] }
@@ -353,9 +358,10 @@ class DriversDaysController < ApplicationController
       end
     end
 
-    # Keep subscription collection_order in sync
+    # Keep subscription collection_order in sync — uses update (not update_column) so
+    # sync_collection_positions fires and propagates the new order to future collections
     @drivers_day.collections.order(:position).each_with_index do |c, i|
-      c.subscription&.update_column(:collection_order, i + 1)
+      c.subscription&.update(collection_order: i + 1)
     end
 
     head :no_content

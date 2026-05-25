@@ -81,46 +81,23 @@
 
 
 .collection-header {
-  font-family: "Inter";
-  text-align: center;
-  font-size: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: 80vw;
-  border-bottom: 2px solid #2c3e50;
+  width: 100%;
+  border-bottom: 2px solid #e0e0e0;
   padding-bottom: 0.5rem;
-  margin: 0 auto;
   margin-bottom: 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
 
-  h2 {
-    margin: 0;
-  }
-
-  .name {
-    width: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-
-  }
-
-  .bag {
-    width: 15%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .address {
-    width: 30%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-
-  }
-
+  .name    { width: 22%; }
+  .bag     { width: 18%; text-align: center; }
+  .address { width: 35%; }
+  .emojies { width: 20%; text-align: right; }
 }
 
 .collections {
@@ -143,7 +120,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: 80vw;
+  width: 100%;
   border-bottom: 1px solid #2c3e50;
   height: 3rem;
 
@@ -166,7 +143,7 @@
   }
 
   .name {
-    width: 10%;
+    width: 22%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -179,13 +156,13 @@
     }
   }
   .bag {
-    width: 20%;
+    width: 18%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .address {
-    width: 30%;
+    width: 35%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -295,6 +272,177 @@
   }
 }
 
+// ── Driver messages page ──────────────────────────────────────────────────────
+
+.msg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s ease;
+
+  &:last-child { border-bottom: none; }
+
+  &--sent {
+    background: #f0faf4;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: $dark-green;
+  }
+
+  &__meta {
+    font-size: 0.78rem;
+    color: #888;
+  }
+
+  &__action {
+    flex-shrink: 0;
+  }
+
+  &__hint {
+    font-size: 0.78rem;
+    color: #bbb;
+    font-style: italic;
+  }
+}
+
+.msg-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: $dark-yellow;
+  color: white;
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover  { background: darken($dark-yellow, 8%); color: white; }
+  &:active { transform: scale(0.96); }
+
+  &__sent  { display: none; }
+
+  &--sent {
+    background: $medium-green;
+    pointer-events: none;
+
+    .msg-link__unsent { display: none; }
+    .msg-link__sent   { display: inline-flex; align-items: center; gap: 0.4rem; }
+  }
+}
+
+// ── Quick message rows (collection edit) ─────────────────────────────────────
+
+.quick-msg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child { border-bottom: none; }
+
+  &--contact {
+    background: #fafafa;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: $dark-green;
+  }
+
+  &__meta {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.25rem;
+  }
+}
+
+.quick-msg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  &:hover { background: #f0f0f0; }
+  &:active { transform: scale(0.92); }
+}
+
+// ── Route header nav (arrows embedded in dd-header) ──────────────────────────
+
+.dd-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dd-header__nav-arrow {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.3rem;
+  text-decoration: none;
+  padding: 0 0.25rem;
+  transition: color 0.15s;
+
+  &:hover { color: white; }
+
+  &--disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+}
+
+// ── Admin delete button in route rows ─────────────────────────────────────────
+
+.route-delete-btn {
+  color: #ccc;
+  font-size: 0.75rem;
+  text-decoration: none;
+  padding: 0 0.25rem;
+  flex-shrink: 0;
+  transition: color 0.15s;
+
+  &:hover { color: $red; }
+}
+
+.drop-off-name {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.drop-off-timer-icon {
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
 .route-day-nav {
   display: flex;
   align-items: center;
@@ -315,4 +463,9 @@
       cursor: default;
     }
   }
+}
+
+.whatsapp-icon {
+  font-size: 1.4rem;
+  vertical-align: middle;
 }

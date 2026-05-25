@@ -2,6 +2,389 @@
   <div class="outline">
     <h1>Financial Dashboard</h1>
 
+    <%# ─────────────────────────────────────────────────────────
+        OPERATIONAL OVERVIEW — live from DB, no import needed
+    ──────────────────────────────────────────────────────────── %>
+    <% op = @operational[:operational]
+       bk = @operational[:bakkie]
+       rev = @operational[:revenue]
+       dq = @operational[:data_quality] %>
+
+    <div class="fin-section mb-5">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h2 class="fin-section__title mb-1">Your Working Day</h2>
+          <p class="text-muted mb-0">
+            <%= dq[:total_day_count] %> collection days on record
+            (<%= dq[:earliest_day]&.strftime("%b %Y") %> – <%= dq[:latest_day]&.strftime("%b %Y") %>)
+          </p>
+        </div>
+        <%= link_to "↓ Export last 2 months (CSV)", admin_export_drivers_days_financials_path, class: "btn-today-green" %>
+      </div>
+
+      <div class="fin-stat-grid mb-3">
+        <div class="fin-stat">
+          <span class="fin-stat__label">Avg hours / day</span>
+          <% if op[:avg_hours_per_day] %>
+            <span class="fin-stat__value"><%= op[:avg_hours_per_day] %>h</span>
+            <span class="fin-stat__note">last <%= dq[:reliable_day_count] %> days (reliable data)</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">no reliable timing data yet</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Avg km / day</span>
+          <% if op[:avg_kms_per_day] %>
+            <span class="fin-stat__value"><%= number_with_delimiter(op[:avg_kms_per_day]) %> km</span>
+            <span class="fin-stat__note"><%= dq[:kms_day_count] %> days with km data</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Avg stops / day</span>
+          <% if op[:avg_stops_per_day] %>
+            <span class="fin-stat__value"><%= op[:avg_stops_per_day] %></span>
+            <span class="fin-stat__note">last 3 months, excl. skipped</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Stops / hour</span>
+          <% if op[:stops_per_hour] %>
+            <span class="fin-stat__value"><%= op[:stops_per_hour] %></span>
+            <span class="fin-stat__note">last <%= dq[:reliable_day_count] %> days, excl. skipped</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">needs reliable hours data</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Avg buckets / day</span>
+          <% if op[:avg_buckets_per_day] %>
+            <span class="fin-stat__value"><%= op[:avg_buckets_per_day] %></span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Days worked / month</span>
+          <% if op[:avg_days_per_month] %>
+            <span class="fin-stat__value"><%= op[:avg_days_per_month] %></span>
+            <span class="fin-stat__note">avg across all months</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Hours / month</span>
+          <% if op[:monthly_hours] %>
+            <span class="fin-stat__value"><%= op[:monthly_hours] %>h</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+      </div>
+
+      <% if dq[:bank_data_present] %>
+        <div class="fin-stat-grid">
+          <div class="fin-stat fin-stat--highlight">
+            <span class="fin-stat__label">Cost per hour</span>
+            <% if op[:cost_per_hour] %>
+              <span class="fin-stat__value">R <%= number_with_delimiter(op[:cost_per_hour]) %></span>
+              <span class="fin-stat__note">every hour of work costs this much</span>
+            <% else %>
+              <span class="fin-stat__value text-muted">—</span>
+            <% end %>
+          </div>
+
+          <div class="fin-stat fin-stat--highlight">
+            <span class="fin-stat__label">Cost per km</span>
+            <% if op[:cost_per_km] %>
+              <span class="fin-stat__value">R <%= number_with_delimiter(op[:cost_per_km]) %></span>
+            <% else %>
+              <span class="fin-stat__value text-muted">—</span>
+            <% end %>
+          </div>
+
+          <div class="fin-stat fin-stat--highlight">
+            <span class="fin-stat__label">Cost per stop</span>
+            <% if op[:cost_per_stop] %>
+              <span class="fin-stat__value">R <%= number_with_delimiter(op[:cost_per_stop]) %></span>
+              <span class="fin-stat__note">per customer visit</span>
+            <% else %>
+              <span class="fin-stat__value text-muted">—</span>
+            <% end %>
+          </div>
+
+          <div class="fin-stat fin-stat--highlight">
+            <span class="fin-stat__label">Avg monthly costs</span>
+            <span class="fin-stat__value">R <%= number_with_delimiter(op[:avg_monthly_costs].to_i) %></span>
+            <span class="fin-stat__note">6-month avg, excl. bakkie & salary</span>
+          </div>
+        </div>
+      <% else %>
+        <div class="alert alert-info">
+          <strong>Import your bank statements</strong> to unlock cost-per-hour and unit economics.
+          <%= link_to "Upload a statement →", import_admin_expenses_path, class: "alert-link" %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# ─────────────────────────────────────────────────────────
+        THE BAKKIE
+    ──────────────────────────────────────────────────────────── %>
+    <div class="fin-section mb-5">
+      <h2 class="fin-section__title">The Bakkie</h2>
+      <p class="text-muted mb-3">
+        Bought for R <%= number_with_delimiter(bk[:purchase_price].to_i) %> in
+        <%= bk[:purchase_date].strftime("%B %Y") %> —
+        depreciated over <%= OperationalMetrics::BAKKIE_DEPRECIATION_YEARS %> years.
+      </p>
+
+      <div class="fin-stat-grid">
+        <div class="fin-stat">
+          <span class="fin-stat__label">Monthly depreciation</span>
+          <span class="fin-stat__value">R <%= number_with_delimiter(bk[:monthly_depreciation].to_i) %></span>
+          <span class="fin-stat__note">cost the business every month</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Current book value</span>
+          <span class="fin-stat__value">R <%= number_with_delimiter(bk[:book_value].to_i) %></span>
+          <span class="fin-stat__note"><%= bk[:months_owned] %> months owned</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Fully depreciated in</span>
+          <% if bk[:months_remaining] > 0 %>
+            <span class="fin-stat__value"><%= bk[:months_remaining] %> months</span>
+            <span class="fin-stat__note">then R<%= number_with_delimiter(bk[:monthly_depreciation].to_i) %>/month frees up</span>
+          <% else %>
+            <span class="fin-stat__value text-success">Fully depreciated</span>
+          <% end %>
+        </div>
+
+        <% if dq[:bank_data_present] && op[:avg_monthly_costs].positive? %>
+          <div class="fin-stat">
+            <span class="fin-stat__label">Bakkie as % of costs</span>
+            <span class="fin-stat__value"><%= ((bk[:monthly_depreciation] / op[:avg_monthly_costs]) * 100).round(1) %>%</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ─────────────────────────────────────────────────────────
+        WHAT YOUR CUSTOMERS BRING IN
+    ──────────────────────────────────────────────────────────── %>
+    <div class="fin-section mb-5">
+      <h2 class="fin-section__title">What Your Customers Bring In</h2>
+      <p class="text-muted mb-3">
+        Current MRR from <%= rev.values.sum { |v| v[:count] } %> active subscriptions:
+        <strong>R <%= number_with_delimiter(op[:current_mrr].to_i) %>/month</strong>
+        <% if rev.values.any? { |v| v[:with_amounts] < v[:count] } %>
+          <span class="text-warning ms-2">
+            ⚠ Some subscriptions are missing monthly amounts — MRR may be understated.
+          </span>
+        <% end %>
+      </p>
+
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th class="text-end">Active</th>
+            <th class="text-end">Avg / month</th>
+            <th class="text-end">Total / month</th>
+            <% if op[:cost_per_stop] %>
+              <th class="text-end">Covers ~X stops</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% rev.each do |plan, data| %>
+            <tr>
+              <td><strong><%= plan %></strong></td>
+              <td class="text-end"><%= data[:count] %></td>
+              <td class="text-end">
+                <% if data[:avg_monthly].positive? %>
+                  R <%= number_with_delimiter(data[:avg_monthly].to_i) %>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td class="text-end">R <%= number_with_delimiter(data[:total_monthly].to_i) %></td>
+              <% if op[:cost_per_stop] && data[:avg_monthly].positive? %>
+                <td class="text-end"><%= (data[:avg_monthly] / op[:cost_per_stop]).round(1) %></td>
+              <% elsif op[:cost_per_stop] %>
+                <td class="text-end text-muted">—</td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr class="table-primary fw-bold">
+            <td>Total</td>
+            <td class="text-end"><%= rev.values.sum { |v| v[:count] } %></td>
+            <td></td>
+            <td class="text-end">R <%= number_with_delimiter(op[:current_mrr].to_i) %></td>
+            <% if op[:cost_per_stop] %>
+              <td></td>
+            <% end %>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <%# ─────────────────────────────────────────────────────────
+        PRICE PER LITRE BY PLAN
+    ──────────────────────────────────────────────────────────── %>
+    <% litre_pricing = @operational[:litre_pricing] %>
+    <% if litre_pricing.any? %>
+      <div class="fin-section mb-5">
+        <h2 class="fin-section__title">What You Charge Per Litre</h2>
+        <p class="text-muted mb-3">
+          Based on actual collections in the last 3 months.
+          Standard customers bring bags (5L each); XL bring 25L buckets; Commercial have tracked 25L/45L buckets.
+        </p>
+
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th class="text-end">Active subs</th>
+              <th class="text-end">Volume unit</th>
+              <th class="text-end">Avg L/visit</th>
+              <th class="text-end">Visits/month</th>
+              <th class="text-end">Avg L/month</th>
+              <th class="text-end">Avg charge/month</th>
+              <th class="text-end fw-bold">R per litre</th>
+              <th class="text-end">Total revenue/month</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% litre_pricing.each do |plan, data| %>
+              <tr>
+                <td><strong><%= plan %></strong></td>
+                <td class="text-end"><%= data[:active_count] %></td>
+                <td class="text-end text-muted"><small><%= data[:volume_unit] %></small></td>
+                <td class="text-end"><%= number_with_delimiter(data[:avg_litres_per_visit]) %>L</td>
+                <td class="text-end"><%= data[:avg_visits_per_month] %></td>
+                <td class="text-end"><%= number_with_delimiter(data[:avg_litres_per_month]) %>L</td>
+                <td class="text-end">R <%= number_with_delimiter(data[:avg_monthly_charge].to_i) %></td>
+                <td class="text-end">
+                  <% if data[:price_per_litre] %>
+                    <strong>R <%= data[:price_per_litre] %>/L</strong>
+                  <% else %>
+                    <span class="text-muted">—</span>
+                  <% end %>
+                </td>
+                <td class="text-end">R <%= number_with_delimiter(data[:total_monthly_revenue].to_i) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <p class="text-muted mt-2" style="font-size: 0.8rem;">
+          <em>Price per litre = average monthly charge ÷ average litres collected per month.
+          Visits/month is averaged across all active subscriptions of that plan.</em>
+        </p>
+      </div>
+    <% end %>
+
+    <%# ─────────────────────────────────────────────────────────
+        PAY YOURSELF — salary sustainability calculator
+    ──────────────────────────────────────────────────────────── %>
+    <div class="fin-section mb-5">
+      <h2 class="fin-section__title">Pay Yourself</h2>
+
+      <% scenarios = @operational[:sustainability]
+         costs_base = op[:avg_monthly_costs] + bk[:monthly_depreciation]
+         available_before_salary = op[:current_mrr] - costs_base %>
+
+      <div class="fin-payself-summary mb-4">
+        <div class="fin-payself-row">
+          <span>Current MRR</span>
+          <span class="text-success">+ R <%= number_with_delimiter(op[:current_mrr].to_i) %></span>
+        </div>
+        <% if dq[:bank_data_present] %>
+          <div class="fin-payself-row">
+            <span>Running costs (avg 6 months)</span>
+            <span class="text-danger">− R <%= number_with_delimiter(op[:avg_monthly_costs].to_i) %></span>
+          </div>
+        <% else %>
+          <div class="fin-payself-row text-muted">
+            <span>Running costs</span>
+            <span>import bank statements to calculate</span>
+          </div>
+        <% end %>
+        <div class="fin-payself-row">
+          <span>Bakkie (monthly depreciation)</span>
+          <span class="text-danger">− R <%= number_with_delimiter(bk[:monthly_depreciation].to_i) %></span>
+        </div>
+        <div class="fin-payself-row fin-payself-row--total">
+          <span>Available for salary</span>
+          <span class="<%= available_before_salary >= 5000 ? 'text-success' : 'text-warning' %>">
+            R <%= number_with_delimiter(available_before_salary.to_i) %>
+          </span>
+        </div>
+      </div>
+
+      <h3 class="h5 mb-3">How many more customers do you need?</h3>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Salary target</th>
+            <th class="text-end">Can you afford it now?</th>
+            <th class="text-end">Gap</th>
+            <th class="text-end">Extra Standard needed</th>
+            <th class="text-end">Extra XL needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% scenarios.each do |s| %>
+            <tr class="<%= s[:achievable] ? 'table-success' : '' %>">
+              <td>R <%= number_with_delimiter(s[:target_salary]) %>/month</td>
+              <td class="text-end">
+                <% if s[:achievable] %>
+                  <span class="text-success fw-bold">Yes ✓</span>
+                <% else %>
+                  <span class="text-muted">Not yet</span>
+                <% end %>
+              </td>
+              <td class="text-end">
+                <% if s[:gap].positive? %>
+                  R <%= number_with_delimiter(s[:gap].to_i) %>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td class="text-end">
+                <%= s[:extra_standard_needed].positive? ? "+ #{s[:extra_standard_needed]}" : "—" %>
+              </td>
+              <td class="text-end">
+                <%= s[:extra_xl_needed].positive? ? "+ #{s[:extra_xl_needed]}" : "—" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <% unless dq[:bank_data_present] %>
+        <p class="text-muted mt-2">
+          <em>Gap and customer counts are based on current MRR vs target — import bank statements to include actual running costs in the calculation.</em>
+        </p>
+      <% end %>
+    </div>
+
     <!-- Date Range Selector -->
     <div class="d-flex gap-2 align-items-center mb-4">
       <%= form_with url: admin_financials_path, method: :get, class: "d-flex gap-2 align-items-center" do %>

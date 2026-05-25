@@ -65,7 +65,7 @@
                 </span>
                 <span style="font-size: 0.75rem; color: #888;">
                   #<%= invoice.number || invoice.id %>
-                  &middot; <%= subscription.plan %>
+                  &middot; <%= subscription.human_plan %>
                   <% if invoice.due_date %>
                     &middot; due <%= invoice.due_date.strftime('%d %b') %>
                   <% end %>
@@ -90,6 +90,47 @@
     <div class="info-card mb-3 text-center">
       <div class="info-card-body">
         <p class="text-muted mb-0">No invoices on this account.</p>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Payments received -->
+  <% if @payments.any? %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-money-bill-transfer"></i>
+        <h3>Payments Received</h3>
+      </div>
+      <div style="padding: 0;">
+        <% @payments.each do |payment| %>
+          <div class="payment-row">
+            <div class="payment-row__meta">
+              <span class="payment-row__date"><%= payment.date&.strftime('%d %b %Y') || 'No date' %></span>
+              <span class="payment-row__detail">
+                <% type_key = payment.payment_type.presence || (payment.snapscan_id.present? ? 'snapscan' : 'unknown') %>
+                <span class="payment-type-chip payment-type-chip--<%= type_key %>"><%= type_key.upcase %></span>
+                <% if payment.note.present? %>
+                  &middot; <%= payment.note %>
+                <% elsif payment.user_reference.present? %>
+                  &middot; ref: <%= payment.user_reference %>
+                <% end %>
+              </span>
+            </div>
+            <div class="payment-row__right">
+              <span class="payment-row__amount" style="color: #3c8a63;">
+                R<%= number_with_delimiter((payment.total_amount / 100.0).to_i) %>
+              </span>
+              <% if current_user.admin? && payment.manual? %>
+                <%= button_to admin_user_payment_path(@user, payment),
+                    method: :delete,
+                    class: "payment-row__delete",
+                    form: { data: { turbo_confirm: "Delete this manual payment?" } } do %>
+                  <i class="fa-solid fa-trash-can"></i>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>

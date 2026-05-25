@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import Sortable from "sortablejs";
-import { put } from "@rails/request.js";
+import { patch } from "@rails/request.js";
 
 // Connects to data-controller="sortable"
 export default class extends Controller {
@@ -30,7 +30,7 @@ export default class extends Controller {
         id:   el.dataset.sortableId,
       }))
 
-    put(this.urlValue, {
+    patch(this.urlValue, {
       body: JSON.stringify({ items }),
       headers: { "Content-Type": "application/json" },
     })

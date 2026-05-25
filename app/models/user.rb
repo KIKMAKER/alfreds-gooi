@@ -55,6 +55,7 @@ class User < ApplicationRecord
   before_validation :generate_referral_code, on: :create
   before_validation :set_customer_id, on: :create
   before_destroy :nullify_subscriptions
+  after_update :sync_owner_contacts, if: -> { saved_change_to_first_name? || saved_change_to_last_name? || saved_change_to_phone_number? }
 
 
   # Custom validation
@@ -267,6 +268,16 @@ class User < ApplicationRecord
     last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
     next_customer_id = "GFWC" + (last_id + 1).to_s
     self.customer_id = next_customer_id
+  end
+
+  def sync_owner_contacts
+    Contact.joins(:subscription)
+           .where(subscriptions: { user_id: id }, is_primary: true)
+           .update_all(
+             first_name: first_name,
+             last_name: last_name,
+             phone_number: phone_number
+           )
   end
 
  # before destroy

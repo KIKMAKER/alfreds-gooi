@@ -15,7 +15,11 @@
     </div>
   </div>
 
-  <% if @plan.present? && @duration.present? %>
+  <% if @plan == 'once_off' %>
+    <div class="alert alert-info mb-4">
+      <strong>Selected Plan:</strong> Once-off Collection &mdash; R<%= number_with_precision(@once_off_price, precision: 2) %>
+    </div>
+  <% elsif @plan.present? && @duration.present? %>
     <div class="alert alert-info mb-4">
       <strong>Selected Plan:</strong> <%= @plan %> - <%= @duration %> month<%= @duration.to_i > 1 ? 's' : '' %>
       <% if @discount_code.present? %>

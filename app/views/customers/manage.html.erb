@@ -45,6 +45,26 @@
     </div>
   <% end %>
 
+  <%# ─── DRAFT QUOTE PROMPT ─── %>
+  <% if @draft_quotation %>
+    <div class="info-card mb-3 draft-quote-banner">
+      <div class="info-card-body d-flex align-items-center justify-content-between gap-3">
+        <div>
+          <p class="mb-0" style="font-weight: 600; color: #023F3A;">You have a quote waiting</p>
+          <small class="text-muted">
+            Quote #<%= @draft_quotation.id %>
+            <% if @draft_quotation.expires_at.present? %>
+              &middot; valid until <%= @draft_quotation.expires_at.strftime("%-d %b %Y") %>
+            <% end %>
+          </small>
+        </div>
+        <%= link_to quotation_path(@draft_quotation), class: "small-yellow-btn flex-shrink-0" do %>
+          View quote <i class="fa-solid fa-arrow-right ms-1"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <%# ──────────────────────────────────────────── %>
   <%# NO SUBSCRIPTION — account started, no subs  %>
   <%# ──────────────────────────────────────────── %>
@@ -157,7 +177,7 @@
                   <%= next_col.date.strftime("%A, %d %b") %>
                 <% end %>
               <% elsif sub.is_new_customer %>
-                Starter kit delivery
+                <%= sub.once_off? ? "Collection booked" : "Starter kit delivery" %>
               <% else %>
                 <span class="text-muted">No upcoming</span>
               <% end %>
@@ -224,11 +244,16 @@
 
         <% if @subscription.is_new_customer %>
           <div class="text-center py-2">
-            <p class="mb-1"><strong>Your starter kit is on its way!</strong></p>
-            <p class="text-muted mb-4 small">Alfred will deliver your first bag and bucket <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <% if @subscription.once_off? %>
+              <p class="mb-1"><strong>Your collection is booked!</strong></p>
+              <p class="text-muted mb-4 small">Have your organic waste ready — Alfred will collect on <strong><%= @subscription.start_date&.strftime("%-d %B") || @subscription.collection_day %></strong>.</p>
+            <% else %>
+              <p class="mb-1"><strong>Your starter kit is on its way!</strong></p>
+              <p class="text-muted mb-4 small">Alfred will deliver your first bag and bucket <%= Date.today.wday < 5 ? "this" : "next" %> week.</p>
+            <% end %>
             <%= link_to "https://wa.me/27785325513?text=I%27m+ready+to+start+gooiing",
                         target: "_blank", class: "action-btn" do %>
-              <i class="fa-brands fa-whatsapp"></i> Say hi to Alfred
+              <i class="fa-brands fa-whatsapp"></i> <%= @subscription.once_off? ? "Message Alfred" : "Say hi to Alfred" %>
             <% end %>
           </div>
 
@@ -286,7 +311,7 @@
           </div>
           <% if @days_left && @days_left <= 2 %>
             <div class="mt-3 p-3" style="background: #fffbeb; border-radius: 12px; border: 1px solid #fde68a;">
-              <p class="mb-2 small"><strong>Your subscription is ending soon!</strong> Keep the gooiing going.</p>
+              <p class="mb-2 small"><strong>Your subscription is ending soon!</strong> Keep gooi going.</p>
               <%= link_to "Resubscribe", new_subscription_path, class: "action-btn" %>
             </div>
           <% end %>
@@ -368,4 +393,3 @@
   <% end %>
 
 </div>
-

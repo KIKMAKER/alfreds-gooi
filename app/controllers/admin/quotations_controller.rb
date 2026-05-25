@@ -12,7 +12,7 @@ class Admin::QuotationsController < ApplicationController
     @quotation.expires_at   = Date.today + 30.days
     @quotation.duration_months ||= 6
     @quotation.quotation_items.build
-    @products = Product.all.order(:title)
+    @products = Product.quote_eligible.order(:title)
     @users    = User.where(role: :customer).order(:first_name, :last_name)
   end
 
@@ -24,22 +24,22 @@ class Admin::QuotationsController < ApplicationController
       @quotation.calculate_total
       redirect_to quotation_path(@quotation), notice: 'Quotation was successfully created.'
     else
-      @products = Product.all.order(:title)
+      @products = Product.quote_eligible.order(:title)
       @users = User.where(role: :customer).order(:first_name, :last_name)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @products = Product.all.order(:title)
+    @products = Product.quote_eligible.order(:title)
     @users = User.where(role: :customer).order(:first_name, :last_name)
     @quotation.quotation_items.build if @quotation.quotation_items.empty?
   end
 
   def update
-    if params[:quotation][:quotation_items_attributes].present?
-      @quotation.update(quotation_params)
+    @quotation.update(quotation_params.except(:quotation_items_attributes))
 
+    if params[:quotation][:quotation_items_attributes].present?
       params[:quotation][:quotation_items_attributes].each do |key, item_params|
         next unless key.to_s.start_with?('new_')
         next if item_params[:quantity].blank? || item_params[:quantity].to_f <= 0
@@ -51,12 +51,10 @@ class Admin::QuotationsController < ApplicationController
           amount: product.price
         )
       end
-
-      @quotation.calculate_total
-      redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
-    else
-      render :edit, status: :unprocessable_entity
     end
+
+    @quotation.calculate_total
+    redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
   end
 
   def destroy
@@ -98,6 +96,8 @@ class Admin::QuotationsController < ApplicationController
       :prospect_company,
       :notes,
       :duration_months,
+      :collections_per_week,
+      :buckets_per_collection,
       :created_date,
       :expires_at,
       :status,

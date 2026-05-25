@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  has_one_attached :cover_image
+
   validates :title, :body, :slug, presence: true
   validates :slug, uniqueness: true
 

@@ -1,13 +1,20 @@
 class DropOffEventsController < ApplicationController
   before_action :set_drivers_day
-  before_action :set_drop_off_event, only: [:show, :edit, :update, :complete, :record_arrival, :record_departure, :set_current_drop_off]
+  before_action :set_drop_off_event, only: [:show, :edit, :update, :destroy, :complete, :record_arrival, :record_departure, :set_current_drop_off]
 
   def index
     @drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
   end
 
   def show
-    @buckets = @drop_off_event.buckets.order(created_at: :desc)
+    @buckets    = @drop_off_event.buckets.sort_by(&:created_at).reverse
+    @new_bucket = Bucket.new
+    @totals = {
+      total_buckets:  @drop_off_event.buckets.size,
+      total_net_kg:   @drop_off_event.total_weight_from_buckets,
+      full_equiv:     @drop_off_event.full_equivalent_count,
+      avg_per_bucket: @drop_off_event.avg_weight_per_bucket
+    }
   end
 
   def edit
@@ -19,6 +26,12 @@ class DropOffEventsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @drop_off_event.destroy!
+    redirect_back fallback_location: route_drivers_days_path(date: @drivers_day.date),
+                  notice: "Drop-off event removed from today's route."
   end
 
   def complete
@@ -79,7 +92,9 @@ class DropOffEventsController < ApplicationController
   end
 
   def set_drop_off_event
-    @drop_off_event = @drivers_day.drop_off_events.find(params[:id])
+    @drop_off_event = @drivers_day.drop_off_events
+                                  .includes(:drop_off_site, :buckets)
+                                  .find(params[:id])
   end
 
   def drop_off_event_params

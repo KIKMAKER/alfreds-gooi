@@ -1,0 +1,399 @@
+// ─── Block landing page ───────────────────────────────────────────────────────
+// Public-facing page linked from QR codes on block posters and emails.
+// Mobile-first; residents arrive from phones.
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+
+.block-hero {
+  position: relative;
+  min-height: 60vh;
+  background: $dark-green;
+  overflow: hidden;
+
+  &__photos {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  &__photo {
+    flex: 1;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.55;
+    }
+
+    &--primary {
+      flex: 2; // give the lead photo more space
+    }
+  }
+
+  &__placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, $dark-green 0%, $medium-green 100%);
+  }
+
+  &__overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 60vh;
+    padding: 2rem 1.5rem 3.5rem;
+    text-align: center;
+    background: linear-gradient(to top, rgba($dark-green, 0.85) 40%, transparent 100%);
+  }
+
+  &__badge {
+    display: inline-block;
+    background: rgba($light-green, 0.25);
+    border: 1px solid rgba($light-green, 0.5);
+    color: $light-green;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: white;
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+  }
+
+  &__description {
+    color: rgba(white, 0.9);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0.75rem auto 0;
+
+    strong { color: white; }
+  }
+
+  &__address {
+    color: rgba(white, 0.65);
+    font-size: 0.9rem;
+    margin: 0.75rem 0 0;
+
+    i { margin-right: 0.4em; }
+  }
+}
+
+// ── Weekly snapshot card ──────────────────────────────────────────────────────
+
+.block-snapshot {
+  padding: 2.5rem 0;
+  background: $light-gray;
+
+  .container { max-width: 600px; }
+
+  &__card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 4px 24px rgba($dark-green, 0.08);
+    text-align: center;
+  }
+
+  &__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: $medium-green;
+    margin-bottom: 0.5rem;
+  }
+
+  &__headline {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__actual {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: $dark-green;
+    line-height: 1;
+  }
+
+  &__of {
+    font-size: 1rem;
+    color: #888;
+  }
+
+  &__expected {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $light-green;
+    line-height: 1;
+  }
+
+  &__bar-wrap {
+    height: 8px;
+    background: #e8f0ee;
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 0 auto 0.5rem;
+    max-width: 400px;
+  }
+
+  &__bar {
+    height: 100%;
+    background: linear-gradient(90deg, $medium-green, $dark-green);
+    border-radius: 999px;
+    transition: width 1s ease;
+    min-width: 4px;
+  }
+
+  &__pct {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 1.5rem;
+  }
+
+  &__mini-stats {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__mini {
+    background: #f0f7f4;
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    min-width: 130px;
+
+    &--accent {
+      background: rgba($dark-yellow, 0.12);
+    }
+  }
+
+  &__mini-value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $dark-green;
+    line-height: 1.2;
+  }
+
+  &__mini-label {
+    display: block;
+    font-size: 0.72rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.2rem;
+  }
+}
+
+// ── Cumulative stats ──────────────────────────────────────────────────────────
+
+.block-stats {
+  padding: 2rem 0;
+  background: $light-gray;
+
+  &__title {
+    text-align: center;
+    margin-bottom: 1.75rem;
+    font-size: 1.8rem;
+    color: $dark-green;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1.4fr 1fr;
+      align-items: center;
+    }
+  }
+
+  &__item {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: #f8fbf9;
+
+    &--featured {
+      background: $dark-green;
+      color: white;
+      padding: 2rem;
+
+      .block-stats__number { color: white; font-size: 3rem; }
+      .block-stats__desc   { color: rgba(white, 0.85); }
+      .block-stats__sub    { color: rgba(white, 0.6); }
+    }
+  }
+
+  &__number {
+    display: block;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $dark-green;
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  &__sub {
+    display: block;
+    font-size: 0.75rem;
+    color: #999;
+  }
+}
+
+// ── About section ─────────────────────────────────────────────────────────────
+
+.block-about {
+  padding: 3rem 0;
+  background: #f8fbf9;
+
+  &__inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: $dark-green;
+    }
+
+    p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #444;
+    }
+  }
+
+}
+
+// ── How it works ──────────────────────────────────────────────────────────────
+
+.block-how {
+  padding: 2rem 0;
+  background: white;
+
+  &__title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: $dark-green;
+  }
+
+  &__steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__step {
+    text-align: center;
+    padding: 1.5rem;
+
+    h4 {
+      font-size: 1rem;
+      color: $dark-green;
+      margin: 0.75rem 0 0.4rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  &__step-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+}
+
+// ── CTA ───────────────────────────────────────────────────────────────────────
+
+.block-cta {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, $dark-green 0%, $medium-green 100%);
+
+  .container { max-width: 560px; }
+
+  &__inner {
+    text-align: center;
+
+    h2 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: rgba(white, 0.8);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  &__btn {
+    display: inline-block;
+    background: $dark-yellow;
+    color: $dark-green;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85rem 2.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      color: $dark-green;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+  }
+
+  &__footer {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(white, 0.6);
+
+    a { color: rgba(white, 0.85); }
+  }
+}

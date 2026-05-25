@@ -1,141 +1,157 @@
-<div class="gooi-container">
-  <div class="outline">
+<div class="admin-container">
+  <div class="d-flex align-items-start justify-content-between mt-4 mb-4">
     <div>
-      <br>
-      <h1>New Subscription for <%= @user.full_name %></h1>
-      <p class="text-muted"><%= @user.email %></p>
-
-      <% if @subscription.errors.any? %>
-        <div class="alert alert-danger">
-          <ul class="mb-0">
-            <% @subscription.errors.full_messages.each do |msg| %>
-              <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-      <%= form_with model: @subscription, url: admin_subscriptions_path, method: :post do |f| %>
-        <%= hidden_field_tag :user_id, @user.id %>
-
-        <div class="row g-3 mb-4" data-controller="subscription-plan">
-          <div class="col-md-4">
-            <%= f.label :plan, class: "form-label" %>
-            <%= f.select :plan,
-                         Subscription.plans.keys.map { |p| [p.titleize, p] },
-                         { prompt: "Select plan" },
-                         class: "form-select",
-                         data: { action: "change->subscription-plan#planChanged" } %>
-          </div>
-
-          <div class="col-md-4" data-subscription-plan-target="durationField">
-            <%= f.label :duration, "Duration (months)", class: "form-label" %>
-            <%= f.select :duration,
-                         [[1, 1], [3, 3], [6, 6], [12, 12]],
-                         { prompt: "Select duration" },
-                         class: "form-select" %>
-          </div>
-
-          <div class="col-md-4" data-subscription-plan-target="dateField" style="display:none">
-            <%= f.label :start_date, "Collection Date", class: "form-label" %>
-            <%= f.date_field :start_date, class: "form-control", data: { controller: "datepicker" } %>
-          </div>
-
-          <div class="col-12 row g-3" data-subscription-plan-target="commercialField" style="display:none">
-            <div class="col-md-4">
-              <%= f.label :buckets_per_collection, "Buckets per collection", class: "form-label" %>
-              <%= f.number_field :buckets_per_collection, class: "form-control", min: 1, max: 20, placeholder: "e.g. 4" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.label :bucket_size, "Bucket size (L)", class: "form-label" %>
-              <%= f.select :bucket_size, [[25, 25], [45, 45]], { prompt: "Select size" }, class: "form-select" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.label :collections_per_week, "Collections per week", class: "form-label" %>
-              <%= f.select :collections_per_week, [[1, 1], [2, 2], [3, 3]], { selected: 1 }, class: "form-select" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.label :collection_day, "Primary collection day", class: "form-label" %>
-              <%= f.select :collection_day,
-                           %w[Monday Tuesday Wednesday Thursday Friday],
-                           { prompt: "Auto-assign from suburb" },
-                           class: "form-select" %>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Second collection day <span class="text-muted">(optional — creates satellite)</span></label>
-              <%= select_tag :second_collection_day,
-                             options_for_select(%w[Monday Tuesday Wednesday Thursday Friday]),
-                             prompt: "No second day",
-                             class: "form-select" %>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-              <div class="form-check mb-2">
-                <%= f.check_box :monthly_invoicing, class: "form-check-input" %>
-                <%= f.label :monthly_invoicing, "Monthly invoicing (vs. upfront lump sum)", class: "form-check-label" %>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <%= f.label :title, "Name / Title", class: "form-label" %>
-            <%= f.text_field :title, class: "form-control", placeholder: "e.g. Loading Bay – Thursday" %>
-          </div>
-
-          <div class="col-md-4">
-            <%= f.label :suburb, class: "form-label" %>
-            <%= f.select :suburb,
-                         Subscription::SUBURBS.sort,
-                         { prompt: "Select suburb" },
-                         class: "form-select" %>
-          </div>
-
-          <div class="col-md-8">
-            <%= f.label :street_address, class: "form-label" %>
-            <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
-              <%= f.text_field :street_address, class: "d-none", data: { address_autocomplete_target: "address" } %>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <%= f.label :apartment_unit_number, "Unit / Apt", class: "form-label" %>
-            <%= f.text_field :apartment_unit_number, class: "form-control", placeholder: "Optional" %>
-          </div>
-
-          <div class="col-md-4">
-            <%= f.label :discount_code, "Discount Code", class: "form-label" %>
-            <%= f.text_field :discount_code, class: "form-control", placeholder: "Optional" %>
-          </div>
-
-          <div class="col-md-4">
-            <%= f.label :referral_code, "Referral Code", class: "form-label" %>
-            <%= f.text_field :referral_code, class: "form-control", placeholder: "Optional" %>
-          </div>
-
-          <div class="col-md-4 d-flex align-items-end">
-            <div class="form-check mb-2">
-              <%= f.check_box :is_new_customer, checked: true, class: "form-check-input" %>
-              <%= f.label :is_new_customer, "New customer (include starter kit)", class: "form-check-label" %>
-            </div>
-          </div>
-
-          <div class="col-12">
-            <hr class="my-2">
-            <p class="form-label mb-1">Satellite subscription (optional)</p>
-            <p class="text-muted small mb-2">If this subscription exists only to generate collections on a second day for the same commercial customer, link it to the billing subscription below. Satellites never generate invoices.</p>
-            <%= f.select :primary_subscription_id,
-                         @user.subscriptions.active.map { |s| ["#{s.collection_day} – #{s.plan} ##{s.id}", s.id] },
-                         { prompt: "Not a satellite (standard billing)" },
-                         class: "form-select" %>
-          </div>
-        </div>
-
-        <p class="text-muted small mb-4">
-          Collection day is set automatically from suburb. Subscription will be created as <strong>pending</strong> — it activates when the invoice is paid.
-        </p>
-
-        <%= f.submit "Create Subscription + Send Invoice", class: "btn-yellow" %>
-        <%= link_to "Cancel", admin_user_path(@user), class: "btn-today-green ms-2" %>
-      <% end %>
+      <h1 class="mb-1">New Subscription for <%= @user.full_name %></h1>
+      <p class="text-muted mb-0"><%= @user.email %></p>
     </div>
+    <%= link_to "Skip for now →", admin_user_path(@user), class: "btn btn-outline-secondary btn-sm mt-1" %>
   </div>
+
+  <% if @quotation.present? %>
+    <div class="alert mb-4" style="background: #fffbeb; border: 1px solid #f59e0b; border-radius: 6px; padding: 14px 18px;">
+      <strong>Pre-filled from Quote #<%= @quotation.number %></strong> &mdash; <%= @quotation.customer_name %>
+      <span class="text-muted ms-2" style="font-size: 0.85em;">
+        Plan, duration, bucket size, buckets per collection, and collections per week have been set.
+        You still need to enter: street address, suburb, and start date.
+        <% if @quotation.needs_satellite? %>
+          <br><strong style="color: #d97706;">Remember to set the second collection day — this client needs a satellite.</strong>
+        <% end %>
+      </span>
+    </div>
+  <% end %>
+
+  <% if @subscription.errors.any? %>
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        <% @subscription.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @subscription, url: admin_subscriptions_path, method: :post do |f| %>
+    <%= hidden_field_tag :user_id, @user.id %>
+    <% if @quotation.present? %>
+      <%= hidden_field_tag :quotation_id, @quotation.id %>
+    <% end %>
+
+    <div class="row g-3 mb-4" data-controller="subscription-plan">
+      <div class="col-md-4">
+        <%= f.label :plan, class: "form-label" %>
+        <%= f.select :plan,
+                     Subscription.plans.keys.map { |p| [p.titleize, p] },
+                     { prompt: "Select plan" },
+                     class: "form-select",
+                     data: { action: "change->subscription-plan#planChanged" } %>
+      </div>
+
+      <div class="col-md-4" data-subscription-plan-target="durationField">
+        <%= f.label :duration, "Duration (months)", class: "form-label" %>
+        <%= f.select :duration,
+                     [[1, 1], [3, 3], [6, 6], [12, 12]],
+                     { prompt: "Select duration" },
+                     class: "form-select" %>
+      </div>
+
+      <div class="col-md-4" data-subscription-plan-target="dateField" style="display:none">
+        <%= f.label :start_date, "Collection Date", class: "form-label" %>
+        <%= f.date_field :start_date, class: "form-control", data: { controller: "datepicker" } %>
+      </div>
+
+      <div class="col-12 row g-3" data-subscription-plan-target="commercialField" style="display:none">
+        <div class="col-md-4">
+          <%= f.label :buckets_per_collection, "Buckets per collection", class: "form-label" %>
+          <%= f.number_field :buckets_per_collection, class: "form-control", min: 1, max: 20, placeholder: "e.g. 4" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :bucket_size, "Bucket size (L)", class: "form-label" %>
+          <%= f.select :bucket_size, [[25, 25], [45, 45]], { prompt: "Select size" }, class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :collections_per_week, "Collections per week", class: "form-label" %>
+          <%= f.select :collections_per_week, [[1, 1], [2, 2], [3, 3]], { selected: 1 }, class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :collection_day, "Primary collection day", class: "form-label" %>
+          <%= f.select :collection_day,
+                       %w[Monday Tuesday Wednesday Thursday Friday],
+                       { prompt: "Auto-assign from suburb" },
+                       class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Second collection day <span class="text-muted">(optional — creates satellite)</span></label>
+          <%= select_tag :second_collection_day,
+                         options_for_select(%w[Monday Tuesday Wednesday Thursday Friday]),
+                         prompt: "No second day",
+                         class: "form-select" %>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <%= f.check_box :monthly_invoicing, class: "form-check-input" %>
+            <%= f.label :monthly_invoicing, "Monthly invoicing (vs. upfront lump sum)", class: "form-check-label" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <%= f.label :title, "Name / Title", class: "form-label" %>
+        <%= f.text_field :title, class: "form-control", placeholder: "e.g. Loading Bay – Thursday" %>
+      </div>
+
+      <div class="col-md-4">
+        <%= f.label :suburb, class: "form-label" %>
+        <%= f.select :suburb,
+                     Subscription::SUBURBS.sort,
+                     { prompt: "Select suburb" },
+                     class: "form-select" %>
+      </div>
+
+      <div class="col-md-8">
+        <%= f.label :street_address, class: "form-label" %>
+        <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+          <%= f.text_field :street_address, class: "d-none", data: { address_autocomplete_target: "address" } %>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <%= f.label :apartment_unit_number, "Unit / Apt", class: "form-label" %>
+        <%= f.text_field :apartment_unit_number, class: "form-control", placeholder: "Optional" %>
+      </div>
+
+      <div class="col-md-4">
+        <%= f.label :discount_code, "Discount Code", class: "form-label" %>
+        <%= f.text_field :discount_code, class: "form-control", placeholder: "Optional" %>
+      </div>
+
+      <div class="col-md-4">
+        <%= f.label :referral_code, "Referral Code", class: "form-label" %>
+        <%= f.text_field :referral_code, class: "form-control", placeholder: "Optional" %>
+      </div>
+
+      <div class="col-md-4 d-flex align-items-end">
+        <div class="form-check mb-2">
+          <%= f.check_box :is_new_customer, checked: true, class: "form-check-input" %>
+          <%= f.label :is_new_customer, "New customer (include starter kit)", class: "form-check-label" %>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <hr class="my-2">
+        <p class="form-label mb-1">Satellite subscription (optional)</p>
+        <p class="text-muted small mb-2">If this subscription exists only to generate collections on a second day for the same commercial customer, link it to the billing subscription below. Satellites never generate invoices.</p>
+        <%= f.select :primary_subscription_id,
+                     @user.subscriptions.active.map { |s| ["#{s.collection_day} – #{s.plan} ##{s.id}", s.id] },
+                     { prompt: "Not a satellite (standard billing)" },
+                     class: "form-select" %>
+      </div>
+    </div>
+
+    <p class="text-muted small mb-4">
+      Collection day is set automatically from suburb. Subscription will be created as <strong>pending</strong> — it activates when the invoice is paid.
+    </p>
+
+    <%= f.submit "Create Subscription + Send Invoice", class: "btn-yellow" %>
+    <%= link_to "Cancel", admin_user_path(@user), class: "btn-today-green ms-2" %>
+  <% end %>
 </div>

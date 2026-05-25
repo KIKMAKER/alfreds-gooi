@@ -1,17 +1,53 @@
-<div class="driver-wrapper">
-  <h1>Well done!</h1>
+<div class="drivers-day-container">
 
-  <h3 class="mt-3">You are almost done</h3>
-  <p>Remember to clean the buckets, put away the keys and fill in these last details:</p>
-
-  <div class="drivers-form w-25">
-    <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
-      <%= f.input :total_buckets, label: "Total buckets", required: true, input_html: { min: 0 } %>
-      <%= f.input :end_kms, label: "End kms", required: true, input_html: { min: 0 } %>
-      <%= f.input :message_from_alfred, label: "Any note for Kiki?" %>
-      <%= f.submit "Thank you!", class: "small-yellow-btn"  %>
-    <% end %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Well done!</h1>
+      <p class="dd-header__sub">Almost there — just a few last details</p>
+    </div>
   </div>
-    <h3>Check for any unread messages and send the gooi message for tomorrow if needed.</h3>
+
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-flag-checkered"></i>
+      <h3>Wrap up the day</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="text-muted mb-3">Remember to clean the buckets and put away the keys.</p>
+
+      <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
+
+        <div class="bucket-scale-wrap">
+          <label class="bucket-scale-label">Total buckets collected</label>
+          <%= f.input_field :total_buckets,
+                as: :integer,
+                min: 0,
+                placeholder: "0",
+                required: true,
+                class: "bucket-scale-input" %>
+        </div>
+
+        <div class="bucket-scale-wrap mt-3">
+          <label class="bucket-scale-label">End KMs</label>
+          <%= f.input_field :end_kms,
+                as: :integer,
+                min: 0,
+                placeholder: "0",
+                required: true,
+                class: "bucket-scale-input" %>
+        </div>
+
+        <div class="form-group mt-3">
+          <%= f.label :message_from_alfred, "Any note for Kiki?", class: "bucket-scale-label" %>
+          <%= f.text_area :message_from_alfred, class: "form-control", rows: 3 %>
+        </div>
+
+        <div class="mt-4">
+          <%= f.submit "Thank you!", class: "submit-btn w-100" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
 
 </div>

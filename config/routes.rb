@@ -48,8 +48,23 @@ Rails.application.routes.draw do
       post :renew_last_subscription,  on: :member
       post :fix_subscription_boundaries, on: :member
       get  :collections,              on: :member
+      get  :transfer_subscriptions,          on: :member
+      post :transfer_subscriptions,          on: :member
+      post :generate_all_monthly_invoices,   on: :member
+      post :claim_orphaned_payments,         on: :member
+      get  :transfer_payments,               on: :member
+      post :transfer_payments,               on: :member
+      resources :payments, only: [:create, :destroy], controller: 'payments'
     end
-    resources :subscriptions, only: [:show, :new, :create]
+    resources :subscriptions, only: [:show, :new, :create] do
+      member do
+        post  :generate_monthly_invoice
+        post  :link_as_satellite
+        post  :unlink_satellite
+        patch :update_monthly_billing
+        post  :resend_email
+      end
+    end
     resources :whatsapp_messages, only: [:index] do
       collection do
         post :trigger_reminders
@@ -59,6 +74,7 @@ Rails.application.routes.draw do
     # Financial Dashboard
     get 'financials', to: 'financials#dashboard', as: :financials
     get 'financials/chart_data', to: 'financials#chart_data', as: :chart_data_financials
+    get 'financials/export_drivers_days', to: 'financials#export_drivers_days', as: :export_drivers_days_financials
 
     # Analytics Dashboard (Blazer)
     authenticate :user, ->(user) { user.admin? } do
@@ -71,6 +87,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :blocks do
+      member do
+        post :assign_subscription
+        delete :remove_subscription
+      end
+    end
     resources :posts
     resources :expenses do
       member do
@@ -122,6 +144,8 @@ Rails.application.routes.draw do
   post 'commercial/inquiries', to: 'commercial_inquiries#create', as: :create_commercial_inquiries
   get 'commercial/confirmation', to: 'commercial_inquiries#confirmation', as: :commercial_inquiry_confirmation
 
+  get 'driver_messages', to: 'driver_messages#index', as: :driver_messages
+
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
   # drop-off site managers
@@ -170,6 +194,7 @@ Rails.application.routes.draw do
   resources :quotations, only: [:show] do
     member do
       get :pdf
+      post :accept
     end
   end
 
@@ -180,6 +205,10 @@ Rails.application.routes.draw do
     resources :contacts do
       member do
         post :toggle_whatsapp
+        post :make_primary
+      end
+      collection do
+        post :add_owner
       end
     end
     # - here I am creating /subscriptions/today
@@ -239,7 +268,7 @@ Rails.application.routes.draw do
       end
     end
     resources :buckets, only: [:index, :create, :destroy]
-    resources :drop_off_events, only: [:index, :show, :edit, :update] do
+    resources :drop_off_events, only: [:index, :show, :edit, :update, :destroy] do
       member do
         post :complete
         post :record_arrival
@@ -287,6 +316,9 @@ Rails.application.routes.draw do
 
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug
+
+  # blocks (apartment blocks / estates — public landing pages)
+  resources :blocks, only: [:show], param: :slug
 
 
 

@@ -47,11 +47,17 @@
         <div class="info-card-body">
           <div class="info-row">
             <span class="info-label">Plan</span>
-            <span class="info-value"><%= sub.plan %></span>
+            <span class="info-value"><%= sub.human_plan %></span>
           </div>
           <div class="info-row">
             <span class="info-label">Duration</span>
-            <span class="info-value"><%= sub.duration %> month<%= sub.duration > 1 ? 's' : '' %></span>
+            <span class="info-value">
+              <% if sub.once_off? %>
+                Once-off
+              <% else %>
+                <%= sub.duration %> month<%= sub.duration.to_i > 1 ? 's' : '' %>
+              <% end %>
+            </span>
           </div>
           <div class="info-row">
             <span class="info-label">Period</span>

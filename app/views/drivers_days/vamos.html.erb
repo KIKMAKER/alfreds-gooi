@@ -1,57 +1,75 @@
-<div class="driver-wrapper">
-  <!--Alfred can start the day-->
-  <% if current_user.driver? && !@drivers_day.id.nil? && @drivers_day.end_time.nil? %>
-    <h1 class="text-center">Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <br>
-    <!--It's not a gooi day-->
-    <% if @collections.empty? %>
-      <h2>There are no subscriptions waiting for you.</h2>
-      <p>But I love that you checked...</p>
-      <!--It's a gooi day-->
-    <% else %>
-      <p class="text-center">There <%= @count == 1 ? 'is' : 'are' %> <%= pluralize(@count, 'parcel') %> waiting to be collected</p>
-      <% if @new_customers&.any? %>
-        <p>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</p>
-        <h5 class="mt-3">They are:</h5>
-        <% @new_customers.each do |collection| %>
-          <p><%= collection.subscription.display_name %> at <%= collection.subscription.street_address %> </p>
-          <p>Let them know you are coming past:</p>
-          <%= link_to collection.subscription.user.generate_whatsapp_link("Hello from gooi! I will be coming past today to drop off your starter kit. Please add this number to your contacts so that you can recieve our weekly reminders about collection day. Welcome to gooi! It's a joy to have you onboard."), target: :_blank do %>
-            <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
-          <% end %>
-        <% end %>
-        <strong>
-          <p class="mt-3">Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</p>
-        </strong>
-        <!--<p>Don't forget their bucket.</p>-->
-      <% end %>
-    <% end %>
-    <% unless @drivers_day.note_nil_zero? %>
-      <p>Note for the day: <%= @drivers_day.note %></p>
-    <% end %>
-    <h5 class="mt-3">Ready to get started?</h5>
-    <br>
-    <!--<div class="submit-btn">-->
-    <%= link_to "Start", start_drivers_day_path(@drivers_day), class: "submit-btn mb-5" %>
-    <!--</div>-->
+<div class="drivers-day-container">
 
-  <%elsif current_user.driver? && @drivers_day&.end_time %>
-    <!--Alfred has finished the day - redirect to complete-->
-    <h1>Day Complete!</h1>
-    <p>You've already finished today's route.</p>
-    <%= link_to "View Stats", complete_drivers_day_path(@drivers_day), class: "submit-btn mb-5" %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Good morning, <%= current_user.first_name %></h1>
+      <p class="dd-header__sub"><%= @today %></p>
+    </div>
+  </div>
 
-  <% elsif @drivers_day.nil? && current_user.driver? %><!--Alfred can't start the day-->
-    <h1>Seems something went wrong when the collections were loaded</h1>
-    <p>Please ask Kiki to update collections</p>
-
-  <% elsif current_user.admin? && !Collection.exists?(date: Date.today) %>
-    <%= link_to "load the collections, babe", load_csv_collections_path, class: "collection-button" %>
+  <% if @collections.empty? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__body">
+        <p>No collections waiting for you today.</p>
+        <p>But I love that you checked...</p>
+      </div>
+    </div>
 
   <% else %>
-    <h1>Good morning <%= current_user.first_name %></h1>
-    <h4>It's <%= @today %> today</h4>
-    <p>View all <%= link_to "past days", drivers_days_path %></p>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-box-open"></i>
+        <h3><%= pluralize(@count, 'parcel') %> waiting to be collected</h3>
+      </div>
+
+      <% if @new_customers&.any? %>
+        <div class="dd-form-card__body">
+          <p class="mb-3"><strong>and <%= pluralize(@new_customers.count, 'new customer') %> to meet!</strong></p>
+          <% @new_customers.each do |collection| %>
+            <div class="dd-note mb-2">
+              <p class="mb-1"><strong><%= collection.subscription.display_name %></strong></p>
+              <p class="mb-1 text-muted"><%= collection.subscription.street_address %></p>
+              <%= link_to collection.subscription.user.generate_whatsapp_link("Hello from gooi! I will be coming past today to drop off your starter kit. Please add this number to your contacts so that you can recieve our weekly reminders about collection day. Welcome to gooi! It's a joy to have you onboard."), target: :_blank, class: "btn-yellow btn-sm mt-1" do %>
+                <i class="fa-brands fa-whatsapp whatsapp-icon"></i> Message <%= collection.subscription.display_name.split.first %>
+              <% end %>
+            </div>
+          <% end %>
+          <p class="mt-3"><strong>Take <%= pluralize(@new_customers.count, 'bucket') %> for them!</strong></p>
+        </div>
+      <% end %>
+    </div>
+
+    <% unless @drivers_day.note_nil_zero? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__header">
+          <i class="fa-solid fa-note-sticky"></i>
+          <h3>Note for today</h3>
+        </div>
+        <div class="dd-form-card__body">
+          <p><%= @drivers_day.note %></p>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="dd-form-card mt-3">
+      <div class="dd-form-card__header">
+        <i class="fa-brands fa-whatsapp"></i>
+        <h3>Message tomorrow's customers</h3>
+      </div>
+      <div class="dd-form-card__body">
+        <p class="text-muted mb-3">Send a heads-up to the next day's route before you set off.</p>
+        <%= link_to driver_messages_path, class: "btn-yellow w-100" do %>
+          <i class="fa-brands fa-whatsapp"></i> Message a Day
+        <% end %>
+      </div>
+    </div>
+
   <% end %>
+
+  <% if @drivers_day.end_time.present? %>
+    <%= link_to "View Stats", complete_drivers_day_path(@drivers_day), class: "btn-yellow w-100 mt-3" %>
+  <% else %>
+    <%= link_to "Let's go!", start_drivers_day_path(@drivers_day), class: "btn-yellow w-100 mt-3" %>
+  <% end %>
+
 </div>

@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices, :claim_orphaned_payments, :transfer_payments]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
       # Determine where to redirect based on next_action parameter
       case params[:next_action]
       when 'subscription'
-        redirect_to new_subscription_path(user_id: @user.id),
+        redirect_to new_admin_subscription_path(user_id: @user.id),
                     notice: "User created! Now create their subscription."
       when 'drop_off'
         redirect_to admin_drop_off_sites_path,
@@ -122,6 +122,7 @@ class Admin::UsersController < ApplicationController
     if subscription
       SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_now
       SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_now
+      subscription.update_column(:payment_reminder_sent_at, Time.current)
       redirect_to pending_admin_users_path, notice: "Nudge sent to #{@user.first_name}."
     else
       redirect_to pending_admin_users_path, alert: "No pending subscription found for #{@user.first_name}."
@@ -137,6 +138,7 @@ class Admin::UsersController < ApplicationController
     subs.each do |subscription|
       SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge.deliver_now
       SubscriptionMailer.with(subscription: subscription).ad_hoc_nudge_alert.deliver_now
+      subscription.update_column(:payment_reminder_sent_at, Time.current)
     end
 
     redirect_to pending_admin_users_path, notice: "Nudge sent to #{subs.count} pending customer#{'s' if subs.count != 1}."
@@ -168,6 +170,91 @@ class Admin::UsersController < ApplicationController
     end
   rescue StandardError => e
     redirect_to admin_user_path(@user), alert: "Error: #{e.message}"
+  end
+
+  def claim_orphaned_payments
+    invoice_ids = Invoice.joins(:subscription).where(subscriptions: { user_id: @user.id }).pluck(:id)
+    orphaned = Payment.where(invoice_id: invoice_ids).where.not(user_id: @user.id)
+    count = orphaned.update_all(user_id: @user.id)
+
+    if count > 0
+      redirect_to admin_user_path(@user),
+                  notice: "#{count} payment#{'s' if count != 1} claimed — they were linked to this user's invoices but sat on another account."
+    else
+      redirect_to admin_user_path(@user),
+                  alert: "No orphaned payments found. All payments linked to this user's invoices are already on this account."
+    end
+  end
+
+  def transfer_payments
+    @destination_user = @user
+    @all_users = User.order(:first_name, :last_name)
+
+    if params[:from_user_id].present?
+      @source_user = User.find_by(id: params[:from_user_id])
+      @available_payments = @source_user&.payments&.order(date: :desc) || []
+    end
+
+    if request.post?
+      ids = Array(params[:payment_ids]).map(&:to_i).reject(&:zero?)
+
+      if ids.empty?
+        flash.now[:alert] = "No payments selected."
+        render :transfer_payments, status: :unprocessable_entity
+        return
+      end
+
+      transferred = Payment.where(id: ids, user_id: @source_user.id)
+                           .update_all(user_id: @destination_user.id)
+
+      redirect_to admin_user_path(@destination_user),
+                  notice: "#{transferred} payment#{'s' if transferred != 1} moved to #{@destination_user.first_name}."
+    end
+  end
+
+  def generate_all_monthly_invoices
+    eligible = @user.subscriptions
+                    .where(monthly_invoicing: true, primary_subscription_id: nil, status: :active)
+                    .where("next_invoice_date <= ?", Date.today)
+
+    if eligible.none?
+      return redirect_to admin_user_path(@user),
+                         alert: "No invoices due. Check that subscriptions have monthly invoicing enabled and next_invoice_date is today or earlier."
+    end
+
+    invoices = eligible.filter_map { |sub| MonthlyInvoiceService.new(sub).call }
+    unique_invoices = invoices.uniq(&:id)
+
+    redirect_to admin_user_path(@user),
+                notice: "#{unique_invoices.count} invoice#{'s' if unique_invoices.count != 1} generated across #{eligible.count} subscription#{'s' if eligible.count != 1}."
+  rescue => e
+    redirect_to admin_user_path(@user), alert: "Error generating invoices: #{e.message}"
+  end
+
+  def transfer_subscriptions
+    @destination_user = @user
+    @all_users = User.customer.order(:first_name, :last_name)
+
+    if params[:from_user_id].present?
+      @source_user = User.find_by(id: params[:from_user_id])
+      @transferable_subscriptions = @source_user&.subscriptions&.order(created_at: :desc) || []
+    end
+
+    if request.post?
+      ids = Array(params[:subscription_ids]).map(&:to_i).reject(&:zero?)
+
+      if ids.empty?
+        flash.now[:alert] = "No subscriptions selected."
+        render :transfer_subscriptions, status: :unprocessable_entity
+        return
+      end
+
+      transferred = Subscription.where(id: ids, user_id: @source_user.id)
+                                .update_all(user_id: @destination_user.id)
+
+      redirect_to admin_user_path(@destination_user),
+                  notice: "#{transferred} subscription#{'s' if transferred != 1} transferred to #{@destination_user.first_name}."
+    end
   end
 
   private

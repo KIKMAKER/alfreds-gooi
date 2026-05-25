@@ -42,7 +42,7 @@
     </p>
 
     <p style="font-size: 1.1rem;">
-      Thank you for your payment! Your <%= @subscription.plan %> subscription is now <strong>active</strong>. ♻️
+      Thank you for your payment! Your <%= @subscription.human_plan %> subscription is now <strong>active</strong>. ♻️
     </p>
 
     <% if @is_new %>
@@ -61,7 +61,7 @@
       <% else %>
         <p style="font-size: 1.1rem;">
           <strong>Your subscription details:</strong><br>
-          Plan: <%= @subscription.plan %><br>
+          Plan: <%= @subscription.human_plan %><br>
           Duration: <%= @subscription.duration %> months<br>
           Collection day: <%= @subscription.collection_day %>
         </p>
@@ -85,7 +85,7 @@
     <% else %>
       <%# ---- RETURNING CUSTOMER ---- %>
       <p style="font-size: 1.1rem;">
-        Welcome back! Your <%= @subscription.plan %> subscription is active and your collections will continue every <strong><%= @subscription.collection_day %></strong> as usual.
+        Welcome back! Your <%= @subscription.human_plan %> subscription is active and your collections will continue every <strong><%= @subscription.collection_day %></strong> as usual.
       </p>
 
       <p style="font-size: 1.1rem;">

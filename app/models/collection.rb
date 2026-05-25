@@ -8,12 +8,13 @@ class Collection < ApplicationRecord
   scope :recent, -> { order(date: :desc) }
 
   # Custom methods
-  # One-shot helper to mark skip + email (use this everywhere instead of bare update)
+  # One-shot helper to mark skip + send email notification.
+  # Use this for human-triggered skips (admin, customer "skip next week").
   def mark_skipped!(by: nil, reason: "unspecified", at: Time.zone.now)
     return false if skip? # avoid double-emails
 
     transaction do
-      update!(skip: true)
+      update!(skip: true, skip_reason: reason)
       CollectionMailer.skipped(
         collection_id: id,
         actor_id: by&.id,
@@ -21,6 +22,14 @@ class Collection < ApplicationRecord
         occurred_at: at
       ).deliver_now
     end
+    true
+  end
+
+  # Silently mark as skipped with a reason — no email.
+  # Use this in jobs creating collections for already-paused/holiday periods.
+  def skip_silently!(reason:)
+    return false if skip?
+    update!(skip: true, skip_reason: reason)
     true
   end
 
@@ -45,12 +54,13 @@ class Collection < ApplicationRecord
     sub = subscription
     return 0 unless sub
 
-    if sub.Commercial?
-      (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
-    elsif sub.XL?
-      buckets.to_i * 25
-    else
+    if sub.Standard? || sub.once_off?
       bags.to_i * 5
+    else
+      # XL and Commercial: use actual tracked bucket sizes where available,
+      # fall back to total buckets × 25L if sizes haven't been recorded yet.
+      sized = (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
+      sized.positive? ? sized : (buckets.to_i * 25)
     end
   end
 

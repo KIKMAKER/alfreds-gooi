@@ -1,0 +1,46 @@
+<div class="page-container">
+  <section class="map-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Blocks</h1>
+        <%= link_to "New Block", new_admin_block_path, class: "btn-gooi" %>
+      </div>
+
+      <% if @blocks.any? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Slug</th>
+              <th>Residents</th>
+              <th>Subscriptions</th>
+              <th>Active</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @blocks.each do |block| %>
+              <tr>
+                <td><strong><%= block.name %></strong></td>
+                <td><code>/blocks/<%= block.slug %></code></td>
+                <td><%= block.resident_count || "—" %></td>
+                <td><%= block.subscriptions.count %></td>
+                <td><%= block.active_subscription_count %></td>
+                <td class="text-end">
+                  <%= link_to "View", admin_block_path(block), class: "btn btn-sm btn-outline-secondary me-1" %>
+                  <%= link_to "Edit", edit_admin_block_path(block), class: "btn btn-sm btn-outline-secondary me-1" %>
+                  <%= link_to "Public page", block_path(block.slug), class: "btn btn-sm btn-outline-secondary me-1", target: "_blank" %>
+                  <%= link_to "Delete", admin_block_path(block),
+                        class: "btn btn-sm btn-outline-danger",
+                        data: { turbo_method: :delete, turbo_confirm: "Delete #{block.name}? This will unlink all subscriptions." } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">No blocks yet. <%= link_to "Create the first one", new_admin_block_path %>.</p>
+      <% end %>
+    </div>
+  </section>
+</div>

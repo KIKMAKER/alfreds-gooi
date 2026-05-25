@@ -17,6 +17,7 @@ class Admin::DashboardController < Admin::BaseController
     @draft_quotes          = Quotation.where(status: :draft).count
     @pending_referrals     = Referral.where(status: :pending).count
     @pending_inquiries     = CommercialInquiry.where(status: :pending).count
+    @draft_posts           = Post.where(published: false).count
 
     hour = Time.now.hour
     @greeting = if hour < 12 then "Good morning"

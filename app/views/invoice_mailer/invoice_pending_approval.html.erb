@@ -7,7 +7,7 @@
       <strong>Customer:</strong> <%= @user&.first_name %> <%= @user&.last_name %> (<%= @user&.email %>)
     </p>
     <p style="margin: 0 0 8px; font-size: 15px;">
-      <strong>Subscription:</strong> <%= @subscription.plan %> &mdash; <%= @subscription.duration %>-month contract
+      <strong>Subscription:</strong> <%= @subscription.human_plan %> &mdash; <%= @subscription.duration %>-month contract
     </p>
     <p style="margin: 0; font-size: 15px;">
       <strong>Installment:</strong> <%= @installment_number %> of <%= @subscription.duration %>

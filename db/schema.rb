@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_23_122543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -141,6 +141,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
+  create_table "blocks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "address"
+    t.text "description"
+    t.integer "resident_count"
+    t.float "latitude"
+    t.float "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_blocks_on_slug", unique: true
+  end
+
   create_table "buckets", force: :cascade do |t|
     t.bigint "drivers_day_id", null: false
     t.float "weight_kg", default: 0.0
@@ -189,6 +202,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.integer "position"
     t.integer "buckets_45l", default: 0
     t.integer "buckets_25l", default: 0
+    t.string "skip_reason"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
@@ -217,6 +231,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.boolean "is_primary", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email"
     t.index ["phone_number"], name: "index_contacts_on_phone_number"
     t.index ["subscription_id", "is_primary"], name: "index_contacts_on_subscription_id_and_is_primary"
     t.index ["subscription_id", "phone_number"], name: "index_contacts_on_subscription_id_and_phone_number", unique: true
@@ -511,6 +526,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.bigint "invoice_id"
     t.string "payment_type"
     t.boolean "manual", default: false, null: false
+    t.text "note"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
@@ -537,6 +553,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.boolean "is_active", default: false, null: false
     t.integer "stock", default: 0
     t.boolean "quote_only", default: false, null: false
+    t.string "billing_type", default: "standard", null: false
+    t.bigint "invoice_product_id"
+    t.index ["invoice_product_id"], name: "index_products_on_invoice_product_id"
   end
 
   create_table "quotation_items", force: :cascade do |t|
@@ -570,6 +589,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.date "event_date"
     t.string "event_name"
     t.string "event_venue"
+    t.integer "collections_per_week", default: 1, null: false
+    t.integer "buckets_per_collection"
     t.index ["subscription_id"], name: "index_quotations_on_subscription_id"
     t.index ["user_id"], name: "index_quotations_on_user_id"
   end
@@ -763,7 +784,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
     t.decimal "monthly_volume_amount", precision: 10, scale: 2
     t.decimal "monthly_subscription_amount", precision: 10, scale: 2
     t.bigint "primary_subscription_id"
+    t.bigint "quotation_id"
+    t.bigint "block_id"
+    t.index ["block_id"], name: "index_subscriptions_on_block_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
+    t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -873,6 +898,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_07_124758) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscriptions", "blocks"
+  add_foreign_key "subscriptions", "quotations"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
   add_foreign_key "whatsapp_messages", "contacts"

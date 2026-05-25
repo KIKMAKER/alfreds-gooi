@@ -1,0 +1,101 @@
+<div class="admin-container">
+  <div class="d-flex align-items-start justify-content-between mt-4 mb-4">
+    <div>
+      <h1 class="mb-1">Transfer Payments</h1>
+      <p class="text-muted mb-0">
+        Destination: <%= link_to @destination_user.full_name, admin_user_path(@destination_user), class: "link-title" %>
+      </p>
+    </div>
+    <%= link_to "← Back", admin_user_path(@destination_user), class: "btn btn-outline-secondary btn-sm mt-1" %>
+  </div>
+
+  <%# Step 1: pick source user %>
+  <div class="info-card mb-4">
+    <div class="info-card-header">
+      <i class="fa-solid fa-user-group"></i>
+      <h3>Step 1 — Choose source account</h3>
+    </div>
+    <div class="info-card-body">
+      <%= form_with url: transfer_payments_admin_user_path(@destination_user), method: :get, data: { turbo: false } do |f| %>
+        <div class="d-flex gap-2 align-items-end">
+          <div class="flex-grow-1">
+            <%= label_tag :from_user_id, "Transfer payments from:", class: "form-label" %>
+            <%= select_tag :from_user_id,
+                           options_from_collection_for_select(
+                             @all_users.reject { |u| u.id == @destination_user.id },
+                             :id,
+                             ->(u) { "#{u.full_name} (#{u.email})" },
+                             @source_user&.id
+                           ),
+                           prompt: "Select account…",
+                           class: "form-select" %>
+          </div>
+          <%= f.submit "Load payments →", class: "btn-today-green" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Step 2: select payments %>
+  <% if @source_user %>
+    <div class="info-card mb-4">
+      <div class="info-card-header">
+        <i class="fa-solid fa-money-bill-transfer"></i>
+        <h3>Step 2 — Select payments to move</h3>
+      </div>
+      <div class="info-card-body">
+        <% if @available_payments.any? %>
+          <%= form_with url: transfer_payments_admin_user_path(@destination_user), method: :post, data: { turbo: false } do |f| %>
+            <%= hidden_field_tag :from_user_id, @source_user.id %>
+
+            <div class="mb-1 d-flex justify-content-between align-items-center">
+              <small class="text-muted"><%= @available_payments.count %> payments on <%= @source_user.full_name %>'s account</small>
+              <a href="#" onclick="document.querySelectorAll('.payment-cb').forEach(cb => cb.checked = true); return false;" class="small">Select all</a>
+            </div>
+
+            <div class="mb-3">
+              <% @available_payments.each do |payment| %>
+                <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                  <div class="form-check mb-0">
+                    <%= check_box_tag "payment_ids[]", payment.id, false,
+                                     class: "form-check-input payment-cb",
+                                     id: "payment_#{payment.id}" %>
+                  </div>
+                  <label for="payment_<%= payment.id %>" class="mb-0 flex-grow-1" style="cursor: pointer;">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <strong>R<%= number_with_delimiter(payment.total_amount / 100.0) %></strong>
+                      <span class="badge rounded-pill bg-secondary" style="font-size: 0.7rem;">
+                        <%= payment.payment_type&.upcase || 'OTHER' %>
+                      </span>
+                      <% if payment.invoice_id? %>
+                        <span class="badge rounded-pill" style="font-size: 0.7rem; background: #e8f4ea; color: #2d7a3a;">
+                          Invoice #<%= payment.invoice_id %>
+                        </span>
+                      <% end %>
+                    </div>
+                    <small class="text-muted">
+                      <%= payment.date&.strftime('%d %b %Y') %>
+                      <% if payment.note.present? %>
+                        &middot; <%= payment.note %>
+                      <% end %>
+                    </small>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Selected payments will be moved to <strong><%= @destination_user.full_name %></strong>'s account.
+              Invoice links are preserved.
+            </p>
+
+            <%= f.submit "Move selected payments", class: "btn-yellow",
+                data: { turbo_confirm: "Move selected payments to #{@destination_user.full_name}?" } %>
+          <% end %>
+        <% else %>
+          <p class="text-muted mb-0"><%= @source_user.full_name %> has no payments to transfer.</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

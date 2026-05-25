@@ -9,7 +9,7 @@
       <div>
         <h1>Household Contacts</h1>
         <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
-          <%= @subscription.short_address %>, <%= @subscription.suburb %>
+          <%= link_to "#{@subscription.short_address}, #{@subscription.suburb}", admin_subscription_path(@subscription), class: "text-white text-decoration-underline" %>
         </p>
       </div>
     </div>
@@ -18,6 +18,24 @@
       <i class="fa-solid fa-user-plus"></i> Add
     <% end %>
   </div>
+
+  <!-- Add owner prompt -->
+  <% unless @contacts.any?(&:is_primary?) %>
+    <div class="info-card mb-3" style="border: 2px dashed rgba(2,63,58,0.3); background: rgba(2,63,58,0.04);">
+      <div class="info-card-body d-flex align-items-center justify-content-between gap-3">
+        <div>
+          <p class="mb-0" style="font-weight: 500; color: #023F3A;">No owner contact yet</p>
+          <small class="text-muted">Add <%= @subscription.user.first_name %> as the primary contact to enable WhatsApp reminders.</small>
+        </div>
+        <%= button_to add_owner_subscription_contacts_path(@subscription),
+                      method: :post,
+                      class: "action-btn",
+                      style: "white-space: nowrap; flex-shrink: 0;" do %>
+          <i class="fa-solid fa-user-check"></i> Add Owner
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <!-- Contacts -->
   <% @contacts.each do |contact| %>
@@ -72,6 +90,13 @@
           <% end %>
 
           <% unless contact.is_primary? %>
+            <%= button_to make_primary_subscription_contact_path(@subscription, contact),
+                          method: :post,
+                          class: "action-btn",
+                          style: "border-color: #023F3A; color: #023F3A;",
+                          data: { turbo_confirm: "Make #{contact.first_name} the owner contact? The current owner will be demoted." } do %>
+              <i class="fa-solid fa-star"></i> Make owner
+            <% end %>
             <%= button_to subscription_contact_path(@subscription, contact),
                           method: :delete,
                           class: "action-btn",

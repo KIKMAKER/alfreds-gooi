@@ -97,12 +97,18 @@ class BankStatementParser
   def detect_bank_format(rows)
     headers = rows.headers.map(&:downcase)
 
-    @bank_format = if headers.include?('date') && headers.include?('description') && headers.include?('amount')
+    # Normalise Amount_ZAR → treat as standard Amount column
+    @amount_zar_format = headers.include?('amount_zar')
+    # Detect if dates are in "DD Mon" format (no year) — infer year at parse time
+    @yearless_dates = headers.include?('date') && rows.first&.[]('Date')&.match?(/^\d{1,2} [A-Za-z]{3}$/)
+
+    @bank_format = if headers.include?('date') && headers.include?('description') &&
+                      (headers.include?('amount') || @amount_zar_format)
                      :standard
                    elsif headers.include?('transaction date') && headers.include?('beneficiary')
                      :capitec
                    else
-                     :standard  # Default to standard format
+                     :standard
                    end
   end
 
@@ -133,9 +139,11 @@ class BankStatementParser
   end
 
   def parse_standard_row(row)
-    transaction_date = parse_date(row['Date'] || row['date'])
+    date_str = row['Date'] || row['date']
+    transaction_date = @yearless_dates ? parse_yearless_date(date_str) : parse_date(date_str)
     description = row['Description'] || row['description'] || ''
-    amount_str = row['Amount'] || row['amount'] || '0'
+    # Support Amount_ZAR column name (used in manually-exported Gooi CSVs)
+    amount_str = row['Amount'] || row['amount'] || row['Amount_ZAR'] || row['amount_zar'] || '0'
 
     # Parse amount
     amount = parse_amount(amount_str)
@@ -188,7 +196,7 @@ class BankStatementParser
     return Date.current unless date_str
 
     # Try multiple date formats
-    formats = ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%Y/%m/%d', '%d-%m-%Y']
+    formats = ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%Y/%m/%d', '%d-%m-%Y', '%d %b %Y', '%d %B %Y']
 
     formats.each do |format|
       begin
@@ -202,6 +210,20 @@ class BankStatementParser
     Date.parse(date_str)
   rescue ArgumentError
     Date.current
+  end
+
+  # Handle "25 Mar" style dates with no year. Assumes current year; steps back
+  # one year if that would place the date in the future (e.g. a March statement
+  # uploaded in January).
+  def parse_yearless_date(date_str)
+    return Date.current unless date_str
+
+    begin
+      candidate = Date.strptime("#{date_str} #{Date.current.year}", '%d %b %Y')
+      candidate > Date.current ? candidate.prev_year : candidate
+    rescue ArgumentError
+      Date.current
+    end
   end
 
   def parse_amount(amount_str)

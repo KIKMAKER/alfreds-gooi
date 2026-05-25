@@ -179,7 +179,8 @@
               <%= button_to 'Select', subscriptions_path,
                 params: { subscription: { plan: 'Standard', duration: '6'}, og: true, new: false  },
                 method: :post,
-                class: "sign-up-btn" %>
+                class: "sign-up-btn",
+                data: { turbo: false } %>
             </div>
           </div>
         </div>
@@ -195,7 +196,8 @@
             <%= button_to 'Select', subscriptions_path,
                 params: { subscription: { plan: 'Standard', duration: '1' }, og: false, new: false },
                 method: :post,
-                class: "sign-up-btn" %>
+                class: "sign-up-btn",
+                data: { turbo: false } %>
           </div>
         </div>
         <div class="month-card">
@@ -205,7 +207,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'Standard', duration: '3' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'Standard', duration: '3' }, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
         <div class="month-card popular">
@@ -216,7 +218,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'Standard', duration: '6' }, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
         <div class="month-card popular">
@@ -226,7 +228,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'Standard', duration: '12' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'Standard', duration: '12' }, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
       </div>
@@ -240,7 +242,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'XL', duration: '1' }, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '1' }, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
         <div class="month-card">
@@ -250,7 +252,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'XL', duration: '3'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '3'}, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
         <div class="month-card">
@@ -260,7 +262,7 @@
           <div>
             <br>
             <%= button_to 'Select', subscriptions_path,
-                params: {subscription: { plan: 'XL', duration: '6'}, og: false, new: false }, method: :post, class: "sign-up-btn"  %>
+                params: {subscription: { plan: 'XL', duration: '6'}, og: false, new: false }, method: :post, class: "sign-up-btn", data: { turbo: false }  %>
           </div>
         </div>
       </div>

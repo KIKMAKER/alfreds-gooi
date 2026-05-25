@@ -18,25 +18,24 @@ class DropOffEvent < ApplicationRecord
 
   # Calculate total weight from all buckets weighed at this drop-off
   def total_weight_from_buckets
-    buckets.sum(:weight_kg)
+    buckets.loaded? ? buckets.sum(&:weight_kg) : buckets.sum(:weight_kg)
   end
 
   # Calculate average weight per bucket at this drop-off
   def avg_weight_per_bucket
-    return 0.0 if buckets.count.zero?
-    total_weight_from_buckets / buckets.count
+    n = buckets.loaded? ? buckets.size : buckets.count
+    return 0.0 if n.zero?
+    total_weight_from_buckets / n
   end
 
   # Full-equivalent count normalized to 25L buckets
   # A 45L bucket = 1.8 equivalent 25L buckets (45/25)
   def full_equivalent_count
-    total = 0.0
-    buckets.each do |bucket|
-      size_multiplier = (bucket.bucket_size || 25).to_f / 25.0  # Normalize to 25L
+    buckets.sum do |bucket|
+      size_multiplier = (bucket.bucket_size || 25).to_f / 25.0
       half_multiplier = bucket.half? ? 0.5 : 1.0
-      total += size_multiplier * half_multiplier
+      size_multiplier * half_multiplier
     end
-    total
   end
 
   # Average weight per full-equivalent bucket
@@ -48,11 +47,11 @@ class DropOffEvent < ApplicationRecord
 
   # Count buckets by size
   def bucket_count_25l
-    buckets.where(bucket_size: 25).count
+    buckets.loaded? ? buckets.count { |b| b.bucket_size == 25 } : buckets.where(bucket_size: 25).count
   end
 
   def bucket_count_45l
-    buckets.where(bucket_size: 45).count
+    buckets.loaded? ? buckets.count { |b| b.bucket_size == 45 } : buckets.where(bucket_size: 45).count
   end
 
   # Timing methods for drop-off duration tracking

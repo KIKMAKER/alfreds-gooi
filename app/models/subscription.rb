@@ -1,5 +1,6 @@
 class Subscription < ApplicationRecord
   belongs_to :user
+  belongs_to :block, optional: true
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
@@ -8,6 +9,9 @@ class Subscription < ApplicationRecord
   has_many :revenue_recognitions, dependent: :destroy
   has_many :contacts, dependent: :destroy
   accepts_nested_attributes_for :contacts, allow_destroy: true, reject_if: :all_blank
+
+  # Records which accepted quotation created this subscription (nil for non-quote subscriptions).
+  belongs_to :quotation, optional: true
 
   # Satellite subscriptions exist only to generate collections on a second collection day.
   # All billing flows through the primary. Satellites are never invoiced independently.
@@ -22,6 +26,9 @@ class Subscription < ApplicationRecord
     self.set_customer_id unless self.customer_id
     # self.set_suburb
   end
+  before_create :inherit_collection_order
+  after_create :create_owner_contact
+  after_save :sync_collection_positions
   before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
   before_validation :normalize_referral_code
@@ -126,6 +133,12 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Expected litres collected per week based on this subscription's own config.
+  # Used by Block#expected_weekly_volume_l to sum across linked subscriptions.
+  def expected_weekly_volume_l
+    allowed_litres_per_collection * (collections_per_week || 1)
+  end
+
   def total_litres
     if Commercial?
       collections.sum("buckets_25l * 25 + buckets_45l * 45")
@@ -179,16 +192,23 @@ class Subscription < ApplicationRecord
 
   def self.humanized_plans
     {
-      once_off: 'Once Off',
+      once_off: 'Once-off',
       Standard: 'Standard',
       XL: 'Extra Large',
       Commercial: 'Commercial'
     }
   end
 
-  def is_paused?
-    # added && condition to prevent calculation of holiday when holiday is nil
-    is_paused || (holiday_start != nil && (Date.today >= holiday_start && Date.today <= holiday_end))
+  def human_plan
+    self.class.humanized_plans[plan.to_sym] || plan
+  end
+
+  def is_paused?(on_date: Date.today)
+    is_paused || holiday_covers?(on_date)
+  end
+
+  def holiday_covers?(date)
+    holiday_start.present? && date >= holiday_start && date <= holiday_end
   end
 
   def complete?
@@ -478,6 +498,31 @@ class Subscription < ApplicationRecord
 
 
   private
+
+  def create_owner_contact
+    return if contacts.exists?(is_primary: true)
+    return if user.phone_number.blank?
+
+    contacts.create(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone_number: user.phone_number,
+      is_primary: true,
+      whatsapp_opt_out: false
+    )
+  end
+
+  def inherit_collection_order
+    return if collection_order.present?
+    previous = Subscription.where(user_id: user_id).where.not(collection_order: nil).order(created_at: :desc).first
+    self.collection_order = previous.collection_order if previous
+  end
+
+  def sync_collection_positions
+    return unless saved_change_to_collection_order?
+    return if collection_order.blank?
+    collections.where("date > ?", Date.today).update_all(position: collection_order)
+  end
 
   def normalize_referral_code
     self.referral_code = referral_code.strip.upcase if referral_code.present?

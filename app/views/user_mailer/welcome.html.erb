@@ -5,24 +5,47 @@
     Welcome to <strong>gooi</strong>. We're excited to have you on board and thrilled that you're joining us in reducing waste and building a cleaner planet.
   </p>
 
-  <p style="font-size: 1.1rem;">
-    Your <strong>starter kit invoice</strong> has been generated. It includes your compost bin, compostable bags, and a helpful guide to get you going.
-  </p>
+  <% if @subscription.once_off? %>
 
-  <p style="font-size: 1.1rem;">
-    To get everything delivered on time, please settle your invoice using SnapScan or EFT:
-  </p>
+    <p style="font-size: 1.1rem;">
+      Your once-off collection invoice has been generated. Please settle it to confirm your booking — Alfred will collect your organic waste on
+      <strong><%= @subscription.start_date&.strftime("%A, %-d %B") || @subscription.collection_day %></strong>.
+    </p>
 
-  <p style="margin: 1.5rem 0;">
-    <a href="<%= invoice_url(@subscription.invoices.order(created_at: :asc).first) %>"
-       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
-      View & Pay Invoice
-    </a>
-  </p>
+    <p style="margin: 1.5rem 0;">
+      <a href="<%= invoice_url(@subscription.invoices.order(created_at: :asc).first) %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+        View & Pay Invoice
+      </a>
+    </p>
 
-  <p style="font-size: 1.1rem;">
-    We'll be in your neighbourhood on <strong><%= @subscription.collection_day %></strong>. Your starter kit will arrive in week one, and from then on, just have your full bag ready for collection.
-  </p>
+    <p style="font-size: 1.1rem;">
+      Have your organic waste ready in a bag or bucket before Alfred arrives. If you want to coordinate the details,
+      <a href="https://wa.me/27785325513" style="color: #1f4632; font-weight: bold; text-decoration: underline;">message Alfred on WhatsApp</a>.
+    </p>
+
+  <% else %>
+
+    <p style="font-size: 1.1rem;">
+      Your <strong>starter kit invoice</strong> has been generated. It includes your compost bin, compostable bags, and a helpful guide to get you going.
+    </p>
+
+    <p style="font-size: 1.1rem;">
+      To get everything delivered on time, please settle your invoice using SnapScan or EFT:
+    </p>
+
+    <p style="margin: 1.5rem 0;">
+      <a href="<%= invoice_url(@subscription.invoices.order(created_at: :asc).first) %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+        View & Pay Invoice
+      </a>
+    </p>
+
+    <p style="font-size: 1.1rem;">
+      We'll be in your neighbourhood on <strong><%= @subscription.collection_day %></strong>. Your starter kit will arrive in week one, and from then on, just have your full bag ready for collection.
+    </p>
+
+  <% end %>
 
   <p style="font-size: 1.1rem;">
     If you need a reminder or want to revisit the onboarding details, you can always return to your <a href="<%= welcome_subscription_url(@subscription) %>" style="color: #1f4632; font-weight: bold; text-decoration: underline;">welcome page</a>.

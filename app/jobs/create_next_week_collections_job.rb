@@ -42,10 +42,17 @@ class CreateNextWeekCollectionsJob < ApplicationJob
         date: collection_date
       )
 
+      skip_reason = if subscription.holiday_covers?(collection_date)
+        "holiday"
+      elsif subscription.is_paused
+        "paused"
+      end
       collection.update!(
         drivers_day: drivers_day,
-        skip: subscription.is_paused?
+        skip: skip_reason.present?,
+        skip_reason: skip_reason
       )
+      collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
       puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
 
       # Update the collection if the subscription is new

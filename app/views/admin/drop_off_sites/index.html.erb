@@ -1,38 +1,31 @@
 <div class="driver-wrapper">
   <h1>Drop-Off Sites</h1>
-  <%= link_to "New Drop-Off Site", new_admin_drop_off_site_path, class: "small-yellow-btn my-3" %>
-  <%= link_to "Create Drop-Off Manager", new_admin_user_path, class: "small-yellow-btn my-3" %>
-  <%= button_to "Create Next Week's Drop-Offs", create_next_week_events_admin_drop_off_sites_path, method: :post, class: "small-yellow-btn my-3",
-      data: { confirm: "Create drop-off events for next week?" } %>
+
+  <div class="d-flex flex-wrap gap-2 my-3">
+    <%= link_to "New Drop-Off Site", new_admin_drop_off_site_path, class: "small-yellow-btn" %>
+    <%= link_to "Create Drop-Off Manager", new_admin_user_path, class: "small-yellow-btn" %>
+    <%= button_to "Create Next Week's Drop-Offs", create_next_week_events_admin_drop_off_sites_path,
+        method: :post, class: "small-yellow-btn",
+        data: { confirm: "Create drop-off events for next week?" } %>
+  </div>
 
   <% if @drop_off_sites.any? %>
-    <div class="collection-header">
-      <div class="name"><p>Name</p></div>
-      <div class="day"><p>Day</p></div>
-      <div class="address"><p>Location</p></div>
-      <div class="stats"><p>Stats</p></div>
-    </div>
-
-    <div class="collections">
-      <ul>
-        <% @drop_off_sites.each do |site| %>
-          <li class="collection">
-            <div class="name">
-              <p><%= link_to site.name, admin_drop_off_site_path(site.slug || site.id) %></p>
-            </div>
-            <div class="day">
-              <span class="small-yellow-btn"><%= site.collection_day %></span>
-            </div>
-            <div class="address">
-              <%= link_to "#{site.suburb}", "https://maps.google.com/?q=#{site.street_address}, #{site.suburb}",
-                  target: :_blank %>
-            </div>
-            <div class="stats">
-              <p><%= number_with_precision(site.total_weight_kg, precision: 1) %> kg • <%= site.total_dropoffs_count %> drops</p>
-            </div>
-          </li>
-        <% end %>
-      </ul>
+    <div class="fad-event-list">
+      <% @drop_off_sites.each do |site| %>
+        <div class="fad-event-row">
+          <div class="fad-event-row__main">
+            <%= link_to site.name, admin_drop_off_site_path(site.slug || site.id), class: "fad-event-row__name" %>
+            <span class="fad-event-row__dates">
+              <%= site.collection_day %> &middot; <%= site.suburb %> &middot;
+              <%= number_with_precision(site.total_weight_kg, precision: 1) %> kg &middot;
+              <%= site.total_dropoffs_count %> drops
+            </span>
+          </div>
+          <div class="fad-event-row__actions">
+            <%= link_to "View →", admin_drop_off_site_path(site.slug || site.id), class: "fad-pill-link" %>
+          </div>
+        </div>
+      <% end %>
     </div>
   <% else %>
     <div class="outline my-5">

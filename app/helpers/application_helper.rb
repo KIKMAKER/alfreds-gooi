@@ -1,4 +1,52 @@
 module ApplicationHelper
+  # Custom renderer maps markdown elements to Gooi blog visual components.
+  # Convention:
+  #   ## Heading     → section heading with yellow dot
+  #   > blockquote   → large styled pullquote
+  #   ![caption](url)→ full-width figure with caption
+  class GooiBlogRenderer < Redcarpet::Render::HTML
+    def header(text, level)
+      if level == 2
+        %(<h2 class="blog-section-heading">#{text}<span class="yellow-txt">.</span></h2>\n)
+      else
+        %(<h#{level}>#{text}</h#{level}>\n)
+      end
+    end
+
+    def block_quote(quote)
+      %(<blockquote class="blog-pullquote">#{quote}</blockquote>\n)
+    end
+
+    def image(link, title, alt)
+      caption = title.presence || alt.presence
+      html  = %(<figure class="blog-figure">)
+      html += %(<img src="#{link}" alt="#{alt}" class="blog-figure__img" loading="lazy">)
+      html += %(<figcaption class="blog-figure__caption">#{caption}</figcaption>) if caption
+      html += %(</figure>)
+      html
+    end
+
+    # Prevent Redcarpet wrapping <figure> in a spurious <p>
+    def paragraph(text)
+      text.lstrip.start_with?("<figure") ? "#{text}\n" : "<p>#{text}</p>\n"
+    end
+  end
+
+  def post_cover_image_url(post)
+    if post.cover_image.attached?
+      url_for(post.cover_image)
+    elsif post.cover_image_url.present?
+      post.cover_image_url
+    else
+      image_url("header-gooi-3.png")
+    end
+  end
+
+  def markdown(text)
+    renderer = GooiBlogRenderer.new(safe_links_only: true)
+    Redcarpet::Markdown.new(renderer, autolink: true, no_intra_emphasis: true, tables: true).render(text).html_safe
+  end
+
   def render_navbar
     if user_signed_in?
       if current_user.driver? || current_user.admin?

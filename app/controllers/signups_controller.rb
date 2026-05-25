@@ -16,6 +16,7 @@ class SignupsController < ApplicationController
     session[:signup_referral_code] = @referral_code
     session[:signup_buckets_per_collection] = @buckets_per_collection
 
+    @once_off_price = Product.find_by(title: "Once-off Collection")&.price if @plan == 'once_off'
     @user = User.new
   end
 
@@ -59,6 +60,7 @@ class SignupsController < ApplicationController
     @referral_code = session[:signup_referral_code]
     @buckets_per_collection = session[:signup_buckets_per_collection]
 
+    @once_off_price = Product.find_by(title: "Once-off Collection")&.price if @plan == 'once_off'
     @subscription = Subscription.new
   end
 
@@ -133,7 +135,7 @@ class SignupsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:street_address, :suburb, :apartment_unit_number)
+    params.require(:subscription).permit(:street_address, :suburb, :apartment_unit_number, :start_date)
   end
 
   def clear_signup_session

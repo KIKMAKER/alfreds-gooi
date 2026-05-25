@@ -1,100 +1,81 @@
-<div class="driver-wrapper">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Recently Lapsed Customers</h1>
-  </div>
+<div class="drivers-day-container">
 
-  <div class="text-muted text-center mb-4">
-    <p>These customers' subscriptions ended in the last 2 weeks.</p>
-    <p>You can collect from them as a courtesy to encourage resubscription.</p>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Recently Lapsed</h1>
+      <p class="dd-header__sub">Subscriptions that ended in the last 2 weeks</p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to "← Today's List", today_subscriptions_path, class: "btn-secondary-outline btn-sm" %>
+    </div>
   </div>
 
   <% if @recently_lapsed.any? %>
-    <div>
-      <div class="collection">
-        <div class="name">
-          <p><strong>Name</strong></p>
-        </div>
-        <div class="address">
-          <p><strong>Address</strong></p>
-        </div>
-        <div class="address">
-          <p><strong>Ended</strong></p>
-        </div>
-        <div class="emojies">
-          <p><strong>Actions</strong></p>
-        </div>
+
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-rotate-left"></i>
+        <h3>Lapsed customers</h3>
       </div>
-    </div>
-    <div class="collections">
-      <% @recently_lapsed.each do |subscription| %>
-        <% user = subscription.user %>
-        <% last_collection = subscription.collections.where(skip: false).order(date: :desc).first %>
-        <% days_since_last = last_collection ? (Date.today - last_collection.date).to_i : nil %>
-        <%
-          message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email}."
-          whatsapp_url = user.generate_whatsapp_link(message)
-        %>
-
-        <div class="collection my-2">
-          <div class="name">
-            <p><%= user.first_name %> <%= user.last_name %></p>
-          </div>
-          <div class="address">
-            <p class="mb-0"><%= subscription.street_address %></p>
-          </div>
-          <div class="address">
-            <small class="text-muted">
-              <%= subscription.end_date.strftime('%b %d') %>
-              <% if days_since_last %>
-                <br>
-                · Last collected: <%= days_since_last %> days ago
+      <div class="dd-form-card__body p-0">
+        <% @recently_lapsed.each do |subscription| %>
+          <% user = subscription.user %>
+          <% last_collection = subscription.collections.where(skip: false).order(date: :desc).first %>
+          <% days_since_last = last_collection ? (Date.today - last_collection.date).to_i : nil %>
+          <%
+            message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email}."
+            whatsapp_url = user.generate_whatsapp_link(message)
+          %>
+          <div class="quick-msg-row">
+            <div>
+              <div class="quick-msg-row__name"><%= user.first_name %> <%= user.last_name %></div>
+              <div class="quick-msg-row__meta">
+                <%= subscription.suburb %> &middot;
+                ended <%= subscription.end_date.strftime('%-d %b') %>
+                <% if days_since_last %>
+                  &middot; last collected <%= days_since_last %> days ago
+                <% end %>
+              </div>
+            </div>
+            <div class="quick-msg-row__actions">
+              <%= link_to whatsapp_url, target: "_blank", class: "quick-msg-btn", title: "WhatsApp" do %>
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.4rem; color: #25D366;"></i>
               <% end %>
-            </small>
-          </div>
-
-          <div class="emojies">
-            <p class="emoji">
-              <%= link_to  whatsapp_url, target: "_blank" do %>
-                <i class="fa-brands fa-whatsapp" style="font-size: 30px"></i>
-              <% end %>
-            </p>
-            <p class="emoji">
-              <%= button_to "add to list",
+              <%= button_to "Add to list",
                   collect_courtesy_subscription_path(subscription),
                   method: :post,
-                  class: "small-yellow-btn",
-                  title: "Add to today's list",
-                  data: {
-                    turbo_confirm: "Add #{user.first_name} to today's list?"
-                  } %>
-            </p>
+                  class: "tiny-yellow-btn",
+                  data: { turbo_confirm: "Add #{user.first_name} to today's list?" } %>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
 
-    <div class="mt-4 p-3 bg-light rounded">
-      <h5>💬 What happens when you click "Collect & Notify":</h5>
-      <ol class="mb-0">
-        <li>A collection is created for today using their old subscription</li>
-        <li>WhatsApp opens with a pre-filled message encouraging them to resubscribe</li>
-        <li>They'll appear on today's route</li>
-      </ol>
+    <div class="dd-form-card">
+      <div class="dd-form-card__body">
+        <p class="mb-2 fw-semibold">What happens when you click "Add to list":</p>
+        <ol class="mb-0 text-muted small">
+          <li>A collection is created for today using their old subscription</li>
+          <li>They'll appear on today's route</li>
+          <li>WhatsApp them separately to let them know you're coming</li>
+        </ol>
+      </div>
     </div>
 
   <% else %>
-    <div class="outline p-4 text-center">
-      <h3>🎉 No recently lapsed customers!</h3>
-      <p class="text-muted mb-0">
-        Everyone who ended their subscription in the last 2 weeks either:
-        <br>
-        • Is already on today's list, or
-        <br>
-        • Wasn't actively collecting before their sub ended
-      </p>
-      <div class="mt-3">
-        <%= link_to "Back to Today's List", today_subscriptions_path, class: "small-yellow-btn" %>
+
+    <div class="dd-form-card">
+      <div class="dd-form-card__body text-center py-4">
+        <p class="fs-4 mb-2">🎉</p>
+        <p class="fw-semibold mb-1">No recently lapsed customers</p>
+        <p class="text-muted small mb-3">
+          Everyone who ended their subscription in the last 2 weeks is either already on today's list or wasn't actively collecting.
+        </p>
+        <%= link_to "Back to Today's List", today_subscriptions_path, class: "tiny-yellow-btn" %>
       </div>
     </div>
+
   <% end %>
+
 </div>

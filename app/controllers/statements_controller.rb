@@ -6,10 +6,10 @@ class StatementsController < ApplicationController
     @invoices = @user.invoices
                      .includes(subscription: :user)
                      .order(issued_date: :desc)
+    @payments = @user.payments.order(date: :desc)
 
-    # Calculate totals
     @total_invoiced = @invoices.sum(:total_amount)
-    @total_paid = @invoices.where(paid: true).sum(:total_amount)
+    @total_paid = @user.payments.sum(:total_amount) / 100.0
     @balance_owing = @total_invoiced - @total_paid
   end
 

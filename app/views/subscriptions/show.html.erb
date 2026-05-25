@@ -40,7 +40,7 @@
         <div class="info-card-body">
           <div class="info-row">
             <span class="info-label">Plan</span>
-            <span class="info-value"><%= @subscription.plan %></span>
+            <span class="info-value"><%= @subscription.human_plan %></span>
           </div>
           <% if @subscription.Commercial? %>
             <div class="info-row">

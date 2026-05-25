@@ -22,18 +22,25 @@ class CreateTomorrowCollectionsJob < ApplicationJob
     puts "Driver's Day processed for #{day_name}: #{drivers_day.user.first_name} with id: #{drivers_day.id}"
 
     # Create collections for each subscription assigned to this day
-    subscriptions = Subscription.where(collection_day: day_name)
+    subscriptions = Subscription.where(collection_day: day_name, status: "active")
     subscriptions.each do |subscription|
-      unless subscription.status == "completed"
-        collection = Collection.create!(
-          drivers_day: drivers_day,
-          subscription: subscription,
-          date: tomorrow,
-          skip: subscription.is_paused?
-        )
-        puts ">> >> >> #{subscription.customer_id}"
-        collection.update!(new_customer: true) if subscription.is_new_customer
+      next if subscription.once_off?
+
+      skip_reason = if subscription.holiday_covers?(tomorrow)
+        "holiday"
+      elsif subscription.is_paused
+        "paused"
       end
+
+      collection = Collection.find_or_create_by!(
+        drivers_day: drivers_day,
+        subscription: subscription,
+        date: tomorrow
+      )
+      collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
+      collection.skip_silently!(reason: skip_reason) if skip_reason
+      puts ">> >> >> #{subscription.customer_id}"
+      collection.update!(new_customer: true) if subscription.is_new_customer
     end
   end
 end

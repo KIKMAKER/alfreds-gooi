@@ -14,30 +14,22 @@ class CreateFirstCollectionJob < ApplicationJob
   private
 
   def process_day(collection_date, day_name, subscription)
-    # Create drivers_day entry
     driver = User.find_by(role: 'driver')
-    unless driver
-      puts "No driver found! Skipping processing for #{collection_date}"
-      return
+    drivers_day = nil
+
+    if driver
+      drivers_day = DriversDay.find_or_create_by!(date: collection_date, user: driver)
+      puts "Driver's Day processed for #{collection_date}: #{drivers_day.user.first_name} with ID: #{drivers_day.id}"
+    else
+      puts "Warning: no driver found — collection for #{collection_date} created without a DriversDay"
     end
 
-    drivers_day = DriversDay.find_or_create_by!(
-      date: collection_date,
-      user: driver
-    )
-    puts "Driver's Day processed for #{collection_date}: #{drivers_day.user.first_name} with ID: #{drivers_day.id}"
-
-    # Create collection for subscription
-
-    collection = Collection.find_or_create_by!(
-      drivers_day: drivers_day,
-      subscription: subscription,
-      date: collection_date
-    )
+    collection = Collection.find_or_create_by!(subscription: subscription, date: collection_date)
+    collection.update!(drivers_day: drivers_day) if drivers_day && collection.drivers_day.nil?
+    collection.update_column(:position, subscription.collection_order) if collection.position.nil? && subscription.collection_order.present?
     puts "Created collection for subscription #{subscription.customer_id} on #{collection_date}"
 
-    # Update the collection if the subscription is new
     collection.update!(new_customer: true) if subscription.is_new_customer
-    return collection
+    collection
   end
 end

@@ -11,9 +11,13 @@ class Contact < ApplicationRecord
     in: %w[owner spouse housemate family other housekeeper],
     allow_blank: true
   }
+  validates :email,
+            format: { with: URI::MailTo::EMAIL_REGEXP, message: "doesn't look like an email address" },
+            allow_blank: true
 
   # Scopes
   scope :primary, -> { where(is_primary: true) }
+  scope :with_email, -> { where.not(email: [nil, '']) }
   scope :can_receive_whatsapp, -> { where(whatsapp_opt_out: false).where.not(phone_number: [nil, '']) }
   scope :opted_in, -> { where(whatsapp_opt_out: false) }
   scope :opted_out, -> { where(whatsapp_opt_out: true) }
@@ -42,6 +46,10 @@ class Contact < ApplicationRecord
     else
       "+#{phone_number}"
     end
+  end
+
+  def generate_whatsapp_link(message)
+    "https://wa.me/#{phone_number.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(message)}"
   end
 
   # WhatsApp capability check

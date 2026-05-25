@@ -4,7 +4,21 @@ class Admin::SubscriptionsController < ApplicationController
 
   def new
     @user = User.find(params[:user_id])
-    @subscription = Subscription.new
+
+    if params[:quotation_id].present?
+      quotation = Quotation.find(params[:quotation_id])
+      @subscription = Subscription.new(
+        plan:                   :Commercial,
+        duration:               quotation.duration_months,
+        bucket_size:            quotation.inferred_bucket_size,
+        buckets_per_collection: quotation.buckets_per_collection,
+        collections_per_week:   quotation.effective_collections_per_week,
+        title:                  quotation.prospect_company.presence || quotation.customer_name
+      )
+      @quotation = quotation
+    else
+      @subscription = Subscription.new
+    end
   end
 
   def create
@@ -33,11 +47,15 @@ class Admin::SubscriptionsController < ApplicationController
         )
       end
 
+      quotation = Quotation.find_by(id: params[:quotation_id]) if params[:quotation_id].present?
+      @subscription.update_column(:quotation_id, quotation.id) if quotation
+
       referee = User.find_by(referral_code: @subscription.referral_code) if @subscription.referral_code.present?
       InvoiceBuilder.new(
         subscription: @subscription,
         is_new:       @subscription.is_new_customer,
-        referee:      referee
+        referee:      referee,
+        quotation:    quotation
       ).call
       CreateFirstCollectionJob.perform_now(@subscription) if @subscription.once_off?
       redirect_to admin_user_path(@user), notice: "Subscription created and invoice sent."
@@ -78,6 +96,115 @@ class Admin::SubscriptionsController < ApplicationController
     @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
   end
 
+  def update_monthly_billing
+    @subscription = Subscription.find(params[:id])
+    if @subscription.update(monthly_billing_params)
+      redirect_to admin_subscription_path(@subscription),
+                  notice: "Monthly billing settings updated."
+    else
+      redirect_to admin_subscription_path(@subscription),
+                  alert: "Could not save: #{@subscription.errors.full_messages.to_sentence}"
+    end
+  end
+
+  def link_as_satellite
+    @subscription = Subscription.find(params[:id])
+    primary = @subscription.user.subscriptions.find_by(id: params[:primary_subscription_id])
+
+    unless primary
+      return redirect_to admin_subscription_path(@subscription), alert: "Parent subscription not found."
+    end
+
+    if primary.id == @subscription.id
+      return redirect_to admin_subscription_path(@subscription), alert: "A subscription cannot be a satellite of itself."
+    end
+
+    @subscription.update!(primary_subscription_id: primary.id)
+    redirect_to admin_subscription_path(@subscription),
+                notice: "Linked as satellite of ##{primary.id} — #{primary.display_name}. This subscription will no longer generate its own invoices."
+  end
+
+  def unlink_satellite
+    @subscription = Subscription.find(params[:id])
+    @subscription.update!(primary_subscription_id: nil)
+    redirect_to admin_subscription_path(@subscription),
+                notice: "Satellite link removed. This subscription will now bill independently."
+  end
+
+  def generate_monthly_invoice
+    @subscription = Subscription.find(params[:id])
+
+    if !@subscription.monthly_invoicing?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "This subscription does not use monthly invoicing."
+    end
+
+    if @subscription.satellite?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "Satellites never generate invoices — trigger on the primary subscription."
+    end
+
+    if @subscription.next_invoice_date.nil?
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "No next_invoice_date set on this subscription."
+    end
+
+    if @subscription.next_invoice_date > Date.today
+      return redirect_to admin_subscription_path(@subscription),
+                         alert: "Invoice not due yet — next invoice date is #{@subscription.next_invoice_date.strftime('%d %b %Y')}."
+    end
+
+    invoice = MonthlyInvoiceService.new(@subscription).call
+
+    if invoice
+      redirect_to admin_subscription_path(@subscription),
+                  notice: "Invoice ##{invoice.id} generated (R#{invoice.total_amount / 100}) and sent for approval."
+    else
+      redirect_to admin_subscription_path(@subscription),
+                  alert: "Service ran but did not generate an invoice. Check subscription state."
+    end
+  rescue => e
+    redirect_to admin_subscription_path(@subscription),
+                alert: "Error generating invoice: #{e.message}"
+  end
+
+  RESENDABLE_EMAIL_TYPES = %w[welcome payment_received payment_prompt ad_hoc_nudge subscription_ending_soon].freeze
+
+  def resend_email
+    @subscription = Subscription.find(params[:id])
+    email_type = params[:email_type]
+    recipient  = params[:recipient_email]
+
+    unless RESENDABLE_EMAIL_TYPES.include?(email_type)
+      return redirect_to admin_subscription_path(@subscription), alert: "Unknown email type."
+    end
+
+    if recipient.blank? || recipient !~ URI::MailTo::EMAIL_REGEXP
+      return redirect_to admin_subscription_path(@subscription), alert: "Please choose a valid recipient."
+    end
+
+    case email_type
+    when "welcome"
+      UserMailer.with(subscription: @subscription, to_email: recipient).welcome.deliver_now
+      UserMailer.with(subscription: @subscription).sign_up_alert.deliver_now
+    when "payment_received"
+      SubscriptionMailer.with(subscription: @subscription, to_email: recipient, is_new: false).payment_received.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).payment_received_alert.deliver_now
+    when "payment_prompt"
+      SubscriptionMailer.with(subscription: @subscription, to_email: recipient).payment_prompt.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).payment_prompt_alert.deliver_now
+    when "ad_hoc_nudge"
+      SubscriptionMailer.with(subscription: @subscription).ad_hoc_nudge.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).ad_hoc_nudge_alert.deliver_now
+    when "subscription_ending_soon"
+      SubscriptionMailer.with(subscription: @subscription).subscription_ending_soon.deliver_now
+      SubscriptionMailer.with(subscription: @subscription).subscription_ending_soon_alert.deliver_now
+    end
+
+    redirect_to admin_subscription_path(@subscription),
+                notice: "#{email_type.humanize} email queued for #{recipient}."
+  end
+
   private
 
   def subscription_params
@@ -87,6 +214,16 @@ class Admin::SubscriptionsController < ApplicationController
       :primary_subscription_id,
       :buckets_per_collection, :bucket_size, :collections_per_week,
       :collection_day, :title, :monthly_invoicing
+    )
+  end
+
+  def monthly_billing_params
+    params.require(:subscription).permit(
+      :monthly_invoicing,
+      :next_invoice_date,
+      :monthly_subscription_amount,
+      :monthly_volume_amount,
+      :starter_kit_installment
     )
   end
 

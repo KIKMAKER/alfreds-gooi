@@ -33,7 +33,7 @@
     <!--<h5 class="text-center my-3">gooi compost collections</h5>-->
     <div class="user-details ms-1 ">
       <div class="user me-4">
-        <p><strong>For:</strong> <%= @subscription.user.first_name %> <%= @subscription.user.last_name %></p>
+        <p><strong>For:</strong> <%= link_to "#{@subscription.user.first_name} #{@subscription.user.last_name}", admin_subscription_path(@subscription), class: "link-text" %></p>
         <p><strong>Email:</strong> <%= @subscription.user.email %></p>
         <p><strong>Customer ID:</strong> <%= @subscription.customer_id %>
           <p><strong>Address:</strong> <%= @subscription.short_address %>, <%= @subscription.suburb %></p>

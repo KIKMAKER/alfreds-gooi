@@ -95,12 +95,12 @@
         <div class="info-row">
           <span class="info-label">Account holder</span>
           <span class="info-value">
-            <%= @subscription.user.first_name %> <%= @subscription.user.last_name %>
+            <%= link_to "#{@subscription.user.first_name} #{@subscription.user.last_name}", admin_subscription_path(@subscription), class: "link-green" %>
           </span>
         </div>
         <div class="info-row">
           <span class="info-label">Plan</span>
-          <span class="info-value"><%= @subscription.plan %></span>
+          <span class="info-value"><%= @subscription.human_plan %></span>
         </div>
         <div class="info-row">
           <span class="info-label">Status</span>

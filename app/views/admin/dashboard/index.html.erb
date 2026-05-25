@@ -119,6 +119,22 @@
       </div>
     </div>
 
+    <%# Content %>
+    <div class="col-12 col-md-6">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>✍️</span> Content</div>
+        <p class="dash-category-desc">Blog posts — write, publish, and manage articles.</p>
+        <ul class="dash-category-links">
+          <li><%= link_to admin_posts_path do %>All posts <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to new_admin_post_path do %>New post <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to posts_path, target: "_blank" do %>View blog <span class="dash-arrow">→</span><% end %></li>
+          <% if @draft_posts > 0 %>
+            <li><span class="text-muted small"><%= @draft_posts %> unpublished draft<%= "s" if @draft_posts != 1 %></span></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
     <%# Festival %>
     <div class="col-12 col-md-4">
       <div class="dash-category-card">

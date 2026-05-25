@@ -3,9 +3,10 @@ class UserMailer < ApplicationMailer
 
   def welcome
     @subscription = params[:subscription]
+    recipient = params[:to_email].presence || @subscription.user.email
 
     mail(
-      to: @subscription.user.email,
+      to: recipient,
       subject: 'Welcome to Gooi!',
       track_opens: 'true',
       message_stream: 'outbound'
