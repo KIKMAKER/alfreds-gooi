@@ -5,7 +5,6 @@ class Admin::DashboardController < Admin::BaseController
     NudgePendingSubscriptionsJob.perform_later
 
     @active_subs           = Subscription.where(status: :active).count
-    @paused_subs           = Subscription.where(status: :pause).count
     @pending_subs          = Subscription.where(status: :pending).count
     @overdue_pending_count = Subscription.pending
                                          .joins(:invoices)
@@ -18,6 +17,10 @@ class Admin::DashboardController < Admin::BaseController
     @pending_referrals     = Referral.where(status: :pending).count
     @pending_inquiries     = CommercialInquiry.where(status: :pending).count
     @draft_posts           = Post.where(published: false).count
+
+    interests_by_suburb    = Interest.group(:suburb).count.sort_by { |_, n| -n }
+    @interests_count       = interests_by_suburb.sum(&:last)
+    @top_interest_suburb   = interests_by_suburb.first&.then { |suburb, n| "#{suburb} (#{n})" }
 
     hour = Time.now.hour
     @greeting = if hour < 12 then "Good morning"

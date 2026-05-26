@@ -1,0 +1,300 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595 842" width="595" height="842">
+
+  <!-- ═══════════════════════════════════════════
+       HERO — dark green
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="0" width="595" height="188" fill="#013f3a"/>
+
+  <!-- decorative organic circles -->
+  <circle cx="528" cy="42" r="68" fill="rgba(132,203,163,0.10)"/>
+  <circle cx="574" cy="8"  r="44" fill="rgba(132,203,163,0.07)"/>
+  <circle cx="498" cy="98" r="38" fill="rgba(132,203,163,0.07)"/>
+
+  <!-- gooi wordmark -->
+  <text x="32" y="43"
+        font-family="Georgia, 'Libre Baskerville', 'Times New Roman', serif"
+        font-style="italic" font-size="26" font-weight="bold" fill="#FBB718">gooi*</text>
+
+  <!-- badge pill -->
+  <rect x="32" y="54" width="176" height="17" rx="8.5"
+        fill="rgba(132,203,163,0.18)" stroke="rgba(132,203,163,0.40)" stroke-width="0.75"/>
+  <text x="120" y="66"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="8.5" fill="#84cba3" text-anchor="middle"
+        letter-spacing="1.8" font-weight="600">KITCHEN SCRAPS COLLECTION</text>
+
+  <!-- headline -->
+  <text x="32" y="114"
+        font-family="Georgia, 'Libre Baskerville', 'Times New Roman', serif"
+        font-size="38" font-weight="bold" fill="white">Your building is now</text>
+  <text x="32" y="156"
+        font-family="Georgia, 'Libre Baskerville', 'Times New Roman', serif"
+        font-size="38" font-weight="bold" fill="#84cba3">composting.</text>
+
+  <!-- building name -->
+  <text x="32" y="178"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="rgba(255,255,255,0.52)" letter-spacing="0.4">
+    Church Square Apartments · Cape Town
+  </text>
+
+
+  <!-- ═══════════════════════════════════════════
+       INTRO — white
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="188" width="595" height="96" fill="white"/>
+
+  <text x="32" y="219"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="14.5" font-weight="600" fill="#013f3a">
+    We've set up a weekly kitchen scrap collection for your building.
+  </text>
+  <text x="32" y="241"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="#525560">
+    Every Monday Alfred collects and takes your scraps to a local composting
+  </text>
+  <text x="32" y="259"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="#525560">
+    facility. Your food waste returns to Cape Town's soil — not the landfill.
+  </text>
+
+
+  <!-- ═══════════════════════════════════════════
+       STATS STRIP — light gray
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="284" width="595" height="68" fill="#F4F4F4"/>
+
+  <!-- stat 1: units -->
+  <text x="100" y="313"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="27" font-weight="bold" fill="#013f3a" text-anchor="middle">30</text>
+  <text x="100" y="330"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" fill="#525560" text-anchor="middle" letter-spacing="1">UNITS IN THIS BLOCK</text>
+
+  <line x1="200" y1="296" x2="200" y2="340" stroke="#ddd" stroke-width="1"/>
+
+  <!-- stat 2: litres -->
+  <text x="298" y="313"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="27" font-weight="bold" fill="#013f3a" text-anchor="middle">180L</text>
+  <text x="298" y="330"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" fill="#525560" text-anchor="middle" letter-spacing="1">EXPECTED PER WEEK</text>
+
+  <line x1="396" y1="296" x2="396" y2="340" stroke="#ddd" stroke-width="1"/>
+
+  <!-- stat 3: collection day -->
+  <text x="498" y="313"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="27" font-weight="bold" fill="#013f3a" text-anchor="middle">Monday</text>
+  <text x="498" y="330"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" fill="#525560" text-anchor="middle" letter-spacing="1">COLLECTION DAY</text>
+
+
+  <!-- ═══════════════════════════════════════════
+       HOW IT WORKS — white
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="352" width="595" height="194" fill="white"/>
+
+  <text x="298" y="383"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="20" font-weight="bold" fill="#013f3a" text-anchor="middle">How it works</text>
+
+  <!-- step icons -->
+  <text x="99"  y="422" font-size="30" text-anchor="middle">🥬</text>
+  <text x="298" y="422" font-size="30" text-anchor="middle">🪣</text>
+  <text x="497" y="422" font-size="30" text-anchor="middle">🌱</text>
+
+  <!-- arrows -->
+  <text x="199" y="413" font-size="16" fill="#84cba3" text-anchor="middle" font-weight="300">→</text>
+  <text x="398" y="413" font-size="16" fill="#84cba3" text-anchor="middle" font-weight="300">→</text>
+
+  <!-- step 1 -->
+  <text x="99" y="447" font-family="-apple-system, Arial, sans-serif"
+        font-size="12.5" font-weight="700" fill="#013f3a" text-anchor="middle">Collect your scraps</text>
+  <text x="99" y="464" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">Fruit, veg, coffee grounds,</text>
+  <text x="99" y="479" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">eggshells. In your new</text>
+  <text x="99" y="494" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">countertop bucket.</text>
+  <text x="99" y="509" font-family="-apple-system, Arial, sans-serif"
+        font-size="10.5" fill="#aaa" text-anchor="middle">No meat or dairy.</text>
+
+  <!-- step 2 -->
+  <text x="298" y="447" font-family="-apple-system, Arial, sans-serif"
+        font-size="12.5" font-weight="700" fill="#013f3a" text-anchor="middle">Put your bag out</text>
+  <text x="298" y="464" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">Empty your bucket into a</text>
+  <text x="298" y="479" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">compostable bag. Leave it</text>
+  <text x="298" y="494" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">at the agreed spot before</text>
+  <text x="298" y="509" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">Monday morning.</text>
+
+  <!-- step 3 -->
+  <text x="497" y="447" font-family="-apple-system, Arial, sans-serif"
+        font-size="12.5" font-weight="700" fill="#013f3a" text-anchor="middle">It becomes compost</text>
+  <text x="497" y="464" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">Alfred collects and takes</text>
+  <text x="497" y="479" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">your scraps to a local</text>
+  <text x="497" y="494" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">composting facility —</text>
+  <text x="497" y="509" font-family="-apple-system, Arial, sans-serif"
+        font-size="11" fill="#666" text-anchor="middle">back to Cape Town's soil.</text>
+
+
+  <!-- ═══════════════════════════════════════════
+       GET STARTED — yellow
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="546" width="595" height="122" fill="#FBB718"/>
+
+  <text x="298" y="580"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="22" font-weight="bold" fill="#013f3a" text-anchor="middle">
+    Your bucket is ready. Start today.
+  </text>
+  <text x="298" y="603"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="#013f3a" text-anchor="middle">
+    Collect your countertop compost bucket from your building rep:
+  </text>
+
+  <text x="298" y="630"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="19" font-weight="bold" fill="#013f3a" text-anchor="middle">Daniel Manners</text>
+  <text x="298" y="653"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="14" fill="#013f3a" text-anchor="middle">074 126 3033</text>
+
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER — dark green
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="668" width="595" height="174" fill="#013f3a"/>
+
+  <!-- QR code placeholder (decorative — replace with live URL QR) -->
+  <g transform="translate(42, 688)">
+    <!-- white background -->
+    <rect width="106" height="106" rx="6" fill="white"/>
+    <!-- finder: top-left -->
+    <rect x="7"  y="7"  width="28" height="28" rx="2" fill="#013f3a"/>
+    <rect x="11" y="11" width="20" height="20" rx="1" fill="white"/>
+    <rect x="15" y="15" width="12" height="12" fill="#013f3a"/>
+    <!-- finder: top-right -->
+    <rect x="71" y="7"  width="28" height="28" rx="2" fill="#013f3a"/>
+    <rect x="75" y="11" width="20" height="20" rx="1" fill="white"/>
+    <rect x="79" y="15" width="12" height="12" fill="#013f3a"/>
+    <!-- finder: bottom-left -->
+    <rect x="7"  y="71" width="28" height="28" rx="2" fill="#013f3a"/>
+    <rect x="11" y="75" width="20" height="20" rx="1" fill="white"/>
+    <rect x="15" y="79" width="12" height="12" fill="#013f3a"/>
+    <!-- decorative data modules -->
+    <rect x="41" y="9"  width="4" height="4" fill="#013f3a"/>
+    <rect x="47" y="9"  width="4" height="4" fill="#013f3a"/>
+    <rect x="55" y="9"  width="4" height="4" fill="#013f3a"/>
+    <rect x="63" y="9"  width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="15" width="4" height="4" fill="#013f3a"/>
+    <rect x="53" y="15" width="4" height="4" fill="#013f3a"/>
+    <rect x="61" y="17" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="21" width="4" height="4" fill="#013f3a"/>
+    <rect x="47" y="21" width="4" height="4" fill="#013f3a"/>
+    <rect x="55" y="23" width="4" height="4" fill="#013f3a"/>
+    <rect x="63" y="21" width="4" height="4" fill="#013f3a"/>
+    <rect x="9"  y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="17" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="25" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="9"  y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="21" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="29" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="9"  y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="17" y="55" width="4" height="4" fill="#013f3a"/>
+    <rect x="25" y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="49" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="57" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="65" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="73" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="83" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="91" y="41" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="51" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="59" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="67" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="75" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="85" y="47" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="49" y="55" width="4" height="4" fill="#013f3a"/>
+    <rect x="59" y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="69" y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="77" y="55" width="4" height="4" fill="#013f3a"/>
+    <rect x="87" y="53" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="63" width="4" height="4" fill="#013f3a"/>
+    <rect x="49" y="61" width="4" height="4" fill="#013f3a"/>
+    <rect x="57" y="63" width="4" height="4" fill="#013f3a"/>
+    <rect x="65" y="61" width="4" height="4" fill="#013f3a"/>
+    <rect x="73" y="63" width="4" height="4" fill="#013f3a"/>
+    <rect x="83" y="61" width="4" height="4" fill="#013f3a"/>
+    <rect x="91" y="63" width="4" height="4" fill="#013f3a"/>
+    <rect x="41" y="69" width="4" height="4" fill="#013f3a"/>
+    <rect x="51" y="69" width="4" height="4" fill="#013f3a"/>
+    <rect x="61" y="71" width="4" height="4" fill="#013f3a"/>
+    <rect x="69" y="69" width="4" height="4" fill="#013f3a"/>
+    <rect x="79" y="69" width="4" height="4" fill="#013f3a"/>
+    <rect x="87" y="71" width="4" height="4" fill="#013f3a"/>
+    <rect x="75" y="79" width="4" height="4" fill="#013f3a"/>
+    <rect x="83" y="79" width="4" height="4" fill="#013f3a"/>
+    <rect x="91" y="79" width="4" height="4" fill="#013f3a"/>
+    <rect x="75" y="87" width="4" height="4" fill="#013f3a"/>
+    <rect x="85" y="87" width="4" height="4" fill="#013f3a"/>
+    <rect x="91" y="85" width="4" height="4" fill="#013f3a"/>
+    <rect x="75" y="93" width="4" height="4" fill="#013f3a"/>
+    <rect x="83" y="93" width="4" height="4" fill="#013f3a"/>
+    <rect x="91" y="93" width="4" height="4" fill="#013f3a"/>
+  </g>
+
+  <!-- replace note -->
+  <text x="162" y="705"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9" fill="rgba(255,255,255,0.28)" font-style="italic">
+    ↑ replace with QR for gooi.me/blocks/church-square-apartments
+  </text>
+
+  <!-- scan CTA -->
+  <text x="162" y="730"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="17" font-weight="bold" fill="white">
+    Scan to see your building's
+  </text>
+  <text x="162" y="752"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="17" font-weight="bold" fill="#84cba3">
+    live impact stats.
+  </text>
+  <text x="162" y="772"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="12" fill="rgba(255,255,255,0.50)">
+    Track every Monday's collection. See how much CO₂e you've saved.
+  </text>
+
+  <!-- bottom rule -->
+  <line x1="32" y1="793" x2="563" y2="793" stroke="rgba(255,255,255,0.12)" stroke-width="0.75"/>
+
+  <text x="298" y="813"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="11.5" fill="rgba(255,255,255,0.38)" text-anchor="middle">
+    Questions? howzit@gooi.me
+  </text>
+  <text x="298" y="831"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="10" fill="rgba(255,255,255,0.22)" text-anchor="middle">
+    gooi.me · Alfred's Kitchen Scraps Collection · Cape Town
+  </text>
+
+</svg>

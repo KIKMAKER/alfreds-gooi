@@ -23,10 +23,13 @@
       <% end %>
     </div>
     <div class="col-6 col-md">
-      <a href="/subscriptions/paused" class="dash-kpi-card">
-        <div class="dash-kpi-label">Paused</div>
-        <div class="dash-kpi-value"><%= @paused_subs %></div>
-      </a>
+      <%= link_to admin_interests_path, class: "dash-kpi-card" do %>
+        <div class="dash-kpi-label">Interested areas</div>
+        <div class="dash-kpi-value"><%= @interests_count %></div>
+        <% if @top_interest_suburb %>
+          <div class="dash-kpi-sub"><%= @top_interest_suburb %></div>
+        <% end %>
+      <% end %>
     </div>
     <div class="col-6 col-md">
       <a href="/collections/this_week" class="dash-kpi-card">
@@ -116,6 +119,7 @@
           <li><a href="/admin/analytics">Analytics <span class="dash-arrow">→</span></a></li>
           <li><a href="/admin/referrals">Referrals <span class="dash-arrow">→</span></a></li>
           <li><%= link_to admin_commercial_inquiries_path do %>Commercial Inquiries <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to admin_interests_path do %>Interest list <span class="dash-arrow">→</span><% end %></li>
         </ul>
       </div>
     </div>
