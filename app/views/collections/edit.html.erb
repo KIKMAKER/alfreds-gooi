@@ -244,6 +244,24 @@
 
   <% end %>
 
+  <%# ── Issue bag rolls ── %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <h3>Issue bag rolls</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="text-muted mb-3">Issue compost bag rolls to this customer and generate an invoice with a SnapScan payment link.</p>
+      <%= form_with url: create_bags_invoice_collection_path(@collection), method: :post, local: true do |bf| %>
+        <div class="bucket-scale-wrap mb-3">
+          <label class="bucket-scale-label" for="rolls_input">Number of rolls</label>
+          <input type="number" id="rolls_input" name="rolls" value="1" min="1" max="20" class="bucket-scale-input" style="width: 80px">
+        </div>
+        <%= bf.submit "Issue & create invoice →", class: "btn-yellow btn-sm" %>
+      <% end %>
+    </div>
+  </div>
+
 </div>
 
 <%# Holiday dates modal %>

@@ -1,6 +1,6 @@
 require 'csv'
 class CollectionsController < ApplicationController
-  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position, :issue_bags, :issued_bags]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :add_bags, :remove_bags, :add_customer_note, :update_position, :issue_bags, :issued_bags, :create_bags_invoice]
 
   def perform_create_today_collections
     CreateTodayCollectionsJob.perform_now
@@ -185,6 +185,37 @@ class CollectionsController < ApplicationController
     @subscription = @collection.subscription
     @compost_bags = Product.find_by(title: "Compost bin bags")
     @invoice = Invoice.create(issued_date: Time.current, due_date: Time.current + 1.week, total_amount: 0, subscription_id: @subscription.id)
+  end
+
+  def create_bags_invoice
+    rolls = params[:rolls].to_i
+    rolls = 1 if rolls < 1
+    rolls = [rolls, 20].min # sensible upper cap
+
+    @subscription = @collection.subscription
+    product = Product.find_by(title: "Compost bin bags")
+
+    unless product
+      redirect_to edit_collection_path(@collection), alert: "Compost bag product not found — check the Products table."
+      return
+    end
+
+    invoice = Invoice.create!(
+      issued_date: Time.current,
+      due_date:    Time.current + 1.week,
+      total_amount: 0,
+      subscription_id: @subscription.id
+    )
+
+    invoice.invoice_items.create!(
+      product:  product,
+      quantity: rolls,
+      amount:   product.price
+    )
+
+    invoice.calculate_total
+
+    redirect_to bags_whatsapp_invoice_path(invoice)
   end
 
   def add_customer_note

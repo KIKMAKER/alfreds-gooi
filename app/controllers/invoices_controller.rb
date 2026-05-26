@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code pdf]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code pdf bags_whatsapp]
 
   def index
     if current_user.admin?
@@ -139,6 +139,21 @@ class InvoicesController < ApplicationController
     create_invoice_items(@invoice)
     @invoice.save!
     redirect_to send_email_invoice_path(@invoice)
+  end
+
+  def bags_whatsapp
+    @subscription = @invoice.subscription
+    recipient = @subscription.primary_contact || @invoice.user
+    rolls_item = @invoice.invoice_items.joins(:product)
+                         .find_by(products: { title: "Compost bin bags" })
+    qty = rolls_item&.quantity.to_i
+    snapscan_url = "https://pos.snapscan.io/qr/8jQ1QVVb?id=#{@subscription.customer_id}&amount=#{@invoice.total_amount.to_i}00&invoice_id=#{@invoice.id}"
+    invoice_url  = "https://www.gooi.me/invoices/#{@invoice.id}"
+    rolls_word   = qty == 1 ? "roll" : "rolls"
+    message = "Hi #{recipient.first_name}! 🌱 Thanks for ordering #{qty} #{rolls_word} of compost bin bags. Here's your invoice: #{invoice_url} — pay via SnapScan here: #{snapscan_url}"
+    @whatsapp_url = recipient.generate_whatsapp_link(message)
+    @qty = qty
+    @rolls_word = rolls_word
   end
 
   def pdf

@@ -178,6 +178,7 @@ Rails.application.routes.draw do
       get :send_email, to: "invoices#send_email"
       post :apply_discount_code
       get :pdf
+      get :bags_whatsapp
     end
     collection do
       get "bags/:bags", to: "invoices#bags", as: :bag
@@ -281,7 +282,8 @@ Rails.application.routes.draw do
 
   resources :collections do
     member do
-      get :issue_bags
+      get  :issue_bags
+      post :create_bags_invoice
     end
   end
 

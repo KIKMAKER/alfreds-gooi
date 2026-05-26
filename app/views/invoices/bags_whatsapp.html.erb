@@ -1,0 +1,58 @@
+<div class="drivers-day-container">
+
+  <%# ── Header ── %>
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Bag rolls issued</h1>
+      <p class="dd-header__sub"><%= @subscription.display_name %></p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to today_subscriptions_path, class: "btn-secondary-outline btn-sm" do %>
+        <i class="fa-solid fa-arrow-left"></i> Back to route
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Invoice summary card ── %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-receipt"></i>
+      <h3>Invoice created</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="mb-1"><strong>Customer:</strong> <%= @subscription.display_name %></p>
+      <p class="mb-1"><strong>Rolls issued:</strong> <%= @qty %> <%= @rolls_word %></p>
+      <p class="mb-1"><strong>Total:</strong> R<%= @invoice.total_amount.to_i %></p>
+      <p class="mb-0"><strong>Due:</strong> <%= @invoice.due_date.strftime("%-d %b %Y") %></p>
+    </div>
+  </div>
+
+  <%# ── WhatsApp send card ── %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-brands fa-whatsapp"></i>
+      <h3>Send to customer</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="mb-3 text-muted">Tap below to open a pre-filled WhatsApp message with the invoice link and SnapScan payment link.</p>
+      <%= link_to @whatsapp_url, target: "_blank", class: "btn-yellow w-100 text-center d-block" do %>
+        <i class="fa-brands fa-whatsapp me-2"></i>
+        Send WhatsApp to <%= @subscription.primary_contact&.first_name || @invoice.user.first_name %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── View invoice / email links ── %>
+  <div class="dd-form-card">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-ellipsis"></i>
+      <h3>Other options</h3>
+    </div>
+    <div class="dd-form-card__body d-flex gap-2 flex-wrap">
+      <%= link_to "View invoice", invoice_path(@invoice), class: "btn-secondary-outline btn-sm" %>
+      <%= link_to "Email invoice", send_email_invoice_path(@invoice), class: "btn-secondary-outline btn-sm",
+                  data: { turbo_confirm: "Send invoice email to #{@invoice.user.email}?" } %>
+    </div>
+  </div>
+
+</div>
