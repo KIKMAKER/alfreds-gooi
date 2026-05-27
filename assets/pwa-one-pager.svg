@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 595 842" width="595" height="842">
+
+  <!-- ═══════════════════════════════════════════
+       HERO — dark green
+  ═══════════════════════════════════════════ -->
+  <rect width="595" height="192" fill="#013f3a"/>
+
+  <!-- Decorative circles -->
+  <circle cx="540" cy="60"  r="90" fill="rgba(132,203,163,0.08)"/>
+  <circle cx="570" cy="10"  r="55" fill="rgba(132,203,163,0.06)"/>
+  <circle cx="60"  cy="170" r="60" fill="rgba(251,183,24,0.05)"/>
+
+  <!-- gooi logo lockup (white) — centred -->
+  <image href="logos/gooi_logo_lockup_white.svg"
+         x="148" y="18" width="300" height="150"/>
+
+  <!-- Tagline -->
+  <text x="298" y="175"
+        text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="rgba(255,255,255,0.55)" letter-spacing="0.3">
+    Kitchen scraps collection · Cape Town
+  </text>
+
+
+  <!-- ═══════════════════════════════════════════
+       INTRO STRIP — white
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="192" width="595" height="80" fill="white"/>
+
+  <text x="298" y="232"
+        text-anchor="middle"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="24" font-weight="bold" fill="#013f3a">Add gooi to your home screen.</text>
+
+  <text x="298" y="256"
+        text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" fill="#525560">
+    Access everything instantly — no app store, no password every time.
+  </text>
+
+
+  <!-- ═══════════════════════════════════════════
+       FEATURES — light gray
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="272" width="595" height="336" fill="#F4F4F4"/>
+
+  <text x="298" y="302"
+        text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="10" letter-spacing="2" fill="#108A63" font-weight="600">WHAT YOU GET</text>
+
+  <!-- ─── Row 1 ─── -->
+
+  <!-- Card 1: Stay logged in -->
+  <rect x="32" y="316" width="252" height="126" rx="14" fill="white"/>
+  <text x="58" y="356" font-size="28">🔐</text>
+  <text x="103" y="349"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Stay signed in</text>
+  <text x="103" y="369"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">Open the app and you're</text>
+  <text x="103" y="385"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">already in. No password</text>
+  <text x="103" y="401"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">every single time.</text>
+  <!-- green dot accent -->
+  <circle cx="46" cy="430" r="4" fill="#84cba3"/>
+  <text x="58" y="434"
+        font-family="-apple-system, Arial, sans-serif" font-size="10.5" fill="#108A63" font-weight="600">Always ready</text>
+
+  <!-- Card 2: Next collection -->
+  <rect x="311" y="316" width="252" height="126" rx="14" fill="white"/>
+  <text x="337" y="356" font-size="28">📅</text>
+  <text x="382" y="349"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Your next collection</text>
+  <text x="382" y="369"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">See your collection day,</text>
+  <text x="382" y="385"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">what to put out, and any</text>
+  <text x="382" y="401"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">notes from Alfred.</text>
+  <circle cx="325" cy="430" r="4" fill="#84cba3"/>
+  <text x="337" y="434"
+        font-family="-apple-system, Arial, sans-serif" font-size="10.5" fill="#108A63" font-weight="600">At a glance</text>
+
+  <!-- ─── Row 2 ─── -->
+
+  <!-- Card 3: Skip a collection -->
+  <rect x="32" y="458" width="252" height="126" rx="14" fill="white"/>
+  <text x="58" y="498" font-size="28">⏭️</text>
+  <text x="103" y="491"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Skip a collection</text>
+  <text x="103" y="511"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">Going away? Skip your</text>
+  <text x="103" y="527"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">next collection in two</text>
+  <text x="103" y="543"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">taps, right from the app.</text>
+  <circle cx="46" cy="572" r="4" fill="#84cba3"/>
+  <text x="58" y="576"
+        font-family="-apple-system, Arial, sans-serif" font-size="10.5" fill="#108A63" font-weight="600">No email needed</text>
+
+  <!-- Card 4: Impact stats -->
+  <rect x="311" y="458" width="252" height="126" rx="14" fill="white"/>
+  <text x="337" y="498" font-size="28">🌱</text>
+  <text x="382" y="491"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Track your impact</text>
+  <text x="382" y="511"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">See how much you've</text>
+  <text x="382" y="527"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">diverted from landfill and</text>
+  <text x="382" y="543"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#525560">CO₂e you've helped avoid.</text>
+  <circle cx="325" cy="572" r="4" fill="#84cba3"/>
+  <text x="337" y="576"
+        font-family="-apple-system, Arial, sans-serif" font-size="10.5" fill="#108A63" font-weight="600">Your personal stats</text>
+
+
+  <!-- ═══════════════════════════════════════════
+       HOW TO INSTALL — white
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="608" width="595" height="178" fill="white"/>
+
+  <!-- Section label -->
+  <text x="298" y="634"
+        text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="10" letter-spacing="2" fill="#108A63" font-weight="600">HOW TO INSTALL</text>
+
+  <!-- Divider between columns -->
+  <line x1="298" y1="644" x2="298" y2="768" stroke="#e8e8e8" stroke-width="1"/>
+
+  <!-- ─── iPhone column ─── -->
+  <!-- Header -->
+  <text x="48" y="657"
+        font-family="-apple-system, Arial, sans-serif"
+        font-size="13" font-weight="700" fill="#013f3a">📱  iPhone  ·  use Safari</text>
+
+  <!-- Step 1 -->
+  <circle cx="56" cy="679" r="9" fill="#013f3a"/>
+  <text x="56" y="683" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">1</text>
+  <text x="73" y="683"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Open <tspan font-weight="700">gooi.me</tspan> in Safari
+  </text>
+
+  <!-- Step 2 -->
+  <circle cx="56" cy="704" r="9" fill="#013f3a"/>
+  <text x="56" y="708" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">2</text>
+  <text x="73" y="708"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Tap the <tspan font-weight="700">Share</tspan> button  ⬆  at the bottom
+  </text>
+
+  <!-- Step 3 -->
+  <circle cx="56" cy="729" r="9" fill="#013f3a"/>
+  <text x="56" y="733" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">3</text>
+  <text x="73" y="733"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Tap <tspan font-weight="700">Add to Home Screen</tspan> → Add
+  </text>
+
+  <!-- note -->
+  <text x="48" y="758"
+        font-family="-apple-system, Arial, sans-serif"
+        font-size="10.5" fill="#aaa" font-style="italic">Must use Safari — not Chrome or Firefox</text>
+
+  <!-- ─── Android column ─── -->
+  <!-- Header -->
+  <text x="318" y="657"
+        font-family="-apple-system, Arial, sans-serif"
+        font-size="13" font-weight="700" fill="#013f3a">🤖  Android  ·  use Chrome</text>
+
+  <!-- Step 1 -->
+  <circle cx="326" cy="679" r="9" fill="#013f3a"/>
+  <text x="326" y="683" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">1</text>
+  <text x="343" y="683"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Open <tspan font-weight="700">gooi.me</tspan> in Chrome
+  </text>
+
+  <!-- Step 2 -->
+  <circle cx="326" cy="704" r="9" fill="#013f3a"/>
+  <text x="326" y="708" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">2</text>
+  <text x="343" y="708"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Tap the <tspan font-weight="700">⋮</tspan> menu at the top right
+  </text>
+
+  <!-- Step 3 -->
+  <circle cx="326" cy="729" r="9" fill="#013f3a"/>
+  <text x="326" y="733" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="white" font-weight="700">3</text>
+  <text x="343" y="733"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#333">
+    Tap <tspan font-weight="700">Add to Home Screen</tspan> or <tspan font-weight="700">Install</tspan>
+  </text>
+
+  <!-- note -->
+  <text x="318" y="758"
+        font-family="-apple-system, Arial, sans-serif"
+        font-size="10.5" fill="#aaa" font-style="italic">May also appear as a banner at the top</text>
+
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER — dark green
+  ═══════════════════════════════════════════ -->
+  <rect x="0" y="786" width="595" height="56" fill="#013f3a"/>
+
+  <text x="298" y="808" text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" font-weight="600" fill="white">Visit gooi.me to get started</text>
+  <text x="298" y="828" text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="11" fill="rgba(255,255,255,0.40)">
+    Questions? howzit@gooi.me · 083 635 3126
+  </text>
+
+</svg>

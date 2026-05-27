@@ -1,0 +1,208 @@
+<% content_for :meta_title, "Add gooi to your home screen" %>
+
+<div class="pwa-install" data-controller="pwa-install">
+
+  <%# ── Header ──────────────────────────────────────────────────────────── %>
+  <div class="pwa-install__header">
+    <%= image_tag "gooi_logo_icon_amber.svg", class: "pwa-install__logo", alt: "gooi" %>
+    <h1 class="pwa-install__title">Add gooi to your<br>home screen.</h1>
+    <p class="pwa-install__subtitle">
+      Stay signed in, skip collections, track your impact —
+      one tap from your home screen.
+    </p>
+  </div>
+
+  <%# ── Already installed ───────────────────────────────────────────────── %>
+  <div data-pwa-install-target="done" hidden>
+    <div class="pwa-done">
+      <div class="pwa-done__icon">✓</div>
+      <h2>You're all set!</h2>
+      <p>gooi is already installed on your home screen. Open it from there for the best experience.</p>
+      <%= link_to "Go to your dashboard →", root_path, class: "pwa-done__btn" %>
+    </div>
+  </div>
+
+  <%# ══════════════════════════════════════════════════════════
+      iOS INSTRUCTIONS
+  ══════════════════════════════════════════════════════════ %>
+  <div data-pwa-install-target="ios" hidden>
+    <p class="pwa-section-label">iPhone &amp; iPad</p>
+
+    <%# Step 1: Safari check %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">1</div>
+      <div class="pwa-step__content">
+        <h3>Open this page in Safari</h3>
+        <p data-pwa-install-target="safariOk" class="pwa-step__ok" hidden>
+          ✓ You're already in Safari — you're good to go.
+        </p>
+        <p data-pwa-install-target="safariWarn" class="pwa-step__warn" hidden>
+          You're in a different browser. Copy the link below and open it in Safari — only Safari can install apps.
+        </p>
+        <p class="pwa-step__ok" hidden>✓</p>
+      </div>
+    </div>
+
+    <%# Step 2: Share button %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">2</div>
+      <div class="pwa-step__content">
+        <h3>Tap the Share button</h3>
+        <p>At the bottom of your Safari screen</p>
+
+        <%# Safari bottom bar mockup %>
+        <div class="pwa-visual">
+          <div class="pwa-browser-bar">
+            <%# Back %>
+            <div class="pwa-browser-bar__btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </div>
+            <%# Forward %>
+            <div class="pwa-browser-bar__btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </div>
+            <%# SHARE — highlighted with pulse ring %>
+            <div class="pwa-browser-bar__btn pwa-browser-bar__btn--share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 16v4a1 1 0 001 1h14a1 1 0 001-1v-4"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <%# Bookmarks %>
+            <div class="pwa-browser-bar__btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              </svg>
+            </div>
+            <%# Tabs %>
+            <div class="pwa-browser-bar__btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="13" height="13" rx="2"/>
+                <path d="M8 21h11a2 2 0 002-2V8"/>
+              </svg>
+            </div>
+          </div>
+
+          <%# Bouncing up-arrow pointing at the share button %>
+          <div class="pwa-bounce-arrow">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3l9 9h-5.5v9h-7v-9H3l9-9z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 3: Add to Home Screen %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">3</div>
+      <div class="pwa-step__content">
+        <h3>Tap "Add to Home Screen"</h3>
+        <p>Scroll down in the menu that pops up</p>
+
+        <div class="pwa-visual">
+          <div class="pwa-menu-item pwa-menu-item--highlighted">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="4"/>
+              <line x1="12" y1="7" x2="12" y2="17"/>
+              <line x1="7" y1="12" x2="17" y2="12"/>
+            </svg>
+            <span>Add to Home Screen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 4: Confirm %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">4</div>
+      <div class="pwa-step__content">
+        <h3>Tap <strong>Add</strong> in the top right</h3>
+        <p>gooi will appear on your home screen. Open it from there and you'll stay signed in.</p>
+      </div>
+    </div>
+  </div>
+
+  <%# ══════════════════════════════════════════════════════════
+      ANDROID INSTRUCTIONS
+  ══════════════════════════════════════════════════════════ %>
+  <div data-pwa-install-target="android" hidden>
+    <p class="pwa-section-label">Android</p>
+
+    <%# Step 1 %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">1</div>
+      <div class="pwa-step__content">
+        <h3>Open this page in Chrome</h3>
+        <p>gooi.me/get-the-app — this should already be open in Chrome.</p>
+      </div>
+    </div>
+
+    <%# Step 2: Three-dot menu %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">2</div>
+      <div class="pwa-step__content">
+        <h3>Tap the ⋮ menu</h3>
+        <p>Top right corner of your screen</p>
+
+        <%# Chrome top bar mockup %>
+        <div class="pwa-visual">
+          <div class="pwa-browser-topbar">
+            <div class="pwa-browser-topbar__url">gooi.me/get-the-app</div>
+            <%# Three-dot menu — highlighted with pulse ring %>
+            <div class="pwa-browser-topbar__menu">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5"  r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <%# Bouncing arrow aligned to the right (where the menu button is) %>
+          <div class="pwa-bounce-arrow pwa-bounce-arrow--right">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3l9 9h-5.5v9h-7v-9H3l9-9z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 3: Add to Home Screen %>
+    <div class="pwa-step">
+      <div class="pwa-step__num">3</div>
+      <div class="pwa-step__content">
+        <h3>Tap "Add to Home Screen"</h3>
+        <p>Or <strong>Install app</strong> if that appears instead</p>
+
+        <div class="pwa-visual">
+          <div class="pwa-menu-item pwa-menu-item--highlighted">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="4"/>
+              <line x1="12" y1="7" x2="12" y2="17"/>
+              <line x1="7" y1="12" x2="17" y2="12"/>
+            </svg>
+            <span>Add to Home Screen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# ══════════════════════════════════════════════════════════
+      DESKTOP FALLBACK
+  ══════════════════════════════════════════════════════════ %>
+  <div data-pwa-install-target="desktop" hidden>
+    <div class="pwa-desktop">
+      <p>Open this page on your phone to add gooi to your home screen.</p>
+      <span class="pwa-desktop__url">gooi.me/get-the-app</span>
+    </div>
+  </div>
+
+</div>

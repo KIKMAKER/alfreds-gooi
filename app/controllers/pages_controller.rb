@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home, :about, :story, :faq ]
+  skip_before_action :authenticate_user!, only: [ :home, :about, :story, :faq, :get_the_app ]
 
   def home
     @discount_code = params[:discount_code]
@@ -42,6 +42,10 @@ class PagesController < ApplicationController
   end
 
   def faq
+  end
+
+  def get_the_app
+    # No data needed — all logic lives in the pwa-install Stimulus controller
   end
 
   private

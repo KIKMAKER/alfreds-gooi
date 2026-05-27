@@ -1,0 +1,360 @@
+// ─── PWA Install Guide ────────────────────────────────────────────────────────
+// Mobile-first guide page at /get-the-app.
+// Platform sections (iOS / Android / desktop / done) are toggled by
+// the pwa-install Stimulus controller — only one is ever visible.
+
+.pwa-install {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 5rem;
+
+  // ── Header ────────────────────────────────────────────────────────────────
+
+  &__header {
+    text-align: center;
+    padding: 1.5rem 0 2rem;
+  }
+
+  &__logo {
+    height: 52px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1.75rem;
+    color: $dark-green;
+    line-height: 1.2;
+    margin: 0 0 0.6rem;
+  }
+
+  &__subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+// ── Steps ─────────────────────────────────────────────────────────────────────
+
+.pwa-step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+
+  &__num {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: $dark-green;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-top: 3px;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0; // prevent overflow in flex
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: $dark-green;
+      margin: 0 0 0.2rem;
+      line-height: 1.3;
+    }
+
+    > p {
+      font-size: 0.875rem;
+      color: #666;
+      margin: 0 0 0.6rem;
+    }
+  }
+
+  &__ok {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    color: $medium-green;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__warn {
+    font-size: 0.875rem;
+    color: #b84200;
+    padding: 0.6rem 0.8rem;
+    background: rgba(184, 66, 0, 0.07);
+    border-radius: 10px;
+    border-left: 3px solid #b84200;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// ── Visual mockups ────────────────────────────────────────────────────────────
+// Simplified representations of the browser UI so users recognise what
+// to look for on their actual screen.
+
+.pwa-visual {
+  background: #ebebeb;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+// iOS Safari bottom navigation bar
+.pwa-browser-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  padding: 0.5rem 0.25rem;
+
+  &__btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #aaa;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    &--share {
+      position: relative;
+      color: $dark-green;
+      background: rgba($dark-yellow, 0.18);
+      border: 1.5px solid rgba($dark-yellow, 0.55);
+
+      // ripple ring that draws the eye
+      &::after {
+        content: "";
+        position: absolute;
+        inset: -5px;
+        border-radius: 12px;
+        border: 2px solid $dark-yellow;
+        animation: pwa-pulse 1.5s ease-out infinite;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+// Android Chrome top bar
+.pwa-browser-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  padding: 0.4rem 0.5rem;
+
+  &__url {
+    flex: 1;
+    font-size: 0.8rem;
+    color: #555;
+    background: #f3f3f3;
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-family: -apple-system, monospace;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__menu {
+    position: relative;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: $dark-green;
+    background: rgba($dark-yellow, 0.18);
+    border: 1.5px solid rgba($dark-yellow, 0.55);
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 12px;
+      border: 2px solid $dark-yellow;
+      animation: pwa-pulse 1.5s ease-out infinite;
+      pointer-events: none;
+    }
+  }
+}
+
+// Bouncing arrow — points up at the highlighted button
+.pwa-bounce-arrow {
+  display: flex;
+  justify-content: center;
+  color: $dark-yellow;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+
+  svg {
+    width: 26px;
+    height: 26px;
+    animation: pwa-bounce 1.1s ease-in-out infinite;
+  }
+
+  // Android: menu is top-right, nudge the arrow to the right
+  &--right {
+    justify-content: flex-end;
+    padding-right: 0.6rem;
+  }
+}
+
+// "Add to Home Screen" menu row mockup
+.pwa-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.8rem 1rem;
+  background: white;
+  border-radius: 12px;
+
+  svg {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+  }
+
+  span {
+    font-size: 0.95rem;
+    color: #1c1c1e;
+    font-weight: 500;
+  }
+
+  &--highlighted {
+    border: 2px solid $dark-yellow;
+    background: rgba($dark-yellow, 0.06);
+    svg { color: $dark-green; }
+
+    &::before {
+      // subtle left accent
+      content: "";
+    }
+  }
+}
+
+// ── Already-installed state ───────────────────────────────────────────────────
+
+.pwa-done {
+  text-align: center;
+  padding: 2.5rem 1rem;
+
+  &__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: $dark-green;
+    color: white;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+
+  h2 {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1.5rem;
+    color: $dark-green;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+
+  &__btn {
+    display: inline-block;
+    background: $dark-green;
+    color: white;
+    padding: 0.8rem 2.25rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+
+    &:hover { color: white; transform: translateY(-2px); }
+  }
+}
+
+// ── Desktop fallback ──────────────────────────────────────────────────────────
+
+.pwa-desktop {
+  text-align: center;
+  padding: 2rem 0;
+
+  p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  &__url {
+    display: inline-block;
+    background: $dark-green;
+    color: white;
+    padding: 0.6rem 1.75rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ── Section divider between platform-specific blocks ─────────────────────────
+
+.pwa-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $medium-green;
+  margin-bottom: 1.25rem;
+}
+
+// ── Animations ────────────────────────────────────────────────────────────────
+
+@keyframes pwa-pulse {
+  0%   { transform: scale(1);    opacity: 0.85; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+@keyframes pwa-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-7px); }
+}

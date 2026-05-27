@@ -309,9 +309,10 @@ Rails.application.routes.draw do
 
   # static pages
   root "pages#home"
-  get "about", to: "pages#about"
-  get "story", to: "pages#story"
-  get "faq", to: "pages#faq"
+  get "about",       to: "pages#about"
+  get "story",       to: "pages#story"
+  get "faq",         to: "pages#faq"
+  get "get-the-app", to: "pages#get_the_app", as: :get_the_app
 
   # blog
   resources :posts, only: [:index, :show], path: "blog", param: :slug
