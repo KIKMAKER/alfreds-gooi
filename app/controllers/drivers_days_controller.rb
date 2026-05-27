@@ -215,10 +215,22 @@ class DriversDaysController < ApplicationController
   end
 
   def index
-    @drivers_days = DriversDay
+    scope = DriversDay
       .with_active_collection_counts
       .includes(:day_statistic, :buckets, :drop_off_events)
-      .order(date: :desc)
+
+    @available_days = scope.pluck(:date)
+                           .map { |d| d.strftime("%A") }
+                           .tally
+                           .sort_by { |name, _| Date::DAYNAMES.index(name) }
+
+    if params[:day].present? && Date::DAYNAMES.include?(params[:day])
+      day_num = Date::DAYNAMES.index(params[:day])
+      scope = scope.where("EXTRACT(dow FROM date) = ?", day_num)
+    end
+
+    @active_day_filter = params[:day].presence
+    @drivers_days = scope.order(date: :desc)
   end
 
   def show

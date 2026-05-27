@@ -3,9 +3,27 @@
   <div class="dd-header">
     <div>
       <h1 class="dd-header__title">Driver's Days</h1>
-      <p class="dd-header__sub"><%= @drivers_days.length %> days recorded</p>
+      <p class="dd-header__sub">
+        <%= @drivers_days.length %> <%= @active_day_filter ? "#{@active_day_filter}s" : "days" %> recorded
+      </p>
     </div>
   </div>
+
+  <% if @available_days.any? %>
+    <div class="dd-filter">
+      <%= link_to drivers_days_path, class: "dd-filter__pill #{@active_day_filter.nil? ? 'dd-filter__pill--active' : ''}" do %>
+        All
+        <span class="dd-filter__count"><%= @available_days.sum(&:last) %></span>
+      <% end %>
+      <% @available_days.each do |day_name, count| %>
+        <%= link_to drivers_days_path(day: day_name),
+              class: "dd-filter__pill #{@active_day_filter == day_name ? 'dd-filter__pill--active' : ''}" do %>
+          <%= day_name %>
+          <span class="dd-filter__count"><%= count %></span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
 
   <div class="dd-list">
     <% @drivers_days.each do |drivers_day| %>

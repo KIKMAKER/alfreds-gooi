@@ -74,6 +74,57 @@
   &--pending  { background: rgba(255,255,255,0.25); color: white; }
 }
 
+// ── Index day-of-week filter ──────────────────────────────────────────────────
+
+.dd-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dd-filter__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: $dark-green;
+  background: white;
+  border: 1.5px solid #e0ebe9;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+  &:hover {
+    background: #e8f4f2;
+    border-color: $medium-green;
+    color: $dark-green;
+  }
+
+  &--active {
+    background: $dark-green;
+    border-color: $dark-green;
+    color: white;
+
+    .dd-filter__count { background: rgba(255, 255, 255, 0.25); color: white; }
+
+    &:hover { background: darken($dark-green, 5%); color: white; }
+  }
+}
+
+.dd-filter__count {
+  background: $dark-yellow;
+  color: white;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 // ── Index list ─────────────────────────────────────────────────────────────────
 
 .dd-list {
