@@ -158,6 +158,20 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Human-readable summary of volume collected (skipped collections excluded).
+  # Used in subscription completion/ending-soon emails so templates stay plan-agnostic.
+  def collected_volume_display
+    non_skipped = collections.where(skip: false)
+    if Commercial?
+      litres = non_skipped.sum(BUCKET_VOLUME_SQL)
+      "#{litres}L"
+    elsif XL?
+      "#{non_skipped.sum(:buckets)} buckets"
+    else
+      "#{non_skipped.sum(:bags)} bags"
+    end
+  end
+
   def total_litres_last_n_months(n)
     scope = collections.where("created_at >= ?", n.months.ago)
     if Standard? || once_off?
