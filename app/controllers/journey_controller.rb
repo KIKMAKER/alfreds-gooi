@@ -20,7 +20,7 @@ class JourneyController < ApplicationController
     first_sub = @user.subscriptions.order(:start_date).first
     @stat_start_date    = first_sub&.start_date
     @stat_months_active = @stat_start_date ?
-      [((Date.current - @stat_start_date) / 30.44).ceil, 1].max : nil
+      [((Date.current - @stat_start_date).to_f / 30.44).ceil, 1].max : nil
 
     # ── Financial: sum paid invoices across ALL subscriptions ─────────────
     @stat_total_paid = Invoice
