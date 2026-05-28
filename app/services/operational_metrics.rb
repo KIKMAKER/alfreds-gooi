@@ -275,9 +275,10 @@ class OperationalMetrics
 
       com_cols = Collection.where(subscription_id: com_ids, skip: false)
                            .where("date >= ?", three_months_ago)
-                           .where("buckets_25l > 0 OR buckets_45l > 0")
+                           .where("buckets_25l > 0 OR buckets_45l > 0 OR buckets > 0")
       avg_litres = if com_cols.any?
-                     (com_cols.sum("buckets_25l * 25 + buckets_45l * 45").to_f / com_cols.count).round(1)
+                     total = com_cols.sum("CASE WHEN (buckets_25l + buckets_45l) > 0 THEN buckets_25l * 25 + buckets_45l * 45 ELSE buckets * 25 END")
+                     (total.to_f / com_cols.count).round(1)
                    else
                      45.0  # 1 × 45L bucket fallback
                    end

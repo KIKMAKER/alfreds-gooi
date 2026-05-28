@@ -139,24 +139,31 @@ class Subscription < ApplicationRecord
     allowed_litres_per_collection * (collections_per_week || 1)
   end
 
+  # Mirrors the per-row volume_litres logic: use sized bucket columns when
+  # populated, fall back to raw buckets × 25L. This handles cases where drivers
+  # record XL-style buckets on Commercial subs (or vice versa).
+  BUCKET_VOLUME_SQL = <<~SQL.squish
+    CASE
+      WHEN COALESCE(buckets_25l, 0) > 0 OR COALESCE(buckets_45l, 0) > 0
+        THEN COALESCE(buckets_25l, 0) * 25 + COALESCE(buckets_45l, 0) * 45
+      ELSE COALESCE(buckets, 0) * 25
+    END
+  SQL
+
   def total_litres
-    if Commercial?
-      collections.sum("buckets_25l * 25 + buckets_45l * 45")
-    elsif XL?
-      collections.sum("buckets * 25")
-    else
+    if Standard? || once_off?
       collections.sum("bags * 5")
+    else
+      collections.sum(BUCKET_VOLUME_SQL)
     end
   end
 
   def total_litres_last_n_months(n)
     scope = collections.where("created_at >= ?", n.months.ago)
-    if Commercial?
-      scope.sum("buckets_25l * 25 + buckets_45l * 45")
-    elsif XL?
-      scope.sum("buckets * 25")
-    else
+    if Standard? || once_off?
       scope.sum("bags * 5")
+    else
+      scope.sum(BUCKET_VOLUME_SQL)
     end
   end
 
