@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= content_for?(:meta_title) ? yield(:meta_title) : "gooi journey" %> | gooi</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <style>
+      body { margin: 0; padding: 0; background: #013f3a; }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>

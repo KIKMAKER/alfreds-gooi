@@ -1,0 +1,368 @@
+// ─── Gooi Journey Page ────────────────────────────────────────────────────────
+// Shareable one-page journey summary at /journey/:token.
+// Four full-viewport slides designed to screenshot cleanly on mobile.
+
+.journey {
+  // No extra wrapper padding — slides handle their own spacing
+}
+
+// ── Base slide ────────────────────────────────────────────────────────────────
+
+.journey-slide {
+  position: relative;
+  min-height: 100svh;  // safe viewport height — excludes iOS/Android browser chrome
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.75rem;
+  text-align: center;
+  overflow: hidden;
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  // Translucent decorative circles (same visual language as block hero)
+  &__decor {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+
+    &--1 {
+      width: 320px;
+      height: 320px;
+      top: -80px;
+      right: -100px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &--2 {
+      width: 220px;
+      height: 220px;
+      bottom: -60px;
+      left: -70px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  // ── Slide themes ────────────────────────────────────────────────────────────
+
+  &--cover {
+    background: $dark-green;
+    justify-content: space-between;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+
+  &--impact {
+    background: white;
+  }
+
+  &--numbers {
+    background: $light-gray;
+  }
+
+  &--commitment {
+    background: $dark-green;
+  }
+}
+
+// ── Shared typography ─────────────────────────────────────────────────────────
+
+.journey-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $medium-green;
+  margin-bottom: 0.75rem;
+
+  &--light {
+    color: rgba($light-green, 0.8);
+  }
+}
+
+.journey-section-title {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1.5rem;
+  color: $dark-green;
+  margin: 0 0 1.75rem;
+  line-height: 1.2;
+}
+
+.journey-pill {
+  display: inline-block;
+  background: rgba($light-green, 0.25);
+  color: $medium-green;
+  border: 1px solid rgba($medium-green, 0.35);
+  border-radius: 999px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-top: 1rem;
+
+  &--amber {
+    background: rgba($dark-yellow, 0.18);
+    color: darken($dark-yellow, 15%);
+    border-color: rgba($dark-yellow, 0.45);
+  }
+}
+
+.journey-rule {
+  width: 60px;
+  height: 1px;
+  background: rgba(white, 0.2);
+  margin: 1.75rem auto;
+}
+
+// ── Logo ──────────────────────────────────────────────────────────────────────
+
+.journey-logo {
+  height: 44px;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+// ── Slide 1 — Cover ───────────────────────────────────────────────────────────
+
+.journey-cover {
+  &__title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 2rem;
+    color: white;
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  &__sub {
+    font-size: 0.9rem;
+    color: rgba(white, 0.65);
+    margin-top: 0.75rem;
+    line-height: 1.5;
+  }
+}
+
+.journey-scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  color: rgba(white, 0.35);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: journey-nudge 2s ease-in-out infinite;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ── Slide 2 — Impact ──────────────────────────────────────────────────────────
+
+.journey-impact {
+  &__hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.25rem;
+    margin: 0.25rem 0 0.5rem;
+    line-height: 1;
+  }
+
+  &__number {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: $dark-green;
+    letter-spacing: -0.02em;
+  }
+
+  &__unit {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 2.5rem;
+    color: $medium-green;
+    padding-bottom: 0.6rem;
+  }
+
+  &__co2 {
+    font-size: 1rem;
+    color: #444;
+    margin: 0.75rem 0 0;
+    font-weight: 600;
+  }
+
+  &__divider {
+    width: 50px;
+    height: 2px;
+    background: $light-green;
+    margin: 1.75rem auto;
+    border-radius: 2px;
+  }
+
+  &__context {
+    font-size: 0.875rem;
+    color: #777;
+    line-height: 1.6;
+    font-style: italic;
+    margin: 0;
+  }
+}
+
+// ── Slide 3 — Stats grid ──────────────────────────────────────────────────────
+
+.journey-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+  margin-bottom: 2rem;
+}
+
+.journey-stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+
+  &__value {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $dark-green;
+    line-height: 1.1;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #999;
+  }
+}
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+
+.journey-timeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 0.5rem;
+
+  &__dot {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $medium-green;
+
+    &--today {
+      background: $dark-green;
+    }
+  }
+
+  &__line {
+    flex: 1;
+    height: 2px;
+    background: $light-green;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__label {
+    position: absolute;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $medium-green;
+    background: $light-gray;
+    padding: 0 0.4rem;
+    white-space: nowrap;
+  }
+
+  &__dates {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #999;
+    margin-top: 0.4rem;
+    // rendered below the flex row — needs separate row
+    width: 100%;
+    position: absolute;
+    left: 0;
+  }
+}
+
+// Override: timeline needs relative parent for absolute dates row
+.journey-timeline {
+  position: relative;
+  padding-bottom: 1.25rem;
+
+  &__dates {
+    bottom: 0;
+  }
+}
+
+// ── Slide 4 — Commitment ──────────────────────────────────────────────────────
+
+.journey-commitment {
+  &__hero {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: $dark-yellow;
+    line-height: 1.1;
+    margin: 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  &__sub {
+    font-size: 1rem;
+    color: rgba(white, 0.75);
+    margin: 0.5rem 0 0;
+    line-height: 1.5;
+  }
+
+  &__breakdown {
+    font-size: 0.82rem;
+    color: rgba(white, 0.45);
+    margin-top: 0.6rem;
+  }
+}
+
+.journey-footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+
+  &__icon {
+    height: 24px;
+    opacity: 0.7;
+  }
+
+  &__text {
+    font-size: 0.8rem;
+    color: rgba(white, 0.4);
+    letter-spacing: 0.04em;
+  }
+}
+
+// ── Animations ────────────────────────────────────────────────────────────────
+
+@keyframes journey-nudge {
+  0%, 100% { transform: translateY(0);   opacity: 0.35; }
+  50%       { transform: translateY(5px); opacity: 0.6;  }
+}

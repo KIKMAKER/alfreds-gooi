@@ -53,6 +53,7 @@ class User < ApplicationRecord
   before_validation :normalize_phone_number
   before_validation :make_international
   before_validation :generate_referral_code, on: :create
+  before_validation :generate_journey_token, on: :create
   before_validation :set_customer_id, on: :create
   before_destroy :nullify_subscriptions
   after_update :sync_owner_contacts, if: -> { saved_change_to_first_name? || saved_change_to_last_name? || saved_change_to_phone_number? }
@@ -246,6 +247,14 @@ class User < ApplicationRecord
     self.referral_code ||= loop do
       code = SecureRandom.hex(3).upcase
       break code unless User.exists?(referral_code: code)
+    end
+  end
+
+  def generate_journey_token
+    return if journey_token.present?
+    loop do
+      token = SecureRandom.alphanumeric(8).downcase
+      self.journey_token = token and break unless User.exists?(journey_token: token)
     end
   end
 
