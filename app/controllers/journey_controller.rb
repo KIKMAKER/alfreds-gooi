@@ -10,7 +10,13 @@ class JourneyController < ApplicationController
     @stat_input_kg          = @user.lifetime_input_kg.round(1)
     @stat_co2e_kg           = @user.lifetime_co2e_kg
     @stat_total_collections = @user.total_collections
-    @stat_consistency_rate  = @user.consistency_rate
+
+    # Consistency rate: calculated here (not via User#consistency_rate) because
+    # that method divides by total_weeks, assuming 1 collection/week — which
+    # gives 200%+ for multi-collection-per-week commercial accounts.
+    # Instead: sum expected collections per subscription (elapsed weeks ×
+    # collections_per_week), then divide actual non-skipped collections by that.
+    @stat_consistency_rate = journey_consistency_rate(@user)
 
     # ── Derived display stats ─────────────────────────────────────────────
     # Average car emits ~0.12 kg CO₂e per km
@@ -61,5 +67,36 @@ class JourneyController < ApplicationController
                          .filter_map { |s| s.business_profile&.business_name }
                          .first
     @display_name = business_name.presence || @user.first_name
+  end
+
+  private
+
+  # Returns a consistency percentage that correctly handles subscriptions
+  # with collections_per_week > 1. For each non-pending subscription, the
+  # expected collection count is: elapsed_weeks × collections_per_week.
+  # "Elapsed" means the full duration for completed subs, or start→today
+  # for active/paused ones. The rate is capped at 100 — paused weeks can
+  # push the actual count above expected briefly.
+  def journey_consistency_rate(user)
+    today = Date.current
+    expected_total = 0.0
+
+    user.subscriptions.where.not(status: :pending).each do |s|
+      sub_start = s.start_date&.to_date
+      next unless sub_start
+
+      sub_end = case s.status
+                when "completed", "legacy" then s.end_date&.to_date || today
+                else today
+                end
+
+      elapsed_weeks = [(sub_end - sub_start).to_f / 7.0, 0].max
+      expected_total += elapsed_weeks * (s.collections_per_week || 1)
+    end
+
+    return 0 if expected_total.zero?
+
+    actual = user.collections.where(skip: false).where("date <= ?", today).count
+    [((actual.to_f / expected_total) * 100).round, 100].min
   end
 end
