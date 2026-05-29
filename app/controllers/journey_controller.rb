@@ -22,14 +22,39 @@ class JourneyController < ApplicationController
     @stat_months_active = @stat_start_date ?
       [((Date.current - @stat_start_date).to_f / 30.44).ceil, 1].max : nil
 
-    # ── Financial: sum paid invoices across ALL subscriptions ─────────────
+    # ── Financial ─────────────────────────────────────────────────────────
     @stat_total_paid = Invoice
       .joins(:subscription)
       .where(subscriptions: { user_id: @user.id })
       .where(paid: true)
       .sum(:total_amount)
-    @stat_cost_per_collection = @stat_total_collections > 0 ?
-      (@stat_total_paid / @stat_total_collections).round : 0
+
+    # Cost per collection: calculated per subscription using the contracted
+    # rate (contract_total / expected collections over the full term) rather
+    # than paid-to-date / collected-to-date, which overstates cost for active
+    # contracts where future collections haven't happened yet.
+    # Expected collections = duration_months * 4.33 weeks/month * collections_per_week
+    subs = @user.subscriptions.where.not(status: :pending)
+    rate_estimates = subs.filter_map do |s|
+      next unless s.contract_total&.positive?
+      weeks = (s.duration_months || 6) * 4.33
+      expected = (weeks * (s.collections_per_week || 1)).round
+      next unless expected > 0
+      s.contract_total / expected
+    end
+
+    @stat_cost_per_collection = if rate_estimates.any?
+      (rate_estimates.sum / rate_estimates.size).round
+    elsif @stat_total_collections > 0
+      # Fallback for non-monthly-invoiced subs: actual paid / actual collected
+      (@stat_total_paid / @stat_total_collections).round
+    else
+      0
+    end
+
+    # Flag whether any subscriptions are still active — used in the view
+    # to qualify the label as "estimated" vs confirmed
+    @has_active_subscription = subs.any? { |s| %w[active pause].include?(s.status) }
 
     # ── Display name: prefer business_profile name, fall back to first name ─
     business_name = @user.subscriptions
