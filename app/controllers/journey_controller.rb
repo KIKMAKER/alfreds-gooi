@@ -37,7 +37,7 @@ class JourneyController < ApplicationController
     subs = @user.subscriptions.where.not(status: :pending)
     rate_estimates = subs.filter_map do |s|
       next unless s.contract_total&.positive?
-      weeks = (s.duration_months || 6) * 4.33
+      weeks = (s.duration || 6) * 4.33
       expected = (weeks * (s.collections_per_week || 1)).round
       next unless expected > 0
       s.contract_total / expected
