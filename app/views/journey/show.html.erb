@@ -138,15 +138,16 @@
         invested in sustainable waste management
       </p>
 
-      <% if @stat_cost_per_collection > 0 %>
-        <p class="journey-commitment__breakdown">
+      <p class="journey-commitment__breakdown">
+        <% if @stat_cost_per_collection %>
           <% if @has_active_subscription %>~<% end %>R<%= number_with_delimiter(@stat_cost_per_collection) %> per collection<% if @has_active_subscription %> (est.)<% end %>
-          &nbsp;·&nbsp; <%= number_with_delimiter(@stat_total_collections) %> collections to date
-          <% if @stat_months_active %>
-            &nbsp;·&nbsp; <%= @stat_months_active %> <%= "month".pluralize(@stat_months_active) %>
-          <% end %>
-        </p>
-      <% end %>
+          &nbsp;·&nbsp;
+        <% end %>
+        <%= number_with_delimiter(@stat_total_collections) %> collections to date
+        <% if @stat_months_active %>
+          &nbsp;·&nbsp; <%= @stat_months_active %> <%= "month".pluralize(@stat_months_active) %>
+        <% end %>
+      </p>
 
       <div class="journey-rule"></div>
 

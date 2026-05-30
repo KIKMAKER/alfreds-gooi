@@ -49,14 +49,13 @@ class JourneyController < ApplicationController
       s.contract_total / expected
     end
 
+    # Only show per-collection rate when contract_total is available.
+    # The fallback (paid / collected) is misleading for active contracts where
+    # invoices cover future collections — R4440 paid / 13 done overstates cost.
     @stat_cost_per_collection = if rate_estimates.any?
       (rate_estimates.sum / rate_estimates.size).round
-    elsif @stat_total_collections > 0
-      # Fallback for non-monthly-invoiced subs: actual paid / actual collected
-      (@stat_total_paid / @stat_total_collections).round
-    else
-      0
     end
+    # nil means the view omits the per-collection line entirely
 
     # Flag whether any subscriptions are still active — used in the view
     # to qualify the label as "estimated" vs confirmed
@@ -71,32 +70,18 @@ class JourneyController < ApplicationController
 
   private
 
-  # Returns a consistency percentage that correctly handles subscriptions
-  # with collections_per_week > 1. For each non-pending subscription, the
-  # expected collection count is: elapsed_weeks × collections_per_week.
-  # "Elapsed" means the full duration for completed subs, or start→today
-  # for active/paused ones. The rate is capped at 100 — paused weeks can
-  # push the actual count above expected briefly.
+  # Consistency rate based on actual scheduled collection records.
+  # Denominator = all past scheduled slots (done + skipped).
+  # This avoids calendar arithmetic and start_date inaccuracies entirely —
+  # if a collection was scheduled and done, it counts for you; if it was
+  # skipped, it counts against. Future collections are excluded.
+  # Works correctly regardless of collections_per_week or overlapping subs.
   def journey_consistency_rate(user)
     today = Date.current
-    expected_total = 0.0
+    past_total = user.collections.where("date <= ?", today).count
+    return 0 if past_total.zero?
 
-    user.subscriptions.where.not(status: :pending).each do |s|
-      sub_start = s.start_date&.to_date
-      next unless sub_start
-
-      sub_end = case s.status
-                when "completed", "legacy" then s.end_date&.to_date || today
-                else today
-                end
-
-      elapsed_weeks = [(sub_end - sub_start).to_f / 7.0, 0].max
-      expected_total += elapsed_weeks * (s.collections_per_week || 1)
-    end
-
-    return 0 if expected_total.zero?
-
-    actual = user.collections.where(skip: false).where("date <= ?", today).count
-    [((actual.to_f / expected_total) * 100).round, 100].min
+    past_done = user.collections.where(skip: false).where("date <= ?", today).count
+    [(past_done.to_f / past_total * 100).round, 100].min
   end
 end
