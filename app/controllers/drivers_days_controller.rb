@@ -265,8 +265,9 @@ class DriversDaysController < ApplicationController
     # Prepare snapshot card variables (same as show action)
     if @stat
       subscription_ids = @collections.where.not(subscription_id: nil).pluck(:subscription_id).uniq
-      collection_counts = Collection.where(subscription_id: subscription_ids).group(:subscription_id).count
-      @new_customers = collection_counts.count { |_, count| count <= 2 }
+      user_ids = Subscription.where(id: subscription_ids).pluck(:user_id).uniq
+      user_collection_totals = Collection.joins(:subscription).where(subscriptions: { user_id: user_ids }).group("subscriptions.user_id").count
+      @new_customers = user_collection_totals.count { |_, count| count <= 2 }
       @compost_kg = (@stat.net_kg * 0.35).round
       @landfill_m3 = (@stat.net_kg / 400.0).round(1)
       @kg_diverted = @stat.net_kg.round
