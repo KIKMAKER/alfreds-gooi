@@ -193,3 +193,4 @@ Configured to use Postmark Rails for delivery.
 5. **acts_as_list ordering** - collections within a drivers_day use position-based ordering
 6. **Geocoding happens automatically** on street_address changes
 7. **Thursday completion triggers weekly stats** - DriversDay sends report when end_time set on Thursday
+8. **New customer metric** - use `new_customer_count_for(collections)` (private helper in `DriversDaysController`) wherever new customer counts are needed. Do NOT use the `new_customer` boolean flag on Collection — it gets cleared to `false` on every collection update. The helper counts users whose total collections with `date <= Date.today` equals exactly 1, across all their subscriptions.
