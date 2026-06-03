@@ -35,6 +35,8 @@ class DriversDaysController < ApplicationController
       @new_customers    = @collections.select(&:new_customer)
       @count            = @collections.count - @skip_collections.count - @new_customers.count
       @bags_needed      = @collections.select { |c| c.needs_bags.to_i > 0 }
+      @orders_for_delivery = Order.where(collection_id: @drivers_day.collections.pluck(:id), status: [:pending, :paid])
+                                  .includes(order_items: :product, collection: :subscription)
     else
       @collections = @skip_collections = @new_customers = @bags_needed = []
       @count = 0
@@ -86,7 +88,6 @@ class DriversDaysController < ApplicationController
     @bags_needed        = @subscriptions.select { |s| last_coll[s.id]&.needs_bags.to_i > 0 }
     @total_bags_needed  = @bags_needed.sum { |s| last_coll[s.id].needs_bags }
     @new_customer       = @subscriptions.select { |s| last_coll[s.id]&.new_customer == true }
-    @products_needed = @drivers_day.products_needed_for_delivery
 
     # Check for recently lapsed customers
     two_weeks_ago = today - 2.weeks

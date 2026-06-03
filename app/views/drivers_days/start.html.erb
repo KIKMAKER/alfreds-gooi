@@ -52,22 +52,7 @@
         </div>
       <% end %>
 
-      <% if @products_needed.any? %>
-        <div class="dd-form-card">
-          <div class="dd-form-card__header">
-            <i class="fa-solid fa-box"></i>
-            <h3>Products to deliver today</h3>
-          </div>
-          <div class="dd-form-card__body">
-            <% @products_needed.each do |item| %>
-              <p class="mb-1"><strong><%= item[:quantity] %>×</strong> <%= item[:product].title %></p>
-            <% end %>
-            <p class="text-muted mt-2">Make sure to take them with you!</p>
-          </div>
-        </div>
-      <% end %>
-
-      <% if @recently_lapsed.any? %>
+<% if @recently_lapsed.any? %>
         <div class="dd-form-card">
           <div class="dd-form-card__header">
             <i class="fa-solid fa-clock-rotate-left"></i>

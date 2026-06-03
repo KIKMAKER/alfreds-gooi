@@ -51,6 +51,26 @@
       </div>
     <% end %>
 
+    <% if @orders_for_delivery&.any? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__header">
+          <i class="fa-solid fa-box"></i>
+          <h3><%= pluralize(@orders_for_delivery.count, 'order') %> to deliver today</h3>
+        </div>
+        <div class="dd-form-card__body">
+          <% @orders_for_delivery.each do |order| %>
+            <div class="dd-note mb-2">
+              <p class="mb-1"><strong><%= order.collection.subscription.display_name %></strong></p>
+              <% order.order_items.each do |item| %>
+                <p class="mb-0 text-muted"><%= item.quantity %>× <%= item.product.title %></p>
+              <% end %>
+            </div>
+          <% end %>
+          <p class="text-muted mt-2">Make sure to take them with you!</p>
+        </div>
+      </div>
+    <% end %>
+
     <div class="dd-form-card mt-3">
       <div class="dd-form-card__header">
         <i class="fa-brands fa-whatsapp"></i>
