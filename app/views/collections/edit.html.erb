@@ -290,10 +290,9 @@
         </div>
         <div class="modal-footer">
           <% if @subscription.holiday_start.present? %>
-            <%= button_to "Clear holiday", clear_holiday_subscription_path(@subscription),
-                          method: :post,
-                          class: "btn btn-outline-danger btn-sm me-auto",
-                          data: { turbo: false, turbo_confirm: "Remove holiday dates?" } %>
+            <%= link_to "Clear holiday", clear_holiday_subscription_path(@subscription),
+                        class: "btn btn-outline-danger btn-sm me-auto",
+                        data: { turbo_method: :post, turbo_confirm: "Remove holiday dates?" } %>
           <% end %>
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <%= hf.submit "Save dates", class: "btn-yellow btn-sm" %>
