@@ -30,6 +30,14 @@
       <% else %>
         <i class="fa-regular fa-circle-xmark"></i>
       <% end %>
+      <% if payment.manual? %>
+        <%= button_to admin_user_payment_path(payment.user, payment),
+            method: :delete,
+            class: "payment-card__delete",
+            form: { data: { turbo_confirm: "Delete this manual payment?" } } do %>
+          <i class="fa-solid fa-trash-can"></i>
+        <% end %>
+      <% end %>
     </div>
   <% end %>
 </div>

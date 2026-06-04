@@ -148,7 +148,7 @@
   &__delete {
     background: none;
     border: none;
-    color: #ccc;
+    color: rgba($red, 0.35);
     cursor: pointer;
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
@@ -157,7 +157,7 @@
 
     &:hover {
       color: $red;
-      background: rgba($red, 0.06);
+      background: rgba($red, 0.08);
     }
   }
 }
