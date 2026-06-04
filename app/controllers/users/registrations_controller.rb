@@ -6,13 +6,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/sign_up
   def new
-    @plan = params[:plan]
-    @duration = params[:duration]
-    @discount_code = params[:discount_code] if params[:discount_code].present?
-    @referral_code = params[:referral] if params[:referral].present?
-    @buckets_per_collection = params[:buckets_per_collection]
+    @plan                  = Subscription.plans.key?(params[:plan]) ? params[:plan] : nil
+    @duration              = params[:duration].to_i.positive? ? params[:duration].to_i : nil
+    @discount_code         = params[:discount_code].presence
+    @referral_code         = params[:referral].presence
+    @buckets_per_collection = params[:buckets_per_collection].to_i.positive? ? params[:buckets_per_collection].to_i : nil
 
-    # Always build a fresh resource, Devise might hang onto state between requests
     self.resource = build_resource({})
     resource.subscriptions.clear
 
