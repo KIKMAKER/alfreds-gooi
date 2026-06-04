@@ -158,6 +158,7 @@ class SubscriptionsController < ApplicationController
       # Subscription + invoice are created inside one transaction so a failed InvoiceBuilder
       # rolls back the subscription and doesn't leave an orphan.
       @invoice = nil
+      result = nil
       begin
         ActiveRecord::Base.transaction do
           result = Subscriptions::RenewalService.new(
