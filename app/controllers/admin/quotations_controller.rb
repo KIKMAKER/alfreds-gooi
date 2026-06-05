@@ -37,22 +37,7 @@ class Admin::QuotationsController < ApplicationController
   end
 
   def update
-    @quotation.update(quotation_params.except(:quotation_items_attributes))
-
-    if params[:quotation][:quotation_items_attributes].present?
-      params[:quotation][:quotation_items_attributes].each do |key, item_params|
-        next unless key.to_s.start_with?('new_')
-        next if item_params[:quantity].blank? || item_params[:quantity].to_f <= 0
-
-        product = Product.find(item_params[:product_id])
-        @quotation.quotation_items.create!(
-          product_id: product.id,
-          quantity: item_params[:quantity].to_f,
-          amount: product.price
-        )
-      end
-    end
-
+    @quotation.update(quotation_params)
     @quotation.calculate_total
     redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
   end
