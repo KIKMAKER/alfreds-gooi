@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 1420" width="540" height="1420">
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO — dark green  (y 0–210)
+  ══════════════════════════════════════════════════════════ -->
+  <rect width="540" height="210" fill="#013f3a"/>
+  <circle cx="440" cy="55"  r="130" fill="rgba(132,203,163,0.07)"/>
+  <circle cx="500" cy="175" r="80"  fill="rgba(132,203,163,0.05)"/>
+  <circle cx="390" cy="195" r="55"  fill="rgba(251,183,24,0.04)"/>
+
+  <text x="270" y="60" text-anchor="middle"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-style="italic" font-size="22" font-weight="bold" fill="#FBB718">gooi*</text>
+
+  <text x="270" y="116" text-anchor="middle"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="33" font-weight="bold" fill="white">Weekly kitchen scrap</text>
+  <text x="270" y="152" text-anchor="middle"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="33" font-weight="bold" fill="#84cba3">collection for your home.</text>
+
+  <rect x="152" y="168" width="236" height="24" rx="12"
+        fill="rgba(132,203,163,0.18)" stroke="rgba(132,203,163,0.35)" stroke-width="0.75"/>
+  <text x="270" y="184" text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="10" letter-spacing="1.8" fill="#84cba3" font-weight="600">CAPE TOWN · EVERY WEEK</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       WHAT WE DO — white  (y 210–428)
+  ══════════════════════════════════════════════════════════ -->
+  <rect y="210" width="540" height="218" fill="white"/>
+
+  <text x="28" y="252"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" letter-spacing="2" fill="#108A63" font-weight="700">WHAT WE DO</text>
+
+  <text x="28" y="286"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="24" font-weight="bold" fill="#013f3a">We collect your food scraps</text>
+  <text x="28" y="313"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="24" font-weight="bold" fill="#013f3a">so they become compost,</text>
+  <text x="28" y="340"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="24" font-weight="bold" fill="#013f3a">not landfill.</text>
+
+  <text x="28" y="372"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">Leave your scraps out once a week. Alfred collects,</text>
+  <text x="28" y="392"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">delivers to a composting facility, and the nutrients</text>
+  <text x="28" y="412"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">go back to local Cape Town farms.</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HOW IT WORKS — light gray  (y 428–662)
+  ══════════════════════════════════════════════════════════ -->
+  <rect y="428" width="540" height="234" fill="#F4F4F4"/>
+
+  <text x="28" y="466"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" letter-spacing="2" fill="#108A63" font-weight="700">HOW IT WORKS</text>
+
+  <!-- Step 1 -->
+  <circle cx="52" cy="510" r="18" fill="#013f3a"/>
+  <text x="52" y="516" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="white">1</text>
+  <text x="82" y="503"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Sign up online</text>
+  <text x="82" y="521"
+        font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Choose your plan at gooi.me — takes 3 minutes.</text>
+
+  <!-- Step 2 -->
+  <circle cx="52" cy="573" r="18" fill="#013f3a"/>
+  <text x="52" y="579" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="white">2</text>
+  <text x="82" y="566"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Receive your starter kit</text>
+  <text x="82" y="584"
+        font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Compostable bags (Standard) or a 25L bucket (XL).</text>
+
+  <!-- Step 3 -->
+  <circle cx="52" cy="636" r="18" fill="#013f3a"/>
+  <text x="52" y="642" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="white">3</text>
+  <text x="82" y="629"
+        font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#013f3a">Leave it out every week</text>
+  <text x="82" y="647"
+        font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Same day each week — Alfred does the rest.</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PLANS — white  (y 662–1282)
+  ══════════════════════════════════════════════════════════ -->
+  <rect y="662" width="540" height="620" fill="white"/>
+
+  <text x="28" y="700"
+        font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif"
+        font-size="9.5" letter-spacing="2" fill="#108A63" font-weight="700">THE PLANS</text>
+  <text x="28" y="731"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="22" font-weight="bold" fill="#013f3a">Choose what works for you.</text>
+
+  <!-- ── Once-off box  y 750–860 (h 110) ── -->
+  <rect x="28" y="750" width="484" height="110" rx="14" fill="white" stroke="#e8e8e8" stroke-width="1.5"/>
+  <rect x="28" y="750" width="484" height="5"   rx="2.5" fill="#FBB718"/>
+  <rect x="370" y="760" width="124" height="20" rx="10" fill="rgba(251,183,24,0.12)"/>
+  <text x="432" y="774" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9.5" fill="#8a6200" font-weight="700" letter-spacing="0.5">ONCE OFF</text>
+  <text x="52" y="796"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Once-off collection</text>
+  <text x="52" y="816"
+        font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Try it out — no commitment, no kit required.</text>
+  <text x="420" y="796" text-anchor="middle"
+        font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#013f3a">R400</text>
+  <text x="420" y="818" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#999">per collection</text>
+  <text x="52" y="848"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#aaa">Starter kit not required · kit can be purchased separately</text>
+
+  <!-- ── Standard box  y 874–1074 (h 200) ── -->
+  <rect x="28" y="874" width="484" height="200" rx="14" fill="white" stroke="#e8e8e8" stroke-width="1.5"/>
+  <rect x="28" y="874" width="484" height="5"   rx="2.5" fill="#013f3a"/>
+  <rect x="346" y="884" width="148" height="20" rx="10" fill="#f0f7f4" stroke="rgba(16,138,99,0.3)" stroke-width="0.75"/>
+  <text x="420" y="897" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="#108A63" font-weight="700" letter-spacing="0.5">MOST POPULAR</text>
+
+  <text x="52" y="917"
+        font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#013f3a">Standard</text>
+  <text x="52" y="937"
+        font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Weekly collection · compostable bags supplied</text>
+
+  <line x1="28" y1="950" x2="512" y2="950" stroke="#f0f0f0" stroke-width="1"/>
+
+  <!-- 6 months -->
+  <text x="52" y="972"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">6 months</text>
+  <rect x="166" y="959" width="90" height="18" rx="9" fill="#f0f7f4"/>
+  <text x="211" y="971" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="#108A63" font-weight="700" letter-spacing="0.3">BEST VALUE</text>
+  <text x="462" y="973" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R180</text>
+  <text x="512" y="973" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+  <text x="512" y="987" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">R1,080 total</text>
+
+  <!-- 3 months -->
+  <text x="52" y="1010"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">3 months</text>
+  <text x="462" y="1010" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R220</text>
+  <text x="512" y="1010" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+  <text x="512" y="1024" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">R660 total</text>
+
+  <!-- 1 month -->
+  <text x="52" y="1048"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">1 month</text>
+  <text x="462" y="1048" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R260</text>
+  <text x="512" y="1048" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+
+  <text x="52" y="1066"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">+ R200 starter kit (once-off, on first invoice)</text>
+
+  <!-- ── XL box  y 1088–1274 (h 186) ── -->
+  <rect x="28" y="1088" width="484" height="186" rx="14" fill="white" stroke="#e8e8e8" stroke-width="1.5"/>
+  <rect x="28" y="1088" width="484" height="5"   rx="2.5" fill="#84cba3"/>
+
+  <text x="52" y="1128"
+        font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#013f3a">XL</text>
+  <text x="52" y="1148"
+        font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Weekly collection · 25L bucket · bigger households</text>
+
+  <line x1="28" y1="1161" x2="512" y2="1161" stroke="#f0f0f0" stroke-width="1"/>
+
+  <!-- 6 months -->
+  <text x="52" y="1183"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">6 months</text>
+  <rect x="166" y="1170" width="90" height="18" rx="9" fill="#f0f7f4"/>
+  <text x="211" y="1182" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="9" fill="#108A63" font-weight="700" letter-spacing="0.3">BEST VALUE</text>
+  <text x="462" y="1184" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R240</text>
+  <text x="512" y="1184" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+  <text x="512" y="1198" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">R1,440 total</text>
+
+  <!-- 3 months -->
+  <text x="52" y="1221"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">3 months</text>
+  <text x="462" y="1221" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R270</text>
+  <text x="512" y="1221" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+  <text x="512" y="1235" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">R810 total</text>
+
+  <!-- 1 month -->
+  <text x="52" y="1258"
+        font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#013f3a" font-weight="600">1 month</text>
+  <text x="462" y="1258" text-anchor="end"
+        font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">R300</text>
+  <text x="512" y="1258" text-anchor="end"
+        font-family="-apple-system, Arial, sans-serif" font-size="11.5" fill="#999">/mo</text>
+
+  <text x="52" y="1266"
+        font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#bbb">+ R300 starter kit (once-off, on first invoice)</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CTA — dark green  (y 1282–1420)
+  ══════════════════════════════════════════════════════════ -->
+  <rect y="1282" width="540" height="138" fill="#013f3a"/>
+
+  <text x="270" y="1326" text-anchor="middle"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="26" font-weight="bold" fill="white">Ready to gooi?</text>
+  <text x="270" y="1354" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.60)">Sign up in minutes at</text>
+
+  <rect x="156" y="1366" width="228" height="36" rx="18" fill="#FBB718"/>
+  <text x="270" y="1389" text-anchor="middle"
+        font-family="-apple-system, Arial, sans-serif" font-size="15" font-weight="700" fill="#013f3a">gooi.me</text>
+
+</svg>
