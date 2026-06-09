@@ -89,25 +89,19 @@ class DriversDaysController < ApplicationController
     @total_bags_needed  = @bags_needed.sum { |s| last_coll[s.id].needs_bags }
     @new_customer       = @subscriptions.select { |s| last_coll[s.id]&.new_customer == true }
 
-    # Check for recently lapsed customers
-    two_weeks_ago = today - 2.weeks
+    # Check for recently lapsed customers (mirrors SubscriptionsController#recently_lapsed logic)
     existing_ids = @drivers_day.collections.pluck(:subscription_id)
     resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq
+    opted_out_user_ids = User.where(opted_out: true).pluck(:id)
 
     @recently_lapsed = Subscription
       .where(collection_day: Date::DAYNAMES[today.wday])
       .where(status: 'completed')
-      .where(end_date: two_weeks_ago..today)
       .where.not(id: existing_ids)
       .where.not(user_id: resubscribed_user_ids)
+      .where.not(user_id: opted_out_user_ids)
       .includes(:user, :collections)
       .order(end_date: :desc)
-
-    # Filter to only those who had collections in their last week (in-memory — collections already preloaded)
-    @recently_lapsed = @recently_lapsed.select do |sub|
-      last_week = sub.end_date - 1.week
-      sub.collections.any? { |c| c.date >= last_week && c.date <= sub.end_date && !c.skip }
-    end
 
     if request.patch?
       # Set start_time when form is actually submitted (only if not already set)

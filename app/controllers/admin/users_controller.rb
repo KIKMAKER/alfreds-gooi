@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices, :claim_orphaned_payments, :transfer_payments]
+  before_action :set_user, only: [:show, :edit, :update, :renew_last_subscription, :fix_subscription_boundaries, :collections, :nudge_pending, :transfer_subscriptions, :generate_all_monthly_invoices, :claim_orphaned_payments, :transfer_payments, :toggle_opted_out]
 
   SUBS_COUNT_SQL = "(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.user_id = users.id)".freeze
   LATEST_SUB_STATUS_SQL = "(SELECT status FROM subscriptions WHERE subscriptions.user_id = users.id ORDER BY created_at DESC LIMIT 1)".freeze
@@ -255,6 +255,12 @@ class Admin::UsersController < ApplicationController
       redirect_to admin_user_path(@destination_user),
                   notice: "#{transferred} subscription#{'s' if transferred != 1} transferred to #{@destination_user.first_name}."
     end
+  end
+
+  def toggle_opted_out
+    @user.update!(opted_out: !@user.opted_out)
+    status = @user.opted_out? ? "marked as opted out" : "opt-out cleared"
+    redirect_to admin_user_path(@user), notice: "#{@user.first_name} #{status}."
   end
 
   private

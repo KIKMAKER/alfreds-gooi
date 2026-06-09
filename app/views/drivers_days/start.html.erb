@@ -59,8 +59,8 @@
             <h3><%= pluralize(@recently_lapsed.count, 'customer') %> recently lapsed</h3>
           </div>
           <div class="dd-form-card__body">
-            <p class="text-muted mb-2">Their subscriptions ended in the last 2 weeks. You can collect from them as a courtesy.</p>
-            <%= link_to "Message recently lapsed customers", recently_lapsed_subscriptions_path, class: "btn-yellow btn-sm" %>
+            <p class="text-muted mb-2">Their subscriptions have ended and they haven't renewed yet. You can collect from them as a courtesy.</p>
+            <%= link_to "See missing customers", recently_lapsed_subscriptions_path, class: "btn-yellow btn-sm" %>
           </div>
         </div>
       <% end %>

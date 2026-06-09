@@ -17,6 +17,16 @@
         <p><strong>Referred by:</strong> <%= link_to @referred_by.first_name + " " + @referred_by.last_name.to_s, admin_user_path(@referred_by), class: "link-title" %></p>
       <% end %>
 
+      <% if @user.opted_out? %>
+        <p><span class="badge bg-secondary">Opted out — will not appear on missing-from-list</span></p>
+      <% end %>
+
+      <%= button_to @user.opted_out? ? "Clear opt-out" : "Mark as opted out",
+            toggle_opted_out_admin_user_path(@user),
+            method: :post,
+            class: @user.opted_out? ? "btn-today-green my-2" : "btn-secondary-outline my-2",
+            form: { data: { turbo_confirm: @user.opted_out? ? "Clear opted-out status for #{@user.first_name}?" : "Mark #{@user.first_name} as permanently opted out? They won't appear on Alfred's missing-from-list." } } %>
+
       <%= link_to "New Subscription", new_admin_subscription_path(user_id: @user.id), class: "btn-today-green my-2" %>
 
       <% if @user.journey_token.present? %>

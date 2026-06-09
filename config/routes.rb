@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       post :claim_orphaned_payments,         on: :member
       get  :transfer_payments,               on: :member
       post :transfer_payments,               on: :member
+      post :toggle_opted_out,                on: :member
       resources :payments, only: [:create, :destroy], controller: 'payments'
     end
     resources :subscriptions, only: [:show, :new, :create] do

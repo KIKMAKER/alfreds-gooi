@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_28_202627) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -826,6 +826,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_202627) do
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "journey_token"
+    t.boolean "opted_out", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["journey_token"], name: "index_users_on_journey_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

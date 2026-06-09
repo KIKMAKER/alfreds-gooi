@@ -475,10 +475,13 @@ class SubscriptionsController < ApplicationController
 
     resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq
 
+    opted_out_user_ids = User.where(opted_out: true).pluck(:id)
+
     candidates = Subscription
       .where(collection_day: Date::DAYNAMES[today.wday])
       .where(status: 'completed')
       .where.not(user_id: resubscribed_user_ids)
+      .where.not(user_id: opted_out_user_ids)
 
     with_upcoming = Collection
       .where(subscription_id: candidates.pluck(:id))
