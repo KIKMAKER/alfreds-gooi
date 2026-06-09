@@ -2,13 +2,24 @@
 
   <div class="dd-header">
     <div>
-      <h1 class="dd-header__title">Recently Lapsed</h1>
-      <p class="dd-header__sub">Subscriptions that ended in the last 2 weeks</p>
+      <h1 class="dd-header__title">Missing From List</h1>
+      <p class="dd-header__sub">Completed subscriptions not yet renewed</p>
     </div>
     <div class="dd-header__actions">
       <%= link_to "← Today's List", today_subscriptions_path, class: "btn-secondary-outline btn-sm" %>
     </div>
   </div>
+
+  <% if flash[:whatsapp_url] %>
+    <div class="dd-form-card dd-form-card--highlight mb-3">
+      <div class="dd-form-card__body text-center">
+        <p class="fw-semibold mb-2">✓ <%= flash[:added_name] %> added to today's list</p>
+        <%= link_to flash[:whatsapp_url], target: "_blank", class: "tiny-yellow-btn" do %>
+          <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp <%= flash[:added_name] %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <% if @recently_lapsed.any? %>
 
@@ -22,10 +33,6 @@
           <% user = subscription.user %>
           <% last_collection = subscription.collections.where(skip: false).order(date: :desc).first %>
           <% days_since_last = last_collection ? (Date.today - last_collection.date).to_i : nil %>
-          <%
-            message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, but I'm collecting your gooi bag anyway as a courtesy!\n\nPlease resubscribe before next week so you'll be back on my list :)\n\nYou can log in at alfred.gooi.me/manage with email #{user.email}."
-            whatsapp_url = user.generate_whatsapp_link(message)
-          %>
           <div class="quick-msg-row">
             <div>
               <div class="quick-msg-row__name"><%= user.first_name %> <%= user.last_name %></div>
@@ -38,10 +45,7 @@
               </div>
             </div>
             <div class="quick-msg-row__actions">
-              <%= link_to whatsapp_url, target: "_blank", class: "quick-msg-btn", title: "WhatsApp" do %>
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.4rem; color: #25D366;"></i>
-              <% end %>
-              <%= button_to "Add to list",
+              <%= button_to "Add + WhatsApp",
                   collect_courtesy_subscription_path(subscription),
                   method: :post,
                   class: "tiny-yellow-btn",
@@ -52,30 +56,50 @@
       </div>
     </div>
 
-    <div class="dd-form-card">
-      <div class="dd-form-card__body">
-        <p class="mb-2 fw-semibold">What happens when you click "Add to list":</p>
-        <ol class="mb-0 text-muted small">
-          <li>A collection is created for today using their old subscription</li>
-          <li>They'll appear on today's route</li>
-          <li>WhatsApp them separately to let them know you're coming</li>
-        </ol>
-      </div>
-    </div>
-
   <% else %>
 
     <div class="dd-form-card">
       <div class="dd-form-card__body text-center py-4">
         <p class="fs-4 mb-2">🎉</p>
-        <p class="fw-semibold mb-1">No recently lapsed customers</p>
+        <p class="fw-semibold mb-1">No lapsed customers on today's route</p>
         <p class="text-muted small mb-3">
-          Everyone who ended their subscription in the last 2 weeks is either already on today's list or wasn't actively collecting.
+          Everyone on today's collection day is either already on the list or has resubscribed.
         </p>
         <%= link_to "Back to Today's List", today_subscriptions_path, class: "tiny-yellow-btn" %>
       </div>
     </div>
 
   <% end %>
+
+  <div class="dd-form-card mt-3" data-controller="customer-lookup">
+    <div class="dd-form-card__header">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <h3>Not seeing someone?</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="text-muted small mb-3">Find any customer and add them to today's list.</p>
+      <select class="form-select mb-3"
+              data-customer-lookup-target="select"
+              data-action="change->customer-lookup#pick">
+        <option value="">— Select a customer —</option>
+        <% @all_customers.each do |cust| %>
+          <% sub = cust.subscriptions.max_by(&:created_at) %>
+          <% next unless sub %>
+          <option value="<%= sub.id %>">
+            <%= cust.first_name %> <%= cust.last_name %>
+            (<%= sub.suburb %> · <%= sub.collection_day %> · <%= sub.status %>)
+          </option>
+        <% end %>
+      </select>
+
+      <form method="post"
+            action=""
+            data-customer-lookup-target="form"
+            class="d-none">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        <input type="submit" value="Add + WhatsApp" class="tiny-yellow-btn">
+      </form>
+    </div>
+  </div>
 
 </div>

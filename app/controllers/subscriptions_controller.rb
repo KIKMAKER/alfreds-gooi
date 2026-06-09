@@ -473,19 +473,13 @@ class SubscriptionsController < ApplicationController
     driver = User.find_by(first_name: "Alfred", role: 'driver')
     @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
 
-    # Exclude users who have already resubscribed (active or pending sub exists)
     resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq
 
-    # Completed subs on today's collection day that ended in the last 2 weeks
     candidates = Subscription
       .where(collection_day: Date::DAYNAMES[today.wday])
       .where(status: 'completed')
-      .where(end_date: (today - 2.weeks)..today)
       .where.not(user_id: resubscribed_user_ids)
 
-    # Exclude any sub that still has a non-skipped collection scheduled today or later.
-    # This covers both today's route AND pre-created future collections — the old check
-    # only looked at today's drivers_day, missing next-week collections already on the books.
     with_upcoming = Collection
       .where(subscription_id: candidates.pluck(:id))
       .where('date >= ?', today)
@@ -497,12 +491,16 @@ class SubscriptionsController < ApplicationController
       .includes(:user, :collections)
       .order(end_date: :desc)
 
-    # Keep only subs that were actively collecting in their final week
-    # (filters out subs that ended without ever collecting)
-    # Uses the already-loaded association to avoid N+1 queries
-    @recently_lapsed = @recently_lapsed.select do |sub|
-      sub.collections.any? { |c| !c.skip && c.date >= sub.end_date - 1.week && c.date <= sub.end_date }
-    end
+    today_day = Date::DAYNAMES[today.wday]
+    @all_customers = User.where(role: :customer)
+                         .joins(:subscriptions)
+                         .distinct
+                         .order(:first_name, :last_name)
+                         .includes(subscriptions: [])
+                         .sort_by do |u|
+                           most_recent = u.subscriptions.max_by(&:created_at)
+                           [most_recent&.collection_day == today_day ? 0 : 1, u.first_name.to_s]
+                         end
   end
 
   def collect_courtesy
@@ -511,7 +509,11 @@ class SubscriptionsController < ApplicationController
     driver = User.find_by(first_name: "Alfred", role: 'driver')
     @drivers_day = DriversDay.find_or_create_by!(date: today, user_id: driver.id)
 
-    # Create collection for today
+    if Collection.exists?(subscription: subscription, date: today)
+      redirect_to recently_lapsed_subscriptions_path, alert: "#{subscription.user.first_name} is already on today's list."
+      return
+    end
+
     Collection.create!(
       subscription: subscription,
       drivers_day: @drivers_day,
@@ -523,7 +525,13 @@ class SubscriptionsController < ApplicationController
     )
 
     user = subscription.user
-    flash[:notice] = "#{user.first_name} added to today's collections!"
+    message = "Hello #{user.first_name}! You weren't on my list today because your subscription ended, " \
+              "but I'm collecting your gooi bag anyway as a courtesy!\n\n" \
+              "Please resubscribe before next week so you'll be back on my list :)\n\n" \
+              "You can log in at alfred.gooi.me/manage with email #{user.email}."
+
+    flash[:whatsapp_url]  = user.generate_whatsapp_link(message)
+    flash[:added_name]    = user.first_name
     redirect_to recently_lapsed_subscriptions_path
   end
 
