@@ -131,6 +131,19 @@
   padding: 2px 7px;
 }
 
+.mi-approve-link {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: $dark-green;
+  text-decoration: underline;
+  margin-left: 6px;
+
+  &:hover {
+    color: darken($dark-green, 10%);
+  }
+}
+
 .mi-actions {
   white-space: nowrap;
   display: flex;

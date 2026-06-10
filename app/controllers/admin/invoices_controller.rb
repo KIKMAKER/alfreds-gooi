@@ -13,7 +13,7 @@ class Admin::InvoicesController < Admin::BaseController
 
     InvoiceMailer.with(invoice: @invoice).invoice_created.deliver_now
 
-    redirect_to admin_root_path,
+    redirect_back fallback_location: admin_root_path,
       notice: "Invoice ##{@invoice.number} approved and sent to #{@invoice.subscription&.user&.email}."
   end
 end

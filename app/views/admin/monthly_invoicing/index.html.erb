@@ -50,7 +50,7 @@
             last_invoice = sub.invoices.max_by(&:issued_date)
             overdue      = sub.next_invoice_date&.< Date.today
             due_today    = sub.next_invoice_date == Date.today
-            pending_inv  = sub.invoices.reject(&:admin_approved).reject(&:paid).any?
+            pending_invs = sub.invoices.reject(&:admin_approved).reject(&:paid)
             row_class    = overdue ? "mi-row--overdue" : (due_today ? "mi-row--due-today" : "")
           %>
           <tr class="<%= row_class %>">
@@ -110,8 +110,13 @@
               <% end %>
             </td>
             <td>
-              <% if pending_inv %>
-                <span class="mi-pending-badge">Awaiting approval</span>
+              <% if pending_invs.any? %>
+                <% pending_invs.each do |inv| %>
+                  <div>
+                    <span class="mi-pending-badge">Awaiting approval</span>
+                    <%= link_to "Approve ##{inv.number || inv.id}", approve_admin_invoice_path(inv), class: "mi-approve-link" %>
+                  </div>
+                <% end %>
               <% else %>
                 <span class="text-muted">—</span>
               <% end %>
