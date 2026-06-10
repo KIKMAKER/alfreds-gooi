@@ -23,4 +23,15 @@ class UserMailer < ApplicationMailer
       message_stream: 'outbound'
     )
   end
+
+  def opted_out
+    @user = params[:user]
+
+    mail(
+      to: @user.email,
+      subject: "Just a heads up from Gooi",
+      track_opens: 'true',
+      message_stream: 'outbound'
+    )
+  end
 end

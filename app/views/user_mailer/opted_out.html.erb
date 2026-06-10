@@ -1,0 +1,38 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <p style="font-size: 1.1rem;">Hi <%= @user.first_name %>,</p>
+
+  <p style="font-size: 1.1rem;">
+    We're tidying up our records and noting that you're no longer actively gooiing with us — no hard feelings, life happens!
+  </p>
+
+  <p style="font-size: 1.1rem;">Your account is still here whenever you're ready. You can:</p>
+
+  <ul style="font-size: 1.1rem; padding-left: 1.5rem; line-height: 2;">
+    <li><strong>Come back</strong> and resubscribe any time</li>
+    <li><strong>Refer a friend</strong> and earn a discount when they sign up</li>
+    <li><strong>Revisit your composting stats</strong> — all that lovely data is yours to keep</li>
+  </ul>
+
+  <p style="margin: 1.5rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View My Account
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    If you think this is a mistake, just reply to this email or reach us at
+    <a href="mailto:howzit@gooi.me" style="color: #1f4632; font-weight: bold; text-decoration: underline;">howzit@gooi.me</a>
+    and we'll sort it out right away.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Otherwise, this just means you won't pop up in Alfred's route management when he's out collecting — a small housekeeping tweak on our end.
+  </p>
+
+  <p style="font-size: 1.1rem;">Thanks for being part of the Gooi community.</p>
+
+  <p>
+    <%= image_tag 'email-signature.png', alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+  </p>
+</div>

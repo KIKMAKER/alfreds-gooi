@@ -259,7 +259,12 @@ class Admin::UsersController < ApplicationController
 
   def toggle_opted_out
     @user.update!(opted_out: !@user.opted_out)
-    status = @user.opted_out? ? "marked as opted out" : "opt-out cleared"
+    if @user.opted_out?
+      UserMailer.with(user: @user).opted_out.deliver_now
+      status = "marked as opted out — notification email sent"
+    else
+      status = "opt-out cleared"
+    end
     redirect_to admin_user_path(@user), notice: "#{@user.first_name} #{status}."
   end
 
