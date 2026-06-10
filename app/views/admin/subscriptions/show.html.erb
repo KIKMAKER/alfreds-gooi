@@ -401,18 +401,31 @@
 
       <% if @subscription.invoices.any? %>
         <div class="invoice-list">
-          <% @subscription.invoices.each do |invoice| %>
+          <% @subscription.invoices.order(created_at: :desc).each do |invoice| %>
             <%= link_to invoice_path(invoice), class: 'invoice-item-card' do %>
               <div class="invoice-icon">
                 <i class="fa-solid fa-file-invoice-dollar"></i>
               </div>
               <div class="invoice-details">
-                <div class="invoice-number">Invoice #<%= invoice.id %></div>
-                <div class="invoice-date"><%= invoice.created_at.strftime('%d %b %Y') %></div>
+                <div class="invoice-number">Invoice #<%= invoice.number || invoice.id %></div>
+                <div class="invoice-date"><%= (invoice.issued_date || invoice.created_at).strftime('%d %b %Y') %></div>
               </div>
               <div class="invoice-amount">
                 R<%= number_with_delimiter(invoice.total_amount) %>
               </div>
+              <% if invoice.paid? %>
+                <span class="invoice-status-badge invoice-status-badge--paid">
+                  <i class="fa-solid fa-circle-check"></i> Paid
+                </span>
+              <% elsif !invoice.admin_approved? %>
+                <span class="invoice-status-badge invoice-status-badge--pending">
+                  <i class="fa-solid fa-clock"></i> Pending
+                </span>
+              <% else %>
+                <span class="invoice-status-badge invoice-status-badge--unpaid">
+                  <i class="fa-solid fa-circle-xmark"></i> Unpaid
+                </span>
+              <% end %>
               <i class="fa-solid fa-chevron-right"></i>
             <% end %>
           <% end %>
