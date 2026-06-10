@@ -1,0 +1,139 @@
+// Monthly invoicing admin dashboard (mi-)
+
+.mi-table {
+  font-size: 0.875rem;
+
+  th {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $font-grey;
+    white-space: nowrap;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+.mi-row--overdue {
+  background-color: rgba(#dc3545, 0.04) !important;
+
+  &:hover {
+    background-color: rgba(#dc3545, 0.07) !important;
+  }
+}
+
+.mi-row--due-today {
+  background-color: rgba($dark-yellow, 0.06) !important;
+
+  &:hover {
+    background-color: rgba($dark-yellow, 0.10) !important;
+  }
+}
+
+.mi-date--overdue {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.mi-date--today {
+  color: #bf6000;
+  font-weight: 600;
+}
+
+.mi-overdue-label {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #dc3545;
+  background: rgba(#dc3545, 0.10);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 4px;
+}
+
+.mi-kpi-card--overdue {
+  border-top-color: #dc3545;
+}
+
+.mi-kpi-value--overdue {
+  color: #dc3545;
+}
+
+.mi-customer-link {
+  font-weight: 600;
+  color: $dark-green;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    color: $dark-green;
+  }
+}
+
+.mi-customer-email {
+  font-size: 0.75rem;
+  color: $font-grey;
+  margin-top: 2px;
+}
+
+.mi-satellite-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba($dark-green, 0.08);
+  color: $dark-green;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 4px;
+  cursor: help;
+}
+
+.mi-status-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  padding: 2px 7px;
+
+  &--active  { background: #e8f4ea; color: #2d7a3a; }
+  &--pause   { background: #fff3e0; color: #bf6000; }
+  &--pending { background: #f0edfa; color: #6a3fa0; }
+}
+
+.mi-progress {
+  margin-top: 4px;
+  background: rgba($dark-green, 0.08);
+  border-radius: 2px;
+
+  .progress-bar {
+    background: $dark-green;
+    border-radius: 2px;
+  }
+}
+
+.mi-pending-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba($dark-yellow, 0.15);
+  color: darken($dark-yellow, 20%);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.mi-actions {
+  white-space: nowrap;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}

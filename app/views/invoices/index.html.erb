@@ -30,6 +30,10 @@
             style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
           Payments
         <% end %>
+        <%= link_to admin_monthly_invoicing_path, class: "tiny-yellow-btn",
+            style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
+          Monthly Invoicing
+        <% end %>
         <% if @user.present? %>
           <%= link_to invoices_path, class: "tiny-yellow-btn",
               style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>

@@ -1,0 +1,139 @@
+<div class="admin-container">
+  <div class="pt-4 pb-3">
+    <p class="dash-eyebrow">Admin · Finance</p>
+    <h1>Monthly Invoicing</h1>
+    <p class="text-muted small"><%= Date.today.strftime('%A, %-d %B %Y') %></p>
+  </div>
+
+  <%# KPI strip %>
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Total accounts</div>
+        <div class="dash-kpi-value"><%= @subscriptions.size %></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card mi-kpi-card--overdue">
+        <div class="dash-kpi-label">Overdue</div>
+        <div class="dash-kpi-value <%= 'mi-kpi-value--overdue' if @overdue_count > 0 %>">
+          <%= @overdue_count %>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-label">Due today</div>
+        <div class="dash-kpi-value"><%= @due_today_count %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table mi-table">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Plan</th>
+          <th>Status</th>
+          <th>Next invoice</th>
+          <th>Last issued</th>
+          <th>Last amount</th>
+          <th>Invoiced / Contract</th>
+          <th>Pending approval</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @subscriptions.each do |sub| %>
+          <%
+            last_invoice = sub.invoices.max_by(&:issued_date)
+            overdue      = sub.next_invoice_date&.< Date.today
+            due_today    = sub.next_invoice_date == Date.today
+            pending_inv  = sub.invoices.reject(&:admin_approved).reject(&:paid).any?
+            row_class    = overdue ? "mi-row--overdue" : (due_today ? "mi-row--due-today" : "")
+          %>
+          <tr class="<%= row_class %>">
+            <td>
+              <%= link_to sub.display_name, admin_subscription_path(sub), class: "mi-customer-link" %>
+              <% if sub.satellite_subscriptions.any? %>
+                <span class="mi-satellite-badge" title="<%= sub.satellite_subscriptions.size %> satellite subscription(s)">
+                  +<%= sub.satellite_subscriptions.size %>
+                </span>
+              <% end %>
+              <div class="mi-customer-email"><%= sub.user.email %></div>
+            </td>
+            <td><%= sub.human_plan %></td>
+            <td>
+              <span class="mi-status-badge mi-status-badge--<%= sub.status %>">
+                <%= sub.status.humanize %>
+              </span>
+            </td>
+            <td>
+              <% if sub.next_invoice_date %>
+                <span class="<%= overdue ? 'mi-date--overdue' : (due_today ? 'mi-date--today' : '') %>">
+                  <%= sub.next_invoice_date.strftime('%-d %b %Y') %>
+                </span>
+                <% if overdue %>
+                  <span class="mi-overdue-label">overdue</span>
+                <% end %>
+              <% else %>
+                <span class="text-muted">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if last_invoice %>
+                <%= link_to last_invoice.issued_date.strftime('%-d %b %Y'), invoice_path(last_invoice) %>
+              <% else %>
+                <span class="text-muted">Never</span>
+              <% end %>
+            </td>
+            <td>
+              <% if last_invoice %>
+                R<%= number_with_delimiter(last_invoice.total_amount.to_i) %>
+              <% else %>
+                <span class="text-muted">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if sub.contract_total&.positive? %>
+                R<%= number_with_delimiter(sub.amount_invoiced.to_i) %> /
+                R<%= number_with_delimiter(sub.contract_total.to_i) %>
+                <div class="progress mi-progress" style="height: 5px;">
+                  <div class="progress-bar"
+                       style="width: <%= sub.invoicing_progress_percentage %>%;"
+                       role="progressbar">
+                  </div>
+                </div>
+              <% else %>
+                <span class="text-muted">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if pending_inv %>
+                <span class="mi-pending-badge">Awaiting approval</span>
+              <% else %>
+                <span class="text-muted">—</span>
+              <% end %>
+            </td>
+            <td class="mi-actions">
+              <%= link_to "View", admin_subscription_path(sub), class: "fad-pill-link" %>
+              <% if sub.next_invoice_date && sub.next_invoice_date <= Date.today %>
+                <%= button_to "Generate",
+                              generate_monthly_invoice_admin_subscription_path(sub),
+                              method: :post,
+                              class: "fad-action-btn",
+                              form: { data: { turbo_confirm: "Generate invoice for #{sub.display_name}?" } } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @subscriptions.empty? %>
+          <tr>
+            <td colspan="9" class="text-muted text-center py-4">No monthly invoicing subscriptions found.</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
