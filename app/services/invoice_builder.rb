@@ -310,11 +310,6 @@ class InvoiceBuilder
     if code&.available?
       return if code.used_by?(@subscription.user)
 
-      if code.three_month_only? && @subscription.duration != 3
-        Rails.logger.info "Discount code #{code.code} is only valid for 3-month subscriptions (attempted on #{@subscription.duration}-month)"
-        return
-      end
-
       subtotal = invoice.invoice_items.sum { |item| item.amount * item.quantity }
 
       discount_amount = if code.percentage_based?
