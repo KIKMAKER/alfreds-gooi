@@ -7,6 +7,8 @@ class Collection < ApplicationRecord
   # Scopes
   scope :recent, -> { order(date: :desc) }
 
+  before_save :stamp_collection_time
+
   # Custom methods
   # One-shot helper to mark skip + send email notification.
   # Use this for human-triggered skips (admin, customer "skip next week").
@@ -78,6 +80,10 @@ class Collection < ApplicationRecord
   end
 
   private
+
+  def stamp_collection_time
+    self.time = Time.current if will_save_change_to_is_done? && is_done?
+  end
 
   def notify_skip_marked(user)
     CollectionMailer.skipped(
