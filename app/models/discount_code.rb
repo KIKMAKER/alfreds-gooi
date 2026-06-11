@@ -16,6 +16,13 @@ class DiscountCode < ApplicationRecord
     discount_cents.present?
   end
 
+  def used_by?(user)
+    invoice_discount_codes
+      .joins(invoice: :subscription)
+      .where(subscriptions: { user_id: user.id })
+      .exists?
+  end
+
   # Temporary: Restrict NEWSOIL26 to 3-month plans only
   def three_month_only?
     code == "NEWSOIL26"
