@@ -1,5 +1,7 @@
 class Block < ApplicationRecord
   has_many :subscriptions, dependent: :nullify
+  has_many :block_survey_responses, dependent: :destroy
+  has_many :quotations, dependent: :nullify
   has_many_attached :photos
 
   validates :name, presence: true
@@ -127,6 +129,36 @@ class Block < ApplicationRecord
     return nil if total_collections.zero?
     avg_l_per_collection = lifetime_volume_l.to_f / total_collections
     (avg_l_per_collection / LITRES_PER_HOUSEHOLD).ceil
+  end
+
+  # ── Per-household projected annual impact (used on survey page) ─────────────
+
+  WEEKS_PER_YEAR = 52
+
+  def self.annual_kg_per_household
+    (LITRES_PER_HOUSEHOLD * WEEKS_PER_YEAR * DENSITY_KG_PER_L).round
+  end
+
+  def self.annual_co2e_per_household
+    (annual_kg_per_household * CO2E_PER_KG).round
+  end
+
+  # ── Survey aggregates ────────────────────────────────────────────────────────
+
+  def survey_response_count
+    block_survey_responses.count
+  end
+
+  def survey_wants_phase_one_count
+    block_survey_responses.where(wants_phase_one: true).count
+  end
+
+  def survey_wants_bin_count
+    block_survey_responses.where(wants_to_buy_bin: true).count
+  end
+
+  def survey_has_bin_count
+    block_survey_responses.where(has_compost_bin: true).count
   end
 
   # ── Slug generation ──────────────────────────────────────────────────────────

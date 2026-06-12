@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f7f5; margin: 0; padding: 0; }
+    .wrapper { max-width: 560px; margin: 0 auto; padding: 2rem 1rem; }
+    .card { background: white; border-radius: 16px; padding: 2.5rem 2rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+    h1 { color: #1a3d2b; font-size: 1.6rem; margin-top: 0; line-height: 1.3; }
+    p { color: #444; font-size: 0.98rem; line-height: 1.7; }
+    .impact { display: table; width: 100%; margin: 1.5rem 0; border-collapse: separate; border-spacing: 0.5rem; }
+    .impact-cell { display: table-cell; background: #f0f7f4; border-radius: 12px; padding: 1rem; text-align: center; vertical-align: top; width: 50%; }
+    .impact-number { display: block; font-size: 1.8rem; font-weight: 700; color: #1a3d2b; line-height: 1.1; margin-bottom: 0.3rem; }
+    .impact-label { display: block; font-size: 0.78rem; color: #666; line-height: 1.4; }
+    .cta { display: block; text-align: center; margin: 2rem 0 1rem; }
+    .cta a { display: inline-block; background: #1a3d2b; color: white; font-weight: 700; font-size: 1rem; padding: 0.9rem 2.5rem; border-radius: 999px; text-decoration: none; }
+    .footer { text-align: center; margin-top: 1.5rem; font-size: 0.78rem; color: #aaa; }
+    .footer a { color: #6aaa8a; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <h1>Composting is coming to <%= @block.name %> — we'd love your input</h1>
+
+      <p>
+        Hi there,
+      </p>
+      <p>
+        We're Gooi — a Cape Town kitchen scrap collection service. We pick up food scraps weekly
+        and send them to a local composting facility, where they become soil rather than landfill methane.
+      </p>
+      <p>
+        We're exploring a collection service at <%= @block.name %> and want to understand how much
+        interest there is before we plan the route and pricing. It takes 30 seconds.
+      </p>
+
+      <p><strong>What one household diverts from landfill in a year:</strong></p>
+
+      <div class="impact">
+        <div class="impact-cell">
+          <span class="impact-number"><%= @annual_kg %>kg</span>
+          <span class="impact-label">food waste diverted from landfill</span>
+        </div>
+        <div class="impact-cell">
+          <span class="impact-number"><%= @annual_co2e %>kg</span>
+          <span class="impact-label">CO₂e emissions prevented</span>
+        </div>
+      </div>
+
+      <p>
+        The more units participate, the lower the per-unit cost — so your response genuinely affects
+        whether this service gets off the ground and what it costs.
+      </p>
+
+      <div class="cta">
+        <%= link_to "Take the survey (30 seconds)", @survey_url %>
+      </div>
+
+      <p style="font-size: 0.85rem; color: #888;">
+        The survey is anonymous — we're just counting interest to plan the right size service.
+        No sign-up required.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>
+        Gooi · Cape Town's kitchen scrap collection ·
+        <a href="https://www.instagram.com/gooi_capetown/">@gooi_capetown</a>
+      </p>
+      <p>
+        Questions? <a href="mailto:howzit@gooi.me">howzit@gooi.me</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

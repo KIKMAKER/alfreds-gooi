@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_12_100002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -139,6 +139,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "block_survey_responses", force: :cascade do |t|
+    t.bigint "block_id", null: false
+    t.boolean "has_compost_bin", default: false, null: false
+    t.boolean "wants_to_buy_bin", default: false, null: false
+    t.boolean "wants_phase_one", default: false, null: false
+    t.string "respondent_name"
+    t.string "unit_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["block_id"], name: "index_block_survey_responses_on_block_id"
   end
 
   create_table "blocks", force: :cascade do |t|
@@ -591,6 +603,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
     t.string "event_venue"
     t.integer "collections_per_week", default: 1, null: false
     t.integer "buckets_per_collection"
+    t.bigint "block_id"
+    t.index ["block_id"], name: "index_quotations_on_block_id"
     t.index ["subscription_id"], name: "index_quotations_on_subscription_id"
     t.index ["user_id"], name: "index_quotations_on_user_id"
   end
@@ -855,6 +869,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "block_survey_responses", "blocks"
   add_foreign_key "buckets", "drivers_days"
   add_foreign_key "buckets", "drop_off_events"
   add_foreign_key "business_profiles", "subscriptions"
@@ -888,6 +903,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_09_135811) do
   add_foreign_key "payments", "users"
   add_foreign_key "quotation_items", "products"
   add_foreign_key "quotation_items", "quotations"
+  add_foreign_key "quotations", "blocks"
   add_foreign_key "quotations", "subscriptions"
   add_foreign_key "quotations", "users"
   add_foreign_key "referrals", "subscriptions"

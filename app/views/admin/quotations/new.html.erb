@@ -41,6 +41,13 @@
         <%= f.input :notes, as: :text, input_html: { rows: 3 } %>
 
         <div id="subscription-fields">
+          <%= f.association :block,
+              collection: Block.order(:name),
+              label_method: :name,
+              prompt: "Not linked to a block / estate (optional)",
+              input_html: { class: 'select2' },
+              label: "Estate / Block" %>
+
           <%= f.input :duration_months,
               label: "Contract duration (months)",
               hint: "Used to calculate the weekly rate shown on the quote",

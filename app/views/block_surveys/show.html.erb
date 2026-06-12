@@ -1,0 +1,136 @@
+<%# Estate resident survey — public, no auth. Mobile-first. %>
+
+<% annual_kg   = Block.annual_kg_per_household %>
+<% annual_co2e = Block.annual_co2e_per_household %>
+
+<div class="block-survey">
+
+  <%# ── Hero ──────────────────────────────────────────────────────────── %>
+  <div class="block-survey__hero">
+    <div class="block-survey__badge">Kitchen Scraps Collection</div>
+    <h1 class="block-survey__title"><%= @block.name %></h1>
+    <p class="block-survey__subtitle">Help us plan a collection service for your building</p>
+  </div>
+
+  <%# ── Impact section ─────────────────────────────────────────────────── %>
+  <section class="block-survey__impact">
+    <div class="container">
+      <h2 class="block-survey__impact-heading">What one household contributes in a year</h2>
+      <p class="block-survey__impact-intro">
+        Every kitchen produces food scraps. Instead of going to landfill — where they rot and release
+        methane — they can become compost that feeds Cape Town's soil. Here's what your unit alone would achieve:
+      </p>
+      <div class="block-survey__impact-stats">
+        <div class="block-survey__impact-stat">
+          <span class="block-survey__impact-number"><%= annual_kg %>kg</span>
+          <span class="block-survey__impact-label">diverted from landfill per year</span>
+        </div>
+        <div class="block-survey__impact-stat block-survey__impact-stat--accent">
+          <span class="block-survey__impact-number"><%= annual_co2e %>kg</span>
+          <span class="block-survey__impact-label">CO₂e emissions prevented per year</span>
+          <span class="block-survey__impact-note">equivalent to driving ~<%= (annual_co2e / 0.21).round(-2).to_i %>km less</span>
+        </div>
+        <div class="block-survey__impact-stat">
+          <span class="block-survey__impact-number">52</span>
+          <span class="block-survey__impact-label">weekly collections, zero effort from you</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ── Survey form ─────────────────────────────────────────────────────── %>
+  <section class="block-survey__form-section">
+    <div class="container">
+      <h2 class="block-survey__form-heading">Quick questions — takes 30 seconds</h2>
+
+      <% if @response&.errors&.any? %>
+        <div class="alert alert-danger mb-4">
+          <% @response.errors.full_messages.each do |msg| %>
+            <div><%= msg %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= form_with model: [@block, BlockSurveyResponse.new],
+                    url: block_survey_path(@block.slug),
+                    local: true,
+                    class: "block-survey__form" do |f| %>
+
+        <div class="block-survey__question">
+          <p class="block-survey__question-text">Does your unit already have a compost or kitchen scrap bin?</p>
+          <div class="block-survey__options">
+            <label class="block-survey__option">
+              <%= f.radio_button :has_compost_bin, "true" %>
+              <span>Yes, I have one</span>
+            </label>
+            <label class="block-survey__option">
+              <%= f.radio_button :has_compost_bin, "false", checked: true %>
+              <span>No, I don't</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="block-survey__question">
+          <p class="block-survey__question-text">Would you like to purchase a 5L compost bin from us?</p>
+          <p class="block-survey__question-hint">We supply compostable-liner-compatible bins — handy to keep under the sink.</p>
+          <div class="block-survey__options">
+            <label class="block-survey__option">
+              <%= f.radio_button :wants_to_buy_bin, "true" %>
+              <span>Yes please</span>
+            </label>
+            <label class="block-survey__option">
+              <%= f.radio_button :wants_to_buy_bin, "false", checked: true %>
+              <span>No thanks</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="block-survey__question block-survey__question--featured">
+          <p class="block-survey__question-text">Would you like to be part of the first phase of collection at <%= @block.name %>?</p>
+          <div class="block-survey__options">
+            <label class="block-survey__option">
+              <%= f.radio_button :wants_phase_one, "true" %>
+              <span>Yes, count me in</span>
+            </label>
+            <label class="block-survey__option">
+              <%= f.radio_button :wants_phase_one, "false", checked: true %>
+              <span>Not right now</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="block-survey__optional">
+          <p class="block-survey__optional-label">Optional — helps us follow up with you directly</p>
+          <div class="block-survey__optional-fields">
+            <div class="block-survey__field">
+              <%= f.label :respondent_name, "Your name", class: "block-survey__field-label" %>
+              <%= f.text_field :respondent_name, class: "block-survey__input", placeholder: "e.g. Sarah" %>
+            </div>
+            <div class="block-survey__field">
+              <%= f.label :unit_number, "Unit number", class: "block-survey__field-label" %>
+              <%= f.text_field :unit_number, class: "block-survey__input", placeholder: "e.g. 14B" %>
+            </div>
+          </div>
+        </div>
+
+        <%= f.submit "Submit", class: "block-survey__submit" %>
+      <% end %>
+    </div>
+  </section>
+
+  <%# ── Social nudge ────────────────────────────────────────────────────── %>
+  <section class="block-survey__social">
+    <div class="container">
+      <p class="block-survey__social-text">Follow our journey</p>
+      <div class="block-survey__social-links">
+        <%= link_to "https://www.instagram.com/gooi_capetown/", target: "_blank", class: "block-survey__social-link" do %>
+          <i class="fa-brands fa-instagram"></i> @gooi_capetown
+        <% end %>
+        <%= link_to "https://www.facebook.com/gooicapetown/", target: "_blank", class: "block-survey__social-link" do %>
+          <i class="fa-brands fa-facebook-f"></i> gooicapetown
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+</div>

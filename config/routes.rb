@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       member do
         post :assign_subscription
         delete :remove_subscription
+        post :send_survey
       end
     end
     resources :posts
@@ -324,7 +325,10 @@ Rails.application.routes.draw do
   resources :farms, only: [:index, :show], param: :slug
 
   # blocks (apartment blocks / estates — public landing pages)
-  resources :blocks, only: [:show], param: :slug
+  resources :blocks, only: [:show], param: :slug do
+    resource :survey, only: [:show, :create], controller: "block_surveys"
+    get "survey/thanks", to: "block_surveys#thanks", as: :survey_thanks
+  end
 
 
 

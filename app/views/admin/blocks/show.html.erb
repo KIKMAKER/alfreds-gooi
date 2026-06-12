@@ -133,10 +133,8 @@
     </div>
 
     <%# ── Assign subscription ─────────────────────────────────────── %>
-    <%# @unassigned_subscriptions is also a plain Array; sub.user is
-        already loaded via eager_load — no N+1 in the <select>. %>
     <% if @unassigned_subscriptions.any? %>
-      <div>
+      <div class="mb-5">
         <h5>Assign a subscription</h5>
         <p class="text-muted small">Pending, active, and paused subscriptions not already in a block.</p>
 
@@ -158,6 +156,134 @@
         <% end %>
       </div>
     <% end %>
+
+    <%# ── Survey results ──────────────────────────────────────────── %>
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Resident Survey (<%= @survey_responses.count %> <%= "response".pluralize(@survey_responses.count) %>)</h5>
+        <%= link_to "View survey page →", block_survey_path(@block.slug), target: "_blank", class: "text-decoration-none small" %>
+      </div>
+
+      <% if @survey_responses.any? %>
+        <div class="row g-3 mb-3">
+          <div class="col-sm-4">
+            <div class="card text-center h-100">
+              <div class="card-body py-3">
+                <div class="fs-3 fw-bold text-success"><%= @block.survey_wants_phase_one_count %></div>
+                <div class="small text-muted">want phase 1</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="card text-center h-100">
+              <div class="card-body py-3">
+                <div class="fs-3 fw-bold text-primary"><%= @block.survey_wants_bin_count %></div>
+                <div class="small text-muted">want to buy a bin</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="card text-center h-100">
+              <div class="card-body py-3">
+                <div class="fs-3 fw-bold text-secondary"><%= @block.survey_has_bin_count %></div>
+                <div class="small text-muted">already have a bin</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Unit</th>
+              <th>Name</th>
+              <th>Has bin</th>
+              <th>Wants bin</th>
+              <th>Phase 1</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @survey_responses.each do |r| %>
+              <tr>
+                <td><%= r.unit_number.presence || "—" %></td>
+                <td><%= r.respondent_name.presence || "—" %></td>
+                <td><%= r.has_compost_bin? ? "✓" : "—" %></td>
+                <td><%= r.wants_to_buy_bin? ? "✓" : "—" %></td>
+                <td>
+                  <% if r.wants_phase_one? %>
+                    <span class="badge bg-success">Yes</span>
+                  <% else %>
+                    <span class="badge bg-secondary">No</span>
+                  <% end %>
+                </td>
+                <td class="text-muted small"><%= r.created_at.strftime("%-d %b") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">No responses yet.</p>
+      <% end %>
+
+      <%# Send survey invite %>
+      <div class="mt-3">
+        <h6 class="text-muted">Send survey invite</h6>
+        <%= form_with url: send_survey_admin_block_path(@block), method: :post, local: true do %>
+          <div class="d-flex gap-2">
+            <input type="email" name="recipient_email" class="form-control form-control-sm"
+                   placeholder="Body corp or resident email" style="max-width: 320px;" required>
+            <button type="submit" class="btn btn-sm btn-outline-success">Send invite</button>
+          </div>
+          <p class="text-muted small mt-1">
+            Sends the survey link (<code><%= block_survey_url(@block.slug) %></code>) with composting context.
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Quotations ───────────────────────────────────────────────── %>
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Quotations (<%= @quotations.count %>)</h5>
+        <%= link_to "New quotation →", new_admin_quotation_path, class: "btn btn-sm btn-outline-secondary" %>
+      </div>
+
+      <% if @quotations.any? %>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Prospect / Customer</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Expires</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @quotations.each do |q| %>
+              <tr>
+                <td><%= q.number %></td>
+                <td><%= q.customer_name %></td>
+                <td>
+                  <span class="badge bg-<%= q.accepted? ? 'success' : q.expired? ? 'secondary' : 'warning text-dark' %>">
+                    <%= q.status %>
+                  </span>
+                </td>
+                <td>R<%= number_with_delimiter(q.total_amount.to_i) %></td>
+                <td class="<%= 'text-danger' if q.expired? %>"><%= q.expires_at.strftime("%-d %b %Y") %></td>
+                <td class="text-end">
+                  <%= link_to "Edit", edit_admin_quotation_path(q), class: "btn btn-sm btn-outline-secondary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">No quotations linked yet. Create one and assign it to this block.</p>
+      <% end %>
+    </div>
 
   </div>
 </div>

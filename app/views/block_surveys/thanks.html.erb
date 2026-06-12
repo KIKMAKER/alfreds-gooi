@@ -1,0 +1,25 @@
+<%# Thank-you page shown after survey submission %>
+
+<div class="block-survey block-survey--thanks">
+  <div class="container">
+    <div class="block-survey__thanks-card">
+      <div class="block-survey__thanks-icon">🌱</div>
+      <h1 class="block-survey__thanks-title">Thank you!</h1>
+      <p class="block-survey__thanks-body">
+        Your response helps us plan the right size collection service for <%= @block.name %>.
+        We'll be in touch through your building management once we have enough interest to kick things off.
+      </p>
+      <p class="block-survey__thanks-body">
+        In the meantime, follow us to see what's happening with composting across Cape Town.
+      </p>
+      <div class="block-survey__social-links">
+        <%= link_to "https://www.instagram.com/gooi_capetown/", target: "_blank", class: "block-survey__social-link" do %>
+          <i class="fa-brands fa-instagram"></i> @gooi_capetown
+        <% end %>
+        <%= link_to "https://www.facebook.com/gooicapetown/", target: "_blank", class: "block-survey__social-link" do %>
+          <i class="fa-brands fa-facebook-f"></i> gooicapetown
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

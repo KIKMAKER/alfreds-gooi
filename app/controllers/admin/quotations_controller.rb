@@ -75,6 +75,7 @@ class Admin::QuotationsController < ApplicationController
     params.require(:quotation).permit(
       :user_id,
       :subscription_id,
+      :block_id,
       :prospect_name,
       :prospect_email,
       :prospect_phone,

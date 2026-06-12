@@ -2,6 +2,7 @@ class Quotation < ApplicationRecord
   # Associations
   belongs_to :user, optional: true
   belongs_to :subscription, optional: true
+  belongs_to :block, optional: true
   has_many :quotation_items, dependent: :destroy
   has_many :products, through: :quotation_items
 

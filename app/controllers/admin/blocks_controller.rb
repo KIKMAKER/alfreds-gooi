@@ -1,20 +1,16 @@
 class Admin::BlocksController < Admin::BaseController
-  before_action :set_block, only: [:show, :edit, :update, :destroy, :assign_subscription, :remove_subscription]
+  before_action :set_block, only: [:show, :edit, :update, :destroy, :assign_subscription, :remove_subscription, :send_survey]
 
   def index
     @blocks = Block.order(:name)
   end
 
   def show
-    # eager_load forces a single LEFT OUTER JOIN query; .to_a materialises so
-    # .count / .any? in the view use in-memory arrays, not extra DB hits.
     @subscriptions = @block.subscriptions
                            .eager_load(:user)
                            .order("users.first_name")
                            .to_a
 
-    # Widen to pending + active + paused — completed/legacy subs shouldn't be assignable.
-    # eager_load(:user) avoids the N+1 when rendering user names in the <select>.
     @unassigned_subscriptions = Subscription
       .eager_load(:user)
       .where(block_id: nil)
@@ -22,11 +18,13 @@ class Admin::BlocksController < Admin::BaseController
       .order("users.first_name")
       .to_a
 
-    # Pre-compute stats once so the view never calls the same method twice.
     @stat_week_l     = @block.actual_volume_this_week_l
     @stat_month_l    = @block.actual_volume_this_month_l
     @stat_lifetime_l = @block.lifetime_volume_l
     @stat_expected_l = @block.expected_weekly_volume_l
+
+    @survey_responses = @block.block_survey_responses.order(created_at: :desc)
+    @quotations       = @block.quotations.order(created_at: :desc)
   end
 
   def new
@@ -74,6 +72,18 @@ class Admin::BlocksController < Admin::BaseController
     sub = @block.subscriptions.find(params[:subscription_id])
     sub.update!(block: nil)
     redirect_to admin_block_path(@block), notice: "Subscription removed from block."
+  end
+
+  # POST /admin/blocks/:id/send_survey
+  def send_survey
+    email = params[:recipient_email].to_s.strip
+    if email.blank?
+      redirect_to admin_block_path(@block), alert: "Please enter a recipient email."
+      return
+    end
+
+    BlockSurveyMailer.invite(@block, email).deliver_later
+    redirect_to admin_block_path(@block), notice: "Survey invite sent to #{email}."
   end
 
   private

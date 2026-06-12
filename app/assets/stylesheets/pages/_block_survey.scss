@@ -1,0 +1,339 @@
+// ─── Estate resident survey page ──────────────────────────────────────────────
+// Public-facing survey linked from the admin "send survey" action.
+// Mobile-first; residents arrive on phones.
+
+.block-survey {
+  min-height: 100vh;
+  background: $light-gray;
+
+  .container {
+    max-width: 640px;
+  }
+
+  // ── Hero ────────────────────────────────────────────────────────────────────
+
+  &__hero {
+    background: linear-gradient(135deg, $dark-green 0%, $medium-green 100%);
+    padding: 3.5rem 1.5rem 3rem;
+    text-align: center;
+  }
+
+  &__badge {
+    display: inline-block;
+    background: rgba($light-green, 0.25);
+    border: 1px solid rgba($light-green, 0.5);
+    color: $light-green;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: white;
+    margin: 0 0 0.5rem;
+    line-height: 1.15;
+  }
+
+  &__subtitle {
+    color: rgba(white, 0.8);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  // ── Impact stats ────────────────────────────────────────────────────────────
+
+  &__impact {
+    padding: 2.5rem 0;
+    background: white;
+  }
+
+  &__impact-heading {
+    text-align: center;
+    font-size: 1.4rem;
+    color: $dark-green;
+    margin-bottom: 0.75rem;
+  }
+
+  &__impact-intro {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  &__impact-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    @media (min-width: 560px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__impact-stat {
+    background: #f0f7f4;
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+
+    &--accent {
+      background: $dark-green;
+
+      .block-survey__impact-number { color: white; }
+      .block-survey__impact-label  { color: rgba(white, 0.8); }
+      .block-survey__impact-note   { color: rgba(white, 0.55); }
+    }
+  }
+
+  &__impact-number {
+    display: block;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $dark-green;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+  }
+
+  &__impact-label {
+    display: block;
+    font-size: 0.82rem;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  &__impact-note {
+    display: block;
+    font-size: 0.72rem;
+    color: #999;
+    margin-top: 0.3rem;
+  }
+
+  // ── Form ────────────────────────────────────────────────────────────────────
+
+  &__form-section {
+    padding: 2.5rem 0 3rem;
+  }
+
+  &__form-heading {
+    text-align: center;
+    font-size: 1.4rem;
+    color: $dark-green;
+    margin-bottom: 2rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__question {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba($dark-green, 0.07);
+
+    &--featured {
+      border: 2px solid $medium-green;
+    }
+  }
+
+  &__question-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $dark-green;
+    margin-bottom: 0.5rem;
+    line-height: 1.45;
+  }
+
+  &__question-hint {
+    font-size: 0.83rem;
+    color: #888;
+    margin-bottom: 0.75rem;
+  }
+
+  &__options {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    border: 1.5px solid #d0e4d8;
+    font-size: 0.95rem;
+    color: #444;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+
+    input[type="radio"] {
+      accent-color: $dark-green;
+    }
+
+    &:has(input:checked) {
+      border-color: $medium-green;
+      background: rgba($medium-green, 0.1);
+      color: $dark-green;
+      font-weight: 500;
+    }
+  }
+
+  // ── Optional fields ──────────────────────────────────────────────────────────
+
+  &__optional {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba($dark-green, 0.07);
+  }
+
+  &__optional-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #aaa;
+    margin-bottom: 1rem;
+  }
+
+  &__optional-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.35rem;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #dde8e3;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #333;
+    transition: border-color 0.15s;
+
+    &:focus {
+      outline: none;
+      border-color: $medium-green;
+    }
+  }
+
+  // ── Submit ───────────────────────────────────────────────────────────────────
+
+  &__submit {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: $dark-green;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+
+    &:hover {
+      background: $medium-green;
+      transform: translateY(-1px);
+    }
+  }
+
+  // ── Social nudge ─────────────────────────────────────────────────────────────
+
+  &__social {
+    padding: 2rem 0 3rem;
+    text-align: center;
+  }
+
+  &__social-text {
+    font-size: 0.85rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.75rem;
+  }
+
+  &__social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  &__social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: $medium-green;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    i { font-size: 1.1rem; }
+
+    &:hover { color: $dark-green; }
+  }
+
+  // ── Thanks page ───────────────────────────────────────────────────────────────
+
+  &--thanks {
+    display: flex;
+    align-items: center;
+    padding: 4rem 1.5rem;
+  }
+
+  &__thanks-card {
+    background: white;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 32px rgba($dark-green, 0.1);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  &__thanks-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  &__thanks-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.25rem;
+    color: $dark-green;
+    margin-bottom: 1rem;
+  }
+
+  &__thanks-body {
+    font-size: 0.98rem;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+}
