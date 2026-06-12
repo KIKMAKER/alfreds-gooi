@@ -71,6 +71,7 @@ class CustomersController < ApplicationController
     @start_date = current_user.subscriptions.order(created_at: :asc).first&.start_date&.strftime('%b %Y')
     @recent_collections = current_user.collections.order(date: :desc).limit(5)
     @lifetime_litres = current_user.lifetime_litres.round(0)
+    @lifetime_input_kg = current_user.lifetime_input_kg.round(0)
     @lifetime_compost_kg = current_user.lifetime_compost_kg
     @lifetime_co2e_kg = current_user.lifetime_co2e_kg
     @total_collections = current_user.collections.where(skip: false).count

@@ -21,6 +21,16 @@
     <!-- Lifetime Impact -->
     <div class="stats-grid mb-3">
       <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #2d6a4f 0%, #108A63 100%);">
+          <i class="fa-solid fa-weight-scale"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@lifetime_input_kg.to_i) %>kg</div>
+          <div class="stat-label">food scraps collected</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
         <div class="stat-icon" style="background: linear-gradient(135deg, #3c8a63 0%, #108A63 100%);">
           <i class="fa-solid fa-droplet"></i>
         </div>
