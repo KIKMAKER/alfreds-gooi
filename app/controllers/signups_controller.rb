@@ -109,6 +109,10 @@ class SignupsController < ApplicationController
         auto_approve: true
       ).call
 
+      if discount_code.present? && !subscription.invoices.order(:created_at).last&.used_discount_code?
+        flash[:warning] = "The discount code "#{discount_code}" couldn't be applied — it may have already been used or expired."
+      end
+
       # Send welcome emails
       UserMailer.with(subscription: subscription).welcome.deliver_now
       UserMailer.with(subscription: subscription).sign_up_alert.deliver_now
