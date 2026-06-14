@@ -149,7 +149,7 @@ _Last assessed: 2026-06-14_
 - Why: Without it, multiple referral records can be created for the same pair (e.g., on renewal), and a referee could accumulate multiple discounts.
 - Where: New migration; `db/schema.rb:612`, `app/models/referral.rb`
 - Effort: S
-- Status: proposed
+- Status: done
 
 ---
 
