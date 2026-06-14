@@ -305,7 +305,7 @@ _Last assessed: 2026-06-14_
 - Why: There is no model-level uniqueness guard — the DB index (TASK-006) will protect data integrity, but a model validation gives a friendly error rather than a DB exception.
 - Where: `app/models/discount_code.rb`
 - Effort: XS
-- Status: proposed
+- Status: done — already applied as part of TASK-006.
 
 ---
 
@@ -314,6 +314,6 @@ _Last assessed: 2026-06-14_
 - Why: Several controllers use raw WHERE fragments against `drivers_days` (yearly_snapshot, financials); named scopes would centralise the logic.
 - Where: `app/models/drivers_day.rb`, `app/controllers/drivers_days_controller.rb:277`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
