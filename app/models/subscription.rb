@@ -13,6 +13,12 @@ class Subscription < ApplicationRecord
   # Records which accepted quotation created this subscription (nil for non-quote subscriptions).
   belongs_to :quotation, optional: true
 
+  # Cached product references set by InvoiceBuilder / MonthlyInvoiceService to avoid
+  # repeated title lookups on subsequent invoice runs.
+  belongs_to :subscription_product,        class_name: "Product", optional: true
+  belongs_to :monthly_collection_product,  class_name: "Product", optional: true
+  belongs_to :volume_processing_product,   class_name: "Product", optional: true
+
   # Satellite subscriptions exist only to generate collections on a second collection day.
   # All billing flows through the primary. Satellites are never invoiced independently.
   belongs_to :primary_subscription, class_name: "Subscription", optional: true

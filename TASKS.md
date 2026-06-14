@@ -248,7 +248,7 @@ _Last assessed: 2026-06-14_
 - Why: Three integer columns on `subscriptions` reference `products` with no FK constraint, no association, and no usage in the codebase — they're either orphaned feature stubs or should be properly wired up.
 - Where: `db/schema.rb:793-795`, `app/models/subscription.rb`
 - Effort: S
-- Status: proposed
+- Status: done — columns are actively used by InvoiceBuilder and MonthlyInvoiceService as product caches; added belongs_to associations with optional: true.
 
 ---
 
