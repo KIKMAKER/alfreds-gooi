@@ -5,7 +5,10 @@ class Collection < ApplicationRecord
   has_many :orders, dependent: :nullify
 
   # Scopes
-  scope :recent, -> { order(date: :desc) }
+  scope :recent,    -> { order(date: :desc) }
+  scope :active,    -> { where(skip: false) }
+  scope :for_date,  ->(date) { where(date: date) }
+  scope :completed, -> { where(is_done: true) }
 
   before_save :stamp_collection_time
 

@@ -194,7 +194,7 @@ _Last assessed: 2026-06-14_
 - Why: `where(skip: false)` and `where(date: ...)` appear 20+ times across controllers and models as raw SQL strings — named scopes make intent clear and allow chaining.
 - Where: `app/models/collection.rb:7`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
