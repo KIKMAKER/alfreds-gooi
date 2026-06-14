@@ -89,7 +89,7 @@ class Subscription < ApplicationRecord
     current_day = Time.zone.today.wday # Use Time.zone.today for time zone awareness
     days_until_next_collection = (target_day - current_day) % 7
     days_until_next_collection = 7 if days_until_next_collection.zero?
-    puts "next collection day: #{Time.zone.today + days_until_next_collection}"
+    Rails.logger.debug "next collection day: #{Time.zone.today + days_until_next_collection}"
     Time.zone.today + days_until_next_collection # Use Time.zone.today here as well
   end
 
@@ -257,7 +257,7 @@ class Subscription < ApplicationRecord
     elsif THURSDAY_SUBURBS.include?(suburb)
       self.collection_day = "Thursday"
     else
-      puts "it seems there was an issue with the suburb allocation for #{user.first_name} in #{suburb}"
+      Rails.logger.warn "suburb allocation issue for #{user.first_name} in #{suburb}"
     end
   end
 
@@ -564,7 +564,7 @@ class Subscription < ApplicationRecord
     when "XL"
       "XL Starter Kit"
     else
-      puts "Invalid plan"
+      Rails.logger.warn "Invalid plan: #{plan}"
     end
   end
 
@@ -581,7 +581,7 @@ class Subscription < ApplicationRecord
       when 6
         "Standard 6 month subscription"
       else
-        puts "Invalid duration"
+        Rails.logger.warn "Invalid duration: #{duration}"
       end
     when "XL"
       case duration
@@ -592,10 +592,10 @@ class Subscription < ApplicationRecord
       when 6
         "XL 6 month subscription"
       else
-        puts "Invalid duration"
+        Rails.logger.warn "Invalid duration: #{duration}"
       end
     else
-      puts "Invalid plan"
+      Rails.logger.warn "Invalid plan: #{plan}"
     end
   end
 
@@ -607,11 +607,11 @@ class Subscription < ApplicationRecord
       # Assume the suburb is the second to last part before the province and country
       suburb = parts[-3].strip
       # return suburb
-      puts suburb
+      Rails.logger.debug "parsed suburb: #{suburb}"
     end
     if SUBURBS.include?(suburb)
       update!(suburb: suburb)
-      puts "found the sub in the list of subs"
+      Rails.logger.debug "found #{suburb} in known suburbs list"
     end
     nil
   end

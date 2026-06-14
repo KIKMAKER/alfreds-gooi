@@ -292,11 +292,11 @@ class User < ApplicationRecord
   end
 
   def make_international
-    puts "Before: #{self.phone_number}"
+    Rails.logger.debug "phone before normalisation: #{self.phone_number}"
     # return if valid_international_phone_number()
 
     self.phone_number = starts_0? ? "+27#{phone_number[1..]}" : phone_number
-    puts "After: #{self.phone_number}"
+    Rails.logger.debug "phone after normalisation: #{self.phone_number}"
   end
 
   def starts_0?
@@ -311,7 +311,7 @@ class User < ApplicationRecord
     if /\A\+\d{9,13}\z/.match?(phone_number)
       true
     else
-      puts errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
+      errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
       false
     end
   end
