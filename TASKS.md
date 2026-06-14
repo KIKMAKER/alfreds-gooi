@@ -119,7 +119,7 @@ _Last assessed: 2026-06-14_
 - Why: The current code loads every user with a customer_id into Ruby and sorts them — O(n) on a table that grows every signup, and vulnerable to race conditions.
 - Where: `app/models/user.rb:274-278`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
