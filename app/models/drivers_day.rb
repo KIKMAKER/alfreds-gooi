@@ -6,6 +6,9 @@ class DriversDay < ApplicationRecord
   has_one :day_statistic, dependent: :destroy
   belongs_to :current_drop_off_event, class_name: 'DropOffEvent', optional: true
 
+  scope :with_end_time, -> { where.not(end_time: nil) }
+  scope :this_year,    ->(year) { where("EXTRACT(year FROM date) = ?", year) }
+
   scope :with_active_collection_counts, -> {
     left_joins(:collections)
       .where("collections.skip = false OR collections.id IS NULL")
