@@ -203,7 +203,7 @@ _Last assessed: 2026-06-14_
 - Why: `where(invoices: { paid: false })` appears in at least 5 different controller/query contexts with no named abstraction.
 - Where: `app/models/invoice.rb`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
