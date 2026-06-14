@@ -20,7 +20,7 @@ _Last assessed: 2026-06-14_
 - Why: `DriversDay.find_or_create_by(date: today)` and date-range queries are called on every collection day start, route load, and snapshot view with no index to support them.
 - Where: New migration; `db/schema.rb:300`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
