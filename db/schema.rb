@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_123328) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_123408) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -621,6 +621,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_123328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "status", default: 0
+    t.index ["referee_id", "referrer_id"], name: "index_referrals_on_referee_id_and_referrer_id", unique: true
     t.index ["referee_id"], name: "index_referrals_on_referee_id"
     t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
     t.index ["subscription_id"], name: "index_referrals_on_subscription_id"
