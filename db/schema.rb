@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_123301) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_123328) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -217,6 +217,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_123301) do
     t.string "skip_reason"
     t.index ["date"], name: "index_collections_on_date"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
+    t.index ["skip"], name: "index_collections_on_skip"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end
 

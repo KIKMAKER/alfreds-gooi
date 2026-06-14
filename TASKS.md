@@ -140,7 +140,7 @@ _Last assessed: 2026-06-14_
 - Why: `where(skip: false)` is the most common collection filter in the app (route views, stats, impact calculations) and currently has no index.
 - Where: New migration; `db/schema.rb:205`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
