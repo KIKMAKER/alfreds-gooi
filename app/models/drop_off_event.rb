@@ -1,6 +1,6 @@
 class DropOffEvent < ApplicationRecord
   belongs_to :drop_off_site
-  belongs_to :drivers_day, optional: true
+  belongs_to :drivers_day
   has_many :buckets, dependent: :nullify
   acts_as_list scope: :drivers_day
 
