@@ -230,7 +230,7 @@ _Last assessed: 2026-06-14_
 - Why: There is no callback, caller, or reference to this method anywhere in the codebase — it was replaced by `mark_skipped!` but never deleted.
 - Where: `app/models/collection.rb:88-95`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 

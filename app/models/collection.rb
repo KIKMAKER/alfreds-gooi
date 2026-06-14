@@ -88,13 +88,4 @@ class Collection < ApplicationRecord
     self.time = Time.current if will_save_change_to_is_done? && is_done?
   end
 
-  def notify_skip_marked(user)
-    CollectionMailer.skipped(
-      collection_id: id,
-      actor_id: user.id,  # optional: if you use Current attributes
-      reason: "model_update",
-      occurred_at: Time.zone.now
-    ).deliver_now
-  end
-
 end
