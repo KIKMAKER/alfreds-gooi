@@ -118,32 +118,25 @@ class User < ApplicationRecord
   end
 
   def current_streak
-    # Get all past collections across all subscriptions, ordered by date descending
-    past_collections = collections.where('date <= ?', Date.today).order(date: :desc)
+    past_collections = collections
+      .where('date <= ? AND skip = false', Date.today)
+      .order(date: :desc)
+      .limit(260)
     return 0 if past_collections.empty?
 
     streak = 0
     last_collection_date = nil
 
     past_collections.each do |collection|
-      # Skip if this collection was skipped
-      next if collection.skip
-
-      # If this is the first non-skipped collection, start the streak
       if last_collection_date.nil?
         streak = 1
         last_collection_date = collection.date
       else
-        # Check if this collection is approximately 7 days before the last one
-        # (allowing for slight variations in collection scheduling)
         days_diff = (last_collection_date - collection.date).to_i
-
         if days_diff >= 6 && days_diff <= 8
-          # Collection is roughly a week before, continue streak
           streak += 1
           last_collection_date = collection.date
         else
-          # Gap is too large, streak is broken
           break
         end
       end

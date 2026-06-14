@@ -221,7 +221,7 @@ _Last assessed: 2026-06-14_
 - Why: The current implementation calls `collections.where('date <= ?', Date.today).order(date: :desc)` with no limit, loading the full history into Ruby — slow for long-time customers.
 - Where: `app/models/user.rb:121-153`
 - Effort: S
-- Status: proposed
+- Status: done
 
 ---
 
