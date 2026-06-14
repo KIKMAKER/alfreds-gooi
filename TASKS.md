@@ -56,7 +56,7 @@ _Last assessed: 2026-06-14_
 - Why: `DiscountCode.find_by(code: ...)` has no index, and duplicate codes are allowed at the DB level — a duplicate could silently apply the wrong discount.
 - Where: New migration; `discount_code.rb:1`, `db/schema.rb:280`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
