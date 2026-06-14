@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_121021) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_123301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -499,6 +499,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_121021) do
     t.bigint "order_id"
     t.boolean "admin_approved", default: false, null: false
     t.index ["order_id"], name: "index_invoices_on_order_id"
+    t.index ["paid"], name: "index_invoices_on_paid"
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
   end
 
