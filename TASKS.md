@@ -260,7 +260,7 @@ _Last assessed: 2026-06-14_
 - Why: `Payment` has zero validations — any amount (including negative or nil) can be persisted, and the `user` association is required by the DB but not validated at the Rails layer.
 - Where: `app/models/payment.rb`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
