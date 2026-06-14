@@ -272,10 +272,10 @@ class User < ApplicationRecord
   # after create
   def set_customer_id
     return if self.customer_id.present?
-    customers = User.where(role: 'customer').where.not(customer_id: nil)
-    last_id = (customers.sort_by { |customer| customer.customer_id[4..-1].to_i }.last&.customer_id || "")[4..-1].to_i
-    next_customer_id = "GFWC" + (last_id + 1).to_s
-    self.customer_id = next_customer_id
+    last_num = User.where.not(customer_id: nil)
+                   .maximum("CAST(SUBSTRING(customer_id FROM 5) AS INTEGER)")
+                   .to_i
+    self.customer_id = "GFWC#{last_num + 1}"
   end
 
   def sync_owner_contacts
