@@ -131,7 +131,7 @@ _Last assessed: 2026-06-14_
 - Why: `where(invoices: { paid: false })` appears in the pending users view, nudge logic, and revenue calculations — no index means a seq-scan on an ever-growing table.
 - Where: New migration; `db/schema.rb:492`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
