@@ -65,7 +65,7 @@ _Last assessed: 2026-06-14_
 - Why: The enum at `subscription.rb:63` declares `:pause` (not `:paused`); Rails raises `ArgumentError` when an unknown enum value is passed to `where`, so every caller of `Subscription.paused` will 500 in production.
 - Where: `app/models/subscription.rb:56`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 

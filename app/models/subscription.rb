@@ -53,7 +53,7 @@ class Subscription < ApplicationRecord
   # scopes
   scope :pending, -> { where(status: :pending) }
   scope :active, -> { where(status: :active) }
-  scope :paused, -> { where(status: :paused) }
+  scope :paused, -> { where(status: :pause) }
   scope :completed, -> { where(status: :completed) }
   scope :order_by_user_name, -> { joins(:user).order('users.first_name ASC') }
 
