@@ -38,7 +38,7 @@ _Last assessed: 2026-06-14_
 - Why: Route-planning queries filter by `collection_day` every single weekday (`where(collection_day: @today, status: 'active')`); both columns are used together and a composite index on `[status, collection_day]` would be most efficient.
 - Where: New migration; `db/schema.rb:768`, also used at `subscriptions_controller.rb:481` and `drivers_days_controller.rb:98`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
