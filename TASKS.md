@@ -74,7 +74,7 @@ _Last assessed: 2026-06-14_
 - Why: `drop_off_events.drivers_day_id` is `null: false` in the DB schema, but the model marks it optional — Rails validations will pass on a nil drivers_day and then the DB will raise a NOT NULL violation, giving an unintelligible 500 instead of a validation error.
 - Where: `app/models/drop_off_event.rb:3`, `db/schema.rb:318`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
