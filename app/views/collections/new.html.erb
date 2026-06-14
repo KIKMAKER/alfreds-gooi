@@ -13,8 +13,7 @@
     </div>
     <%= simple_form_for [@subscription, @collection] do |f| %>
       <%= f.input :skip %>
-      <%#= f.input :wants_veggies %>
-      <%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
+<%= f.input :needs_bags, label: "Number of rolls needed", placeholder: "0" %>
       <% if @subscription.Commercial? %>
         <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
         <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
