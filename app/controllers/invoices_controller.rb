@@ -22,16 +22,20 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    @invoice = Invoice.new
-    @invoice.subscription = Subscription.find(params[:invoice][:subscription_id])
-    @invoice.save!
-    if @invoice.update(issued_date: Time.current, due_date: Time.current + 1.week)
+    subscription = Subscription.find(params[:invoice][:subscription_id])
+    @invoice = Invoice.new(
+      subscription: subscription,
+      issued_date:  Time.current,
+      due_date:     Time.current + 1.week,
+      total_amount: 0
+    )
 
+    if @invoice.save
       create_invoice_items(@invoice)
       @invoice.calculate_total
       redirect_to invoice_path(@invoice), notice: 'Invoice was successfully created.'
     else
-      @products = Product.all # Re-fetch products in case of validation errors
+      @products = Product.all
       render :new, status: :unprocessable_entity
     end
   end
