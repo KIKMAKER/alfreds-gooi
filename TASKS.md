@@ -158,7 +158,7 @@ _Last assessed: 2026-06-14_
 - Why: Two simultaneous invoice creates will both read the same "last number" and assign duplicates — likely to happen during busy payment periods.
 - Where: `app/models/invoice.rb:24-32`, `app/models/quotation.rb:39-47`
 - Effort: M
-- Status: proposed
+- Status: done
 
 ---
 

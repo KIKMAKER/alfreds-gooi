@@ -37,13 +37,8 @@ class Quotation < ApplicationRecord
 
   # Methods
   def set_number
-    last_quotation = Quotation.where.not(id: self.id).order(created_at: :desc).first
-    new_number = if last_quotation.nil? || last_quotation.number.nil?
-                   1
-                 else
-                   last_quotation.number.to_i + 1
-                 end
-    self.update_column(:number, new_number)
+    num = self.class.connection.select_value("SELECT nextval('quotation_number_seq')").to_i
+    update_column(:number, num)
   end
 
   def calculate_total
