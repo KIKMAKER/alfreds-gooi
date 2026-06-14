@@ -92,7 +92,7 @@ _Last assessed: 2026-06-14_
 - Why: For every DriversDay (could be hundreds of rows), a separate SELECT is fired to compute litres — this is a textbook N+1 that will degrade linearly as the history grows.
 - Where: `app/controllers/admin/logistics_controller.rb:22-29`
 - Effort: S
-- Status: proposed
+- Status: done
 
 ---
 

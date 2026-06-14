@@ -12,20 +12,23 @@ class Admin::LogisticsController < ApplicationController
                                  .where.not(updated_at: nil)
                                  .group(:drivers_day_id).count
 
+    # Single aggregate query for litres — avoids one SELECT per DriversDay
+    litres_per_day = Collection
+      .where(drivers_day_id: day_ids, skip: false)
+      .group(:drivers_day_id)
+      .sum(
+        "COALESCE(bags, 0) * 5 + " \
+        "COALESCE(buckets, 0) * 25 + " \
+        "COALESCE(buckets_25l, 0) * 25 + " \
+        "COALESCE(buckets_45l, 0) * 45"
+      )
+
     @rows = days.map do |d|
       planned   = planned_counts[d.id].to_i
       hh        = completed_counts[d.id].to_i
       buckets   = d.total_buckets.to_i
       skipped   = [planned - hh, 0].max
-
-      # Calculate litres for this day from collections
-      collections = d.collections.where(skip: false)
-      litres = collections.sum do |c|
-        (c.bags || 0) * 5.0 +
-        (c.buckets || 0) * 25.0 +
-        (c.buckets_25l || 0) * 25.0 +
-        (c.buckets_45l || 0) * 45.0
-      end.round
+      litres    = litres_per_day[d.id].to_f.round
 
       bph = hh.positive?      ? (buckets.to_f / hh) : nil           # buckets per household
       hpb = buckets.positive? ? (hh.to_f / buckets) : nil           # households per bucket
