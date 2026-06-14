@@ -296,7 +296,7 @@ _Last assessed: 2026-06-14_
 - Why: The `_at` suffix conventionally means a timestamp column throughout Rails (and the rest of this schema); a `date` column with that suffix will confuse readers and tooling.
 - Where: `db/schema.rb:790`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 

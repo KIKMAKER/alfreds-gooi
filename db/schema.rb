@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_131251) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_131421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -793,7 +793,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_131251) do
     t.boolean "monthly_invoicing", default: false, null: false
     t.decimal "contract_total", precision: 10, scale: 2
     t.date "next_invoice_date"
-    t.date "ending_soon_emailed_at"
+    t.date "ending_soon_emailed_on"
     t.integer "collections_per_week", default: 1, null: false
     t.decimal "starter_kit_installment", precision: 10, scale: 2
     t.integer "subscription_product_id"
