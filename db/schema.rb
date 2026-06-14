@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_115623) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_120745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -306,6 +306,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_115623) do
     t.float "total_net_kg"
     t.bigint "current_drop_off_event_id"
     t.index ["current_drop_off_event_id"], name: "index_drivers_days_on_current_drop_off_event_id"
+    t.index ["date"], name: "index_drivers_days_on_date"
     t.index ["user_id"], name: "index_drivers_days_on_user_id"
   end
 
