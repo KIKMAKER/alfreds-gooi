@@ -2,7 +2,7 @@ class ContactsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_subscription
   before_action :authorize_subscription_owner
-  before_action :set_contact, only: [:show, :edit, :update, :destroy, :toggle_whatsapp]
+  before_action :set_contact, only: [:show, :edit, :update, :destroy, :toggle_whatsapp, :make_primary]
 
   def index
     @contacts = @subscription.contacts.order(is_primary: :desc, created_at: :asc)
