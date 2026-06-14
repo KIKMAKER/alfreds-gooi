@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_120913) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_120949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -847,6 +847,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_120913) do
     t.boolean "opted_out", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["journey_token"], name: "index_users_on_journey_token", unique: true
+    t.index ["referral_code"], name: "index_users_on_referral_code", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
