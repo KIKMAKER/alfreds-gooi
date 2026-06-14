@@ -47,7 +47,7 @@ _Last assessed: 2026-06-14_
 - Why: `User.find_by(referral_code: ...)` is called in the hot payment path (`activate_subscription`, `create_referral_from_code`) with no index — this does a full-table scan on users.
 - Where: New migration; `db/schema.rb:835`, `subscription.rb:472,500`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
