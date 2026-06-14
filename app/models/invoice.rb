@@ -22,13 +22,8 @@ class Invoice < ApplicationRecord
   ## custom methods
 
   def set_number
-    last_invoice = Invoice.where.not(id: self.id).order(created_at: :desc).first
-    new_number = if last_invoice.nil? || last_invoice.number.nil?
-                   1
-                 else
-                   last_invoice.number.to_i + 1
-                 end
-    self.update_column(:number, new_number)
+    num = self.class.connection.select_value("SELECT nextval('invoice_number_seq')").to_i
+    update_column(:number, num)
   end
 
   def calculate_total
