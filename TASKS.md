@@ -212,7 +212,7 @@ _Last assessed: 2026-06-14_
 - Why: The current code loads all subscription ActiveRecord objects into Ruby to extract one column — `pluck` keeps the query in SQL.
 - Where: `app/models/block.rb:53`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 

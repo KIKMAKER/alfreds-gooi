@@ -50,7 +50,7 @@ class Block < ApplicationRecord
   # Unique collection days (as day-name strings, e.g. ["Tuesday"]) derived
   # from active subscriptions. A block could theoretically span two routes.
   def collection_days
-    active_subscriptions.map(&:collection_day).uniq.compact
+    active_subscriptions.distinct.pluck(:collection_day).compact
   end
 
   # Human-readable collection day string for display.
