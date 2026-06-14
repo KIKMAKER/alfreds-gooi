@@ -239,7 +239,7 @@ _Last assessed: 2026-06-14_
 - Why: `order(position: :asc)` within a drivers_day scope is used on every route view; the existing index on `drivers_day_id` alone doesn't cover the sort.
 - Where: New migration; `db/schema.rb:218`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
