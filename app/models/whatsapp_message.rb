@@ -1,5 +1,5 @@
 class WhatsappMessage < ApplicationRecord
-  belongs_to :user, optional: true  # Keep for backward compatibility
+  belongs_to :user
   belongs_to :subscription, optional: true
   belongs_to :contact, optional: true  # NEW
 
