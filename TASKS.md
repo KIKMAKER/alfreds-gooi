@@ -101,7 +101,7 @@ _Last assessed: 2026-06-14_
 - Why: Both controllers contain identical 50-line methods with inner N+1 loops (`sub.collections.where(...)` inside `.map`) — the duplication means bugs will be fixed in only one place, and the N+1 fires once per active subscription.
 - Where: `app/controllers/admin/logistics_controller.rb:76-130`, `app/controllers/admin/collections_controller.rb:53-135`
 - Effort: M
-- Status: proposed
+- Status: done
 
 ---
 
