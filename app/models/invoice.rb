@@ -12,6 +12,10 @@ class Invoice < ApplicationRecord
   has_many :revenue_recognitions, dependent: :destroy
 
   validates :issued_date, :due_date, :total_amount, presence: true
+
+  scope :paid,   -> { where(paid: true) }
+  scope :unpaid, -> { where(paid: false) }
+
   after_commit :set_number, on: :create
   after_update :create_revenue_recognitions, if: :saved_change_to_paid?
 
