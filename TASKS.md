@@ -110,7 +110,7 @@ _Last assessed: 2026-06-14_
 - Why: The validations are entirely commented out (line 14), meaning invoices can be saved with `nil` dates and no total — this causes nil errors downstream in PDF generation and payment flow.
 - Where: `app/models/invoice.rb:14`
 - Effort: S (need to audit whether any existing code creates invoices without these fields first)
-- Status: proposed
+- Status: done
 
 ---
 
