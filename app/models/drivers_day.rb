@@ -30,6 +30,17 @@ class DriversDay < ApplicationRecord
 
   # custom methods
 
+  def self.new_customer_count_for(collections)
+    subscription_ids = collections.where.not(subscription_id: nil).pluck(:subscription_id).uniq
+    user_ids = Subscription.where(id: subscription_ids).pluck(:user_id).uniq
+    Collection.joins(:subscription)
+              .where(subscriptions: { user_id: user_ids })
+              .where(date: ..Date.today)
+              .group("subscriptions.user_id")
+              .count
+              .count { |_, total| total == 1 }
+  end
+
   def note_nil_zero?
     note.nil? || note == ""
   end

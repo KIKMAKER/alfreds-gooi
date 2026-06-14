@@ -54,7 +54,7 @@ class DriversDaysController < ApplicationController
 
     # Prepare snapshot card variables
     if @stat
-      @new_customers = new_customer_count_for(@collections)
+      @new_customers = DriversDay.new_customer_count_for(@collections)
 
       # Derived calculations
       @compost_kg = (@stat.net_kg * 0.35).round # 35% conversion rate
@@ -234,7 +234,7 @@ class DriversDaysController < ApplicationController
 
     # Prepare snapshot card variables
     if @stat
-      @new_customers = new_customer_count_for(@collections)
+      @new_customers = DriversDay.new_customer_count_for(@collections)
 
       # Derived calculations
       @compost_kg = (@stat.net_kg * 0.35).round # 35% conversion rate
@@ -257,7 +257,7 @@ class DriversDaysController < ApplicationController
 
     # Prepare snapshot card variables (same as show action)
     if @stat
-      @new_customers = new_customer_count_for(@collections)
+      @new_customers = DriversDay.new_customer_count_for(@collections)
       @compost_kg = (@stat.net_kg * 0.35).round
       @landfill_m3 = (@stat.net_kg / 400.0).round(1)
       @kg_diverted = @stat.net_kg.round
@@ -386,16 +386,5 @@ class DriversDaysController < ApplicationController
 
   def drivers_day_params
     params.require(:drivers_day).permit(:start_time, :end_time, :sfl_time, :start_kms, :end_kms, :note, :total_buckets, :date, :message_from_alfred, :note)
-  end
-
-  def new_customer_count_for(collections)
-    subscription_ids = collections.where.not(subscription_id: nil).pluck(:subscription_id).uniq
-    user_ids = Subscription.where(id: subscription_ids).pluck(:user_id).uniq
-    Collection.joins(:subscription)
-              .where(subscriptions: { user_id: user_ids })
-              .where(date: ..Date.today)
-              .group("subscriptions.user_id")
-              .count
-              .count { |_, total| total == 1 }
   end
 end

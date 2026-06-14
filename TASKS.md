@@ -167,7 +167,7 @@ _Last assessed: 2026-06-14_
 - Why: This is pure domain logic (plan-based size thresholds) living in two controller files — it belongs with the model that owns the `plan` attribute.
 - Where: `app/controllers/admin/logistics_controller.rb:140-159`, `app/controllers/admin/collections_controller.rb:115-134`
 - Effort: S
-- Status: proposed
+- Status: needs-review — TASK-011 already extracted this into `CustomerMapData` concern as `subscription_marker_size`. Further extraction to the model is optional — marker sizing is presentation logic that takes computed aggregates (not raw model state), so the concern is a reasonable home for it. Revisit if the method is needed outside of map views.
 
 ---
 
@@ -176,7 +176,7 @@ _Last assessed: 2026-06-14_
 - Why: It's business logic (counts users with exactly 1 lifetime collection), currently only accessible from within this one controller, and duplicated across `show`, `complete`, and `snapshot` actions.
 - Where: `app/controllers/drivers_days_controller.rb:391-400`
 - Effort: S
-- Status: proposed
+- Status: done
 
 ---
 
