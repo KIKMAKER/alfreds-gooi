@@ -185,7 +185,7 @@ _Last assessed: 2026-06-14_
 - Why: The DB has `subscription_id null: false` but the model says `optional: true` — Rails skips the presence validation, so only the DB raises an error (as a cryptic constraint violation rather than a model validation failure).
 - Where: `app/models/collection.rb:2`, `db/schema.rb:200`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
