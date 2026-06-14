@@ -555,67 +555,6 @@ class Subscription < ApplicationRecord
     self.referral_code = referral_code.strip.upcase if referral_code.present?
   end
 
-  # infer starter kit based on sub plan
-
-  def determine_starter_kit_title
-    case plan
-    when "Standard"
-      "Standard Starter Kit"
-    when "XL"
-      "XL Starter Kit"
-    else
-      Rails.logger.warn "Invalid plan: #{plan}"
-    end
-  end
-
-  # infer product title for first invoice based on subscription plan and duration
-
-  def determine_subscription_title(duration, plan)
-    case plan
-    when "Standard"
-      case duration
-      when 1
-        "Standard 1 month subscription"
-      when 3
-        "Standard 3 month subscription"
-      when 6
-        "Standard 6 month subscription"
-      else
-        Rails.logger.warn "Invalid duration: #{duration}"
-      end
-    when "XL"
-      case duration
-      when 1
-        "XL 1 month subscription"
-      when 3
-        "XL 3 month subscription"
-      when 6
-        "XL 6 month subscription"
-      else
-        Rails.logger.warn "Invalid duration: #{duration}"
-      end
-    else
-      Rails.logger.warn "Invalid plan: #{plan}"
-    end
-  end
-
-  # customised methods
-
-  def set_suburb
-    parts = street_address.split(',')
-    if parts.length >= 3
-      # Assume the suburb is the second to last part before the province and country
-      suburb = parts[-3].strip
-      # return suburb
-      Rails.logger.debug "parsed suburb: #{suburb}"
-    end
-    if SUBURBS.include?(suburb)
-      update!(suburb: suburb)
-      Rails.logger.debug "found #{suburb} in known suburbs list"
-    end
-    nil
-  end
-
   def canonicalize_suburb
     return if suburb.blank?
     self.suburb = LEGACY_TO_CANONICAL.fetch(suburb, suburb)

@@ -287,7 +287,7 @@ _Last assessed: 2026-06-14_
 - Why: `set_suburb` is commented out of the callback list; the other two have no callers anywhere in the codebase — they're legacy from before `InvoiceBuilder` was introduced.
 - Where: `app/models/subscription.rb:554-611`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
