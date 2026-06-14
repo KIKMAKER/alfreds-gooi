@@ -83,7 +83,7 @@ _Last assessed: 2026-06-14_
 - Why: `whatsapp_messages.user_id` is `null: false` in the schema but the model marks it optional — same class of mismatch as TASK-008.
 - Where: `app/models/whatsapp_message.rb:2`, `db/schema.rb:851`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
