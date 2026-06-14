@@ -29,7 +29,7 @@ _Last assessed: 2026-06-14_
 - Why: `.where(status: :active)`, `.where(status: :pending)`, etc. appear in almost every admin and driver view; without an index every query scans the full subscriptions table.
 - Where: New migration; `db/schema.rb:781`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
