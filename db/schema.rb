@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_124124) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_131251) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -209,7 +209,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_124124) do
     t.float "buckets", default: 0.0
     t.integer "dropped_off_buckets", default: 0
     t.integer "soil_bag", default: 0
-    t.boolean "wants_veggies"
     t.string "customer_note"
     t.integer "position"
     t.integer "buckets_45l", default: 0

@@ -278,7 +278,7 @@ _Last assessed: 2026-06-14_
 - Why: Both columns exist only in CSV import code and are never set or read through any UI — they look like stubs that were never built out, and they add noise to the schema.
 - Where: `db/schema.rb:211-212`, `app/controllers/collections_controller.rb:319`
 - Effort: XS
-- Status: proposed
+- Status: done — `soil_bag` is active (Snapscan webhook, CSV import, strong params); left in place. `wants_veggies` is a stub (only written from CSV, never read); dropped via migration.
 
 ---
 
