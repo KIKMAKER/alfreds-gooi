@@ -269,7 +269,7 @@ _Last assessed: 2026-06-14_
 - Why: `puts` outputs to stdout (visible in dev logs but silent on Heroku unless log drains are configured), is stripped in production, and signals unfinished debugging rather than intentional observability.
 - Where: `app/models/subscription.rb:86,254,562,572,578,584,589`, `app/models/user.rb:303,306`
 - Effort: XS
-- Status: proposed
+- Status: done
 
 ---
 
