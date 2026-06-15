@@ -38,6 +38,7 @@ class Admin::QuotationsController < ApplicationController
 
   def update
     @quotation.update(quotation_params)
+    create_new_quotation_items(@quotation)
     @quotation.calculate_total
     redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
   end
@@ -89,6 +90,22 @@ class Admin::QuotationsController < ApplicationController
       :status,
       quotation_items_attributes: [:id, :product_id, :quantity, :amount, :_destroy]
     )
+  end
+
+  def create_new_quotation_items(quotation)
+    return unless params[:quotation][:quotation_items_attributes]
+
+    params[:quotation][:quotation_items_attributes].each do |key, attrs|
+      next unless key.to_s.start_with?("new_")
+      quantity = attrs["quantity"].to_f
+      next if quantity <= 0
+
+      quotation.quotation_items.create!(
+        product_id: attrs["product_id"].to_i,
+        quantity:   quantity,
+        amount:     attrs["amount"].to_f
+      )
+    end
   end
 
   def create_quotation_items(quotation)
