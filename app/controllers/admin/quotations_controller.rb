@@ -67,7 +67,7 @@ class Admin::QuotationsController < ApplicationController
     return {} unless params[:quotation].present?
     params.require(:quotation).permit(
       :prospect_name, :prospect_email, :prospect_phone,
-      :prospect_company, :duration_months, :notes
+      :prospect_company, :duration_months, :notes, :block_id
     )
   end
 

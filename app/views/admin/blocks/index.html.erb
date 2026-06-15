@@ -11,21 +11,32 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Slug</th>
               <th>Residents</th>
-              <th>Subscriptions</th>
+              <th>Survey</th>
+              <th>Quotes</th>
+              <th>Subs</th>
               <th>Active</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <% @blocks.each do |block| %>
+              <% survey_count = block.block_survey_responses.size
+                 phase_one_count = block.block_survey_responses.count(&:wants_phase_one?) %>
               <tr>
                 <td><strong><%= block.name %></strong></td>
-                <td><code>/blocks/<%= block.slug %></code></td>
                 <td><%= block.resident_count || "—" %></td>
-                <td><%= block.subscriptions.count %></td>
-                <td><%= block.active_subscription_count %></td>
+                <td>
+                  <% if survey_count > 0 %>
+                    <span class="badge bg-success"><%= phase_one_count %> in</span>
+                    <span class="text-muted small">/ <%= survey_count %> responses</span>
+                  <% else %>
+                    <span class="text-muted small">—</span>
+                  <% end %>
+                </td>
+                <td><%= block.quotations.size > 0 ? block.quotations.size : "—" %></td>
+                <td><%= block.subscriptions.size > 0 ? block.subscriptions.size : "—" %></td>
+                <td><%= block.active_subscription_count > 0 ? block.active_subscription_count : "—" %></td>
                 <td class="text-end">
                   <%= link_to "View", admin_block_path(block), class: "btn btn-sm btn-outline-secondary me-1" %>
                   <%= link_to "Edit", edit_admin_block_path(block), class: "btn btn-sm btn-outline-secondary me-1" %>

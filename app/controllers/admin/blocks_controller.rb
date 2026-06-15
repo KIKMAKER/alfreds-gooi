@@ -2,7 +2,7 @@ class Admin::BlocksController < Admin::BaseController
   before_action :set_block, only: [:show, :edit, :update, :destroy, :assign_subscription, :remove_subscription, :send_survey]
 
   def index
-    @blocks = Block.order(:name)
+    @blocks = Block.includes(:subscriptions, :block_survey_responses, :quotations).order(:name)
   end
 
   def show
