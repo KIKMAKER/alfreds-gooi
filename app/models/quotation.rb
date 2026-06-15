@@ -73,12 +73,12 @@ class Quotation < ApplicationRecord
 
   def ongoing_weekly_rate
     return 0 if weeks_in_contract.zero?
-    ((total_amount - starter_cost) / weeks_in_contract).round(2)
+    ((total_amount - one_time_cost) / weeks_in_contract).round(2)
   end
 
   def ongoing_monthly_rate
     return 0 if duration_months.zero?
-    ((total_amount - starter_cost) / duration_months).round(2)
+    ((total_amount - one_time_cost) / duration_months).round(2)
   end
 
   def expired?
@@ -127,10 +127,10 @@ class Quotation < ApplicationRecord
 
   private
 
-  def starter_cost
+  def one_time_cost
     quotation_items
       .joins(:product)
-      .where("products.title ILIKE ?", "%Starter%")
+      .where("products.title ILIKE ? OR products.title ILIKE ?", "%Starter%", "%bulk purchase%")
       .sum { |i| (i.amount || 0) * (i.quantity || 0) }
   end
 
