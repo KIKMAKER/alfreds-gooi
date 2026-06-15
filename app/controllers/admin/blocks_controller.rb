@@ -82,7 +82,7 @@ class Admin::BlocksController < Admin::BaseController
       return
     end
 
-    BlockSurveyMailer.invite(@block, email).deliver_later
+    BlockSurveyMailer.invite(@block, email).deliver_now
     redirect_to admin_block_path(@block), notice: "Survey invite sent to #{email}."
   end
 
