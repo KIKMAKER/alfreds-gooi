@@ -25,7 +25,7 @@ class QuotationsController < ApplicationController
     begin
       pdf = QuotationPdfGenerator.new(@quotation).generate
       send_data pdf.render,
-                filename: "quotation_#{@quotation.number || @quotation.id}.pdf",
+                filename: "gooi_quotation_#{@quotation.number || @quotation.id}.pdf",
                 type: 'application/pdf',
                 disposition: 'inline'
     rescue StandardError => e
