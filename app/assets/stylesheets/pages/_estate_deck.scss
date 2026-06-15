@@ -1,0 +1,98 @@
+// ─── Estate sales deck viewer ─────────────────────────────────────────────────
+// Public slide viewer at /estate-deck. Inline SVGs, Stimulus prev/next.
+
+.estate-deck {
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  // ── Slides ──────────────────────────────────────────────────────────────────
+
+  &__slide {
+    width: 100%;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto; // viewBox handles aspect ratio
+    }
+  }
+
+  // ── Navigation ──────────────────────────────────────────────────────────────
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1rem;
+    background: #111;
+  }
+
+  &__nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(white, 0.2);
+    background: transparent;
+    color: rgba(white, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+    &:hover:not(:disabled) {
+      border-color: rgba(white, 0.6);
+      color: white;
+      background: rgba(white, 0.08);
+    }
+
+    &:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+  }
+
+  &__counter {
+    color: rgba(white, 0.5);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    min-width: 3rem;
+    text-align: center;
+  }
+
+  // ── CTA strip ───────────────────────────────────────────────────────────────
+
+  &__cta {
+    background: #013f3a;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    margin-top: auto;
+
+    p {
+      color: rgba(white, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__cta-btn {
+    display: inline-block;
+    background: #FBB718;
+    color: #013f3a;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+
+    &:hover {
+      color: #013f3a;
+      transform: translateY(-1px);
+    }
+  }
+}

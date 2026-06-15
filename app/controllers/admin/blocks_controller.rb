@@ -1,5 +1,5 @@
 class Admin::BlocksController < Admin::BaseController
-  before_action :set_block, only: [:show, :edit, :update, :destroy, :assign_subscription, :remove_subscription, :send_survey]
+  before_action :set_block, only: [:show, :edit, :update, :destroy, :assign_subscription, :remove_subscription, :send_pitch]
 
   def index
     @blocks = Block.includes(:subscriptions, :block_survey_responses, :quotations).order(:name)
@@ -74,16 +74,21 @@ class Admin::BlocksController < Admin::BaseController
     redirect_to admin_block_path(@block), notice: "Subscription removed from block."
   end
 
-  # POST /admin/blocks/:id/send_survey
-  def send_survey
-    email = params[:recipient_email].to_s.strip
+  # POST /admin/blocks/:id/send_pitch
+  def send_pitch
+    email          = params[:recipient_email].to_s.strip
+    recipient_name = params[:recipient_name].to_s.strip
+    quotation      = @block.quotations.find_by(id: params[:quotation_id])
+
     if email.blank?
-      redirect_to admin_block_path(@block), alert: "Please enter a recipient email."
-      return
+      redirect_to admin_block_path(@block), alert: "Please enter a recipient email." and return
+    end
+    if quotation.nil?
+      redirect_to admin_block_path(@block), alert: "Please select a quotation to include." and return
     end
 
-    BlockSurveyMailer.invite(@block, email).deliver_now
-    redirect_to admin_block_path(@block), notice: "Survey invite sent to #{email}."
+    BlockSurveyMailer.pitch(@block, quotation, recipient_name.presence || "there", email).deliver_now
+    redirect_to admin_block_path(@block), notice: "Pitch email sent to #{email}."
   end
 
   private

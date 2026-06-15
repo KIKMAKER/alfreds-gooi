@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f7f5; margin: 0; padding: 0; color: #333; }
+    .wrapper { max-width: 580px; margin: 0 auto; padding: 2rem 1rem; }
+    .card { background: white; border-radius: 16px; padding: 2.5rem 2rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+    .wordmark { font-family: Georgia, serif; font-style: italic; font-size: 26px; font-weight: bold; color: #013f3a; margin-bottom: 1.5rem; display: block; }
+    .wordmark span { color: #FBB718; }
+    p { font-size: 0.97rem; line-height: 1.75; color: #444; margin: 0 0 1rem; }
+    .links { margin: 1.75rem 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    .link-row { display: flex; align-items: center; gap: 0.75rem; background: #f4f7f5; border-radius: 12px; padding: 0.9rem 1.1rem; text-decoration: none; color: #013f3a; }
+    .link-row__icon { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+    .link-row__label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; display: block; }
+    .link-row__text { font-size: 0.95rem; font-weight: 600; color: #013f3a; display: block; }
+    .survey-note { background: rgba(251,183,24,0.10); border-left: 3px solid #FBB718; border-radius: 0 10px 10px 0; padding: 0.9rem 1.1rem; margin: 1.5rem 0; }
+    .survey-note p { margin: 0; font-size: 0.9rem; color: #555; }
+    .footer { text-align: center; margin-top: 1.5rem; font-size: 0.75rem; color: #aaa; }
+    .footer a { color: #6aaa8a; text-decoration: none; }
+    a { color: #013f3a; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <span class="wordmark">gooi<span>*</span></span>
+
+      <p>Good day <%= @recipient_name %></p>
+
+      <p>
+        We are thrilled to hear that <%= @block.name %> is considering an organic waste service for its
+        residents. What a wonderful step forward in sustainability.
+      </p>
+
+      <p>
+        We have quite a bit of experience in setting these systems up and would love to work with you
+        to make it a reality.
+      </p>
+
+      <p>
+        I have put together a short presentation you can share with your group of trustees, as well as a
+        quotation that covers the organic waste of the entire estate — including weekly collection and
+        processing, bins that would live in your refuse area, and countertop buckets for each unit.
+      </p>
+
+      <div class="links">
+        <%= link_to @deck_url, class: "link-row" do %>
+          <span class="link-row__icon">📋</span>
+          <span>
+            <span class="link-row__label">Presentation</span>
+            <span class="link-row__text">View the estate deck →</span>
+          </span>
+        <% end %>
+
+        <%= link_to @quotation_url, class: "link-row" do %>
+          <span class="link-row__icon">📄</span>
+          <span>
+            <span class="link-row__label">Quotation #<%= @quotation.number %></span>
+            <span class="link-row__text">View the full quote →</span>
+          </span>
+        <% end %>
+
+        <%= link_to @survey_url, class: "link-row" do %>
+          <span class="link-row__icon">📝</span>
+          <span>
+            <span class="link-row__label">Resident survey</span>
+            <span class="link-row__text">Share with residents →</span>
+          </span>
+        <% end %>
+      </div>
+
+      <div class="survey-note">
+        <p>
+          <strong>A note on the phased approach:</strong> In our experience it is unlikely that all
+          residents adopt the practice immediately. We can run the rollout in phases so you are not paying
+          for processing volume that isn't being used. The resident survey above helps us understand who is
+          ready to start immediately and whether they need a countertop bucket. Based on the results we may
+          find half the estate is ready to go, with the rest joining after the initial 6 month subscription.
+        </p>
+      </div>
+
+      <p>
+        If you have any questions or would like to have a call to discuss, please feel free to let me know.
+      </p>
+
+      <p>Looking forward to hearing from you.</p>
+
+      <p style="margin-top: 1.5rem; color: #888; font-size: 0.85rem;">
+        Kristen<br>
+        <a href="mailto:howzit@gooi.me">howzit@gooi.me</a> · 083 635 3126
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>
+        Gooi · Cape Town's kitchen scrap collection ·
+        <a href="https://www.instagram.com/gooi_capetown/">@gooi_capetown</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

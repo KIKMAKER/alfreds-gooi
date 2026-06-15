@@ -1,0 +1,253 @@
+<%# Estate sales deck — public, no auth. Inline SVGs with Stimulus slide navigation. %>
+<% content_for :meta_title, "Kitchen Scraps Collection for Estates & Apartment Blocks | Gooi" %>
+<% content_for :meta_description, "A managed weekly kitchen scrap collection service for Cape Town apartment blocks and estates. See how it works, what it costs, and who's already doing it." %>
+
+<div class="estate-deck" data-controller="estate-deck">
+
+  <%# ── Slides ──────────────────────────────────────────────────────────────── %>
+
+  <div class="estate-deck__slide" data-estate-deck-target="slide">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#013f3a"/>
+      <circle cx="1060" cy="260" r="320" fill="rgba(132,203,163,0.07)"/>
+      <circle cx="1180" cy="140" r="210" fill="rgba(132,203,163,0.06)"/>
+      <circle cx="960"  cy="460" r="190" fill="rgba(132,203,163,0.05)"/>
+      <circle cx="1140" cy="540" r="130" fill="rgba(251,183,24,0.04)"/>
+      <circle cx="820"  cy="200" r="100" fill="rgba(132,203,163,0.04)"/>
+      <text x="64" y="74" font-family="Georgia, 'Libre Baskerville', serif" font-style="italic" font-size="34" font-weight="bold" fill="#FBB718">gooi*</text>
+      <rect x="64" y="88" width="248" height="22" rx="11" fill="rgba(132,203,163,0.18)" stroke="rgba(132,203,163,0.35)" stroke-width="0.75"/>
+      <text x="188" y="103" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.2" fill="#84cba3" font-weight="600">KITCHEN SCRAPS COLLECTION</text>
+      <text x="64" y="232" font-family="Georgia, 'Libre Baskerville', serif" font-size="80" font-weight="bold" fill="white">Your building</text>
+      <text x="64" y="320" font-family="Georgia, 'Libre Baskerville', serif" font-size="80" font-weight="bold" fill="#84cba3">can compost.</text>
+      <text x="64" y="372" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.60)">A managed weekly kitchen scrap collection for apartment</text>
+      <text x="64" y="396" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.60)">blocks and estates in Cape Town.</text>
+      <rect x="64" y="444" width="576" height="128" rx="16" fill="rgba(251,183,24,0.10)" stroke="rgba(251,183,24,0.28)" stroke-width="1"/>
+      <text x="96" y="492" font-family="Georgia, 'Libre Baskerville', serif" font-size="44" font-weight="bold" fill="#FBB718">16 tonnes</text>
+      <text x="96" y="522" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.72)">of organic waste diverted from landfill in 2025</text>
+      <text x="96" y="548" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.40)">5.5 tonnes of compost created · emissions saving ≈ driving 37 000 km</text>
+      <line x1="64" y1="660" x2="700" y2="660" stroke="rgba(255,255,255,0.10)" stroke-width="0.75"/>
+      <text x="64" y="682" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.28)">gooi.me · howzit@gooi.me · 083 635 3126</text>
+    </svg>
+  </div>
+
+  <div class="estate-deck__slide" data-estate-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="56" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">WHY IT MATTERS</text>
+      <text x="36" y="112" font-family="Georgia, 'Libre Baskerville', serif" font-size="52" font-weight="bold" fill="#013f3a">Food waste is a bigger problem</text>
+      <text x="36" y="168" font-family="Georgia, 'Libre Baskerville', serif" font-size="52" font-weight="bold" fill="#013f3a">than most people realise.</text>
+      <circle cx="184" cy="308" r="44" fill="#f0f7f4"/>
+      <text x="184" y="324" text-anchor="middle" font-size="36">🗑️</text>
+      <text x="184" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Landfill is the problem</text>
+      <text x="184" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">30–50% of household waste</text>
+      <text x="184" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">is organic — and in landfill,</text>
+      <text x="184" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">it produces methane: a gas</text>
+      <text x="184" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">80× more potent than CO₂.</text>
+      <line x1="368" y1="264" x2="368" y2="500" stroke="#e8e8e8" stroke-width="1"/>
+      <circle cx="640" cy="308" r="44" fill="#f0f7f4"/>
+      <text x="640" y="324" text-anchor="middle" font-size="36">🌱</text>
+      <text x="640" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Composting is the fix</text>
+      <text x="640" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Composted organic waste</text>
+      <text x="640" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">returns nutrients to soil —</text>
+      <text x="640" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">supporting local farmers and</text>
+      <text x="640" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">reducing synthetic fertiliser.</text>
+      <line x1="912" y1="264" x2="912" y2="500" stroke="#e8e8e8" stroke-width="1"/>
+      <circle cx="1096" cy="308" r="44" fill="#f0f7f4"/>
+      <text x="1096" y="324" text-anchor="middle" font-size="36">🏢</text>
+      <text x="1096" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Buildings are the opportunity</text>
+      <text x="1096" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Apartment blocks generate</text>
+      <text x="1096" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">large, consistent volumes.</text>
+      <text x="1096" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">A single building can make</text>
+      <text x="1096" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">a measurable city-wide dent.</text>
+      <rect x="0" y="544" width="1280" height="120" fill="#013f3a"/>
+      <text x="213" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#FBB718">16 000 kg</text>
+      <text x="213" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">organic waste diverted in 2025</text>
+      <line x1="426" y1="560" x2="426" y2="648" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="640" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#84cba3">5 500 kg</text>
+      <text x="640" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">of compost created for local farms</text>
+      <line x1="854" y1="560" x2="854" y2="648" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="1067" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="white">37 000 km</text>
+      <text x="1067" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">worth of emissions avoided</text>
+      <text x="640" y="654" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.28)" letter-spacing="1">2025 IMPACT — ALFRED'S GOOI CAPE TOWN</text>
+    </svg>
+  </div>
+
+  <div class="estate-deck__slide" data-estate-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">FOR YOUR BUILDING</text>
+      <text x="36" y="106" font-family="Georgia, 'Libre Baskerville', serif" font-size="50" font-weight="bold" fill="#013f3a">Your building becomes a better place to live.</text>
+      <rect x="36" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="36" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+      <circle cx="100" cy="200" r="36" fill="#f0f7f4"/>
+      <text x="100" y="216" text-anchor="middle" font-size="30">🗑️</text>
+      <text x="152" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">Cleaner communal bins</text>
+      <text x="64" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">Separate food scraps at source and shared</text>
+      <text x="64" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">bins stay cleaner, drier, and fresher —</text>
+      <text x="64" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">even between municipal collection days.</text>
+      <rect x="64" y="348" width="232" height="24" rx="12" fill="#f0f7f4"/>
+      <text x="180" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">Visible, day-to-day improvement</text>
+      <rect x="454" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="454" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+      <circle cx="518" cy="200" r="36" fill="#f0f7f4"/>
+      <text x="518" y="216" text-anchor="middle" font-size="30">🐀</text>
+      <text x="570" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">Fewer pests</text>
+      <text x="482" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">Rats, flies, and cockroaches are drawn to</text>
+      <text x="482" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">organic waste. Remove the source and</text>
+      <text x="482" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">you remove their reason to be there.</text>
+      <rect x="482" y="348" width="214" height="24" rx="12" fill="#f0f7f4"/>
+      <text x="589" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">A real pest-reduction measure</text>
+      <rect x="872" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="872" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+      <circle cx="936" cy="200" r="36" fill="#f0f7f4"/>
+      <text x="936" y="216" text-anchor="middle" font-size="30">💨</text>
+      <text x="988" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">No bin room smell</text>
+      <text x="900" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">The single biggest resident complaint in</text>
+      <text x="900" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">buildings with shared bin areas. Addressed</text>
+      <text x="900" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">at source — not masked with chemicals.</text>
+      <rect x="900" y="348" width="192" height="24" rx="12" fill="#f0f7f4"/>
+      <text x="996" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">Resident satisfaction win</text>
+      <rect x="0" y="446" width="1280" height="274" fill="#013f3a"/>
+      <line x1="640" y1="468" x2="640" y2="692" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <circle cx="96" cy="518" r="36" fill="rgba(132,203,163,0.15)"/>
+      <text x="96" y="534" text-anchor="middle" font-size="28">🌿</text>
+      <text x="152" y="503" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="white">Verified green credentials</text>
+      <text x="152" y="530" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">Report real, auditable CO₂e avoided at body</text>
+      <text x="152" y="550" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">corporate AGMs or toward green building</text>
+      <text x="152" y="570" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">ratings. We supply the data.</text>
+      <rect x="152" y="594" width="244" height="24" rx="12" fill="rgba(132,203,163,0.18)" stroke="rgba(132,203,163,0.30)" stroke-width="0.75"/>
+      <text x="274" y="610" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#84cba3" font-weight="600" letter-spacing="0.4">ESG reporting · AGM-ready numbers</text>
+      <circle cx="714" cy="518" r="36" fill="rgba(251,183,24,0.12)"/>
+      <text x="714" y="534" text-anchor="middle" font-size="28">🤝</text>
+      <text x="770" y="503" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="white">Resident buy-in</text>
+      <text x="770" y="530" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">Residents actively want to participate. Gooi</text>
+      <text x="770" y="550" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">gives your community something tangible</text>
+      <text x="770" y="570" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">and meaningful to be part of.</text>
+      <rect x="770" y="594" width="242" height="24" rx="12" fill="rgba(251,183,24,0.12)" stroke="rgba(251,183,24,0.28)" stroke-width="0.75"/>
+      <text x="891" y="610" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#FBB718" font-weight="600" letter-spacing="0.4">A community win, not just a building win</text>
+    </svg>
+  </div>
+
+  <div class="estate-deck__slide" data-estate-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#F4F4F4"/>
+      <rect x="0" y="0" width="1280" height="100" fill="#013f3a"/>
+      <text x="64" y="42" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">THE SERVICE</text>
+      <text x="64" y="80" font-family="Georgia, 'Libre Baskerville', serif" font-size="40" font-weight="bold" fill="white">What your building gets.</text>
+      <text x="1216" y="62" text-anchor="end" font-family="Georgia, serif" font-style="italic" font-size="28" font-weight="bold" fill="#FBB718">gooi*</text>
+      <rect x="64" y="128" width="566" height="240" rx="16" fill="white"/>
+      <text x="108" y="184" font-size="38">📦</text>
+      <text x="160" y="180" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Weekly collection</text>
+      <text x="160" y="208" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Alfred collects your building's kitchen scraps</text>
+      <text x="160" y="228" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">every week. You arrange a collection point —</text>
+      <text x="160" y="248" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">we do the rest. No logistics, no hassle.</text>
+      <rect x="108" y="306" width="170" height="26" rx="13" fill="#f0f7f4"/>
+      <text x="193" y="323" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.5">Every week, same day</text>
+      <rect x="650" y="128" width="566" height="240" rx="16" fill="white"/>
+      <text x="694" y="184" font-size="38">🪣</text>
+      <text x="746" y="180" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Resident compost buckets</text>
+      <text x="746" y="208" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Optional countertop collection buckets for</text>
+      <text x="746" y="228" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">each apartment. A small thing that makes</text>
+      <text x="746" y="248" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">a big difference in household adoption.</text>
+      <rect x="694" y="306" width="130" height="26" rx="13" fill="rgba(251,183,24,0.12)"/>
+      <text x="759" y="323" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#013f3a" font-weight="600" letter-spacing="0.5">One-time purchase</text>
+      <rect x="64" y="386" width="566" height="240" rx="16" fill="white"/>
+      <text x="108" y="442" font-size="38">📊</text>
+      <text x="160" y="438" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Live impact dashboard</text>
+      <text x="160" y="466" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Your building gets a dedicated landing page</text>
+      <text x="160" y="486" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">showing real-time collection stats, CO₂e</text>
+      <text x="160" y="506" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">savings, and household participation.</text>
+      <rect x="108" y="564" width="332" height="26" rx="13" fill="#f0f7f4"/>
+      <text x="274" y="581" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">e.g. gooi.me/blocks/queensmead</text>
+      <rect x="650" y="386" width="566" height="240" rx="16" fill="white"/>
+      <text x="694" y="442" font-size="38">📣</text>
+      <text x="746" y="438" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Resident communication support</text>
+      <text x="746" y="466" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">We supply posters, flyers, and WhatsApp</text>
+      <text x="746" y="486" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">templates to help your body corporate get</text>
+      <text x="746" y="506" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">residents participating from day one.</text>
+      <rect x="694" y="564" width="142" height="26" rx="13" fill="#f0f7f4"/>
+      <text x="765" y="581" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">Included in setup</text>
+    </svg>
+  </div>
+
+  <div class="estate-deck__slide" data-estate-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#013f3a"/>
+      <rect width="1280" height="390" fill="white"/>
+      <rect x="0" y="0" width="8" height="390" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">HOW PRICING WORKS</text>
+      <text x="36" y="100" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="#013f3a">Three simple components.</text>
+      <rect x="36" y="132" width="370" height="230" rx="16" fill="white" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="36" y="132" width="370" height="6" rx="3" fill="#013f3a"/>
+      <text x="221" y="220" text-anchor="middle" font-size="42">🚛</text>
+      <text x="221" y="264" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#013f3a">Weekly collection fee</text>
+      <text x="221" y="292" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">A fixed fee per weekly visit.</text>
+      <text x="221" y="310" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Covers Alfred's collection service</text>
+      <text x="221" y="328" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">regardless of volume on the day.</text>
+      <rect x="96" y="342" width="250" height="24" rx="12" fill="#f0f7f4"/>
+      <text x="221" y="358" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">Per building · per collection</text>
+      <rect x="455" y="132" width="370" height="230" rx="16" fill="white" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="455" y="132" width="370" height="6" rx="3" fill="#108A63"/>
+      <text x="640" y="220" text-anchor="middle" font-size="42">⚖️</text>
+      <text x="640" y="264" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#013f3a">Volume processing fee</text>
+      <text x="640" y="292" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Charged per 45L collection bucket,</text>
+      <text x="640" y="310" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">per month. 45L starter buckets are</text>
+      <text x="640" y="328" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">R210 each — a one-time purchase.</text>
+      <rect x="486" y="342" width="308" height="24" rx="12" fill="#f0f7f4"/>
+      <text x="640" y="358" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">R210/bucket once · then processing/month</text>
+      <rect x="874" y="132" width="370" height="230" rx="16" fill="white" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="874" y="132" width="370" height="6" rx="3" fill="#FBB718"/>
+      <text x="1059" y="220" text-anchor="middle" font-size="42">🪣</text>
+      <text x="1059" y="264" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#013f3a">Resident buckets</text>
+      <rect x="934" y="274" width="94" height="22" rx="11" fill="rgba(251,183,24,0.15)"/>
+      <text x="981" y="289" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="10" fill="#013f3a" font-weight="700" letter-spacing="0.5">OPTIONAL</text>
+      <text x="1059" y="320" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Countertop collection buckets for</text>
+      <text x="1059" y="338" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">each apartment — one-time cost.</text>
+      <rect x="934" y="348" width="250" height="24" rx="12" fill="rgba(251,183,24,0.10)"/>
+      <text x="1059" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#013f3a" font-weight="600" letter-spacing="0.3">Per apartment · one-time</text>
+      <rect x="36" y="416" width="544" height="60" rx="12" fill="rgba(132,203,163,0.12)" stroke="rgba(132,203,163,0.25)" stroke-width="0.75"/>
+      <text x="64" y="443" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="white" font-weight="600">6-month subscription (best rate) or month-to-month.</text>
+      <text x="64" y="463" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="rgba(255,255,255,0.55)">Starter bucket cost paid off after 6 months — ongoing rate is lower.</text>
+      <text x="36" y="530" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="white">Ready to get a quote?</text>
+      <text x="36" y="566" font-family="-apple-system, Arial, sans-serif" font-size="17" fill="rgba(255,255,255,0.62)">Every building is different — we'll size it for your block.</text>
+      <rect x="36" y="596" width="310" height="56" rx="28" fill="#FBB718"/>
+      <text x="191" y="629" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="16" font-weight="700" fill="#013f3a">howzit@gooi.me</text>
+      <rect x="364" y="596" width="260" height="56" rx="28" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+      <text x="494" y="629" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="16" font-weight="600" fill="white">083 635 3126</text>
+      <rect x="700" y="410" width="544" height="270" rx="16" fill="rgba(132,203,163,0.08)" stroke="rgba(132,203,163,0.20)" stroke-width="1"/>
+      <text x="722" y="450" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">SEE IT IN ACTION</text>
+      <text x="722" y="492" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="white">Queensmead Apartments,</text>
+      <text x="722" y="522" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#84cba3">Rondebosch</text>
+      <text x="722" y="556" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.55)">Already collecting weekly. Residents can see</text>
+      <text x="722" y="576" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.55)">their building's live impact stats in real time.</text>
+      <rect x="722" y="600" width="292" height="30" rx="15" fill="rgba(132,203,163,0.15)" stroke="rgba(132,203,163,0.3)" stroke-width="0.75"/>
+      <text x="868" y="619" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" fill="#84cba3" font-weight="600">gooi.me/blocks/queensmead</text>
+    </svg>
+  </div>
+
+  <%# ── Navigation ─────────────────────────────────────────────────────────── %>
+  <div class="estate-deck__nav">
+    <button class="estate-deck__nav-btn estate-deck__nav-btn--prev"
+            data-estate-deck-target="prev"
+            data-action="click->estate-deck#prev"
+            aria-label="Previous slide">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <span class="estate-deck__counter" data-estate-deck-target="counter">1 / 5</span>
+    <button class="estate-deck__nav-btn estate-deck__nav-btn--next"
+            data-estate-deck-target="next"
+            data-action="click->estate-deck#next"
+            aria-label="Next slide">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <%# ── CTA strip ───────────────────────────────────────────────────────────── %>
+  <div class="estate-deck__cta">
+    <p>Interested in a collection service for your building?</p>
+    <a href="mailto:howzit@gooi.me" class="estate-deck__cta-btn">howzit@gooi.me</a>
+  </div>
+
+</div>

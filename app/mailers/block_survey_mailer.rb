@@ -1,13 +1,15 @@
 class BlockSurveyMailer < ApplicationMailer
-  def invite(block, recipient_email)
-    @block        = block
-    @survey_url   = block_survey_url(block.slug)
-    @annual_kg    = Block.annual_kg_per_household
-    @annual_co2e  = Block.annual_co2e_per_household
+  def pitch(block, quotation, recipient_name, recipient_email)
+    @block          = block
+    @quotation      = quotation
+    @recipient_name = recipient_name
+    @deck_url       = estate_deck_url
+    @quotation_url  = quotation_url(quotation)
+    @survey_url     = block_survey_url(block.slug)
 
     mail(
       to:      recipient_email,
-      subject: "Composting at #{block.name} — quick survey for residents"
+      subject: "#{block.name} — organic waste collection proposal from Gooi"
     )
   end
 end

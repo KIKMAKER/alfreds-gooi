@@ -94,7 +94,7 @@ Rails.application.routes.draw do
       member do
         post :assign_subscription
         delete :remove_subscription
-        post :send_survey
+        post :send_pitch
       end
     end
     resources :posts
@@ -324,6 +324,9 @@ Rails.application.routes.draw do
 
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug
+
+  # Estate sales deck — public, no auth
+  get 'estate-deck', to: 'estate_decks#show', as: :estate_deck
 
   # blocks (apartment blocks / estates — public landing pages)
   resources :blocks, only: [:show], param: :slug do
