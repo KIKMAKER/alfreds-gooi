@@ -64,6 +64,23 @@ class Admin::SubscriptionsController < ApplicationController
     end
   end
 
+  def change_plan
+    @subscription = Subscription.find(params[:id])
+    new_plan = params[:new_plan]
+
+    unless %w[Standard XL].include?(new_plan)
+      return redirect_to admin_subscription_path(@subscription), alert: "Invalid plan selection."
+    end
+
+    result = Subscriptions::ChangePlan.new(@subscription, new_plan).call
+
+    if result.success
+      redirect_to admin_subscription_path(@subscription), notice: "Plan changed to #{new_plan}. Invoice updated."
+    else
+      redirect_to admin_subscription_path(@subscription), alert: result.error
+    end
+  end
+
   def show
     @subscription = Subscription.joins(:user).find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
@@ -94,6 +111,14 @@ class Admin::SubscriptionsController < ApplicationController
 
     @avg_time_sample     = scope.where.not(time: nil).count
     @avg_collection_time = @avg_time_sample.positive? ? (Time.zone.now.beginning_of_day + avg_secs).strftime('%H:%M') : nil
+
+    if %w[Standard XL].include?(@subscription.plan) && !@subscription.completed? && !@subscription.legacy?
+      target_plan = @subscription.Standard? ? "XL" : "Standard"
+      @change_plan_target         = target_plan
+      @change_plan_target_product = Product.find_by(title: "#{target_plan} #{@subscription.duration} month subscription")
+      @change_plan_current_product = Product.find_by(id: @subscription.subscription_product_id)
+      @change_plan_original_invoice = @subscription.invoices.order(:created_at).first
+    end
   end
 
   def update_monthly_billing

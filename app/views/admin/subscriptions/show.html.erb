@@ -82,6 +82,36 @@
         </div>
       </div>
 
+      <!-- Change Plan Card -->
+      <% if @change_plan_target && @change_plan_target_product %>
+        <div class="info-card">
+          <div class="info-card-header">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <h3>Change Plan</h3>
+          </div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-label">Switch to</span>
+              <span class="info-value"><%= @change_plan_target %></span>
+            </div>
+            <% plan_diff = @change_plan_target_product.price - (@change_plan_current_product&.price || 0) %>
+            <div class="info-row">
+              <span class="info-label">Price adjustment</span>
+              <span class="info-value"><%= plan_diff >= 0 ? "+R#{plan_diff}" : "−R#{plan_diff.abs}" %></span>
+            </div>
+            <% if @change_plan_original_invoice&.paid? %>
+              <p class="text-muted small mt-2 mb-2">Original invoice already paid — a separate adjustment invoice will be created and queued for approval.</p>
+            <% end %>
+            <%= form_with url: change_plan_admin_subscription_path(@subscription), method: :post do |f| %>
+              <%= hidden_field_tag :new_plan, @change_plan_target %>
+              <%= f.submit "Change to #{@change_plan_target}",
+                    class: "btn-yellow",
+                    data: { turbo_confirm: "Change plan from #{@subscription.plan} to #{@change_plan_target}? This will update the invoice." } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Location Card -->
       <div class="info-card">
         <div class="info-card-header">

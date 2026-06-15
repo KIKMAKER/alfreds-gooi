@@ -64,6 +64,7 @@ Rails.application.routes.draw do
         post  :unlink_satellite
         patch :update_monthly_billing
         post  :resend_email
+        post  :change_plan
       end
     end
     resources :whatsapp_messages, only: [:index] do

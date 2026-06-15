@@ -1,0 +1,27 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Your plan has been updated ♻️</h1>
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    Hi <%= @user.first_name %>,
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    We've updated your gooi subscription to the <strong><%= @subscription.human_plan %> plan</strong>.
+    Your collection day stays the same — every <strong><%= @subscription.collection_day %></strong>.
+  </p>
+
+  <p style="font-size: 1.1rem;">
+    Your invoice has been updated to reflect the new plan. You can view it in your account below.
+    If you have any questions, just reply to this email.
+  </p>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View My Account
+    </a>
+  </p>
+
+  <p style="font-size: 1.1rem;">Thanks for gooiing!</p>
+  <p style="font-size: 1.1rem;">Kristen</p>
+  <%= image_tag image_url('email-signature.png'), alt: "Kristen Kennedy email signature", style: "max-width: 250px; margin-top: 10px;" %>
+</div>

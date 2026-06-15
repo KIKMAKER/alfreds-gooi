@@ -123,6 +123,12 @@ class SubscriptionMailer < ApplicationMailer
     mail(to: @subscription.user.email, subject: subject)
   end
 
+  def plan_changed
+    @subscription = params[:subscription]
+    @user = @subscription.user
+    mail(to: @user.email, subject: "Your gooi subscription has been updated")
+  end
+
   def payment_reminder_alert(stage = :day_3)
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
