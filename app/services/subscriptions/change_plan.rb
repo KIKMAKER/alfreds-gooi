@@ -27,7 +27,7 @@ class Subscriptions::ChangePlan
       end
     end
 
-    SubscriptionMailer.with(subscription: @subscription).plan_changed.deliver_later
+    SubscriptionMailer.with(subscription: @subscription).plan_changed.deliver_now
     Result.new(success: true, error: nil)
   rescue => e
     Result.new(success: false, error: e.message)
