@@ -325,8 +325,9 @@ Rails.application.routes.draw do
   # farms (public-facing drop-off sites)
   resources :farms, only: [:index, :show], param: :slug
 
-  # Estate sales deck — public, no auth
+  # Sales decks — public, no auth
   get 'estate-deck', to: 'estate_decks#show', as: :estate_deck
+  get 'office-deck', to: 'office_decks#show', as: :office_deck
 
   # blocks (apartment blocks / estates — public landing pages)
   resources :blocks, only: [:show], param: :slug do
