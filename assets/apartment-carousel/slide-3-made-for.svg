@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+
+  <!-- Background -->
+  <rect width="1080" height="1350" fill="white"/>
+
+  <!-- ── LOGO PLACEHOLDER — replace with real vector logo ── -->
+  <text x="80" y="100" font-family="Georgia, serif" font-style="italic" font-weight="bold" font-size="54" fill="#013f3a">gooi</text>
+
+  <!-- Slide counter -->
+  <text x="1000" y="68" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#013f3a">03 / 03</text>
+
+  <!-- Label -->
+  <text x="80" y="280" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="2" fill="#FBB718">MADE FOR</text>
+
+  <!-- Headline -->
+  <text x="80" y="395" font-family="Georgia, 'Libre Baskerville', serif" font-size="104" font-weight="bold" fill="#013f3a">Buildings</text>
+  <text x="80" y="505" font-family="Georgia, 'Libre Baskerville', serif" font-size="104" font-weight="bold" fill="#013f3a">ready to gooi.</text>
+
+  <!-- Item 01 -->
+  <text x="80" y="640" font-family="Georgia, 'Libre Baskerville', serif" font-style="italic" font-size="64" fill="#FBB718">01</text>
+  <text x="180" y="638" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#013f3a">The body corporate that voted yes</text>
+  <text x="180" y="682" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="28" fill="#777">One service. One invoice. We handle the rest.</text>
+
+  <!-- Item 02 -->
+  <text x="80" y="790" font-family="Georgia, 'Libre Baskerville', serif" font-style="italic" font-size="64" fill="#FBB718">02</text>
+  <text x="180" y="788" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#013f3a">The building going green</text>
+  <text x="180" y="832" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="28" fill="#777">Real CO₂e numbers for your AGM or green cert.</text>
+
+  <!-- Item 03 -->
+  <text x="80" y="940" font-family="Georgia, 'Libre Baskerville', serif" font-style="italic" font-size="64" fill="#FBB718">03</text>
+  <text x="180" y="938" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#013f3a">The building that's been meaning to</text>
+  <text x="180" y="982" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="28" fill="#777">No forms. No faff. Just start gooiing.</text>
+
+  <!-- Footer rule -->
+  <line x1="80" y1="1270" x2="1000" y2="1270" stroke="#e0e0e0" stroke-width="1.5"/>
+
+  <!-- Footer text -->
+  <text x="80" y="1315" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="27" font-weight="700" fill="#013f3a">gooi.me</text>
+  <text x="1000" y="1315" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="27" fill="#888">@gooi_capetown</text>
+
+</svg>
