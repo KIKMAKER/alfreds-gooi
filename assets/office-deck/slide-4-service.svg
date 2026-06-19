@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F4F4F4"/>
+  <rect x="0" y="0" width="1280" height="100" fill="#013f3a"/>
+  <text x="64" y="42" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">THE SERVICE</text>
+  <text x="64" y="80" font-family="Georgia, 'Libre Baskerville', serif" font-size="40" font-weight="bold" fill="white">What your office gets.</text>
+  <text x="1216" y="62" text-anchor="end" font-family="Georgia, serif" font-style="italic" font-size="28" font-weight="bold" fill="#FBB718">gooi*</text>
+  <rect x="64" y="128" width="566" height="240" rx="16" fill="white"/>
+  <text x="108" y="184" font-size="38">📦</text>
+  <text x="160" y="180" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Weekly collection</text>
+  <text x="160" y="208" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Alfred collects your office's kitchen scraps</text>
+  <text x="160" y="228" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">every week. You arrange a collection point —</text>
+  <text x="160" y="248" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">we do the rest. No logistics, no hassle.</text>
+  <rect x="108" y="306" width="170" height="26" rx="13" fill="#f0f7f4"/>
+  <text x="193" y="323" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.5">Every week, same day</text>
+  <rect x="650" y="128" width="566" height="240" rx="16" fill="white"/>
+  <text x="694" y="184" font-size="38">🪣</text>
+  <text x="746" y="180" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Kitchen collection buckets</text>
+  <text x="746" y="208" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Countertop collection buckets for your</text>
+  <text x="746" y="228" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">kitchen. A small thing that dramatically</text>
+  <text x="746" y="248" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">improves staff participation from day one.</text>
+  <rect x="694" y="306" width="130" height="26" rx="13" fill="rgba(251,183,24,0.12)"/>
+  <text x="759" y="323" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#013f3a" font-weight="600" letter-spacing="0.5">One-time purchase</text>
+  <rect x="64" y="386" width="566" height="240" rx="16" fill="white"/>
+  <text x="108" y="442" font-size="38">📊</text>
+  <text x="160" y="438" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Live impact dashboard</text>
+  <text x="160" y="466" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Your company gets a dedicated landing page</text>
+  <text x="160" y="486" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">showing real-time collection stats, CO₂e</text>
+  <text x="160" y="506" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">savings, and team participation over time.</text>
+  <rect x="108" y="564" width="332" height="26" rx="13" fill="#f0f7f4"/>
+  <text x="274" y="581" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">Shareable · perfect for sustainability reports</text>
+  <rect x="650" y="386" width="566" height="240" rx="16" fill="white"/>
+  <text x="694" y="442" font-size="38">📣</text>
+  <text x="746" y="438" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#013f3a">Staff communication support</text>
+  <text x="746" y="466" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">We supply posters, kitchen signage, and</text>
+  <text x="746" y="486" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">onboarding materials to get your team</text>
+  <text x="746" y="506" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">composting from day one.</text>
+  <rect x="694" y="564" width="142" height="26" rx="13" fill="#f0f7f4"/>
+  <text x="765" y="581" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.3">Included in setup</text>
+</svg>

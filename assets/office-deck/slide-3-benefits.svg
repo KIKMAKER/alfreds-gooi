@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="white"/>
+  <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+  <text x="36" y="52" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">FOR YOUR WORKPLACE</text>
+  <text x="36" y="106" font-family="Georgia, 'Libre Baskerville', serif" font-size="50" font-weight="bold" fill="#013f3a">Your office becomes a better place to work.</text>
+  <rect x="36" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+  <rect x="36" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+  <circle cx="100" cy="200" r="36" fill="#f0f7f4"/>
+  <text x="100" y="216" text-anchor="middle" font-size="30">🗑️</text>
+  <text x="152" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">Cleaner kitchen bins</text>
+  <text x="64" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">Separate food scraps at source and the</text>
+  <text x="64" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">shared kitchen bin stays cleaner, drier,</text>
+  <text x="64" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">and fresher all week long.</text>
+  <rect x="64" y="348" width="232" height="24" rx="12" fill="#f0f7f4"/>
+  <text x="180" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">Visible, day-to-day improvement</text>
+  <rect x="454" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+  <rect x="454" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+  <circle cx="518" cy="200" r="36" fill="#f0f7f4"/>
+  <text x="518" y="216" text-anchor="middle" font-size="30">🐀</text>
+  <text x="570" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">Fewer pests</text>
+  <text x="482" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">Rats, flies, and cockroaches are drawn to</text>
+  <text x="482" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">organic waste. Remove the source and</text>
+  <text x="482" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">you remove their reason to be there.</text>
+  <rect x="482" y="348" width="214" height="24" rx="12" fill="#f0f7f4"/>
+  <text x="589" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">A real pest-reduction measure</text>
+  <rect x="872" y="136" width="374" height="268" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+  <rect x="872" y="136" width="374" height="5" rx="2.5" fill="#013f3a"/>
+  <circle cx="936" cy="200" r="36" fill="#f0f7f4"/>
+  <text x="936" y="216" text-anchor="middle" font-size="30">💨</text>
+  <text x="988" y="193" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">No kitchen smell</text>
+  <text x="900" y="262" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">The single biggest kitchen complaint in</text>
+  <text x="900" y="280" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">shared office spaces. Addressed at source</text>
+  <text x="900" y="298" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="#525560">— not masked with chemicals.</text>
+  <rect x="900" y="348" width="192" height="24" rx="12" fill="#f0f7f4"/>
+  <text x="996" y="364" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="600" letter-spacing="0.4">Staff wellbeing win</text>
+  <rect x="0" y="446" width="1280" height="274" fill="#013f3a"/>
+  <line x1="640" y1="468" x2="640" y2="692" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <circle cx="96" cy="518" r="36" fill="rgba(132,203,163,0.15)"/>
+  <text x="96" y="534" text-anchor="middle" font-size="28">🌿</text>
+  <text x="152" y="503" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="white">Verified ESG credentials</text>
+  <text x="152" y="530" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">Report real, auditable CO₂e avoided in your</text>
+  <text x="152" y="550" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">sustainability report, B-Corp application, or</text>
+  <text x="152" y="570" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">green building certification. We supply the data.</text>
+  <rect x="152" y="594" width="268" height="24" rx="12" fill="rgba(132,203,163,0.18)" stroke="rgba(132,203,163,0.30)" stroke-width="0.75"/>
+  <text x="286" y="610" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#84cba3" font-weight="600" letter-spacing="0.4">ESG reporting · B-Corp · sustainability reports</text>
+  <circle cx="714" cy="518" r="36" fill="rgba(251,183,24,0.12)"/>
+  <text x="714" y="534" text-anchor="middle" font-size="28">🤝</text>
+  <text x="770" y="503" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="white">Staff engagement</text>
+  <text x="770" y="530" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">Employees want to work for companies that</text>
+  <text x="770" y="550" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">act on sustainability. Gooi gives your team</text>
+  <text x="770" y="570" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.62)">something tangible and meaningful to join.</text>
+  <rect x="770" y="594" width="256" height="24" rx="12" fill="rgba(251,183,24,0.12)" stroke="rgba(251,183,24,0.28)" stroke-width="0.75"/>
+  <text x="898" y="610" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#FBB718" font-weight="600" letter-spacing="0.4">A culture win, not just a facilities win</text>
+</svg>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="white"/>
+  <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+  <text x="36" y="56" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">WHY IT MATTERS</text>
+  <text x="36" y="112" font-family="Georgia, 'Libre Baskerville', serif" font-size="52" font-weight="bold" fill="#013f3a">Food waste is a bigger problem</text>
+  <text x="36" y="168" font-family="Georgia, 'Libre Baskerville', serif" font-size="52" font-weight="bold" fill="#013f3a">than most people realise.</text>
+  <circle cx="184" cy="308" r="44" fill="#f0f7f4"/>
+  <text x="184" y="324" text-anchor="middle" font-size="36">🗑️</text>
+  <text x="184" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Landfill is the problem</text>
+  <text x="184" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">30–50% of all waste</text>
+  <text x="184" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">is organic — and in landfill,</text>
+  <text x="184" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">it produces methane: a gas</text>
+  <text x="184" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">80× more potent than CO₂.</text>
+  <line x1="368" y1="264" x2="368" y2="500" stroke="#e8e8e8" stroke-width="1"/>
+  <circle cx="640" cy="308" r="44" fill="#f0f7f4"/>
+  <text x="640" y="324" text-anchor="middle" font-size="36">🌱</text>
+  <text x="640" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Composting is the fix</text>
+  <text x="640" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Composted organic waste</text>
+  <text x="640" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">returns nutrients to soil —</text>
+  <text x="640" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">supporting local farmers and</text>
+  <text x="640" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">reducing synthetic fertiliser.</text>
+  <line x1="912" y1="264" x2="912" y2="500" stroke="#e8e8e8" stroke-width="1"/>
+  <circle cx="1096" cy="308" r="44" fill="#f0f7f4"/>
+  <text x="1096" y="324" text-anchor="middle" font-size="36">🏙️</text>
+  <text x="1096" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#013f3a">Offices are the opportunity</text>
+  <text x="1096" y="418" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Office kitchens generate</text>
+  <text x="1096" y="438" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">large, consistent volumes</text>
+  <text x="1096" y="458" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">every week. A single office</text>
+  <text x="1096" y="478" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">can make a real city-wide dent.</text>
+  <rect x="0" y="544" width="1280" height="120" fill="#013f3a"/>
+  <text x="213" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#FBB718">16 000 kg</text>
+  <text x="213" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">organic waste diverted in 2025</text>
+  <line x1="426" y1="560" x2="426" y2="648" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <text x="640" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#84cba3">5 500 kg</text>
+  <text x="640" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">of compost created for local farms</text>
+  <line x1="854" y1="560" x2="854" y2="648" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <text x="1067" y="594" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="white">37 000 km</text>
+  <text x="1067" y="622" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.65)">worth of emissions avoided</text>
+  <text x="640" y="654" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.28)" letter-spacing="1">2025 IMPACT — ALFRED'S GOOI CAPE TOWN</text>
+</svg>
