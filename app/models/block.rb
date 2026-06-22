@@ -93,6 +93,11 @@ class Block < ApplicationRecord
     actual_volume_l(Date.current.beginning_of_week..Date.current.end_of_week)
   end
 
+  def actual_volume_last_week_l
+    last_week = Date.current - 7
+    actual_volume_l(last_week.beginning_of_week..last_week.end_of_week)
+  end
+
   def actual_volume_this_month_l
     actual_volume_l(Date.current.beginning_of_month..Date.current.end_of_month)
   end

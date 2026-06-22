@@ -47,7 +47,7 @@
 <section class="block-snapshot">
   <div class="container">
     <div class="block-snapshot__card">
-      <p class="block-snapshot__label">This week we've collected</p>
+      <p class="block-snapshot__label"><%= @week_label %> we collected</p>
       <div class="block-snapshot__headline">
         <span class="block-snapshot__actual"><%= this_week_l %>L</span>
         <span class="block-snapshot__of">of an expected</span>
@@ -57,7 +57,7 @@
       <div class="block-snapshot__bar-wrap">
         <div class="block-snapshot__bar" style="width: <%= pct %>%"></div>
       </div>
-      <p class="block-snapshot__pct"><%= pct %>% of this week's allocation</p>
+      <p class="block-snapshot__pct"><%= pct %>% of weekly allocation</p>
 
       <div class="block-snapshot__mini-stats">
         <div class="block-snapshot__mini">
