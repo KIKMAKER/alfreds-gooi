@@ -181,13 +181,22 @@ class SubscriptionsController < ApplicationController
 
           referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
 
+          unpaid = current_user.invoices.find_by(paid: false)
+          mergeable_invoice = if unpaid
+            has_subscription_item = unpaid.invoice_items.joins(:product)
+                                          .where("products.title ILIKE ?", "%subscription%")
+                                          .exists?
+            has_subscription_item ? nil : unpaid
+          end
+
           @invoice = InvoiceBuilder.new(
             subscription: @subscription,
             og: current_user.og,
             is_new: false,
             referee: nil,
             referred_friends: referred_friends,
-            auto_approve: true
+            auto_approve: true,
+            existing_invoice: mergeable_invoice
           ).call
 
           start_date = @subscription.suggested_start_date(payment_date: Date.current)

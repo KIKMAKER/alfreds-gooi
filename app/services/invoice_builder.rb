@@ -1,6 +1,6 @@
 # app/services/invoice_builder.rb
 class InvoiceBuilder
-  def initialize(subscription: nil, subscriptions: nil, og: false, is_new: false, referee: nil, referred_friends: 0, auto_approve: false, quotation: nil)
+  def initialize(subscription: nil, subscriptions: nil, og: false, is_new: false, referee: nil, referred_friends: 0, auto_approve: false, quotation: nil, existing_invoice: nil)
     # Accept either a single subscription or multiple subscriptions
     @subscriptions = subscriptions || [subscription].compact
     raise ArgumentError, "At least one subscription required" if @subscriptions.empty?
@@ -12,16 +12,24 @@ class InvoiceBuilder
     @referred_friends = referred_friends
     @auto_approve = auto_approve
     @quotation = quotation
+    @existing_invoice = existing_invoice
   end
 
   def call
-    invoice = Invoice.create!(
-      subscription: @subscription,
-      issued_date: Time.current,
-      due_date: Time.current + 2.weeks,
-      total_amount: 0,
-      admin_approved: @auto_approve
-    )
+    invoice = if @existing_invoice
+                # Reuse the existing unpaid invoice; re-point it at the new subscription
+                # so the payment→activate flow targets the right record.
+                @existing_invoice.update_column(:subscription_id, @subscription.id)
+                @existing_invoice
+              else
+                Invoice.create!(
+                  subscription: @subscription,
+                  issued_date: Time.current,
+                  due_date: Time.current + 2.weeks,
+                  total_amount: 0,
+                  admin_approved: @auto_approve
+                )
+              end
 
     if @subscription&.once_off?
       add_once_off_collection(invoice)
@@ -49,7 +57,7 @@ class InvoiceBuilder
 
     invoice.calculate_total
 
-    if @auto_approve
+    if @existing_invoice || @auto_approve
       InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
     else
       InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now

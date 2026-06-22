@@ -137,6 +137,8 @@
       <div class="info-card-body text-center" style="padding: 2rem;">
         <p class="mb-4">Please settle your account to continue gooiing.</p>
         <%= link_to "View Invoice", invoice_path(@unpaid_invoice), class: "action-btn" %>
+        <p class="text-muted small mt-3 mb-1">Here to resubscribe?</p>
+        <%= link_to "Resubscribe →", new_subscription_path, class: "link-text small" %>
       </div>
     </div>
 
