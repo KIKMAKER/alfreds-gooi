@@ -39,6 +39,23 @@
           </div>
         <% end %>
 
+        <% if @invoice.invoice_discount_codes.any? %>
+          <hr class="my-4">
+          <h4 class="mb-3">Applied Discount Codes</h4>
+          <% @invoice.invoice_discount_codes.each do |idc| %>
+            <div class="invoice-item mb-3 p-3 border rounded d-flex justify-content-between align-items-center">
+              <div>
+                <strong><%= idc.discount_code.code %></strong>
+                <span class="text-muted small ms-2">−R<%= idc.discount_amount.to_i %></span>
+              </div>
+              <%= link_to "Remove",
+                    remove_discount_code_invoice_path(@invoice, invoice_discount_code_id: idc.id),
+                    data: { turbo_method: :delete, turbo_confirm: "Remove discount code #{idc.discount_code.code}? The total will be recalculated." },
+                    class: "btn btn-sm btn-outline-danger" %>
+            </div>
+          <% end %>
+        <% end %>
+
         <hr class="my-4">
 
         <h4 class="mb-3">Add New Items</h4>

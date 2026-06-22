@@ -181,6 +181,7 @@ Rails.application.routes.draw do
       patch :issued_bags, to: "invoices#issued_bags"
       get :send_email, to: "invoices#send_email"
       post :apply_discount_code
+      delete :remove_discount_code
       get :pdf
       get :bags_whatsapp
     end

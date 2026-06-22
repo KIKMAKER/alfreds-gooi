@@ -252,6 +252,30 @@ class InvoicesController < ApplicationController
     redirect_to invoice_path(@invoice), alert: "Error applying discount code: #{e.message}"
   end
 
+  def remove_discount_code
+    unless current_user.admin?
+      redirect_to invoice_path(@invoice), alert: "Only admins can remove discount codes"
+      return
+    end
+
+    idc = @invoice.invoice_discount_codes.find(params[:invoice_discount_code_id])
+    code = idc.discount_code
+
+    ActiveRecord::Base.transaction do
+      idc.destroy!
+      code.decrement!(:used_count) if code.used_count > 0
+      @invoice.invoice_discount_codes.reload
+      @invoice.update_column(:used_discount_code, false) if @invoice.invoice_discount_codes.none?
+      @invoice.calculate_total
+    end
+
+    redirect_to edit_invoice_path(@invoice), notice: "Discount code removed. New total: R#{@invoice.reload.total_amount.to_i}"
+  rescue ActiveRecord::RecordNotFound
+    redirect_to edit_invoice_path(@invoice), alert: "Discount code not found on this invoice."
+  rescue StandardError => e
+    redirect_to edit_invoice_path(@invoice), alert: "Error removing discount code: #{e.message}"
+  end
+
   private
 
   def invoice_params
