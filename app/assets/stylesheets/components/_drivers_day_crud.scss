@@ -283,6 +283,89 @@
   &--message { background: #e8f5e9; i { color: $medium-green; } }
 }
 
+// ── Inline note editor (show page) ───────────────────────────────────────────
+
+.dd-note-editor {
+  background: #fff8e1;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+
+    i { color: #f0a500; font-size: 1rem; }
+
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+  }
+
+  &__hint {
+    font-size: 0.78rem;
+    color: #888;
+    margin-left: auto;
+  }
+
+  &__textarea {
+    font-size: 0.9rem;
+    resize: vertical;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  &__clear-link {
+    font-size: 0.8rem;
+    color: #999;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover { color: #e53935; }
+  }
+}
+
+// ── Unmissable day note alert (start page) ────────────────────────────────────
+
+.dd-day-note-alert {
+  background: #ffeb3b;
+  border-left: 6px solid #f57f17;
+  border-radius: 10px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  i {
+    font-size: 2rem;
+    color: #e65100;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: #333;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #222;
+    font-weight: 500;
+  }
+}
+
 // ── Bucket entry page ─────────────────────────────────────────────────────────
 
 .bucket-totals {

@@ -1,6 +1,6 @@
 class DriversDaysController < ApplicationController
   skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot]
-  before_action :set_drivers_day, only: %i[drop_off edit update destroy collections]
+  before_action :set_drivers_day, only: %i[drop_off edit update update_note destroy collections]
 
   def route
     selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
@@ -335,6 +335,11 @@ class DriversDaysController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def update_note
+    @drivers_day.update(note: params.dig(:drivers_day, :note)&.strip.presence)
+    render partial: 'note_form', locals: { drivers_day: @drivers_day }
   end
 
   def destroy

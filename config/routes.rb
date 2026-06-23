@@ -267,6 +267,7 @@ Rails.application.routes.draw do
       get :collections
       get :snapshot
       patch :reorder
+      patch :update_note
     end
     resources :collections, only: [:index] do
       collection do

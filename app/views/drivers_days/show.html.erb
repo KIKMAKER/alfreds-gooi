@@ -131,12 +131,7 @@
     </div>
 
     <%# ── Notes & messages ─────────────────────────────────────────────────── %>
-    <% if @drivers_day.note.present? %>
-      <div class="dd-note dd-note--note">
-        <i class="fa-solid fa-note-sticky"></i>
-        <p><%= @drivers_day.note %></p>
-      </div>
-    <% end %>
+    <%= render 'note_form', drivers_day: @drivers_day %>
 
     <% if @drivers_day.message_from_alfred.present? %>
       <div class="dd-note dd-note--message">
@@ -164,12 +159,7 @@
       Stats are calculated when the day is completed in the End Day flow.
     </div>
 
-    <% if @drivers_day.note.present? %>
-      <div class="dd-note dd-note--note">
-        <i class="fa-solid fa-note-sticky"></i>
-        <p><%= @drivers_day.note %></p>
-      </div>
-    <% end %>
+    <%= render 'note_form', drivers_day: @drivers_day %>
   <% end %>
 
   <%# ── Actions ──────────────────────────────────────────────────────────────── %>

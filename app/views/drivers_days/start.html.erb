@@ -1,5 +1,13 @@
 <div class="drivers-day-container">
 
+  <% if @drivers_day.note.present? %>
+    <div class="dd-day-note-alert">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <h2>Note for today</h2>
+      <p><%= @drivers_day.note %></p>
+    </div>
+  <% end %>
+
   <div class="dd-header">
     <div>
       <h1 class="dd-header__title">Before you go…</h1>

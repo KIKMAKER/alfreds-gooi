@@ -1,0 +1,29 @@
+<%= turbo_frame_tag "drivers_day_note" do %>
+  <div class="dd-note-editor">
+    <div class="dd-note-editor__header">
+      <i class="fa-solid fa-note-sticky"></i>
+      <h3>Day note</h3>
+      <span class="dd-note-editor__hint">Shown to Alfred in big text at the start of his day</span>
+    </div>
+    <%= form_with model: drivers_day,
+                  url: update_note_drivers_day_path(drivers_day),
+                  method: :patch do |f| %>
+      <%= f.text_area :note,
+            class: "form-control dd-note-editor__textarea",
+            rows: 3,
+            placeholder: "Leave a note for Alfred — e.g. "Skip 12 Oak St today" or "Bring extra bags"…" %>
+      <div class="dd-note-editor__actions">
+        <%= f.submit "Save note", class: "btn-yellow btn-sm" %>
+        <% if drivers_day.note.present? %>
+          <%= link_to "Clear",
+                update_note_drivers_day_path(drivers_day),
+                data: {
+                  turbo_method: :patch,
+                  turbo_confirm: "Clear this note?"
+                },
+                class: "dd-note-editor__clear-link" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
