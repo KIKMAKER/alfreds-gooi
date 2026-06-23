@@ -272,13 +272,15 @@ class User < ApplicationRecord
   end
 
   def sync_owner_contacts
+    attrs = {}
+    attrs[:first_name] = first_name if saved_change_to_first_name?
+    attrs[:last_name] = last_name if saved_change_to_last_name?
+    attrs[:phone_number] = phone_number if saved_change_to_phone_number?
+    return if attrs.empty?
+
     Contact.joins(:subscription)
            .where(subscriptions: { user_id: id }, is_primary: true)
-           .update_all(
-             first_name: first_name,
-             last_name: last_name,
-             phone_number: phone_number
-           )
+           .update_all(attrs)
   end
 
   ## phone number validation
