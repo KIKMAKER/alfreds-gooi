@@ -69,6 +69,8 @@ export default class extends Controller {
   }
 
   addCustomerMarkers(geojson) {
+    this.allFeatures = geojson.features
+
     // Add source with clustering
     this.map.addSource('customers', {
       type: 'geojson',
@@ -194,10 +196,15 @@ export default class extends Controller {
     })
     event.currentTarget.classList.add('active')
 
-    // Apply filter
-    const filter = day === 'all' ? null : ['==', ['get', 'collection_day'], day]
-    this.map.setFilter('unclustered-point', filter)
-    this.map.setFilter('clusters', filter)
+    // Update source data so clustering re-runs on the filtered subset.
+    // setFilter() on cluster layers can't inspect individual point properties
+    // (cluster features only carry point_count / cluster_id), so we filter
+    // the raw features here and let Mapbox re-cluster the result.
+    const features = day === 'all'
+      ? this.allFeatures
+      : this.allFeatures.filter(f => f.properties.collection_day === day)
+
+    this.map.getSource('customers').setData({ type: 'FeatureCollection', features })
   }
 
   fitMapToBounds(geojson) {
