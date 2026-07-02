@@ -36,11 +36,13 @@ class InvoiceBuilder
     else
       @subscriptions.each do |sub|
         if @is_new
-          # For quote-driven monthly Commercial, add_subscription_product must run first
-          # so it can store starter_kit_installment before add_starter_kit reads it.
-          if @quotation.present? && sub.Commercial? && sub.monthly_invoicing?
+          if @quotation.present? && sub.Commercial?
+            # Quote-driven Commercial: any starter item is billed at the quoted
+            # amount from within add_subscription_product (monthly: as a stored
+            # installment; upfront: as a direct line item) — never from the
+            # rate-card add_starter_kit, which would ignore the agreed price.
             add_subscription_product(invoice, sub)
-            add_starter_kit(invoice, sub)
+            add_starter_kit(invoice, sub) if sub.monthly_invoicing?
           else
             add_starter_kit(invoice, sub)
             add_subscription_product(invoice, sub)
@@ -153,18 +155,18 @@ class InvoiceBuilder
     if subscription.monthly_invoicing?
       add_commercial_from_quote_monthly(invoice, subscription, recurring_items, starter_items, monthly_product, volume_product)
     else
-      add_commercial_from_quote_upfront(invoice, subscription, recurring_items, monthly_product, volume_product)
+      add_commercial_from_quote_upfront(invoice, subscription, recurring_items, starter_items, monthly_product, volume_product)
     end
   end
 
-  def add_commercial_from_quote_upfront(invoice, subscription, recurring_items, monthly_product, volume_product)
+  def add_commercial_from_quote_upfront(invoice, subscription, recurring_items, starter_items, monthly_product, volume_product)
     # Store product FKs on subscription so MonthlyInvoiceService can find them if needed
     subscription.update_columns(
       monthly_collection_product_id: monthly_product&.id,
       volume_processing_product_id:  volume_product&.id
     )
 
-    recurring_items.each do |item|
+    (recurring_items + starter_items).each do |item|
       invoice.invoice_items.create!(
         product:  item.product.effective_invoice_product,
         quantity: item.quantity.to_f,

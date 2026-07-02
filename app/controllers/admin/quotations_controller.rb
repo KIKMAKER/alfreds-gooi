@@ -1,6 +1,6 @@
 class Admin::QuotationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_quotation, only: %i[edit update destroy send_email]
+  before_action :set_quotation, only: %i[edit update destroy send_email extend_expiry]
 
   def index
     @quotations = Quotation.includes(:user, :products).order(created_at: :desc)
@@ -56,6 +56,16 @@ class Admin::QuotationsController < ApplicationController
     rescue StandardError => e
       redirect_to quotation_path(@quotation), alert: "Error sending quotation: #{e.message}"
     end
+  end
+
+  def extend_expiry
+    if @quotation.accepted? || @quotation.rejected?
+      return redirect_to quotation_path(@quotation), alert: "Can't extend a quotation that's already #{@quotation.status}."
+    end
+
+    new_expiry = [@quotation.expires_at, Date.today].max + 30.days
+    @quotation.update!(expires_at: new_expiry, status: :sent)
+    redirect_to quotation_path(@quotation), notice: "Expiry extended to #{new_expiry.strftime('%-d %b %Y')}."
   end
 
   private

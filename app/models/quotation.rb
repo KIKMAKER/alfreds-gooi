@@ -125,6 +125,19 @@ class Quotation < ApplicationRecord
     user_id.nil?
   end
 
+  # The quotation_items InvoiceBuilder should charge onto the invoice when
+  # converting an accepted quote into a subscription.
+  def billable_items
+    quotation_items.includes(:product)
+  end
+
+  # The subscription (if any) that was created from this accepted quote.
+  # Not a `has_one` because `subscription_id`/`belongs_to :subscription` on
+  # this model already points the other way (an unused, separate link).
+  def created_subscription
+    Subscription.find_by(quotation_id: id)
+  end
+
   private
 
   def one_time_cost

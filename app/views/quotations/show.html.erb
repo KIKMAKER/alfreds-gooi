@@ -21,6 +21,11 @@
           <% if @quotation.expired? %>
             <span class="badge bg-danger fs-6">Expired</span>
           <% end %>
+          <% if @quotation.expired? && !@quotation.accepted? && !@quotation.rejected? %>
+            <%= link_to "Extend Expiry (+30 days)", extend_expiry_admin_quotation_path(@quotation),
+                class: "btn btn-sm btn-secondary-outline",
+                data: { turbo_method: :post, turbo_confirm: "Extend this quote's expiry by 30 days?" } %>
+          <% end %>
         </div>
       </div>
     <% end %>
@@ -114,6 +119,19 @@
       <div class="payment-container">
         <h2>Quotation Accepted</h2>
         <p>Thank you — we've received your acceptance and will be in touch shortly to get your service set up.</p>
+        <% if current_user&.admin? %>
+          <div class="text-center mt-3">
+            <% if (subscription = @quotation.created_subscription) %>
+              <%= link_to "View Subscription ##{subscription.id}", admin_subscription_path(subscription), class: "btn btn-secondary-outline" %>
+            <% elsif @quotation.user.present? %>
+              <%= link_to "Create Subscription from this Quote",
+                  new_admin_subscription_path(user_id: @quotation.user_id, quotation_id: @quotation.id),
+                  class: "small-yellow-btn" %>
+            <% else %>
+              <p class="text-muted small mb-0">This quote isn't linked to a customer account yet — add one via Edit Quotation before creating a subscription.</p>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     <% elsif !@quotation.expired? %>
       <div class="payment-container">

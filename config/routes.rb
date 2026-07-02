@@ -87,6 +87,7 @@ Rails.application.routes.draw do
     resources :quotations, only: [:index, :new, :create, :edit, :update, :destroy] do
       member do
         get :send_email
+        post :extend_expiry
       end
     end
 
