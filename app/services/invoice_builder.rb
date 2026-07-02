@@ -193,7 +193,11 @@ class InvoiceBuilder
     monthly_starter    = (starter_total    / duration).round(2)
     contract_total     = collection_total + volume_total + starter_total
 
-    if @is_new
+    # These fields drive every future monthly invoice (see MonthlyInvoiceService),
+    # so they must be established the first time this subscription is billed —
+    # regardless of whether the *customer* is new (@is_new tracks the latter,
+    # e.g. for starter-kit/referral logic, and is false for repeat customers).
+    if subscription.monthly_subscription_amount.blank?
       subscription.update!(
         monthly_subscription_amount:    monthly_collection,
         monthly_volume_amount:          monthly_volume,
@@ -238,7 +242,9 @@ class InvoiceBuilder
       visits_per_month = (52.0 / 12.0 * collections_per_week).round
       monthly_volume   = subscription.buckets_per_collection * volume_product.price * visits_per_month
 
-      if @is_new
+      # Same as the quote-driven path: these must be set on first billing
+      # regardless of customer-new status, or future monthly invoices break.
+      if subscription.monthly_subscription_amount.blank?
         monthly_starter = subscription.starter_kit_installment.to_f
         contract_total  = (monthly_product.price + monthly_volume + monthly_starter) * subscription.duration
         subscription.update!(
