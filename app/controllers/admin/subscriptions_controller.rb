@@ -23,6 +23,18 @@ class Admin::SubscriptionsController < ApplicationController
 
   def create
     @user = User.find(params[:user_id])
+
+    # Load the quotation up front so a validation-failure re-render keeps the
+    # hidden quotation_id field (and prefill banner) instead of silently
+    # dropping the quote link and falling back to rate-card invoicing.
+    if params[:quotation_id].present?
+      @quotation = Quotation.find_by(id: params[:quotation_id])
+      if @quotation.nil?
+        return redirect_to admin_user_path(@user),
+                           alert: "Quotation #{params[:quotation_id]} not found — subscription not created."
+      end
+    end
+
     @subscription = @user.subscriptions.build(subscription_params)
     @subscription.status   = :pending
     @subscription.is_paused = true
@@ -47,15 +59,14 @@ class Admin::SubscriptionsController < ApplicationController
         )
       end
 
-      quotation = Quotation.find_by(id: params[:quotation_id]) if params[:quotation_id].present?
-      @subscription.update_column(:quotation_id, quotation.id) if quotation
+      @subscription.update_column(:quotation_id, @quotation.id) if @quotation
 
       referee = User.find_by(referral_code: @subscription.referral_code) if @subscription.referral_code.present?
       InvoiceBuilder.new(
         subscription: @subscription,
         is_new:       @subscription.is_new_customer,
         referee:      referee,
-        quotation:    quotation
+        quotation:    @quotation
       ).call
       CreateFirstCollectionJob.perform_now(@subscription) if @subscription.once_off?
       redirect_to admin_user_path(@user), notice: "Subscription created and invoice sent."
