@@ -104,7 +104,6 @@ class CollectionsController < ApplicationController
   def update
     @collection.subscription.update(is_new_customer: false)
     @collection.new_customer = false
-    previous_date = @collection.date # capture the old date before update
 
     if @collection.update(collection_params)
       if @collection.saved_change_to_skip? && @collection.skip?
@@ -115,14 +114,8 @@ class CollectionsController < ApplicationController
           occurred_at: Time.zone.now
         ).deliver_now
       end
-      if previous_date != @collection.date
-        driver = User.find_by(role: 'driver')
-        drivers_day = DriversDay.find_or_create_by!(
-          date: @collection.date,
-          user: driver
-        )
-        @collection.update!(drivers_day_id: drivers_day.id)
-      end
+      # Date changes move the collection to the correct drivers_day via the
+      # sync_drivers_day_with_date callback on Collection.
       if @collection.saved_change_to_position? && @collection.drivers_day
         move_to_position!(@collection, @collection.position)
       end

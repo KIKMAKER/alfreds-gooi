@@ -11,6 +11,7 @@ class Collection < ApplicationRecord
   scope :completed, -> { where(is_done: true) }
 
   before_save :stamp_collection_time
+  before_save :sync_drivers_day_with_date, if: :needs_drivers_day_sync?
 
   # Custom methods
   # One-shot helper to mark skip + send email notification.
@@ -86,6 +87,23 @@ class Collection < ApplicationRecord
 
   def stamp_collection_time
     self.time = Time.current if will_save_change_to_is_done? && is_done?
+  end
+
+  # Only sync on date edits to existing records; creation paths (jobs, admin)
+  # assign the drivers_day explicitly, and an explicit drivers_day change wins.
+  def needs_drivers_day_sync?
+    persisted? && will_save_change_to_date? && !will_save_change_to_drivers_day_id?
+  end
+
+  def sync_drivers_day_with_date
+    driver = User.find_by(role: :driver)
+    new_day = driver && DriversDay.find_or_create_by!(date: date, user: driver)
+    return if new_day&.id == drivers_day_id
+
+    self.drivers_day = new_day
+    return if will_save_change_to_position?
+
+    self.position = new_day && (new_day.collections.where.not(id: id).maximum(:position).to_i + 1)
   end
 
 end
