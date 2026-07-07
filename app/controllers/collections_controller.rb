@@ -85,7 +85,7 @@ class CollectionsController < ApplicationController
     @subscription = Subscription.find(params[:subscription_id])
     @collection = Collection.new(collection_params)
     @collection.subscription = @subscription
-    @collection.drivers_day = DriversDay.find_or_create_by(date: @collection.date)
+    @collection.sync_drivers_day_with_date
     if @collection.save
       redirect_to today_subscriptions_path
     else

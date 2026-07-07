@@ -102,6 +102,29 @@ class CollectionTest < ActiveSupport::TestCase
     assert_nil @collection.drivers_day_id
   end
 
+  test "sync_drivers_day_with_date assigns a new record to its date's route" do
+    new_day = DriversDay.create!(user: @driver, date: @wednesday)
+    Collection.create!(subscription: @subscription, date: @wednesday, drivers_day: new_day, position: 3)
+
+    collection = Collection.new(subscription: @subscription, date: @wednesday)
+    collection.sync_drivers_day_with_date
+    collection.save!
+
+    assert_equal new_day.id, collection.drivers_day_id
+    assert_equal 4, collection.position
+  end
+
+  test "sync_drivers_day_with_date does nothing without a date" do
+    collection = Collection.new(subscription: @subscription)
+
+    collection.sync_drivers_day_with_date
+
+    assert_nil collection.drivers_day
+    assert_no_difference -> { DriversDay.count } do
+      collection.sync_drivers_day_with_date
+    end
+  end
+
   test "saving without a date change leaves the drivers_day alone" do
     other_day = DriversDay.create!(user: @driver, date: @wednesday)
     @collection.update!(drivers_day: other_day)

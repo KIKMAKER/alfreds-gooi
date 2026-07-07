@@ -83,6 +83,23 @@ class Collection < ApplicationRecord
     end
   end
 
+  # Point the collection at the driver's DriversDay for its date, appending it
+  # to the end of that day's route. Runs automatically (via callback) when the
+  # date of an existing collection changes; call it explicitly when building a
+  # new collection that should join a route.
+  def sync_drivers_day_with_date
+    return if date.blank?
+
+    driver = User.find_by(role: :driver)
+    new_day = driver && DriversDay.find_or_create_by!(date: date, user: driver)
+    return if new_day&.id == drivers_day_id
+
+    self.drivers_day = new_day
+    return if will_save_change_to_position?
+
+    self.position = new_day && (new_day.collections.where.not(id: id).maximum(:position).to_i + 1)
+  end
+
   private
 
   def stamp_collection_time
@@ -94,16 +111,4 @@ class Collection < ApplicationRecord
   def needs_drivers_day_sync?
     persisted? && will_save_change_to_date? && !will_save_change_to_drivers_day_id?
   end
-
-  def sync_drivers_day_with_date
-    driver = User.find_by(role: :driver)
-    new_day = driver && DriversDay.find_or_create_by!(date: date, user: driver)
-    return if new_day&.id == drivers_day_id
-
-    self.drivers_day = new_day
-    return if will_save_change_to_position?
-
-    self.position = new_day && (new_day.collections.where.not(id: id).maximum(:position).to_i + 1)
-  end
-
 end
