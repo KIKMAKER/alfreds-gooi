@@ -90,13 +90,14 @@ namespace :revenue_recognition do
     RR_MONTHLY_TABLE.call
   end
 
-  desc "Dry run: print the full backfill plan without writing anything"
+  desc "Dry run: print the full backfill plan without writing anything (FORCE=1 plans ALL invoices, not just uncovered)"
   task dry_run: :environment do
+    force = ENV["FORCE"] == "1"
     puts "=" * 80
-    puts "REVENUE RECOGNITION BACKFILL — DRY RUN (nothing written)"
+    puts "REVENUE RECOGNITION BACKFILL — DRY RUN (nothing written)#{' — FORCE: all invoices' if force}"
     puts "=" * 80
 
-    results = RevenueRecognitions::Backfill.new(dry_run: true).call
+    results = RevenueRecognitions::Backfill.new(dry_run: true, force: force).call
     planned = results.select(&:planned?)
     exceptions = results.select(&:exception?)
 
@@ -113,24 +114,31 @@ namespace :revenue_recognition do
     planned.each { |r| r.rows.each { |row| per_month[row.period_start.strftime('%Y-%m')] += row.recognized_amount } }
 
     puts "\nSUMMARY"
-    puts "  Invoices to backfill: #{planned.size}"
+    puts "  Invoices to #{force ? 'rewrite' : 'backfill'}: #{planned.size}"
     puts "  Amount to recognize:  #{RR_MONEY.call(planned.sum { |r| r.total })}"
     puts "  Exceptions:           #{exceptions.size} (#{RR_MONEY.call(exceptions.sum { |r| r.invoice.total_amount.to_f })})"
     puts "  Recognition by service month:"
     per_month.sort.each { |month, amount| puts "    #{month}  #{RR_MONEY.call(amount)}" }
-    puts "\nIf this looks right: CONFIRM=1 rake revenue_recognition:backfill"
+    puts "\nIf this looks right: #{force ? 'FORCE=1 ' : ''}CONFIRM=1 rake revenue_recognition:backfill"
   end
 
-  desc "Write recognition rows for all invoices that have none (requires CONFIRM=1)"
+  desc "Write recognition rows for uncovered invoices (requires CONFIRM=1; FORCE=1 deletes and recreates rows for ALL invoices)"
   task backfill: :environment do
-    abort "Refusing to write. Review `rake revenue_recognition:dry_run` first, then run with CONFIRM=1." unless ENV["CONFIRM"] == "1"
+    force = ENV["FORCE"] == "1"
+    unless ENV["CONFIRM"] == "1"
+      abort "Refusing to write. Review `rake revenue_recognition:dry_run#{' FORCE=1' if force}` first, then re-run with CONFIRM=1."
+    end
 
-    puts "Running backfill..."
-    results = RevenueRecognitions::Backfill.new(dry_run: false).call
+    # Months whose rows are deleted by a force pass need their metrics
+    # recomputed even if no new rows land there (e.g. wrongly-future months).
+    pre_months = RevenueRecognition.distinct.pluck(:period_year, :period_month)
+
+    puts force ? "Running FORCE backfill — deleting and recreating rows for ALL invoices..." : "Running backfill..."
+    results = RevenueRecognitions::Backfill.new(dry_run: false, force: force).call
     written = results.select(&:written?)
     exceptions = results.select(&:exception?)
 
-    puts "Backfilled #{written.size} invoices (#{written.sum { |r| r.rows.size }} rows)."
+    puts "#{force ? 'Rewrote' : 'Backfilled'} #{written.size} invoices (#{written.sum { |r| r.rows.size }} rows)."
 
     puts "\nEXCEPTIONS (#{exceptions.size}):"
     exceptions.each { |r| puts "  #{RR_INVOICE_LABEL.call(r.invoice)}  — #{r.reason}" }
@@ -155,8 +163,8 @@ namespace :revenue_recognition do
                      : "    → NO ROWS (see exceptions)"
     end
 
-    puts "\nRecomputing financial_metrics for every month with recognitions..."
-    RevenueRecognition.distinct.pluck(:period_year, :period_month).sort.each do |year, month|
+    puts "\nRecomputing financial_metrics for every affected month..."
+    (pre_months | RevenueRecognition.distinct.pluck(:period_year, :period_month)).sort.each do |year, month|
       FinancialMetricsCalculator.new(year, month).calculate
       print "."
     rescue StandardError => e
