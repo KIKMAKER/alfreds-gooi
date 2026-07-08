@@ -1,48 +1,8 @@
 namespace :financial do
-  desc "Backfill revenue recognitions for all paid invoices"
+  desc "Superseded — use revenue_recognition:dry_run / revenue_recognition:backfill"
   task backfill_revenue_recognitions: :environment do
-    puts "Starting revenue recognition backfill..."
-
-    paid_invoices = Invoice.where(paid: true).includes(:subscription)
-    total = paid_invoices.count
-    processed = 0
-    skipped = 0
-    created = 0
-
-    paid_invoices.find_each do |invoice|
-      processed += 1
-
-      unless invoice.subscription
-        puts "  [#{processed}/#{total}] Skipping invoice ##{invoice.number || invoice.id} - no subscription"
-        skipped += 1
-        next
-      end
-
-      # Check if already has revenue recognitions
-      if invoice.revenue_recognitions.any?
-        puts "  [#{processed}/#{total}] Skipping invoice ##{invoice.number || invoice.id} - already has #{invoice.revenue_recognitions.count} recognitions"
-        skipped += 1
-        next
-      end
-
-      begin
-        service = RevenueRecognitionService.new(invoice)
-        service.call
-
-        recognition_count = invoice.revenue_recognitions.count
-        created += recognition_count
-        puts "  [#{processed}/#{total}] Created #{recognition_count} revenue recognitions for invoice ##{invoice.number || invoice.id}"
-      rescue => e
-        puts "  [#{processed}/#{total}] ERROR processing invoice ##{invoice.number || invoice.id}: #{e.message}"
-        skipped += 1
-      end
-    end
-
-    puts "\nBackfill complete!"
-    puts "  Total invoices: #{total}"
-    puts "  Processed: #{processed}"
-    puts "  Skipped: #{skipped}"
-    puts "  Revenue recognitions created: #{created}"
+    abort "This task was replaced by the accrual-basis backfill.\n" \
+          "Run: rake revenue_recognition:dry_run  then  CONFIRM=1 rake revenue_recognition:backfill"
   end
 
   desc "Recalculate all historical financial metrics"

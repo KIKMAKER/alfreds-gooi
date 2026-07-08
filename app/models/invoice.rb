@@ -17,7 +17,11 @@ class Invoice < ApplicationRecord
   scope :unpaid, -> { where(paid: false) }
 
   after_commit :set_number, on: :create
-  after_update :create_revenue_recognitions, if: :saved_change_to_paid?
+  # Accrual-basis revenue recognition: rows are (re)built whenever the amount
+  # or issue date changes, independent of payment status. calculate_total
+  # fires this after items are added, so new invoices are covered too.
+  after_commit :sync_revenue_recognitions, on: %i[create update],
+               if: -> { saved_change_to_total_amount? || saved_change_to_issued_date? }
 
   def for_order?
     order_id.present?
@@ -47,7 +51,12 @@ class Invoice < ApplicationRecord
 
   private
 
-  def create_revenue_recognitions
-    CreateRevenueRecognitionsJob.perform_later(id) if paid?
+  def sync_revenue_recognitions
+    # perform_now: there is no worker dyno in production, so perform_later
+    # would enqueue into the queue DB and never run. Rescued so a recognition
+    # problem can never break invoice creation or editing.
+    SyncRevenueRecognitionsJob.perform_now(id)
+  rescue StandardError => e
+    Rails.logger.error("[Invoice#sync_revenue_recognitions] #{e.class} — #{e.message}")
   end
 end

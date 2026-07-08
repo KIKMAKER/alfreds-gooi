@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_131421) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_07_060000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -629,7 +629,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_131421) do
 
   create_table "revenue_recognitions", force: :cascade do |t|
     t.bigint "invoice_id", null: false
-    t.bigint "subscription_id", null: false
+    t.bigint "subscription_id"
     t.date "period_start", null: false
     t.date "period_end", null: false
     t.integer "period_month", null: false

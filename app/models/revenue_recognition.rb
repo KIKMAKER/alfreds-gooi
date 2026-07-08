@@ -1,7 +1,7 @@
 class RevenueRecognition < ApplicationRecord
   # Associations
   belongs_to :invoice
-  belongs_to :subscription
+  belongs_to :subscription, optional: true
 
   # Validations
   validates :period_start, :period_end, :period_month, :period_year, :recognized_amount, presence: true

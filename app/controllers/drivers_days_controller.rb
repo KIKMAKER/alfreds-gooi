@@ -79,6 +79,18 @@ class DriversDaysController < ApplicationController
     # DEVELOPMENT
     # today = (Date.today + 1)
     @today = today.strftime("%A")
+
+    # Weekly financial safety net: there is no worker dyno, so scheduled work
+    # piggybacks on route-day actions (same pattern as the end-of-day jobs).
+    # Cheap no-op when every invoice already has recognition rows.
+    if today.monday?
+      begin
+        RevenueRecognitionCatchUpJob.perform_now
+      rescue => e
+        Rails.logger.error("[start_drivers_day] RevenueRecognitionCatchUpJob failed: #{e.class} — #{e.message}")
+      end
+    end
+
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)

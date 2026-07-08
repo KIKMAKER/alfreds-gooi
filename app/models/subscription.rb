@@ -6,7 +6,9 @@ class Subscription < ApplicationRecord
   has_many :invoice_items, through: :invoices
   has_many :referrals, dependent: :nullify
   has_one :business_profile, dependent: :nullify
-  has_many :revenue_recognitions, dependent: :destroy
+  # Recognition rows are invoice-anchored financial history; they must survive
+  # subscription deletion or recognized revenue silently decays.
+  has_many :revenue_recognitions, dependent: :nullify
   has_many :contacts, dependent: :destroy
   accepts_nested_attributes_for :contacts, allow_destroy: true, reject_if: :all_blank
 
