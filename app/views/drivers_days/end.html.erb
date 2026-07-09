@@ -17,6 +17,28 @@
 
       <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
 
+        <% if @drivers_day.errors[:end_time].any? %>
+          <div class="dd-endtime-warning">
+            <div class="dd-endtime-warning__head">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Check the finish time</span>
+            </div>
+            <p class="dd-endtime-warning__msg">
+              <%= @drivers_day.errors.full_messages_for(:end_time).first %>
+            </p>
+
+            <label class="bucket-scale-label">What time did you actually finish?</label>
+            <%= f.datetime_local_field :end_time,
+                  value: @drivers_day.end_time&.strftime("%Y-%m-%dT%H:%M"),
+                  class: "form-control dd-date-input" %>
+
+            <label class="dd-endtime-warning__override">
+              <%= check_box_tag :override_end_time_warning, "1", params[:override_end_time_warning].present? %>
+              It really was that long — end it anyway
+            </label>
+          </div>
+        <% end %>
+
         <div class="bucket-scale-wrap">
           <label class="bucket-scale-label">Total buckets collected</label>
           <%= f.input_field :total_buckets,

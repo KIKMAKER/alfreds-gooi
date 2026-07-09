@@ -16,8 +16,19 @@ class DriversDay < ApplicationRecord
       .group("drivers_days.id")
   }
 
+  # A route longer than this many hours almost always means the End tap was
+  # missed on the day and pressed later — see end_time_flag / end_time_sensible.
+  MAX_ROUTE_HOURS = 12
+
+  # Set true to consciously accept a genuinely long / cross-midnight day and skip
+  # the end_time sanity check (e.g. Alfred confirms "yes, it really was that long").
+  attr_accessor :override_end_time_warning
+
     # validations
   validates :total_buckets, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validate :end_time_sensible,
+           if: -> { end_time.present? && start_time.present? && !override_end_time_warning }
 
   # Set a default if total_buckets is nil
   before_validation :set_default_buckets
@@ -46,6 +57,23 @@ class DriversDay < ApplicationRecord
 
   def note_nil_zero?
     note.nil? || note == ""
+  end
+
+  # Classifies a suspicious start/end pairing so the End view can explain the
+  # exact problem to Alfred. Returns nil when the pair looks fine.
+  #   :inverted      -> end is before start
+  #   :too_long      -> more than MAX_ROUTE_HOURS after start
+  #   :different_day -> lands on a different calendar day to the start
+  def end_time_flag
+    return nil unless end_time && start_time
+
+    if end_time < start_time
+      :inverted
+    elsif (end_time - start_time) > MAX_ROUTE_HOURS.hours
+      :too_long
+    elsif end_time.to_date != start_time.to_date
+      :different_day
+    end
   end
 
   # Set the current drop-off being worked on
@@ -227,5 +255,19 @@ class DriversDay < ApplicationRecord
 
   def set_default_buckets
     self.total_buckets ||= 0
+  end
+
+  # Rejects an end_time that can't be right for a single day's route, prompting
+  # Alfred to correct it in the moment (or tick "override" for a genuine outlier).
+  def end_time_sensible
+    case end_time_flag
+    when :inverted
+      errors.add(:end_time, "can't be before the start time (#{start_time.strftime('%H:%M')}). Set the real time you finished.")
+    when :too_long
+      hours = ((end_time - start_time) / 3600.0).round(1)
+      errors.add(:end_time, "is #{hours} hours after the start — looks like the End tap was missed. Set the real finish time, or tick the box if the day really was that long.")
+    when :different_day
+      errors.add(:end_time, "is on a different day (#{end_time.strftime('%a %-d %b')}) to the start (#{start_time.strftime('%a %-d %b')}). Set the real finish time, or tick the box to confirm.")
+    end
   end
 end

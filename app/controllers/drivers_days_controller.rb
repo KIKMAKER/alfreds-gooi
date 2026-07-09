@@ -135,36 +135,40 @@ class DriversDaysController < ApplicationController
 
     return unless request.patch?
 
-    # Set end_time when form is actually submitted
-    @drivers_day.end_time = Time.current
-    @drivers_day.save!
+    attrs = drivers_day_params
+    # Default the finish time to "now", but let Alfred override it in the moment
+    # if the End tap was missed — the form submits a corrected end_time then.
+    attrs[:end_time] = Time.current if attrs[:end_time].blank?
+    @drivers_day.override_end_time_warning = ActiveModel::Type::Boolean.new.cast(params[:override_end_time_warning])
 
-    if update_drivers_day(drivers_day_params, next_path: complete_drivers_day_path(@drivers_day))
-      # Calculate and save statistics
-      @drivers_day.calculate_and_save_statistics!
-
-      # Send daily snapshot email now that stats exist
-      DailySnapshotMailer.report(drivers_day_id: @drivers_day.id).deliver_now
-
-      # Run background jobs — wrapped so a job failure never 500s the end-of-day flow
-      [
-        -> { CreateCollectionsJob.perform_now(@drivers_day.date.to_s) },
-        -> { CreateNextWeekDropOffEventsJob.perform_now },
-        -> { CheckSubscriptionsForCompletionJob.perform_now }
-      ].each do |job|
-        begin
-          job.call
-        rescue => e
-          Rails.logger.error("[end_drivers_day] Job failed: #{e.class} — #{e.message}\n#{e.backtrace.first(5).join("\n")}")
-        end
-      end
-
-      Rails.logger.info("Driver's Day #{@drivers_day.id} ended at #{@drivers_day.end_time}")
-      flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
-    else
-      flash.now[:alert] = "Failed to end the Day"
-      render :end
+    unless @drivers_day.update(attrs)
+      # end_time_sensible rejected it — re-render so Alfred can fix the time now.
+      flash.now[:alert] = @drivers_day.errors.full_messages_for(:end_time).first || "Failed to end the Day"
+      render :end, status: :unprocessable_entity and return
     end
+
+    # Calculate and save statistics
+    @drivers_day.calculate_and_save_statistics!
+
+    # Send daily snapshot email now that stats exist
+    DailySnapshotMailer.report(drivers_day_id: @drivers_day.id).deliver_now
+
+    # Run background jobs — wrapped so a job failure never 500s the end-of-day flow
+    [
+      -> { CreateCollectionsJob.perform_now(@drivers_day.date.to_s) },
+      -> { CreateNextWeekDropOffEventsJob.perform_now },
+      -> { CheckSubscriptionsForCompletionJob.perform_now }
+    ].each do |job|
+      begin
+        job.call
+      rescue => e
+        Rails.logger.error("[end_drivers_day] Job failed: #{e.class} — #{e.message}\n#{e.backtrace.first(5).join("\n")}")
+      end
+    end
+
+    Rails.logger.info("Driver's Day #{@drivers_day.id} ended at #{@drivers_day.end_time}")
+    flash[:notice] = "Day ended successfully with #{@drivers_day.end_kms} kms on the bakkie."
+    redirect_to complete_drivers_day_path(@drivers_day)
   end
 
   def missing_customers
