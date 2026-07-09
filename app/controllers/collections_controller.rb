@@ -243,9 +243,16 @@ class CollectionsController < ApplicationController
 
   def move_to_position!(collection, new_position)
     drivers_day = collection.drivers_day
+    return unless drivers_day
+
     ordered = drivers_day.collections.order(Arel.sql("position ASC NULLS LAST")).to_a
     ordered.delete(collection)
-    ordered.insert([new_position - 1, 0].max, collection)
+    # Clamp the target index to [0, ordered.length]. Positions are not
+    # guaranteed contiguous (gaps happen when collections move between days),
+    # so a raw position value can exceed the array size. Inserting past the end
+    # would pad the array with nils, which then blow up on update_column.
+    index = (new_position.to_i - 1).clamp(0, ordered.length)
+    ordered.insert(index, collection)
     ordered.each_with_index { |c, i| c.update_column(:position, i + 1) }
     update_collection_order(drivers_day)
   end
