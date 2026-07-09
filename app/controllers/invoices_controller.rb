@@ -207,12 +207,6 @@ class InvoicesController < ApplicationController
       return
     end
 
-    # Validate 3-month restriction if applicable
-    if code.three_month_only? && @invoice.subscription.duration != 3
-      redirect_to invoice_path(@invoice), alert: "This discount code is only valid for 3-month subscriptions"
-      return
-    end
-
     # Calculate discount amount
     subtotal = @invoice.invoice_items.sum { |item| item.amount * item.quantity }
 

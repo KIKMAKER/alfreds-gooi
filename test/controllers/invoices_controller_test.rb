@@ -167,4 +167,46 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_nil Payment.last.payment_type
     assert_match /manual/i, flash[:notice]
   end
+
+  # ── Discount codes ───────────────────────────────────────────────────────────
+  # Regression: apply_discount_code used to call code.three_month_only?, a method
+  # removed when the NEWSOIL26 promo was retired. The broad rescue turned the
+  # resulting NoMethodError into an "Error applying discount code" flash and
+  # broke the button for EVERY code, not just the retired one.
+
+  def discountable_invoice
+    product = Product.create!(title: "Compost", description: "bin bags", price: 100,
+                              billing_type: "standard")
+    inv = Invoice.create!(subscription: @subscription, issued_date: Date.today,
+                          due_date: Date.today + 14, total_amount: 200)
+    inv.invoice_items.create!(product: product, quantity: 2, amount: 100) # subtotal 200
+    inv
+  end
+
+  test "admin applies a percentage discount code without error" do
+    sign_in @admin
+    code = DiscountCode.create!(code: "SAVE10", discount_percent: 10)
+    inv  = discountable_invoice
+
+    assert_difference "inv.invoice_discount_codes.count", 1 do
+      post apply_discount_code_invoice_path(inv), params: { discount_code: "save10" }
+    end
+
+    assert_redirected_to invoice_path(inv)
+    assert_nil flash[:alert], "should not surface an error flash"
+    assert_match /applied successfully/i, flash[:notice]
+    assert_equal 1, code.reload.used_count
+  end
+
+  test "admin applies a fixed-amount discount code without error" do
+    sign_in @admin
+    DiscountCode.create!(code: "FLAT50", discount_cents: 5000) # R50
+    inv = discountable_invoice
+
+    post apply_discount_code_invoice_path(inv), params: { discount_code: "FLAT50" }
+
+    assert_redirected_to invoice_path(inv)
+    assert_nil flash[:alert]
+    assert_match /applied successfully/i, flash[:notice]
+  end
 end
