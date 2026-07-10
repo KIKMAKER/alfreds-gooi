@@ -102,10 +102,9 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    @collection.subscription.update(is_new_customer: false)
-    @collection.new_customer = false
-
     if @collection.update(collection_params)
+      clear_new_customer_flags!(@collection)
+
       if @collection.saved_change_to_skip? && @collection.skip?
         CollectionMailer.skipped(
           collection_id: @collection.id,
@@ -240,6 +239,27 @@ class CollectionsController < ApplicationController
   end
 
   private
+
+  # Alfred dropping off the starter kit is what ends "new customer" status.
+  #
+  # Written with update_column/update_all rather than update: is_new_customer is
+  # an operational flag, and a legacy subscription that fails an unrelated
+  # validation (suburb not in SUBURBS, nil duration, Commercial without a
+  # bucket_size) would silently abort a plain update and leave the flag set.
+  #
+  # Future collections are pre-created by CreateNextWeekCollectionsJob before the
+  # drop-off happens, so they already carry new_customer: true and nothing else
+  # clears it. Past collections keep theirs — the daily snapshot reads them.
+  def clear_new_customer_flags!(collection)
+    subscription = collection.subscription
+    return unless subscription.is_new_customer? || collection.new_customer?
+
+    subscription.update_column(:is_new_customer, false)
+    subscription.collections
+                .where(new_customer: true)
+                .where(date: collection.date..)
+                .update_all(new_customer: false, updated_at: Time.current)
+  end
 
   def move_to_position!(collection, new_position)
     drivers_day = collection.drivers_day

@@ -64,4 +64,75 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal [1, 2, 3, 4], positions, "positions should be renormalised with no gaps"
     assert_not_includes positions, nil, "no collection should be left with a nil position"
   end
+
+end
+
+# The "Dropped Off!" button on collections#edit is what ends new-customer status.
+# It used to clear the flag with a plain `subscription.update`, which silently
+# no-ops on any subscription that fails validation, and it never touched the
+# next-week collection that CreateNextWeekCollectionsJob had already stamped.
+class NewCustomerFlagTest < ActionController::TestCase
+  tests CollectionsController
+
+  setup do
+    @driver = User.create!(
+      first_name: "Alfred", last_name: "Gooi",
+      phone_number: "+2783635#{rand(1000..9999)}", password: "password",
+      email: "driver-#{SecureRandom.hex(3)}@example.com", og: false,
+      role: :driver
+    )
+
+    @subscription = Subscription.create!(
+      user: @driver,
+      street_address: "123 Demo St, Rondebosch",
+      suburb: "Rondebosch",
+      collection_day: "Tuesday",
+      plan: "Standard",
+      duration: 1,
+      status: :active,
+      is_new_customer: true,
+      start_date: Date.current - 1.week,
+      latitude: -33.96, longitude: 18.48
+    )
+
+    @today = Collection.create!(subscription: @subscription, date: Date.current,
+                                bags: 0, buckets: 0.0, skip: false, new_customer: true)
+    @next_week = Collection.create!(subscription: @subscription, date: Date.current + 1.week,
+                                    bags: 0, buckets: 0.0, skip: false, new_customer: true)
+
+    @request.env["devise.mapping"] = Devise.mappings[:user]
+    sign_in @driver
+  end
+
+  def drop_off!
+    patch :update, params: { id: @today.id, collection: { buckets: 2, is_done: true } }
+  end
+
+  test "drop-off clears the flag on the subscription and on current and future collections" do
+    drop_off!
+
+    assert_equal false, @today.reload.new_customer
+    assert_equal false, @next_week.reload.new_customer, "pre-created next week collection"
+    assert_equal false, @subscription.reload.is_new_customer
+  end
+
+  test "drop-off clears the flag even when the subscription fails validation" do
+    @subscription.update_column(:suburb, "Llandudno") # legacy suburb, no longer in SUBURBS
+    assert_not @subscription.reload.valid?, "sanity: subscription should be invalid"
+
+    drop_off!
+
+    assert_equal false, @today.reload.new_customer
+    assert_equal false, @next_week.reload.new_customer, "pre-created next week collection"
+    assert_equal false, @subscription.reload.is_new_customer
+  end
+
+  test "drop-off leaves past collections flagged for historical snapshots" do
+    past = Collection.create!(subscription: @subscription, date: Date.current - 3.weeks,
+                              bags: 0, buckets: 0.0, skip: false, new_customer: true)
+
+    drop_off!
+
+    assert_equal true, past.reload.new_customer
+  end
 end
