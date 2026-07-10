@@ -5,9 +5,21 @@ class Admin::BulkMessagesController < ApplicationController
   def index
     @message = params[:message]
     @contacts = filter_contacts
+    @soil_bag_collections = soil_bag_collections_by_subscription
   end
 
   private
+
+  # The soil bag link claims a bag on one specific collection, so {soil_bag_link}
+  # only resolves when the admin has filtered to a collection date. Contacts with
+  # no collection on that date render an empty string rather than a broken link.
+  def soil_bag_collections_by_subscription
+    return {} if params[:collection_date].blank?
+
+    Collection.where(date: params[:collection_date],
+                     subscription_id: @contacts.map(&:subscription_id).uniq)
+              .index_by(&:subscription_id)
+  end
 
   def filter_contacts
     subscriptions = case params[:status_filter]

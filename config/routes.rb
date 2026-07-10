@@ -2,6 +2,11 @@ Rails.application.routes.draw do
   # Silence Chrome DevTools automatic request
   get "/.well-known/appspecific/com.chrome.devtools.json", to: proc { [404, {}, ['']] }
 
+  # Promotional soil bag giveaway — signed per-collection link, no login required.
+  # GET is a landing page (WhatsApp prefetches link previews); POST does the write.
+  get  "soil-bag/:token", to: "soil_bags#show",  as: :soil_bag
+  post "soil-bag/:token", to: "soil_bags#claim", as: :claim_soil_bag
+
   # Shop and Orders
   get "shop", to: "shop#index", as: :shop_index
   post "orders/add_item", to: "orders#add_item", as: :add_to_order

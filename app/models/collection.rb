@@ -39,6 +39,25 @@ class Collection < ApplicationRecord
     true
   end
 
+  # Promotional soil bag claim link, sent per-collection over WhatsApp.
+  # signed_id derives the token from the record and secret_key_base, so nothing
+  # is stored and expired tokens need no cleanup. Changing the purpose string
+  # invalidates every link already in the wild.
+  SOIL_BAG_PURPOSE = "soil_bag_claim"
+  SOIL_BAG_TOKEN_TTL = 3.weeks
+
+  def soil_bag_token(expires_in: SOIL_BAG_TOKEN_TTL)
+    signed_id(purpose: SOIL_BAG_PURPOSE, expires_in: expires_in)
+  end
+
+  def self.find_by_soil_bag_token!(token)
+    find_signed!(token, purpose: SOIL_BAG_PURPOSE)
+  end
+
+  def soil_bag_claimed?
+    soil_bag.to_i.positive?
+  end
+
   def done?
     is_done
   end

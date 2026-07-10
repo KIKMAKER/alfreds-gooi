@@ -101,6 +101,13 @@ class DriversDaysController < ApplicationController
     @total_bags_needed  = @bags_needed.sum { |s| last_coll[s.id].needs_bags }
     @new_customer       = @subscriptions.select { |s| last_coll[s.id]&.new_customer == true }
 
+    # Soil bags are claimed against a specific collection, so read this day's
+    # collections directly rather than each subscription's newest one.
+    @soil_bag_collections = @drivers_day.collections
+                                        .where("soil_bag > 0")
+                                        .includes(subscription: :user)
+    @total_soil_bags = @soil_bag_collections.sum(&:soil_bag)
+
     # Check for recently lapsed customers (mirrors SubscriptionsController#recently_lapsed logic)
     existing_ids = @drivers_day.collections.pluck(:subscription_id)
     resubscribed_user_ids = Subscription.where(status: %w[active pending]).pluck(:user_id).uniq

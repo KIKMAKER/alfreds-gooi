@@ -1,0 +1,70 @@
+// Promotional soil bag claim page — reached from a WhatsApp link, logged out,
+// almost always on a phone.
+.soil-bag {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem 4rem;
+}
+
+.soil-bag__card {
+  width: 100%;
+  max-width: 30rem;
+  text-align: center;
+  background: #fff;
+  border: 1px solid rgba($dark-green, 0.12);
+  border-radius: 1rem;
+  padding: 2.5rem 1.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgba($gray, 0.06);
+}
+
+.soil-bag__icon {
+  font-size: 2.75rem;
+  color: $medium-green;
+  margin-bottom: 1.25rem;
+
+  &--done {
+    color: $medium-green;
+  }
+
+  &--muted {
+    color: $font-grey;
+  }
+}
+
+.soil-bag__title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: $dark-green;
+  margin-bottom: 0.75rem;
+}
+
+.soil-bag__lede {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: $font-grey;
+  margin-bottom: 1.75rem;
+}
+
+.soil-bag__button {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: $dark-green;
+  background: $dark-yellow;
+  border: none;
+  border-radius: 0.6rem;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: $light-yellow;
+  }
+}
+
+.soil-bag__note {
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: $font-grey;
+}

@@ -84,6 +84,19 @@
     </div>
   <% end %>
 
+  <%# ── Free compost bag claimed via the promo link ── %>
+  <% if @collection.soil_bag_claimed? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-seedling"></i>
+        <h3>Hand over <%= pluralize(@collection.soil_bag, 'compost bag') %></h3>
+      </div>
+      <div class="dd-form-card__body">
+        <p class="mb-0">Claimed from the free compost promo — nothing to collect.</p>
+      </div>
+    </div>
+  <% end %>
+
   <%# ── Orders to deliver ── %>
   <% if @orders.any? %>
     <div class="dd-form-card">

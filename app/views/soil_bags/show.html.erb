@@ -1,0 +1,33 @@
+<div class="soil-bag">
+  <div class="soil-bag__card">
+    <i class="fa-solid fa-seedling soil-bag__icon"></i>
+
+    <% if @collection.soil_bag_claimed? %>
+      <h1 class="soil-bag__title">You're on the list</h1>
+      <p class="soil-bag__lede">
+        Alfred is bringing your bag of compost on
+        <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>.
+        Nothing more to do.
+      </p>
+    <% else %>
+      <h1 class="soil-bag__title">A free bag of compost?</h1>
+      <p class="soil-bag__lede">
+        We're giving a bag of compost to every household that wants one.
+        Alfred can drop yours off on your next collection,
+        <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>.
+      </p>
+
+      <%= button_to "Yes please, send me a bag",
+                    claim_soil_bag_path(params[:token]),
+                    method: :post,
+                    class: "soil-bag__button" %>
+
+      <% if @collection.skip? %>
+        <p class="soil-bag__note">
+          Heads up — this collection is currently marked as skipped, so let us
+          know if you'd rather have your bag another week.
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

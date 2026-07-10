@@ -60,6 +60,23 @@
         </div>
       <% end %>
 
+      <% if @soil_bag_collections.any? %>
+        <div class="dd-form-card">
+          <div class="dd-form-card__header">
+            <i class="fa-solid fa-seedling"></i>
+            <h3>Load <%= pluralize(@total_soil_bags, 'compost bag') %> for <%= pluralize(@soil_bag_collections.count, 'house') %></h3>
+          </div>
+          <div class="dd-form-card__body">
+            <% @soil_bag_collections.each do |collection| %>
+              <p class="mb-1">
+                <strong><%= pluralize(collection.soil_bag, 'bag') %></strong>
+                for <%= collection.subscription.display_name %> — <%= collection.subscription.street_address %>
+              </p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
 <% if @recently_lapsed.any? %>
         <div class="dd-form-card">
           <div class="dd-form-card__header">
