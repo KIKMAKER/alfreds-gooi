@@ -25,60 +25,85 @@ class SoilBagsControllerTest < ActionDispatch::IntegrationTest
       subscription: @subscription, date: Date.current + 3.days,
       bags: 0, buckets: 0.0, skip: false, soil_bag: 0
     )
+    @token = @collection.ensure_soil_bag_token!
   end
 
   test "landing page renders for a logged out customer without writing anything" do
-    get soil_bag_path(@collection.soil_bag_token)
+    get soil_bag_path(@token)
 
     assert_response :success
     assert_equal 0, @collection.reload.soil_bag, "GET must not claim a bag"
   end
 
   test "claiming sets soil_bag to 1 on that collection" do
-    post claim_soil_bag_path(@collection.soil_bag_token)
+    post claim_soil_bag_path(@token)
 
     assert_response :success
     assert_equal 1, @collection.reload.soil_bag
   end
 
   test "claiming twice does not stack" do
-    2.times { post claim_soil_bag_path(@collection.soil_bag_token) }
+    2.times { post claim_soil_bag_path(@token) }
 
     assert_equal 1, @collection.reload.soil_bag
   end
 
-  test "a tampered token is rejected" do
-    get soil_bag_path("not-a-real-token")
+  test "an unknown token is rejected" do
+    get soil_bag_path("zzzzzzzz")
 
     assert_response :not_found
     assert_equal 0, @collection.reload.soil_bag
   end
 
-  test "a token signed for a different purpose is rejected" do
-    other_purpose = @collection.signed_id(purpose: :something_else)
+  test "a blank token does not match a collection with a null token" do
+    untokened = Collection.create!(subscription: @subscription, date: Date.current + 4.days,
+                                   bags: 0, buckets: 0.0, skip: false, soil_bag: 0)
+    assert_nil untokened.soil_bag_token, "sanity: collections start with no token"
 
-    post claim_soil_bag_path(other_purpose)
+    # A nil-valued finder would match this row via `WHERE soil_bag_token IS NULL`.
+    get soil_bag_path("%20")
+
+    assert_response :not_found
+    assert_equal 0, untokened.reload.soil_bag
+  end
+
+  test "a token is dead once its collection date has passed" do
+    @collection.update_column(:date, Date.current - 1.day)
+
+    post claim_soil_bag_path(@token)
 
     assert_response :not_found
     assert_equal 0, @collection.reload.soil_bag
   end
 
-  test "an expired token is rejected" do
-    token = @collection.soil_bag_token(expires_in: 1.minute)
+  test "a token still works on the morning of the collection" do
+    @collection.update_column(:date, Date.current)
 
-    travel 2.minutes do
-      post claim_soil_bag_path(token)
-      assert_response :not_found
-    end
+    post claim_soil_bag_path(@token)
 
-    assert_equal 0, @collection.reload.soil_bag
+    assert_response :success
+    assert_equal 1, @collection.reload.soil_bag
+  end
+
+  test "a revoked token is rejected without affecting other customers" do
+    other = Collection.create!(subscription: @subscription, date: Date.current + 5.days,
+                               bags: 0, buckets: 0.0, skip: false, soil_bag: 0)
+    other_token = other.ensure_soil_bag_token!
+
+    @collection.revoke_soil_bag_token!
+
+    post claim_soil_bag_path(@token)
+    assert_response :not_found
+
+    post claim_soil_bag_path(other_token)
+    assert_response :success
+    assert_equal 1, other.reload.soil_bag
   end
 
   test "a token for a deleted collection is rejected rather than 500ing" do
-    token = @collection.soil_bag_token
     @collection.destroy!
 
-    get soil_bag_path(token)
+    get soil_bag_path(@token)
 
     assert_response :not_found
   end
@@ -88,10 +113,11 @@ class SoilBagsControllerTest < ActionDispatch::IntegrationTest
       subscription: @subscription, date: Date.current + 10.days,
       bags: 0, buckets: 0.0, skip: false, soil_bag: 0
     )
+    other_collection.ensure_soil_bag_token!
 
-    post claim_soil_bag_path(@collection.soil_bag_token)
+    post claim_soil_bag_path(@token)
 
     assert_equal 1, @collection.reload.soil_bag
-    assert_equal 0, other_collection.reload.soil_bag, "only the signed collection is touched"
+    assert_equal 0, other_collection.reload.soil_bag, "only the tokened collection is touched"
   end
 end

@@ -10,15 +10,22 @@ class Admin::BulkMessagesController < ApplicationController
 
   private
 
+  SOIL_BAG_TOKEN_PLACEHOLDER = "{soil_bag_link}"
+
   # The soil bag link claims a bag on one specific collection, so {soil_bag_link}
   # only resolves when the admin has filtered to a collection date. Contacts with
   # no collection on that date render an empty string rather than a broken link.
+  #
+  # Minting writes a token, so it only happens when the admin has actually asked
+  # for a link — browsing the page leaves the collections untouched.
   def soil_bag_collections_by_subscription
     return {} if params[:collection_date].blank?
+    return {} unless @message.to_s.include?(SOIL_BAG_TOKEN_PLACEHOLDER)
 
-    Collection.where(date: params[:collection_date],
-                     subscription_id: @contacts.map(&:subscription_id).uniq)
-              .index_by(&:subscription_id)
+    collections = Collection.where(date: params[:collection_date],
+                                   subscription_id: @contacts.map(&:subscription_id).uniq)
+    collections.each(&:ensure_soil_bag_token!)
+    collections.index_by(&:subscription_id)
   end
 
   def filter_contacts

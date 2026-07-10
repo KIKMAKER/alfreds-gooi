@@ -68,6 +68,29 @@ class Admin::BulkMessagesControllerTest < ActionDispatch::IntegrationTest
     assert_match %r{wa\.me/}, response.body, "the message still sends, just without a link"
   end
 
+  test "browsing the page without asking for a link does not mint tokens" do
+    get admin_bulk_messages_path, params: {
+      collection_date: @collection_date.to_s,
+      message: "Hi {first_name}, see you {collection_day}!"
+    }
+
+    assert_response :success
+    assert_nil @collection.reload.soil_bag_token
+  end
+
+  test "the minted token is stable across repeated sends" do
+    2.times do
+      get admin_bulk_messages_path, params: {
+        collection_date: @collection_date.to_s,
+        message: "Free compost! {soil_bag_link}"
+      }
+    end
+
+    assert_response :success
+    token = @collection.reload.soil_bag_token
+    assert_match %r{soil-bag%2F#{token}}, response.body
+  end
+
   test "a contact with no collection on the filtered date does not break the page" do
     other_sub = Subscription.create!(
       user: @customer,

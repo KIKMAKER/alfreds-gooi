@@ -252,7 +252,7 @@
                   <% if @message.present? %>
                     <% soil_bag_collection = @soil_bag_collections[contact.subscription_id] %>
                     <% replacements = {
-                      '{soil_bag_link}'  => (soil_bag_collection ? soil_bag_url(soil_bag_collection.soil_bag_token) : ''),
+                      '{soil_bag_link}'  => (soil_bag_collection&.soil_bag_token ? soil_bag_url(soil_bag_collection.soil_bag_token) : ''),
                       '{first_name}'     => contact.first_name,
                       '{last_name}'      => contact.last_name.to_s,
                       '{full_name}'      => contact.full_name,

@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-# Promotional soil bag giveaway. Customers get a signed per-collection link over
-# WhatsApp (see Admin::BulkMessagesController) and claim a free bag for the
-# collection that link was generated for. No login, no Order, no Invoice — the
-# only side effect is setting soil_bag on that one collection.
+# Promotional soil bag giveaway. Customers get a short per-collection claim code
+# over WhatsApp (see Admin::BulkMessagesController) and claim a free bag for the
+# collection that code was minted for. No login, no Order, no Invoice — the only
+# side effect is setting soil_bag on that one collection.
+#
+# The token is a bearer credential, but the worst it buys is a free bag of
+# compost delivered to the token holder's own address.
 class SoilBagsController < ApplicationController
   skip_before_action :authenticate_user!
 
@@ -22,7 +25,7 @@ class SoilBagsController < ApplicationController
 
   def set_collection
     @collection = Collection.find_by_soil_bag_token!(params[:token])
-  rescue ActiveSupport::MessageVerifier::InvalidSignature, ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound
     render :invalid, status: :not_found
   end
 end

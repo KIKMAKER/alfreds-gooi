@@ -133,4 +133,77 @@ class CollectionTest < ActiveSupport::TestCase
 
     assert_equal other_day.id, @collection.drivers_day_id
   end
+
+  # ── Soil bag claim token ────────────────────────────────────────────────
+
+  test "collections start with no soil bag token" do
+    assert_nil @collection.soil_bag_token
+  end
+
+  test "minting produces a short code free of ambiguous glyphs" do
+    token = @collection.ensure_soil_bag_token!
+
+    assert_equal Collection::SOIL_BAG_TOKEN_LENGTH, token.length
+    assert_match(/\A[a-hj-km-np-z2-9]+\z/, token, "no 0/1/i/l/o in the alphabet")
+  end
+
+  test "minting twice returns the same token" do
+    first = @collection.ensure_soil_bag_token!
+    second = @collection.reload.ensure_soil_bag_token!
+
+    assert_equal first, second
+  end
+
+  test "minting does not touch other collection attributes" do
+    original_position = @collection.position
+    @collection.ensure_soil_bag_token!
+
+    assert_equal original_position, @collection.reload.position
+    assert_equal 0, @collection.soil_bag
+  end
+
+  test "tokens are unique across collections" do
+    other = Collection.create!(subscription: @subscription, date: @wednesday)
+
+    assert_not_equal @collection.ensure_soil_bag_token!, other.ensure_soil_bag_token!
+  end
+
+  test "the database rejects a duplicate token" do
+    token = @collection.ensure_soil_bag_token!
+    other = Collection.create!(subscription: @subscription, date: @wednesday)
+
+    assert_raises(ActiveRecord::RecordNotUnique) do
+      other.update_column(:soil_bag_token, token)
+    end
+  end
+
+  test "many untokened collections coexist despite the unique index" do
+    assert_nothing_raised do
+      3.times { |i| Collection.create!(subscription: @subscription, date: @wednesday + i.days) }
+    end
+  end
+
+  test "revoking clears only that collection's token" do
+    other = Collection.create!(subscription: @subscription, date: @wednesday)
+    other_token = other.ensure_soil_bag_token!
+    @collection.ensure_soil_bag_token!
+
+    @collection.revoke_soil_bag_token!
+
+    assert_nil @collection.reload.soil_bag_token
+    assert_equal other_token, other.reload.soil_bag_token
+  end
+
+  test "a link expires once its collection date has passed" do
+    @collection.update_column(:date, Date.current - 1.day)
+    assert @collection.soil_bag_link_expired?
+
+    @collection.update_column(:date, Date.current)
+    assert_not @collection.soil_bag_link_expired?
+  end
+
+  test "find_by_soil_bag_token! rejects a blank token rather than matching a null column" do
+    assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_soil_bag_token!(nil) }
+    assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_soil_bag_token!("") }
+  end
 end

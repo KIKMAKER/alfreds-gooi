@@ -40,18 +40,52 @@ class Collection < ApplicationRecord
   end
 
   # Promotional soil bag claim link, sent per-collection over WhatsApp.
-  # signed_id derives the token from the record and secret_key_base, so nothing
-  # is stored and expired tokens need no cleanup. Changing the purpose string
-  # invalidates every link already in the wild.
-  SOIL_BAG_PURPOSE = "soil_bag_claim"
-  SOIL_BAG_TOKEN_TTL = 3.weeks
+  #
+  # Ambiguous glyphs are excluded so a code can be read down a phone without
+  # "was that an oh or a zero". 31 symbols over 8 places is ~8.5e11 codes, and
+  # only collections we actually send a link for get one.
+  SOIL_BAG_TOKEN_ALPHABET = (("a".."z").to_a - %w[i l o] + ("2".."9").to_a).freeze
+  SOIL_BAG_TOKEN_LENGTH = 8
 
-  def soil_bag_token(expires_in: SOIL_BAG_TOKEN_TTL)
-    signed_id(purpose: SOIL_BAG_PURPOSE, expires_in: expires_in)
+  # Mint on demand and keep it — the same collection always yields the same link,
+  # so re-sending a WhatsApp message doesn't strand the customer's first link.
+  def ensure_soil_bag_token!
+    return soil_bag_token if soil_bag_token.present?
+
+    attempts = 0
+    begin
+      update_column(:soil_bag_token, self.class.generate_soil_bag_token)
+    rescue ActiveRecord::RecordNotUnique
+      attempts += 1
+      retry if attempts < 5
+      raise
+    end
+
+    soil_bag_token
   end
 
+  # Pulling the token clears the customer's link without touching anyone else's.
+  def revoke_soil_bag_token!
+    update_column(:soil_bag_token, nil)
+  end
+
+  def self.generate_soil_bag_token
+    Array.new(SOIL_BAG_TOKEN_LENGTH) { SOIL_BAG_TOKEN_ALPHABET.sample(random: SecureRandom) }.join
+  end
+
+  # A bag can only ride on a collection that hasn't happened yet, so the
+  # collection date is the expiry. No TTL column, and no link outlives its point.
   def self.find_by_soil_bag_token!(token)
-    find_signed!(token, purpose: SOIL_BAG_PURPOSE)
+    raise ActiveRecord::RecordNotFound if token.blank?
+
+    collection = find_by!(soil_bag_token: token.to_s)
+    raise ActiveRecord::RecordNotFound if collection.soil_bag_link_expired?
+
+    collection
+  end
+
+  def soil_bag_link_expired?
+    date.nil? || date < Date.current
   end
 
   def soil_bag_claimed?
