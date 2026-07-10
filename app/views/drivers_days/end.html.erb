@@ -17,24 +17,33 @@
 
       <%= simple_form_for @drivers_day, url: end_drivers_day_path do |f| %>
 
-        <% if @drivers_day.errors[:end_time].any? %>
+        <% flag_field = @drivers_day.end_time_flag_field %>
+        <% if @drivers_day.errors[:end_time].any? || @drivers_day.errors[:start_time].any? %>
+          <% fixing_start = flag_field == :start_time %>
           <div class="dd-endtime-warning">
             <div class="dd-endtime-warning__head">
               <i class="fa-solid fa-triangle-exclamation"></i>
-              <span>Check the finish time</span>
+              <span><%= fixing_start ? "Check the start time" : "Check the finish time" %></span>
             </div>
             <p class="dd-endtime-warning__msg">
-              <%= @drivers_day.errors.full_messages_for(:end_time).first %>
+              <%= @drivers_day.errors.full_messages_for(flag_field).first %>
             </p>
 
-            <label class="bucket-scale-label">What time did you actually finish?</label>
-            <%= f.datetime_local_field :end_time,
-                  value: @drivers_day.end_time&.strftime("%Y-%m-%dT%H:%M"),
-                  class: "form-control dd-date-input" %>
+            <% if fixing_start %>
+              <label class="bucket-scale-label">What time did you actually start?</label>
+              <%= f.datetime_local_field :start_time,
+                    value: @drivers_day.start_time&.strftime("%Y-%m-%dT%H:%M"),
+                    class: "form-control dd-date-input" %>
+            <% else %>
+              <label class="bucket-scale-label">What time did you actually finish?</label>
+              <%= f.datetime_local_field :end_time,
+                    value: @drivers_day.end_time&.strftime("%Y-%m-%dT%H:%M"),
+                    class: "form-control dd-date-input" %>
+            <% end %>
 
             <label class="dd-endtime-warning__override">
               <%= check_box_tag :override_end_time_warning, "1", params[:override_end_time_warning].present? %>
-              It really was that long — end it anyway
+              <%= fixing_start ? "It really was that quick — end it anyway" : "It really was that long — end it anyway" %>
             </label>
           </div>
         <% end %>

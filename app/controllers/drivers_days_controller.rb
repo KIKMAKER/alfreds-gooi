@@ -143,7 +143,11 @@ class DriversDaysController < ApplicationController
 
     unless @drivers_day.update(attrs)
       # end_time_sensible rejected it — re-render so Alfred can fix the time now.
-      flash.now[:alert] = @drivers_day.errors.full_messages_for(:end_time).first || "Failed to end the Day"
+      # The error sits on end_time (too long / inverted / different day) or on
+      # start_time (too short — Start tap missed), so check both.
+      flash.now[:alert] = @drivers_day.errors.full_messages_for(:end_time).first ||
+                          @drivers_day.errors.full_messages_for(:start_time).first ||
+                          "Failed to end the Day"
       render :end, status: :unprocessable_entity and return
     end
 

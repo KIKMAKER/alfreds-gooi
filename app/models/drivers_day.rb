@@ -20,6 +20,10 @@ class DriversDay < ApplicationRecord
   # missed on the day and pressed later — see end_time_flag / end_time_sensible.
   MAX_ROUTE_HOURS = 12
 
+  # A route shorter than this many minutes almost always means the Start tap was
+  # missed in the morning and pressed at wrap-up (start ≈ end in the afternoon).
+  MIN_ROUTE_MINUTES = 15
+
   # Set true to consciously accept a genuinely long / cross-midnight day and skip
   # the end_time sanity check (e.g. Alfred confirms "yes, it really was that long").
   attr_accessor :override_end_time_warning
@@ -62,6 +66,7 @@ class DriversDay < ApplicationRecord
   # Classifies a suspicious start/end pairing so the End view can explain the
   # exact problem to Alfred. Returns nil when the pair looks fine.
   #   :inverted      -> end is before start
+  #   :too_short     -> less than MIN_ROUTE_MINUTES long (Start tap likely missed)
   #   :too_long      -> more than MAX_ROUTE_HOURS after start
   #   :different_day -> lands on a different calendar day to the start
   def end_time_flag
@@ -69,11 +74,19 @@ class DriversDay < ApplicationRecord
 
     if end_time < start_time
       :inverted
+    elsif (end_time - start_time) < MIN_ROUTE_MINUTES.minutes
+      :too_short
     elsif (end_time - start_time) > MAX_ROUTE_HOURS.hours
       :too_long
     elsif end_time.to_date != start_time.to_date
       :different_day
     end
+  end
+
+  # The field most likely to be wrong for a given flag — drives which correction
+  # input the End view shows. A too_short day means the *start* was tapped late.
+  def end_time_flag_field
+    end_time_flag == :too_short ? :start_time : :end_time
   end
 
   # Set the current drop-off being worked on
@@ -257,12 +270,16 @@ class DriversDay < ApplicationRecord
     self.total_buckets ||= 0
   end
 
-  # Rejects an end_time that can't be right for a single day's route, prompting
-  # Alfred to correct it in the moment (or tick "override" for a genuine outlier).
+  # Rejects a start/end pairing that can't be right for a single day's route,
+  # prompting Alfred to correct it in the moment (or tick "override" for a
+  # genuine outlier). The error attaches to whichever field is likely wrong.
   def end_time_sensible
     case end_time_flag
     when :inverted
       errors.add(:end_time, "can't be before the start time (#{start_time.strftime('%H:%M')}). Set the real time you finished.")
+    when :too_short
+      mins = ((end_time - start_time) / 60.0).round
+      errors.add(:start_time, "is only #{mins} min before the end — looks like the Start tap was missed this morning. Set the real time you started, or tick the box if it really was that quick.")
     when :too_long
       hours = ((end_time - start_time) / 3600.0).round(1)
       errors.add(:end_time, "is #{hours} hours after the start — looks like the End tap was missed. Set the real finish time, or tick the box if the day really was that long.")

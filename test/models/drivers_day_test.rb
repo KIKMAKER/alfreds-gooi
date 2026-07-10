@@ -25,6 +25,38 @@ class DriversDayTest < ActiveSupport::TestCase
     assert_match(/before the start time/, day.errors[:end_time].first)
   end
 
+  test "rejects an implausibly short route and blames the start time" do
+    day = build_day(
+      start_time: Time.zone.parse("2026-07-08 15:37"),
+      end_time:   Time.zone.parse("2026-07-08 15:38") # 1 min
+    )
+    assert day.invalid?
+    assert_equal :too_short, day.end_time_flag
+    assert_equal :start_time, day.end_time_flag_field
+    assert_match(/Start tap was missed/, day.errors[:start_time].first)
+    assert_empty day.errors[:end_time]
+  end
+
+  test "accepts a short-but-real 20 minute route" do
+    day = build_day(
+      start_time: Time.zone.parse("2026-07-08 09:00"),
+      end_time:   Time.zone.parse("2026-07-08 09:20")
+    )
+    day.valid?
+    assert_empty day.errors[:start_time]
+    assert_nil day.end_time_flag
+  end
+
+  test "override lets a genuinely quick day through" do
+    day = build_day(
+      start_time: Time.zone.parse("2026-07-08 15:37"),
+      end_time:   Time.zone.parse("2026-07-08 15:38"),
+      override_end_time_warning: true
+    )
+    day.valid?
+    assert_empty day.errors[:start_time]
+  end
+
   test "rejects an end_time more than 12 hours after start" do
     day = build_day(
       start_time: Time.zone.parse("2026-07-08 08:00"),
@@ -32,6 +64,7 @@ class DriversDayTest < ActiveSupport::TestCase
     )
     assert day.invalid?
     assert_equal :too_long, day.end_time_flag
+    assert_equal :end_time, day.end_time_flag_field
   end
 
   test "rejects a short route that still crosses midnight" do
