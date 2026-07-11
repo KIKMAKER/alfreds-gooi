@@ -20,6 +20,11 @@
     <div class="dd-header__actions">
       <%= link_to "Someone missing?", recently_lapsed_subscriptions_path, class: "tiny-yellow-btn" %>
       <%= button_to "Optimise", optimise_route_path(drivers_day_id: @drivers_day.id), method: :patch, class: "tiny-yellow-btn", form: { data: { turbo: false } } %>
+      <% if current_user.admin? %>
+        <span data-controller="clipboard" data-clipboard-text-value="<%= @route_export %>">
+          <button type="button" class="tiny-yellow-btn" data-action="clipboard#copy">Copy addresses</button>
+        </span>
+      <% end %>
     </div>
   </div>
 

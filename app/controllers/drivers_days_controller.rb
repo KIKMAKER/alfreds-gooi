@@ -19,6 +19,8 @@ class DriversDaysController < ApplicationController
 
     # Combine collections and drop-off events, sorted by position (nil sorts to end)
     @route_items = (collections.to_a + drop_off_events.to_a).sort_by { |item| item.position || Float::INFINITY }
+
+    @route_export = route_export_text(@route_items)
   end
 
 
@@ -403,6 +405,31 @@ class DriversDaysController < ApplicationController
   end
 
   private
+
+  # Semicolon-delimited dump of the day's stops, in route order, for pasting
+  # into a spreadsheet or another routing tool.
+  # stop; type; name; street address; suburb; latitude; longitude
+  def route_export_text(items)
+    header = %w[stop type name address suburb lat lng].join("; ")
+
+    rows = items.each_with_index.map do |item, index|
+      source = item.is_a?(DropOffEvent) ? item.drop_off_site : item.subscription
+      type   = item.is_a?(DropOffEvent) ? "drop-off" : (item.skip ? "collection (skip)" : "collection")
+      name   = item.is_a?(DropOffEvent) ? source.name : source.display_name
+
+      [
+        index + 1,
+        type,
+        name,
+        source.street_address,
+        source.suburb,
+        source.latitude,
+        source.longitude
+      ].map { |field| field.to_s.gsub(";", ",").strip }.join("; ")
+    end
+
+    ([header] + rows).join("\n")
+  end
 
   def set_drivers_day
     @drivers_day = DriversDay.find(params[:id])
