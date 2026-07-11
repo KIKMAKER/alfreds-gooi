@@ -406,29 +406,13 @@ class DriversDaysController < ApplicationController
 
   private
 
-  # Semicolon-delimited dump of the day's stops, in route order, for pasting
-  # into a spreadsheet or another routing tool.
-  # stop; type; name; street address; suburb; latitude; longitude
+  # Semicolon-separated list of the day's addresses (collections and drop-offs)
+  # in route order.
   def route_export_text(items)
-    header = %w[stop type name address suburb lat lng].join("; ")
-
-    rows = items.each_with_index.map do |item, index|
+    items.map do |item|
       source = item.is_a?(DropOffEvent) ? item.drop_off_site : item.subscription
-      type   = item.is_a?(DropOffEvent) ? "drop-off" : (item.skip ? "collection (skip)" : "collection")
-      name   = item.is_a?(DropOffEvent) ? source.name : source.display_name
-
-      [
-        index + 1,
-        type,
-        name,
-        source.street_address,
-        source.suburb,
-        source.latitude,
-        source.longitude
-      ].map { |field| field.to_s.gsub(";", ",").strip }.join("; ")
-    end
-
-    ([header] + rows).join("\n")
+      [source.street_address, source.suburb].compact_blank.join(", ").gsub(";", ",").strip
+    end.compact_blank.join("; ")
   end
 
   def set_drivers_day
