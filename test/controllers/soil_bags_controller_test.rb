@@ -35,17 +35,33 @@ class SoilBagsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, @collection.reload.soil_bag, "GET must not claim a bag"
   end
 
-  test "claiming sets soil_bag to 1 on that collection" do
+  test "claiming sets soil_bag to 1 and redirects so Turbo shows the result" do
     post claim_soil_bag_path(@token)
 
-    assert_response :success
+    # PRG: button_to submits via Turbo, which only swaps the page on a redirect.
+    assert_redirected_to soil_bag_path(@token)
     assert_equal 1, @collection.reload.soil_bag
+
+    follow_redirect!
+    assert_response :success
+    assert_match(/in the bakkie/, response.body, "fresh claim shows the celebratory message")
   end
 
   test "claiming twice does not stack" do
     2.times { post claim_soil_bag_path(@token) }
 
     assert_equal 1, @collection.reload.soil_bag
+  end
+
+  test "revisiting the link after claiming shows the calmer already-claimed message" do
+    post claim_soil_bag_path(@token)
+    follow_redirect! # consumes the just-claimed flash, as Turbo does in the browser
+
+    # A genuinely separate later visit carries no flash.
+    get soil_bag_path(@token)
+    assert_response :success
+    assert_match(/on the list/, response.body)
+    assert_no_match(/in the bakkie/, response.body, "no celebratory copy without the just-claimed flash")
   end
 
   test "an unknown token is rejected" do
@@ -81,7 +97,7 @@ class SoilBagsControllerTest < ActionDispatch::IntegrationTest
 
     post claim_soil_bag_path(@token)
 
-    assert_response :success
+    assert_redirected_to soil_bag_path(@token)
     assert_equal 1, @collection.reload.soil_bag
   end
 
@@ -96,7 +112,7 @@ class SoilBagsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
 
     post claim_soil_bag_path(other_token)
-    assert_response :success
+    assert_redirected_to soil_bag_path(other_token)
     assert_equal 1, other.reload.soil_bag
   end
 

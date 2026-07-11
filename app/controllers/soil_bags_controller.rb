@@ -16,9 +16,16 @@ class SoilBagsController < ApplicationController
   def show; end
 
   # POST — the customer has actually pressed the button.
+  #
+  # Redirect rather than render: button_to submits through Turbo, which only
+  # swaps the page on a redirect. A rendered 200 gets discarded, so the customer
+  # sees nothing happen and clicks again. Post/Redirect/Get also means a refresh
+  # re-shows the result instead of re-submitting.
   def claim
     @collection.update!(soil_bag: 1) unless @collection.soil_bag_claimed?
-    render :claimed
+    redirect_to soil_bag_path(@collection.soil_bag_token),
+                status: :see_other,
+                flash: { just_claimed: true }
   end
 
   private

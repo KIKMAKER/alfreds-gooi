@@ -1,4 +1,8 @@
 .admin-navbar {
+  // Keep the top-right links clear of the viewport's top edge, where Chrome's
+  // fullscreen tab strip reveals and drops a hover card over them.
+  .inner-container { padding-top: 0.75rem; }
+
   .links-container { display: flex; }
   .hamburger-menu  { display: none; }
   .new-nav-auth-btn { margin-right: 1rem; }
