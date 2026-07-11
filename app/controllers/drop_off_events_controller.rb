@@ -98,6 +98,14 @@ class DropOffEventsController < ApplicationController
   end
 
   def drop_off_event_params
-    params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes, :is_final_destination)
+    permitted = params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes, :is_final_destination, :waste_stream)
+
+    # Enum assignment raises ArgumentError on an unknown value, so an unrecognised
+    # waste_stream would 500 rather than fail validation.
+    if permitted.key?(:waste_stream) && !DropOffEvent.waste_streams.key?(permitted[:waste_stream])
+      permitted.delete(:waste_stream)
+    end
+
+    permitted
   end
 end

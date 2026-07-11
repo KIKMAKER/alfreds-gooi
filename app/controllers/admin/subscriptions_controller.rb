@@ -13,6 +13,7 @@ class Admin::SubscriptionsController < ApplicationController
         bucket_size:            quotation.inferred_bucket_size,
         buckets_per_collection: quotation.buckets_per_collection,
         collections_per_week:   quotation.effective_collections_per_week,
+        waste_stream:           quotation.inferred_waste_stream,
         title:                  quotation.prospect_company.presence || quotation.customer_name
       )
       @quotation = quotation
@@ -38,6 +39,9 @@ class Admin::SubscriptionsController < ApplicationController
     @subscription = @user.subscriptions.build(subscription_params)
     @subscription.status   = :pending
     @subscription.is_paused = true
+    # The quote's line items decide the stream — a protein quote must never convert
+    # into a general subscription just because the form field went missing.
+    @subscription.waste_stream = @quotation.inferred_waste_stream if @quotation
 
     if @subscription.save
       # Auto-create satellite subscription if a second collection day was specified
@@ -51,6 +55,7 @@ class Admin::SubscriptionsController < ApplicationController
           bucket_size:             @subscription.bucket_size,
           buckets_per_collection:  @subscription.buckets_per_collection,
           collections_per_week:    @subscription.collections_per_week,
+          waste_stream:            @subscription.waste_stream,
           collection_day:          params[:second_collection_day],
           title:                   "#{@subscription.title} (#{params[:second_collection_day]})",
           status:                  :pending,
@@ -244,13 +249,21 @@ class Admin::SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(
+    permitted = params.require(:subscription).permit(
       :plan, :duration, :start_date, :street_address, :suburb,
       :apartment_unit_number, :discount_code, :referral_code, :is_new_customer,
       :primary_subscription_id,
       :buckets_per_collection, :bucket_size, :collections_per_week,
-      :collection_day, :title, :monthly_invoicing
+      :collection_day, :title, :monthly_invoicing, :waste_stream
     )
+
+    # Enum assignment raises ArgumentError on an unknown value, so an unrecognised
+    # waste_stream would 500 rather than fail validation.
+    if permitted.key?(:waste_stream) && !Subscription.waste_streams.key?(permitted[:waste_stream])
+      permitted[:waste_stream] = "general"
+    end
+
+    permitted
   end
 
   def monthly_billing_params

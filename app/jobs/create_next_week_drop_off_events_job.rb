@@ -38,6 +38,8 @@ class CreateNextWeekDropOffEventsJob < ApplicationJob
           date: drop_off_date
         ) do |event|
           event.is_final_destination = this_event.is_final_destination
+          # Carry the stream forward so a protein run stays a protein run.
+          event.waste_stream = this_event.waste_stream
           # Set position before save so acts_as_list doesn't auto-append to bottom.
           # Use the most recent previous event for this site as the source of truth,
           # so any reordering the driver has done this week is carried forward.

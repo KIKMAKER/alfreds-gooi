@@ -6,7 +6,14 @@
   <%# ── Header ────────────────────────────────────────────────────────────────── %>
   <div class="dd-header">
     <div>
-      <h1 class="dd-header__title"><%= @drop_off_event.drop_off_site.name %></h1>
+      <h1 class="dd-header__title">
+        <%= @drop_off_event.drop_off_site.name %>
+        <% if @drop_off_event.protein_waste_stream? %>
+          <span class="dd-collection-badge dd-collection-badge--protein">
+            <i class="fa-solid fa-drumstick-bite"></i> Protein
+          </span>
+        <% end %>
+      </h1>
       <p class="dd-header__sub"><%= @drop_off_event.drop_off_site.street_address %>, <%= @drop_off_event.drop_off_site.suburb %></p>
     </div>
     <div class="dd-header__actions">

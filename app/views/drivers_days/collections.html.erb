@@ -21,6 +21,11 @@
         <div class="dd-collection-item__main">
           <div class="dd-collection-item__name">
             <%= collection.subscription&.display_name || "Unknown" %>
+            <% if collection.subscription&.protein_waste_stream? %>
+              <span class="dd-collection-badge dd-collection-badge--protein">
+                <i class="fa-solid fa-drumstick-bite"></i> Protein
+              </span>
+            <% end %>
             <% if collection.new_customer %>
               <span class="dd-collection-badge dd-collection-badge--new">New</span>
             <% end %>
@@ -40,6 +45,11 @@
               <span><%= collection.buckets %> buckets</span>
             <% else %>
               <span><%= collection.bags %> bags</span>
+            <% end %>
+            <% if sub&.protein_waste_stream? %>
+              <span class="dd-collection-item__note dd-collection-item__note--protein">
+                <i class="fa-solid fa-box"></i> Sealed swap buckets — protein stream
+              </span>
             <% end %>
             <% if collection.kiki_note.present? %>
               <span class="dd-collection-item__note">

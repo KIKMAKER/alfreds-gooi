@@ -56,7 +56,8 @@ class Admin::DropOffSitesController < Admin::BaseController
     drop_off_event = DropOffEvent.create!(
       drop_off_site: @drop_off_site,
       drivers_day: drivers_day,
-      date: date
+      date: date,
+      waste_stream: @drop_off_site.default_waste_stream
     )
 
     redirect_to admin_drop_off_site_path(@drop_off_site),
@@ -88,7 +89,9 @@ class Admin::DropOffSitesController < Admin::BaseController
       :story,
       :website,
       :instagram_handle,
-      :facebook_url
+      :facebook_url,
+      :fee_per_kg,
+      :accepts_protein
     )
   end
 end

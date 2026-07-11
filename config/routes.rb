@@ -46,6 +46,7 @@ Rails.application.routes.draw do
         post :create_next_week_events
       end
     end
+    resources :disposal_fees, only: [:index]
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       get  :pending,          on: :collection
       post :nudge_all_pending, on: :collection

@@ -604,9 +604,17 @@ class SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:title, :customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date, :end_date,
+    permitted = params.require(:subscription).permit(:title, :customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date, :end_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
-                  :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+                  :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, :waste_stream, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+
+    # Enum assignment raises ArgumentError on an unknown value, so an unrecognised
+    # waste_stream would 500 rather than fail validation.
+    if permitted.key?(:waste_stream) && !Subscription.waste_streams.key?(permitted[:waste_stream])
+      permitted[:waste_stream] = "general"
+    end
+
+    permitted
   end
 
   def set_subscription

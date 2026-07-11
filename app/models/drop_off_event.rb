@@ -4,8 +4,17 @@ class DropOffEvent < ApplicationRecord
   has_many :buckets, dependent: :nullify
   acts_as_list scope: :drivers_day
 
+  # Suffixed to match Subscription — a single route day can drop general waste at
+  # one site and protein at another, so kilograms stay separable by stream.
+  enum :waste_stream, %i[general protein], suffix: true
+
   # Scopes
   scope :recent, -> { order(date: :desc) }
+  scope :protein, -> { where(waste_stream: :protein) }
+  scope :general, -> { where(waste_stream: :general) }
+  scope :completed, -> { where(is_done: true) }
+
+  validate :protein_only_at_protein_capable_sites
 
   # Methods
   def done?
@@ -84,6 +93,13 @@ class DropOffEvent < ApplicationRecord
   after_save :update_site_analytics, if: -> { saved_change_to_departure_time? && timing_complete? }
 
   private
+
+  def protein_only_at_protein_capable_sites
+    return unless protein_waste_stream?
+    return if drop_off_site&.accepts_protein?
+
+    errors.add(:waste_stream, "cannot be protein — #{drop_off_site&.name || 'this site'} does not accept protein")
+  end
 
   def recalc_site_totals
     drop_off_site.recalc_totals!

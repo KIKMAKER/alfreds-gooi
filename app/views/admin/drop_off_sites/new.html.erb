@@ -8,7 +8,7 @@
 
     <%= f.input :suburb,
           as: :select,
-          collection: Subscription::SUBURBS,
+          collection: DropOffSite::SUBURBS,
           prompt: "Select a suburb" %>
 
     <%= f.input :collection_day,
@@ -33,6 +33,18 @@
           input_html: { rows: 4 },
           placeholder: "e.g. Last stop on route. Enter through main gate.",
           hint: "Any special instructions for the driver" %>
+
+    <h4 class="mt-4 mb-3">Disposal &amp; Streams</h4>
+
+    <%= f.input :fee_per_kg,
+          label: "Disposal fee per kg (R)",
+          input_html: { step: 0.01, min: 0 },
+          hint: "What this site charges Gooi per kilogram dropped. Leave at 0 for free sites (e.g. Soil for Life)." %>
+
+    <%= f.input :accepts_protein,
+          as: :boolean,
+          label: "Accepts protein / plate-waste",
+          hint: "Only sites with in-vessel composting (e.g. Langa AgriHub BioBin) can take animal protein." %>
 
     <%= f.input :photo, as: :file, hint: "Upload a photo of the drop-off site" %>
 

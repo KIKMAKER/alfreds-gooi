@@ -161,6 +161,15 @@
                             input_html: { class: 'form-control', min: 1 },
                             wrapper_html: { class: 'mb-0' } %>
               </div>
+              <div class="col-md-4">
+                <%= f.input :waste_stream,
+                            label: "Waste stream",
+                            collection: Subscription.waste_streams.keys.map { |s| [s.titleize, s] },
+                            include_blank: false,
+                            hint: "Protein/plate-waste needs 2+ collections per week",
+                            input_html: { class: 'form-select' },
+                            wrapper_html: { class: 'mb-0' } %>
+              </div>
               <div class="col-md-6 d-flex align-items-end pb-1">
                 <%= f.input :monthly_invoicing,
                             as: :boolean,

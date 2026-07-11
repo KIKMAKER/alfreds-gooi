@@ -99,6 +99,17 @@ class Quotation < ApplicationRecord
     weekly_item ? weekly_item.quantity.to_i : collections_per_week
   end
 
+  # Protein is sold as products, not as a plan, so the quote's line items are what
+  # decide the stream. Any protein product on the quote makes the whole quote protein.
+  def inferred_waste_stream
+    protein = quotation_items.joins(:product).any? { |item| item.product.title.match?(/protein/i) }
+    protein ? "protein" : "general"
+  end
+
+  def protein?
+    inferred_waste_stream == "protein"
+  end
+
   # Scans product titles for "25L" or "45L" to infer bucket size.
   # Returns 25, 45, or nil if no volume processing product is on the quote.
   def inferred_bucket_size

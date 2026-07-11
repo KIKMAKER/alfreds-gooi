@@ -651,7 +651,8 @@
 
   i { margin-right: 2px; font-size: 0.75rem; }
 
-  &--alfred { color: $medium-green; }
+  &--alfred  { color: $medium-green; }
+  &--protein { color: #a02057; font-style: normal; font-weight: 600; }
 }
 
 .dd-collection-badge {
@@ -665,6 +666,9 @@
   &--new  { background: #e8f5e9; color: $medium-green; }
   &--skip { background: #fdecea; color: #c0392b; }
   &--done { background: #e3f2fd; color: #1976d2; }
+  // Protein stops need to jump out of the list — Alfred must load sealed swap
+  // buckets before leaving the depot.
+  &--protein { background: #fdeef3; color: #a02057; border: 1px solid #f3c6d8; }
 }
 
 // ── Edit form card ────────────────────────────────────────────────────────────

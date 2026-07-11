@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_10_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_11_201340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -330,9 +330,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_10_090000) do
     t.datetime "departure_time"
     t.integer "duration_minutes"
     t.boolean "is_final_destination", default: false, null: false
+    t.integer "waste_stream", default: 0, null: false
     t.index ["arrival_time"], name: "index_drop_off_events_on_arrival_time"
     t.index ["drivers_day_id"], name: "index_drop_off_events_on_drivers_day_id"
     t.index ["drop_off_site_id"], name: "index_drop_off_events_on_drop_off_site_id"
+    t.index ["waste_stream"], name: "index_drop_off_events_on_waste_stream"
   end
 
   create_table "drop_off_sites", force: :cascade do |t|
@@ -358,6 +360,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_10_090000) do
     t.float "average_duration_minutes"
     t.integer "total_duration_minutes", default: 0
     t.integer "completed_dropoffs_count", default: 0
+    t.decimal "fee_per_kg", precision: 8, scale: 2, default: "0.0", null: false
+    t.boolean "accepts_protein", default: false, null: false
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
   end
@@ -808,12 +812,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_10_090000) do
     t.bigint "primary_subscription_id"
     t.bigint "quotation_id"
     t.bigint "block_id"
+    t.integer "waste_stream", default: 0, null: false
     t.index ["block_id"], name: "index_subscriptions_on_block_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
     t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"
     t.index ["status", "collection_day"], name: "index_subscriptions_on_status_and_collection_day"
     t.index ["status"], name: "index_subscriptions_on_status"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+    t.index ["waste_stream"], name: "index_subscriptions_on_waste_stream"
   end
 
   create_table "testimonials", force: :cascade do |t|

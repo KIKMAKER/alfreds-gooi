@@ -65,7 +65,14 @@
               data-sortable-id="<%= item.id %>">
             <span class="drag-handle">⠿</span>
             <div class="name">
-              <p><%= link_to item.subscription.display_name.truncate(13), admin_subscription_path(item.subscription) %></p>
+              <p>
+                <%= link_to item.subscription.display_name.truncate(13), admin_subscription_path(item.subscription) %>
+                <% if item.subscription.protein_waste_stream? %>
+                  <span class="dd-collection-badge dd-collection-badge--protein" title="Protein stream — grab sealed swap buckets">
+                    <i class="fa-solid fa-drumstick-bite"></i> Protein
+                  </span>
+                <% end %>
+              </p>
             </div>
             <div class="bag">
               <% if item.skip %>
