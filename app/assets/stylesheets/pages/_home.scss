@@ -230,7 +230,7 @@
     margin: 0 16px;
     font-family: 'Libre Baskerville', serif;
     font-size: 20px;
-    color: #18191F;
+    color: $color-text-dark;
   }
 }
 
@@ -365,7 +365,7 @@
 .testimonial-section {
   padding: 56px 5%;
   margin-top: 44px;
-  background-color: #f5faf9;
+  background-color: $color-surface-mint;
   text-align: center;
 
   h1 {
@@ -427,7 +427,7 @@
 
 .testimonial-image {
   border: solid 3px $dark-yellow;
-  background-color: #e8f4f3;
+  background-color: $color-surface-mint-alt;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -1177,7 +1177,7 @@ input[type="checkbox"].toggle:checked+label::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $dark-green 0%, #1f4632 100%);
+  background: linear-gradient(135deg, $dark-green 0%, $color-text-forest 100%);
   color: white;
 
   i {
@@ -1225,7 +1225,7 @@ input[type="checkbox"].toggle:checked+label::before {
 
 .farm-stat {
   font-family: 'Montserrat', sans-serif;
-  color: #1f4632;
+  color: $color-text-forest;
   font-size: 14px;
   font-weight: 500;
 }

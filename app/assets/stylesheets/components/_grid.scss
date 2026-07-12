@@ -48,10 +48,10 @@
 
 .collect-grid-button {
   font-weight: lighter;
-  background-color: #138a6482;
+  background-color: rgba($color-flex-nav, 0.51);
   color: white;
   padding: 6px;
-  box-shadow: inset 0 0 30px #138a64d2;
+  box-shadow: inset 0 0 30px rgba($color-flex-nav, 0.82);
 
   border: 1px solid black;
 

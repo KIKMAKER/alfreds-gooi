@@ -52,6 +52,16 @@ $color-surface-mint: #f5faf9;    // testimonial section bg — not yet in _color
 $color-border:       #e8efee;    // drawer divider, light borders — not yet in _colors.scss
 $color-danger:       $red;
 
+// Additional hardcoded-hex extractions (Phase 1) — each preserves its exact
+// current rendered value. BRAND.md Section 2 suggests some of these are
+// visually close enough to merge into an existing variable (e.g. $color-flex-nav
+// into $medium-green), but that would change the rendered colour, so they're
+// kept as their own tokens here until that's a deliberate, signed-off decision.
+$color-flex-nav:         #138a64;  // .flex-nav background — close to $medium-green
+$color-surface-mint-alt:   #e8f4f3;  // testimonial avatar background
+$color-surface-mint-hover: #f0f6f4;  // nav dropdown hover
+$color-text-forest:        #1f4632;  // farm stat text — between $dark-green and $medium-green
+
 // ─── Shadows ($shadow-*) ────────────────────────────────────
 $shadow-sm:   rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;      // navbar
 $shadow-base: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;  // cards

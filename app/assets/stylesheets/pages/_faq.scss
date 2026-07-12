@@ -99,10 +99,10 @@
 // ===================================
 
 .faq-item {
-  border-bottom: 1px solid #e8efee;
+  border-bottom: 1px solid $color-border;
 
   &:first-of-type {
-    border-top: 1px solid #e8efee;
+    border-top: 1px solid $color-border;
   }
 }
 
@@ -223,7 +223,7 @@
   margin: 3rem auto 0;
   padding: 2.5rem 5%;
   text-align: center;
-  background: #f5faf9;
+  background: $color-surface-mint;
   border-radius: 16px;
 
   p {

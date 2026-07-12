@@ -8,7 +8,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f5faf9;
+  background: $color-surface-mint;
   border: 1px solid #e0ebe9;
   border-radius: 20px;
   padding: 4px 14px;
@@ -54,7 +54,7 @@
   font-size: 0.875rem;
 
   thead {
-    background: #f5faf9;
+    background: $color-surface-mint;
   }
 
   th {
@@ -109,7 +109,7 @@
 }
 
 .whatsapp-share-card {
-  background: #f5faf9;
+  background: $color-surface-mint;
   border: 1px solid #e0ebe9;
   border-left: 4px solid #25D366;
   border-radius: 12px;
