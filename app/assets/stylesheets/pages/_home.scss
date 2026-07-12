@@ -385,8 +385,8 @@
 
 .testimonial-card {
   background: white;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-  border-radius: 16px;
+  box-shadow: $shadow-card;
+  border-radius: $radius-lg;
   padding: 1.75rem 1.5rem 1.5rem;
   width: 33%;
   margin: 0 8px;
@@ -642,8 +642,8 @@ input[type="checkbox"].toggle:checked+label::before {
   position: relative;
   width: 32%;
   background-color: #fff;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  border-radius: 8px;
+  box-shadow: $shadow-base;
+  border-radius: $radius-base;
   padding: 44px 24px;
   margin-bottom: 1rem;
   display: flex;
