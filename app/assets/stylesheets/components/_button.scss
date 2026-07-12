@@ -29,16 +29,16 @@
   // Size variants
   &.btn-sm {
     padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: $fs-sm;
   }
 
   &.btn-lg {
     padding: 0.75rem 2rem;
-    font-size: 1.125rem;
+    font-size: $fs-md;
   }
 
   i {
-    font-size: 1rem;
+    font-size: $fs-base;
   }
 }
 
@@ -92,12 +92,12 @@ button.btn-yellow-circle {
 
   &.btn-sm {
     padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: $fs-sm;
   }
 
   &.btn-lg {
     padding: 0.75rem 2rem;
-    font-size: 1.125rem;
+    font-size: $fs-md;
   }
 }
 
@@ -111,7 +111,7 @@ button.btn-yellow-circle {
   color: $dark-green;
   border: 0.0625rem solid $dark-green;
   border-radius: $radius-pill;
-  font-size: 1rem;
+  font-size: $fs-base;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;
 
@@ -133,7 +133,7 @@ button.btn-yellow-circle {
   color: #fff;
   border: none;
   border-radius: $radius-pill;
-  font-size: 0.75rem;
+  font-size: $fs-xs;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;
   text-decoration: none;

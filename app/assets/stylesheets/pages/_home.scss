@@ -24,7 +24,7 @@
 
   h2 {
     font-family: 'Libre Baskerville', serif;
-    font-size: 1rem;
+    font-size: $fs-base;
     color: $dark-yellow;
     text-align: center;
   }
@@ -55,7 +55,7 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
     margin: 24px 0px;
   }
 
@@ -71,7 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.75rem;
+  font-size: $fs-xs;
 }
 
 .swatch {
@@ -134,7 +134,7 @@
   }
 
   .btn-gooi-outline {
-    font-size: 12px;
+    font-size: $fs-xs;
     /* text size */
     line-height: 1.2;
     /* tighter height */
@@ -185,7 +185,7 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
   }
 
   p {
@@ -229,7 +229,7 @@
   h3 {
     margin: 0 16px;
     font-family: 'Libre Baskerville', serif;
-    font-size: 20px;
+    font-size: $fs-lg;
     color: $color-text-dark;
   }
 }
@@ -280,7 +280,7 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
     margin: 44px 0px;
   }
 
@@ -294,7 +294,7 @@
   h3 {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
-    font-size: 1.25rem;
+    font-size: $fs-lg;
   }
 }
 
@@ -308,7 +308,7 @@
   .compost-title {
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
-    font-size: 18px;
+    font-size: $fs-md;
 
   }
 }
@@ -371,14 +371,14 @@
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
     margin-bottom: 0.25rem;
   }
 
   .section-subtitle {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 1rem;
+    font-size: $fs-base;
     margin-bottom: 0;
   }
 }
@@ -408,7 +408,7 @@
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
+    font-size: $fs-base;
     color: #525560;
     line-height: 1.65;
     margin-bottom: 1.25rem;
@@ -417,7 +417,7 @@
 
   h4 {
     font-family: 'Libre Baskerville', serif;
-    font-size: 1rem;
+    font-size: $fs-base;
     color: $dark-green;
     font-weight: 700;
     margin-top: 0.5rem;
@@ -464,7 +464,7 @@
     font-family: 'Libre Baskerville', 'serif';
     color: $dark-green;
     margin: 16px;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
   }
 }
 
@@ -501,13 +501,13 @@
     top: 136px;
     font-family: 'Libre Baskerville', serif;
     color: #ffffff;
-    font-size: 18px;
+    font-size: $fs-md;
     padding: 0px 8px;
   }
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.75rem;
+    font-size: $fs-xs;
     padding: 0px 8px;
     text-align: left;
     position: absolute;
@@ -523,7 +523,7 @@
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
+    font-size: $fs-base;
     color: #525560;
     line-height: 1.75;
   }
@@ -553,7 +553,7 @@ input[type="checkbox"] {
 input[type="checkbox"].toggle+label {
   position: relative;
   display: flex;
-  font-size: 24px;
+  font-size: $fs-xl;
   align-items: center;
 }
 
@@ -610,13 +610,13 @@ input[type="checkbox"].toggle:checked+label::before {
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
   }
 
   h5 {
     font-family: 'Libre Baskerville', sans-serif;
     color: $dark-green;
-    font-size: 1rem;
+    font-size: $fs-base;
   }
 
   h2 {
@@ -657,7 +657,7 @@ input[type="checkbox"].toggle:checked+label::before {
   h3 {
     font-family: 'Libre Baskerville', serif;
     font-weight: 700;
-    font-size: 24px;
+    font-size: $fs-xl;
     color: $dark-green;
     margin-bottom: 0.6rem;
 
@@ -666,7 +666,7 @@ input[type="checkbox"].toggle:checked+label::before {
 
   h4 {
     font-family: "Montserrat", sans-serif;
-    font-size: 16px;
+    font-size: $fs-base;
     color: #fff;
     position: absolute;
     background-color: $dark-yellow;
@@ -700,7 +700,7 @@ input[type="checkbox"].toggle:checked+label::before {
 .other-options-title {
   font-family: 'Libre Baskerville', serif;
   color: $dark-green;
-  font-size: 1.25rem;
+  font-size: $fs-lg;
   font-weight: 600;
   text-align: center;
   margin-bottom: 1.25rem;
@@ -729,7 +729,7 @@ input[type="checkbox"].toggle:checked+label::before {
   h3 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: 1.25rem;
+    font-size: $fs-lg;
     margin-bottom: 0.6rem;
   }
 
@@ -897,7 +897,7 @@ input[type="checkbox"].toggle:checked+label::before {
   .gooi-header {
 
     h1 {
-      font-size: 1.5rem;
+      font-size: $fs-xl;
       padding-top: 4rem;
       padding-bottom: 1rem;
     }
@@ -905,7 +905,7 @@ input[type="checkbox"].toggle:checked+label::before {
     height: 100vh;
 
     p {
-      font-size: 1rem;
+      font-size: $fs-base;
       width: 85%;
     }
   }
@@ -947,7 +947,7 @@ input[type="checkbox"].toggle:checked+label::before {
   height: 100vh;
 
   h1 {
-    font-size: 2rem;
+    font-size: $fs-2xl;
     padding-top: 4rem;
     padding-bottom: 1rem;
   }
@@ -977,7 +977,7 @@ input[type="checkbox"].toggle:checked+label::before {
     height: 100vh;
 
     h1 {
-      font-size: 2rem;
+      font-size: $fs-2xl;
       padding-top: 4rem;
       padding-bottom: 1rem;
     }
@@ -1067,7 +1067,7 @@ input[type="checkbox"].toggle:checked+label::before {
     height: 105vh;
 
     h1 {
-      font-size: 2rem;
+      font-size: $fs-2xl;
     }
 
   }
@@ -1094,7 +1094,7 @@ input[type="checkbox"].toggle:checked+label::before {
 
   .pricing-section {
     h5 {
-      font-size: 1rem
+      font-size: $fs-base
     }
   }
 
@@ -1109,7 +1109,7 @@ input[type="checkbox"].toggle:checked+label::before {
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: $fs-display;
     margin-bottom: 16px;
   }
 
@@ -1193,14 +1193,14 @@ input[type="checkbox"].toggle:checked+label::before {
   h3 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
-    font-size: 20px;
+    font-size: $fs-lg;
     margin: 0;
   }
 
   .farm-suburb {
     font-family: 'Montserrat', sans-serif;
     color: #525560;
-    font-size: 14px;
+    font-size: $fs-sm;
     margin: 0;
     white-space: nowrap;
 
@@ -1218,7 +1218,7 @@ input[type="checkbox"].toggle:checked+label::before {
   padding: 4px 12px;
   border-radius: 16px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
+  font-size: $fs-xs;
   font-weight: 600;
   width: fit-content;
 }
@@ -1226,7 +1226,7 @@ input[type="checkbox"].toggle:checked+label::before {
 .farm-stat {
   font-family: 'Montserrat', sans-serif;
   color: $color-text-forest;
-  font-size: 14px;
+  font-size: $fs-sm;
   font-weight: 500;
 }
 
@@ -1242,7 +1242,7 @@ input[type="checkbox"].toggle:checked+label::before {
     margin: 60px 5%;
 
     .section-description {
-      font-size: 1rem;
+      font-size: $fs-base;
     }
   }
 

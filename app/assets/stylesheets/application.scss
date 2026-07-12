@@ -34,14 +34,14 @@ a {
 h1 {
   font-family: 'Libre Baskerville', serif;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: $fs-2xl;
   color: $dark-green;
 }
 
 h3 {
   font-family: 'Libre Baskerville', serif;
   font-weight: 700;
-  font-size: 24px;
+  font-size: $fs-xl;
   color: $dark-green;
 }
 
@@ -99,6 +99,6 @@ ul {
     display: block;
     text-align: center;
     cursor: pointer;
-    font-size: 16px;
+    font-size: $fs-base;
   }
 }

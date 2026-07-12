@@ -161,7 +161,7 @@
 
 .new-nav-drawer-link {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
+  font-size: $fs-base;
   font-weight: 500;
   color: $dark-green;
   text-decoration: none;
@@ -205,7 +205,7 @@
   margin: 0 10px;
   text-decoration: none;
   border-bottom: 1px solid white;
-  font-size: 16px;
+  font-size: $fs-base;
 }
 
 .flex-nav {
