@@ -47,7 +47,6 @@ class Subscription < ApplicationRecord
   validates :duration, presence: true, unless: :once_off?
   validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
   validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
-  validate :protein_requires_frequent_collection
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
 
@@ -77,10 +76,6 @@ class Subscription < ApplicationRecord
   # Suffixed so the predicates read `protein_waste_stream?` rather than claiming
   # the generic `general?`/`protein?` names on the model.
   enum :waste_stream, %i[general protein], suffix: true
-
-  # Minimum weekly visits for a protein/plate-waste stream. Animal protein can't
-  # sit in a sealed bucket for a week, so the stream is only sold at 2+ visits.
-  PROTEIN_MIN_COLLECTIONS_PER_WEEK = 2
 
   # Constants
   GRACE_BACK_DAYS = 7  # Grace period for subscription continuity when resubscribing
@@ -570,17 +565,6 @@ class Subscription < ApplicationRecord
   def canonicalize_suburb
     return if suburb.blank?
     self.suburb = LEGACY_TO_CANONICAL.fetch(suburb, suburb)
-  end
-
-  # once_off subscriptions are a single visit, so weekly frequency is meaningless
-  # for them — the rule only binds recurring protein plans.
-  def protein_requires_frequent_collection
-    return unless protein_waste_stream?
-    return if once_off?
-    return if collections_per_week.to_i >= PROTEIN_MIN_COLLECTIONS_PER_WEEK
-
-    errors.add(:collections_per_week,
-               "must be at least #{PROTEIN_MIN_COLLECTIONS_PER_WEEK} for a protein waste stream")
   end
 
   # def set_customer_id

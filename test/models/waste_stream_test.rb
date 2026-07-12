@@ -41,19 +41,20 @@ class WasteStreamTest < ActiveSupport::TestCase
     assert build_subscription(waste_stream: :protein, collections_per_week: 2).valid?
   end
 
-  test "protein subscription with 1 collection per week is invalid" do
+  # Collection frequency is a commercial decision, not a data rule: the first
+  # protein customer is a Commercial site collected once a week.
+  test "protein subscription with 1 collection per week is valid" do
     sub = build_subscription(waste_stream: :protein, collections_per_week: 1)
 
-    assert_not sub.valid?
-    assert_includes sub.errors[:collections_per_week],
-                    "must be at least 2 for a protein waste stream"
+    assert sub.valid?, sub.errors.full_messages.join(", ")
+    assert_empty sub.errors[:collections_per_week]
   end
 
   test "general subscription with 1 collection per week is unaffected" do
     assert build_subscription(waste_stream: :general, collections_per_week: 1).valid?
   end
 
-  test "once_off protein is exempt — a single visit has no weekly frequency" do
+  test "once_off protein is valid" do
     sub = build_subscription(plan: "once_off", duration: nil, waste_stream: :protein,
                              collections_per_week: 1)
 

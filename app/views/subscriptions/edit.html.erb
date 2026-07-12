@@ -166,7 +166,7 @@
                             label: "Waste stream",
                             collection: Subscription.waste_streams.keys.map { |s| [s.titleize, s] },
                             include_blank: false,
-                            hint: "Protein/plate-waste needs 2+ collections per week",
+                            hint: "Protein/plate-waste goes to in-vessel composting, not open piles",
                             input_html: { class: 'form-select' },
                             wrapper_html: { class: 'mb-0' } %>
               </div>

@@ -122,19 +122,23 @@ class ProteinQuoteToSubscriptionTest < ActionDispatch::IntegrationTest
     assert satellite.protein_waste_stream?, "the satellite runs the same stream"
   end
 
-  # ── Guard ───────────────────────────────────────────────────────────────
+  # ── Once-a-week protein ─────────────────────────────────────────────────
 
-  test "a protein subscription with 1 collection per week is rejected" do
+  # The first protein customer is a Commercial site collected once a week, so
+  # frequency is a commercial decision rather than something the model enforces.
+  test "a protein quote at 1 collection per week converts" do
     quotation = build_quotation(products: [@protein_volume], collections_per_week: 1)
 
-    assert_no_difference -> { @customer.subscriptions.count } do
+    assert_difference -> { @customer.subscriptions.count }, 1 do
       post admin_subscriptions_path, params: {
         user_id: @customer.id, quotation_id: quotation.id,
         subscription: subscription_params(waste_stream: "protein", collections_per_week: 1)
       }
     end
 
-    assert_response :unprocessable_entity
+    sub = @customer.subscriptions.order(:created_at).last
+    assert sub.protein_waste_stream?
+    assert_equal 1, sub.collections_per_week
   end
 
   # Enum assignment raises ArgumentError on an unknown value, so an unsanitised
