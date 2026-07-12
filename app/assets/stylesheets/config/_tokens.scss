@@ -1,0 +1,59 @@
+// Design tokens — font sizes, spacing, radii, colour aliases, shadows.
+// Phase 0 scaffold: variables only, nothing consumes these yet.
+// See /Users/kristenkennedy/Claude/Gooi/BRAND.md Section 8 for the source proposal.
+
+// ─── Font sizes ($fs-*) ─────────────────────────────────────
+// Type scale — based on 1rem (16px) base
+$fs-xs:      0.75rem;    // 12px  — badges, tiny labels, legend text
+$fs-sm:      0.875rem;   // 14px  — secondary text, small card copy, button-sm
+$fs-base:    1rem;       // 16px  — standard body copy, nav links, form labels
+$fs-md:      1.125rem;   // 18px  — lead body text, larger paragraphs (replaces 1.0625rem)
+$fs-lg:      1.25rem;    // 20px  — small card headings, sub-section labels (replaces 20px/24px cards)
+$fs-xl:      1.5rem;     // 24px  — card/section sub-headings (h3 global)
+$fs-2xl:     2rem;       // 32px  — section headings (h1 global)
+$fs-3xl:     2.5rem;     // 40px  — large section headings, dashboard KPI values
+$fs-hero:    clamp(2rem, 5vw, 3rem);         // Responsive hero heading (h1 on landing)
+$fs-display: clamp(1.75rem, 4vw, 2.75rem);   // Section headings with fluid scaling
+
+// ─── Spacing ($space-*) ─────────────────────────────────────
+// Spacing scale — base unit 0.25rem (4px), named by multiplier
+$space-1:   0.25rem;   // 4px   — icon gaps, very tight spacing
+$space-2:   0.5rem;    // 8px   — small internal padding, compact margins
+$space-3:   0.75rem;   // 12px  — badge padding, tight card gaps
+$space-4:   1rem;      // 16px  — standard unit: button padding, nav padding
+$space-5:   1.25rem;   // 20px
+$space-6:   1.5rem;    // 24px  — card padding, section-level internal spacing
+$space-8:   2rem;      // 32px  — larger section padding
+$space-10:  2.5rem;    // 40px
+$space-12:  3rem;      // 48px  — section padding (compostable-section, pricing)
+$space-14:  3.5rem;    // 56px  — testimonial section padding
+$space-16:  4rem;      // 64px  — page-bottom margin
+$space-20:  5rem;      // 80px  — large section vertical margins
+
+// ─── Border radii ($radius-*) ───────────────────────────────
+$radius-sm:   0.375rem;  // 6px  — small utility elements
+$radius-base: 0.5rem;    // 8px  — standard cards, navbar, badges
+$radius-md:   0.75rem;   // 12px — larger cards, commercial card
+$radius-lg:   1rem;      // 16px — forms, dropdowns, customer nav
+$radius-xl:   1.5rem;    // 24px — feature/hero cards, video
+$radius-pill: 3rem;      // 48px — all buttons (current standard)
+$radius-full: 9999px;    // circles, avatars
+
+// ─── Colour aliases ─────────────────────────────────────────
+// Semantic names for the palette already defined in config/_colors.scss
+$color-primary:      $dark-green;
+$color-accent:       $dark-yellow;
+$color-secondary:    $medium-green;
+$color-text-body:    $font-grey;
+$color-text-dark:    #18191F;    // nav links, mobile text — not yet in _colors.scss
+$color-surface:      #ffffff;
+$color-surface-alt:  $light-gray;
+$color-surface-mint: #f5faf9;    // testimonial section bg — not yet in _colors.scss
+$color-border:       #e8efee;    // drawer divider, light borders — not yet in _colors.scss
+$color-danger:       $red;
+
+// ─── Shadows ($shadow-*) ────────────────────────────────────
+$shadow-sm:   rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;      // navbar
+$shadow-base: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;  // cards
+$shadow-lg:   0 8px 28px rgba($dark-green, 0.1);          // hover lift — not yet used
+$shadow-card: 0 2px 16px rgba(0, 0, 0, 0.07);              // testimonial cards — not yet used
