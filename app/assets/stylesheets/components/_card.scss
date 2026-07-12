@@ -5,8 +5,8 @@
   max-width: 600px;
   margin: 0 auto 1rem;
   background-color: #fff;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  border-radius: 8px;
+  box-shadow: $shadow-base;
+  border-radius: $radius-base;
   padding: 2rem 2rem;
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@
     position: absolute;
     background-color: $dark-yellow;
     padding: 8px 16px;
-    border-radius: 0px 0px 8px 8px;
+    border-radius: 0px 0px $radius-base $radius-base;
     top: 0px;
     right: 0px;
   }
@@ -41,8 +41,8 @@
 
 .small-icon-card {
   background-color: #fff;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  border-radius: 8px;
+  box-shadow: $shadow-base;
+  border-radius: $radius-base;
   padding: 16px;
   margin-bottom: 1rem;
   display: flex;
@@ -75,7 +75,7 @@
   i {
     margin: 4px 0;
     color: $dark-green;
-    font-size: bigger
+    font-size: $fs-xl
   }
 
 }
@@ -145,14 +145,14 @@
   form button {
     padding: 0.25rem 0.75rem;
     font-size: 0.75rem;
-    border-radius: 6px;
+    border-radius: $radius-sm;
   }
 }
 
 .payment-type-badge {
   display: inline-block;
   padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  border-radius: $radius-full;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.04em;

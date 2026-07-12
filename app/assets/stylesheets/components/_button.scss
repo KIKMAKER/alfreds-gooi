@@ -4,7 +4,7 @@
 .btn-yellow {
   background-color: $dark-yellow;
   border: none;
-  border-radius: 3rem;
+  border-radius: $radius-pill;
   padding: 0.5rem 1.25rem;
   color: white;
   text-decoration: none;
@@ -69,7 +69,7 @@ button.btn-yellow-circle {
 .btn-secondary-outline {
   background-color: white;
   border: 0.125rem solid $dark-green;
-  border-radius: 3rem;
+  border-radius: $radius-pill;
   padding: 0.5rem 1.25rem;
   color: $dark-green;
   text-decoration: none;
@@ -110,7 +110,7 @@ button.btn-yellow-circle {
   background-color: #fff;
   color: $dark-green;
   border: 0.0625rem solid $dark-green;
-  border-radius: 3rem;
+  border-radius: $radius-pill;
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;
@@ -132,7 +132,7 @@ button.btn-yellow-circle {
   background-color: $dark-green;
   color: #fff;
   border: none;
-  border-radius: 3rem;
+  border-radius: $radius-pill;
   font-size: 0.75rem;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;

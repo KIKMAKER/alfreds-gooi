@@ -2,7 +2,7 @@
   position: relative;
   justify-content: flex-end;
   background: #ffffff;
-  border-radius: 0px 0px 8px 8px;
+  border-radius: 0px 0px $radius-base $radius-base;
   display: flex;
   align-items: center;
   padding-top: 6px;
@@ -326,7 +326,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: $radius-base;
   border: none;
   background: transparent;
   color: $dark-green;
@@ -336,7 +336,7 @@
   transition: background 0.15s ease;
 
   &:hover {
-    background: rgba(2, 63, 58, 0.08);
+    background: rgba($dark-green, 0.08);
     color: $dark-green;
   }
 }
@@ -344,7 +344,7 @@
 .customer-nav-dropdown {
   min-width: 220px;
   border: none;
-  border-radius: 16px;
+  border-radius: $radius-lg;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 8px 24px 0px;
   padding: 0.5rem;
   margin-top: 0.5rem;
