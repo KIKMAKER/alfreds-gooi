@@ -1,0 +1,22 @@
+// Admin-only rand-per-litre badge shown beside invoice and quotation titles.
+// Yellow matches the admin panel accents on those pages.
+.rpl-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.05rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(245, 177, 26, 0.15);
+  border: 1px solid rgba(245, 177, 26, 0.4);
+  color: rgb(150, 110, 15);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: help;
+
+  &__unit {
+    font-size: 0.75em;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+}

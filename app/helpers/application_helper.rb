@@ -47,6 +47,23 @@ module ApplicationHelper
     Redcarpet::Markdown.new(renderer, autolink: true, no_intra_emphasis: true, tables: true).render(text).html_safe
   end
 
+  # Admin-only R/L badge for quotes and invoices. Renders nothing for
+  # non-admins or when the document has no volume basis (order invoices,
+  # event quotes, zero totals). Hover shows the calculation.
+  def rands_per_litre_badge(record)
+    return unless current_user&.admin?
+
+    result = RandsPerLitre.for(record)
+    return unless result
+
+    tag.span(class: "rpl-badge", title: result.note) do
+      safe_join([
+        tag.span("R#{format('%.2f', result.rate)}", class: "rpl-badge__rate"),
+        tag.span("/L", class: "rpl-badge__unit")
+      ])
+    end
+  end
+
   def render_navbar
     if user_signed_in?
       if current_user.driver? || current_user.admin?
