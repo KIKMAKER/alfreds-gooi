@@ -255,6 +255,7 @@ Rails.application.routes.draw do
     end
   end
   get '/today/notes', to: 'subscriptions#today_notes', as: :today_notes
+  get '/suburb_spotlight', to: 'suburb_spotlights#show', as: :suburb_spotlight
 
   # I want get and patch requests on these custom drivers_day routes
   # member routes are created with /drivers_day/:id/custom_route
@@ -273,6 +274,7 @@ Rails.application.routes.draw do
       patch :end
       get :collections
       get :snapshot
+      get :weekly_snapshot
       patch :reorder
       patch :update_note
     end

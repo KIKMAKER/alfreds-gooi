@@ -258,7 +258,8 @@ class DriversDay < ApplicationRecord
     WeeklyStatsMailer.report(
       to: ENV.fetch("GOOI_STATS_EMAIL_TO", "kristen.c.kennedy@gmail.com"),
       anchor_date: date,
-      mode: :route_week
+      mode: :route_week,
+      drivers_day_id: id
     ).deliver_now
 
     # If you prefer a background hop (still immediate), swap to:

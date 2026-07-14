@@ -39,54 +39,69 @@ class Collection < ApplicationRecord
     true
   end
 
-  # Promotional soil bag claim link, sent per-collection over WhatsApp.
+  # ── Per-collection action links (soil bag, skip) ────────────────────────
+  #
+  # Customers act on a single collection from a WhatsApp link without logging
+  # in. Each action has its own short-code column so links are independent: one
+  # can be revoked without touching the other, and a skip link can never claim a
+  # bag or vice versa.
   #
   # Ambiguous glyphs are excluded so a code can be read down a phone without
   # "was that an oh or a zero". 31 symbols over 8 places is ~8.5e11 codes, and
   # only collections we actually send a link for get one.
-  SOIL_BAG_TOKEN_ALPHABET = (("a".."z").to_a - %w[i l o] + ("2".."9").to_a).freeze
-  SOIL_BAG_TOKEN_LENGTH = 8
+  ACTION_TOKEN_ALPHABET = (("a".."z").to_a - %w[i l o] + ("2".."9").to_a).freeze
+  ACTION_TOKEN_LENGTH = 8
+  ACTION_TOKEN_COLUMNS = %i[soil_bag_token skip_token].freeze
+
+  def self.generate_action_token
+    Array.new(ACTION_TOKEN_LENGTH) { ACTION_TOKEN_ALPHABET.sample(random: SecureRandom) }.join
+  end
+
+  # Look a collection up by one of its action tokens, refusing a blank token so
+  # an empty URL segment can't match a null column. A link is only live while
+  # its collection is still in the future — the collection date is the expiry,
+  # so there's no TTL column and no link outlives its point.
+  def self.find_by_action_token!(column, token)
+    raise ArgumentError, "unknown action token column #{column}" unless ACTION_TOKEN_COLUMNS.include?(column)
+    raise ActiveRecord::RecordNotFound if token.blank?
+
+    collection = find_by!(column => token.to_s)
+    raise ActiveRecord::RecordNotFound if collection.action_link_expired?
+
+    collection
+  end
 
   # Mint on demand and keep it — the same collection always yields the same link,
   # so re-sending a WhatsApp message doesn't strand the customer's first link.
-  def ensure_soil_bag_token!
-    return soil_bag_token if soil_bag_token.present?
+  def ensure_action_token!(column)
+    raise ArgumentError, "unknown action token column #{column}" unless ACTION_TOKEN_COLUMNS.include?(column)
+    return self[column] if self[column].present?
 
     attempts = 0
     begin
-      update_column(:soil_bag_token, self.class.generate_soil_bag_token)
+      update_column(column, self.class.generate_action_token)
     rescue ActiveRecord::RecordNotUnique
       attempts += 1
       retry if attempts < 5
       raise
     end
 
-    soil_bag_token
+    self[column]
   end
 
-  # Pulling the token clears the customer's link without touching anyone else's.
-  def revoke_soil_bag_token!
-    update_column(:soil_bag_token, nil)
-  end
-
-  def self.generate_soil_bag_token
-    Array.new(SOIL_BAG_TOKEN_LENGTH) { SOIL_BAG_TOKEN_ALPHABET.sample(random: SecureRandom) }.join
-  end
-
-  # A bag can only ride on a collection that hasn't happened yet, so the
-  # collection date is the expiry. No TTL column, and no link outlives its point.
-  def self.find_by_soil_bag_token!(token)
-    raise ActiveRecord::RecordNotFound if token.blank?
-
-    collection = find_by!(soil_bag_token: token.to_s)
-    raise ActiveRecord::RecordNotFound if collection.soil_bag_link_expired?
-
-    collection
-  end
-
-  def soil_bag_link_expired?
+  def action_link_expired?
     date.nil? || date < Date.current
   end
+
+  # Soil bag claim link.
+  def ensure_soil_bag_token! = ensure_action_token!(:soil_bag_token)
+  def revoke_soil_bag_token! = update_column(:soil_bag_token, nil)
+  def self.find_by_soil_bag_token!(token) = find_by_action_token!(:soil_bag_token, token)
+
+  # Skip-your-next-collection link.
+  def ensure_skip_token! = ensure_action_token!(:skip_token)
+  def revoke_skip_token! = update_column(:skip_token, nil)
+  def self.find_by_skip_token!(token) = find_by_action_token!(:skip_token, token)
 
   def soil_bag_claimed?
     soil_bag.to_i.positive?

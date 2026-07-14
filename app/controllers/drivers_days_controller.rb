@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot]
+  skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot, :weekly_snapshot]
   before_action :set_drivers_day, only: %i[drop_off edit update update_note destroy collections]
 
   def route
@@ -299,6 +299,13 @@ class DriversDaysController < ApplicationController
     render layout: 'snapshot'
   end
 
+  def weekly_snapshot
+    @drivers_day = DriversDay.find(params[:id])
+    @stats = WeeklyStats.call(anchor_date: @drivers_day.date, mode: :route_week)
+
+    render layout: 'snapshot'
+  end
+
   def yearly_snapshot
     # Get year from params or default to 2025
     year = params[:year]&.to_i || 2025
@@ -411,7 +418,7 @@ class DriversDaysController < ApplicationController
   def route_export_text(items)
     items.map do |item|
       source = item.is_a?(DropOffEvent) ? item.drop_off_site : item.subscription
-      [source.street_address, source.suburb].compact_blank.join(", ").gsub(";", ",").strip
+      source.street_address.to_s.gsub(";", ",").strip
     end.compact_blank.join("; ")
   end
 

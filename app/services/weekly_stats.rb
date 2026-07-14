@@ -3,8 +3,12 @@ class WeeklyStats
   Result = Struct.new(
     :period_label, :start_date, :end_date,
     :customers_served, :buckets_diverted, :kg_diverted,
-    :skips, :new_customers, :route_kms, :soil_bags
+    :skips, :new_customers, :route_kms, :soil_bags,
+    :collections_completed, :kg_diverted_all_time
   )
+
+  # Gooi's first recorded collection week — the "since" anchor for the running total.
+  OPERATIONS_START_DATE = Date.new(2023, 1, 1)
 
   # mode: :route_week anchors to Tue–Thu of the given week
   # anchor_date: typically the DriversDay#date for Thursday
@@ -44,14 +48,16 @@ class WeeklyStats
     route_kms     = days.sum do |d|
       ((d.end_kms || 0) - (d.start_kms || 0)).clamp(0, 1_000_000)
     end
+    collections_completed = cols.where(skip: false).count
+    kg_diverted_all_time  = DriversDay.where(date: OPERATIONS_START_DATE..end_date).sum(:total_net_kg).round
 
     period_label = "#{start_date.strftime('%d %b')}–#{end_date.strftime('%d %b %Y')}"
 
     Result.new(
       period_label, start_date, end_date,
       customers_served, buckets_diverted, kg_diverted,
-      skips, new_customers, route_kms
+      skips, new_customers, route_kms, nil,
+      collections_completed, kg_diverted_all_time
     )
-    # soil_bags,
   end
 end
