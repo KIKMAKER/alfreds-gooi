@@ -1,32 +1,32 @@
 <% content_for :meta_title, "A free bag of compost, on us | Gooi" %>
 <% content_for :meta_description, "We're giving a bag of compost to every household that wants one. Claim yours and Alfred will drop it off with your next collection." %>
 
-<div class="soil-bag">
-  <div class="soil-bag__card">
+<div class="action-card">
+  <div class="action-card__inner">
     <% if @collection.soil_bag_claimed? %>
-      <i class="fa-solid fa-circle-check soil-bag__icon soil-bag__icon--done"></i>
+      <i class="fa-solid fa-circle-check action-card__icon action-card__icon--done"></i>
 
       <% if flash[:just_claimed] %>
-        <h1 class="soil-bag__title">Lekker — it will be in the bakkie</h1>
-        <p class="soil-bag__lede">
+        <h1 class="action-card__title">Lekker — it will be in the bakkie</h1>
+        <p class="action-card__lede">
           Alfred will hand you your bag of compost on
           <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>,
           along with your usual collection.
         </p>
-        <p class="soil-bag__note">Enjoy the garden. Nothing to pay.</p>
+        <p class="action-card__note">Enjoy the garden. Nothing to pay.</p>
       <% else %>
-        <h1 class="soil-bag__title">You're on the list</h1>
-        <p class="soil-bag__lede">
+        <h1 class="action-card__title">You're on the list</h1>
+        <p class="action-card__lede">
           Alfred is bringing your bag of compost on
           <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>.
           Nothing more to do.
         </p>
       <% end %>
     <% else %>
-      <i class="fa-solid fa-seedling soil-bag__icon"></i>
+      <i class="fa-solid fa-seedling action-card__icon"></i>
 
-      <h1 class="soil-bag__title">A free bag of compost?</h1>
-      <p class="soil-bag__lede">
+      <h1 class="action-card__title">A free bag of compost?</h1>
+      <p class="action-card__lede">
         We're giving a bag of compost to every household that wants one.
         Alfred can drop yours off on your next collection,
         <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>.
@@ -35,10 +35,10 @@
       <%= button_to "Yes please, send me a bag",
                     claim_soil_bag_path(params[:token]),
                     method: :post,
-                    class: "soil-bag__button" %>
+                    class: "action-card__button" %>
 
       <% if @collection.skip? %>
-        <p class="soil-bag__note">
+        <p class="action-card__note">
           Heads up — this collection is currently marked as skipped, so let us
           know if you'd rather have your bag another week.
         </p>

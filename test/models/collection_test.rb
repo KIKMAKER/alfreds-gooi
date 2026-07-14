@@ -143,7 +143,7 @@ class CollectionTest < ActiveSupport::TestCase
   test "minting produces a short code free of ambiguous glyphs" do
     token = @collection.ensure_soil_bag_token!
 
-    assert_equal Collection::SOIL_BAG_TOKEN_LENGTH, token.length
+    assert_equal Collection::ACTION_TOKEN_LENGTH, token.length
     assert_match(/\A[a-hj-km-np-z2-9]+\z/, token, "no 0/1/i/l/o in the alphabet")
   end
 
@@ -196,14 +196,53 @@ class CollectionTest < ActiveSupport::TestCase
 
   test "a link expires once its collection date has passed" do
     @collection.update_column(:date, Date.current - 1.day)
-    assert @collection.soil_bag_link_expired?
+    assert @collection.action_link_expired?
 
     @collection.update_column(:date, Date.current)
-    assert_not @collection.soil_bag_link_expired?
+    assert_not @collection.action_link_expired?
   end
 
   test "find_by_soil_bag_token! rejects a blank token rather than matching a null column" do
     assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_soil_bag_token!(nil) }
     assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_soil_bag_token!("") }
+  end
+
+  # ── Skip token ──────────────────────────────────────────────────────────
+  # The skip token shares the minting engine with the soil bag token; these
+  # tests focus on the behaviour that must hold for the two to stay independent.
+
+  test "skip token mints a short code and is stable" do
+    token = @collection.ensure_skip_token!
+
+    assert_equal Collection::ACTION_TOKEN_LENGTH, token.length
+    assert_equal token, @collection.reload.ensure_skip_token!
+  end
+
+  test "skip and soil bag tokens are independent columns" do
+    @collection.update_column(:date, Date.current + 3.days) # lookups reject past-dated links
+    skip = @collection.ensure_skip_token!
+    soil = @collection.ensure_soil_bag_token!
+
+    assert_not_equal skip, soil
+    assert_equal @collection, Collection.find_by_skip_token!(skip)
+    assert_equal @collection, Collection.find_by_soil_bag_token!(soil)
+    # A skip token is not a soil bag token and vice versa.
+    assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_soil_bag_token!(skip) }
+    assert_raises(ActiveRecord::RecordNotFound) { Collection.find_by_skip_token!(soil) }
+  end
+
+  test "revoking the skip token leaves the soil bag token intact" do
+    @collection.ensure_skip_token!
+    soil = @collection.ensure_soil_bag_token!
+
+    @collection.revoke_skip_token!
+
+    assert_nil @collection.reload.skip_token
+    assert_equal soil, @collection.soil_bag_token
+  end
+
+  test "an unknown action token column is rejected" do
+    assert_raises(ArgumentError) { @collection.ensure_action_token!(:not_a_column) }
+    assert_raises(ArgumentError) { Collection.find_by_action_token!(:not_a_column, "abc") }
   end
 end

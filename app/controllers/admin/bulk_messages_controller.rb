@@ -5,26 +5,35 @@ class Admin::BulkMessagesController < ApplicationController
   def index
     @message = params[:message]
     @contacts = filter_contacts
-    @soil_bag_collections = soil_bag_collections_by_subscription
+    @action_collections = action_collections_by_subscription
   end
 
   private
 
-  SOIL_BAG_TOKEN_PLACEHOLDER = "{soil_bag_link}"
+  # Per-collection action links resolve against the collection on the filtered
+  # date. Each placeholder names the token it needs minted.
+  ACTION_LINK_MINTERS = {
+    "{soil_bag_link}" => :ensure_soil_bag_token!,
+    "{skip_link}"     => :ensure_skip_token!
+  }.freeze
 
-  # The soil bag link claims a bag on one specific collection, so {soil_bag_link}
-  # only resolves when the admin has filtered to a collection date. Contacts with
-  # no collection on that date render an empty string rather than a broken link.
+  # Collections on the filtered date, keyed by subscription, with any tokens the
+  # message references minted. These links target one specific collection, so
+  # they only resolve when the admin has filtered to a collection date; contacts
+  # with no collection on that date render an empty string rather than a broken
+  # link.
   #
-  # Minting writes a token, so it only happens when the admin has actually asked
-  # for a link — browsing the page leaves the collections untouched.
-  def soil_bag_collections_by_subscription
+  # Minting writes a token, so it only happens for placeholders actually present
+  # in the message — browsing the page leaves the collections untouched.
+  def action_collections_by_subscription
     return {} if params[:collection_date].blank?
-    return {} unless @message.to_s.include?(SOIL_BAG_TOKEN_PLACEHOLDER)
+
+    minters = ACTION_LINK_MINTERS.select { |placeholder, _| @message.to_s.include?(placeholder) }.values
+    return {} if minters.empty?
 
     collections = Collection.where(date: params[:collection_date],
                                    subscription_id: @contacts.map(&:subscription_id).uniq)
-    collections.each(&:ensure_soil_bag_token!)
+    collections.each { |collection| minters.each { |minter| collection.public_send(minter) } }
     collections.index_by(&:subscription_id)
   end
 

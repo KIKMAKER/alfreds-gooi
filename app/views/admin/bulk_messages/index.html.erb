@@ -179,7 +179,8 @@
               ['{account_start}', "Subscription start date"],
               ['{relationship}', "Contact's relationship (Owner, Spouse…)"],
               ['{collection_date}', "Collection date (e.g. Tuesday, 25 March)"],
-              ['{soil_bag_link}', "Free compost bag claim link — requires a collection date filter"]
+              ['{soil_bag_link}', "Free compost bag claim link — requires a collection date filter"],
+              ['{skip_link}', "Skip-this-collection link — requires a collection date filter"]
             ].each do |token, description| %>
               <span class="badge bg-light text-dark border" title="<%= description %>"><%= token %></span>
             <% end %>
@@ -187,7 +188,7 @@
           <% if params[:collection_date].blank? %>
             <small class="text-muted d-block mt-2">
               <i class="fa-solid fa-circle-info"></i>
-              <code>{soil_bag_link}</code> needs a <strong>collection date</strong> filter — the link claims a bag on that specific collection.
+              <code>{soil_bag_link}</code> and <code>{skip_link}</code> need a <strong>collection date</strong> filter — each link targets that specific collection.
             </small>
           <% end %>
         </div>
@@ -250,9 +251,10 @@
                 <td><%= sub&.total_collections || 0 %></td>
                 <td>
                   <% if @message.present? %>
-                    <% soil_bag_collection = @soil_bag_collections[contact.subscription_id] %>
+                    <% action_collection = @action_collections[contact.subscription_id] %>
                     <% replacements = {
-                      '{soil_bag_link}'  => (soil_bag_collection&.soil_bag_token ? soil_bag_url(soil_bag_collection.soil_bag_token) : ''),
+                      '{soil_bag_link}'  => (action_collection&.soil_bag_token ? soil_bag_url(action_collection.soil_bag_token) : ''),
+                      '{skip_link}'      => (action_collection&.skip_token ? skip_url(action_collection.skip_token) : ''),
                       '{first_name}'     => contact.first_name,
                       '{last_name}'      => contact.last_name.to_s,
                       '{full_name}'      => contact.full_name,

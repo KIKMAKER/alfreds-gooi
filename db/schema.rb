@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_11_201340) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_14_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -215,10 +215,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_11_201340) do
     t.integer "buckets_25l", default: 0
     t.string "skip_reason"
     t.string "soil_bag_token"
+    t.string "skip_token"
     t.index ["date"], name: "index_collections_on_date"
     t.index ["drivers_day_id", "position"], name: "index_collections_on_drivers_day_id_and_position"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"
     t.index ["skip"], name: "index_collections_on_skip"
+    t.index ["skip_token"], name: "index_collections_on_skip_token", unique: true, where: "(skip_token IS NOT NULL)"
     t.index ["soil_bag_token"], name: "index_collections_on_soil_bag_token", unique: true, where: "(soil_bag_token IS NOT NULL)"
     t.index ["subscription_id"], name: "index_collections_on_subscription_id"
   end

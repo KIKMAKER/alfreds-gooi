@@ -68,6 +68,28 @@ class Admin::BulkMessagesControllerTest < ActionDispatch::IntegrationTest
     assert_match %r{wa\.me/}, response.body, "the message still sends, just without a link"
   end
 
+  test "skip_link resolves to a claim url when filtered by collection date" do
+    get admin_bulk_messages_path, params: {
+      collection_date: @collection_date.to_s,
+      message: "Away this week? {skip_link}"
+    }
+
+    assert_response :success
+    assert_match %r{wa\.me/[^"]*skipme%2F}, response.body, "skip link should appear in the message"
+  end
+
+  test "only the referenced token is minted" do
+    get admin_bulk_messages_path, params: {
+      collection_date: @collection_date.to_s,
+      message: "Away this week? {skip_link}"
+    }
+
+    assert_response :success
+    @collection.reload
+    assert_not_nil @collection.skip_token, "skip token was referenced"
+    assert_nil @collection.soil_bag_token, "soil bag token was not referenced"
+  end
+
   test "browsing the page without asking for a link does not mint tokens" do
     get admin_bulk_messages_path, params: {
       collection_date: @collection_date.to_s,
@@ -75,7 +97,9 @@ class Admin::BulkMessagesControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_response :success
-    assert_nil @collection.reload.soil_bag_token
+    @collection.reload
+    assert_nil @collection.soil_bag_token
+    assert_nil @collection.skip_token
   end
 
   test "the minted token is stable across repeated sends" do

@@ -7,6 +7,11 @@ Rails.application.routes.draw do
   get  "soil-bag/:token", to: "soil_bags#show",  as: :soil_bag
   post "soil-bag/:token", to: "soil_bags#claim", as: :claim_soil_bag
 
+  # Tokenised skip-my-next-collection link, no login required. GET confirms,
+  # POST skips. (Logged-in equivalent: the /skipme route below.)
+  get  "skipme/:token", to: "skips#show",   as: :skip
+  post "skipme/:token", to: "skips#create", as: :confirm_skip
+
   # Shop and Orders
   get "shop", to: "shop#index", as: :shop_index
   post "orders/add_item", to: "orders#add_item", as: :add_to_order

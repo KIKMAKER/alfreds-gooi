@@ -1,12 +1,13 @@
-// Promotional soil bag claim page — reached from a WhatsApp link, logged out,
-// almost always on a phone.
-.soil-bag {
+// Logged-out, single-action landing pages reached from a WhatsApp link and
+// almost always opened on a phone (soil bag claim, skip-my-collection). One
+// centred card, one primary button.
+.action-card {
   display: flex;
   justify-content: center;
   padding: 2rem 1rem 4rem;
 }
 
-.soil-bag__card {
+.action-card__inner {
   width: 100%;
   max-width: 30rem;
   text-align: center;
@@ -17,7 +18,7 @@
   box-shadow: 0 0.5rem 1.5rem rgba($gray, 0.06);
 }
 
-.soil-bag__icon {
+.action-card__icon {
   font-size: 2.75rem;
   color: $medium-green;
   margin-bottom: 1.25rem;
@@ -31,21 +32,21 @@
   }
 }
 
-.soil-bag__title {
+.action-card__title {
   font-size: 1.6rem;
   font-weight: 700;
   color: $dark-green;
   margin-bottom: 0.75rem;
 }
 
-.soil-bag__lede {
+.action-card__lede {
   font-size: 1.05rem;
   line-height: 1.55;
   color: $font-grey;
   margin-bottom: 1.75rem;
 }
 
-.soil-bag__button {
+.action-card__button {
   width: 100%;
   padding: 0.9rem 1.25rem;
   font-size: 1.05rem;
@@ -62,7 +63,7 @@
   }
 }
 
-.soil-bag__note {
+.action-card__note {
   margin-top: 1.25rem;
   margin-bottom: 0;
   font-size: 0.9rem;

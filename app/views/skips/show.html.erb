@@ -1,0 +1,41 @@
+<% content_for :meta_title, "Skip your next collection | Gooi" %>
+<% content_for :meta_description, "Away this week? Skip your next Gooi collection in one tap — no login needed." %>
+
+<div class="action-card">
+  <div class="action-card__inner">
+    <% if @collection.skip? %>
+      <i class="fa-solid fa-circle-check action-card__icon action-card__icon--done"></i>
+
+      <% if flash[:just_skipped] %>
+        <h1 class="action-card__title">Done — we'll skip you</h1>
+        <p class="action-card__lede">
+          No collection on
+          <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>.
+          We'll see you the week after.
+        </p>
+        <p class="action-card__note">Changed your mind? Just WhatsApp Alfred.</p>
+      <% else %>
+        <h1 class="action-card__title">You're already skipped</h1>
+        <p class="action-card__lede">
+          Your collection on
+          <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>
+          is already set to skip. Nothing more to do.
+        </p>
+      <% end %>
+    <% else %>
+      <i class="fa-solid fa-calendar-xmark action-card__icon"></i>
+
+      <h1 class="action-card__title">Skip this collection?</h1>
+      <p class="action-card__lede">
+        Away or don't have enough scraps this week? We'll skip your collection on
+        <strong><%= @collection.date.strftime("%A, %-d %B") %></strong>
+        and see you the week after.
+      </p>
+
+      <%= button_to "Yes, skip it",
+                    confirm_skip_path(params[:token]),
+                    method: :post,
+                    class: "action-card__button" %>
+    <% end %>
+  </div>
+</div>
