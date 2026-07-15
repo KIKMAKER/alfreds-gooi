@@ -448,6 +448,20 @@ class Subscription < ApplicationRecord
     street_address.split(',').first.strip
   end
 
+  # A Mapbox-selected address is a full "<street>, <city>, <province> <postcode>,
+  # South Africa" string. Anything shorter was hand-typed and may be missing the
+  # suburb/postcode a driver needs to find the house.
+  def complete_mapbox_address?
+    street_address.to_s.match?(/South Africa\s*\z/i)
+  end
+
+  # True when the suburb field's own name doesn't even appear in the address text —
+  # a stronger signal than "just incomplete": the suburb itself may be wrong.
+  def suburb_missing_from_address?
+    return false if suburb.blank?
+    !street_address.to_s.downcase.include?(suburb.downcase)
+  end
+
   # Contact helper methods
   def primary_contact
     contacts.primary.first

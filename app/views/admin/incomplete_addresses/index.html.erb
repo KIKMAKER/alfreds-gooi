@@ -1,0 +1,37 @@
+<div class="container my-4">
+  <h1>Incomplete Addresses</h1>
+  <p class="text-muted">
+    Active subscriptions whose address wasn't picked from the Mapbox finder, so it's
+    missing the suburb/postcode/province a driver needs. Rows in red don't even
+    mention their assigned suburb in the address text — check the suburb field itself
+    before just filling in the rest of the address.
+  </p>
+
+  <p><strong><%= @subscriptions.count %></strong> of active subscriptions need a look.</p>
+
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Suburb</th>
+        <th>Current Address</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @subscriptions.each do |sub| %>
+        <tr class="<%= 'table-danger' if sub.suburb_missing_from_address? %>">
+          <td>#<%= sub.id %></td>
+          <td>
+            <%= sub.user&.full_name %><br>
+            <span class="text-muted small"><%= sub.user&.email %></span>
+          </td>
+          <td><%= sub.suburb %></td>
+          <td><%= sub.street_address %></td>
+          <td><%= link_to "Edit", edit_subscription_path(sub), class: "btn btn-sm btn-primary", target: "_blank" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

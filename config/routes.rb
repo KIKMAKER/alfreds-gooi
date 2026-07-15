@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     end
     resources :referrals, only: [:index]
     resources :bulk_messages, only: [:index]
+    resources :incomplete_addresses, only: :index
     resources :logistics, only: :index do
       collection do
         get :customer_map_data
