@@ -43,6 +43,33 @@
     </div>
   </div>
 
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="mb-3">Suburb Spotlight</h3>
+      <div class="card p-3 spotlight-picker">
+        <%= form_with url: suburb_spotlight_path, method: :get, local: true, target: "_blank" do %>
+          <div class="spotlight-picker__row">
+            <div class="spotlight-picker__field">
+              <label for="spotlight_suburb" class="form-label">Suburb</label>
+              <select name="suburb" id="spotlight_suburb" class="form-select">
+                <% Subscription::SUBURBS.each do |suburb| %>
+                  <option value="<%= suburb %>"><%= suburb %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="spotlight-picker__field">
+              <label for="spotlight_month" class="form-label">Month</label>
+              <input type="month" name="month" id="spotlight_month" class="form-control" value="<%= Date.current.strftime('%Y-%m') %>">
+            </div>
+            <div class="spotlight-picker__field spotlight-picker__field--action">
+              <button type="submit" class="btn btn-primary">Generate</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <h3 class="mt-4">By Route Day</h3>
   <table class="table table-sm align-middle">
     <thead>

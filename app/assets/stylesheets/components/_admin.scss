@@ -177,3 +177,22 @@
   &--other    { background: #f0edfa; color: #6a3fa0; }
   &--unknown  { background: #f0f0f0; color: #999; }
 }
+
+.spotlight-picker {
+  border-radius: 1em;
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  &__field {
+    flex: 1 1 12rem;
+  }
+
+  &__field--action {
+    flex: 0 0 auto;
+  }
+}
