@@ -51,12 +51,7 @@
           <% end %>
           <div class="info-row">
             <span class="info-label">Waste stream</span>
-            <span class="info-value">
-              <%= @subscription.waste_stream.titleize %>
-              <% if @subscription.protein_waste_stream? %>
-                <span class="dd-collection-badge dd-collection-badge--protein">Protein</span>
-              <% end %>
-            </span>
+            <span class="info-value"><%= @subscription.waste_stream.titleize %></span>
           </div>
           <div class="info-row">
             <span class="info-label">Collection Day</span>
