@@ -1,5 +1,5 @@
 class DriversDaysController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot]
+  skip_before_action :authenticate_user!, only: [:snapshot, :yearly_snapshot, :weekly_snapshot]
   before_action :set_drivers_day, only: %i[drop_off edit update update_note destroy collections]
 
   def route
@@ -295,6 +295,13 @@ class DriversDaysController < ApplicationController
       @co2_avoided = @stat.avoided_co2e_kg.round
       @trees_equivalent = @stat.trees_net.round
     end
+
+    render layout: 'snapshot'
+  end
+
+  def weekly_snapshot
+    @drivers_day = DriversDay.find(params[:id])
+    @stats = WeeklyStats.call(anchor_date: @drivers_day.date, mode: :route_week)
 
     render layout: 'snapshot'
   end
