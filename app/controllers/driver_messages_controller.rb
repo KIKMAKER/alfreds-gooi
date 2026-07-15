@@ -2,10 +2,10 @@ class DriverMessagesController < ApplicationController
   before_action :authenticate_user!
 
   SKIP_PLACEHOLDER = "{skip_link}"
+  NAME_PLACEHOLDER = "{first_name}"
 
   def index
     @collection_day  = params[:collection_day].presence
-    @message         = params[:message].presence
     @recipients      = []
     @collection_date = nil
 
@@ -19,50 +19,56 @@ class DriverMessagesController < ApplicationController
                   .includes(subscription: [:contacts, :user])
                   .to_a
 
-    @skip_eligible_ids = CollectionSkipPolicy.eligible_collection_ids(collections)
+    @segments  = CollectionSegment.for_collections(collections)
+    @templates = DriverMessageTemplate.bodies_by_segment
     @recipients = collections.flat_map { |collection| recipients_for(collection) }
   end
 
   private
 
-  # Build the recipient rows for one collection, each carrying the message
-  # personalised for that customer (skip link resolved, or the skip invitation
-  # removed for customers who shouldn't be asked).
+  # Build the recipient rows for one collection. Each recipient's message comes
+  # from the template for that customer's segment, with {skip_link} resolved once
+  # per collection (mint is shared) and {first_name} filled per recipient.
   def recipients_for(collection)
     subscription = collection.subscription
     return [] if subscription.nil?
 
-    message  = personalise(collection)
-    contacts = subscription.contacts.can_receive_whatsapp.order(is_primary: :desc, first_name: :asc)
+    segment   = @segments[collection.id]
+    body      = resolve_skip_link(@templates.fetch(segment.to_s), collection, segment)
+    contacts  = subscription.contacts.can_receive_whatsapp.order(is_primary: :desc, first_name: :asc)
 
     if contacts.any?
       contacts.map do |contact|
-        recipient("c#{contact.id}", "#{contact.first_name} #{contact.last_name}".strip,
-                  contact.formatted_phone, subscription.suburb, message)
+        recipient("c#{contact.id}", contact.first_name, "#{contact.first_name} #{contact.last_name}".strip,
+                  contact.formatted_phone, subscription.suburb, segment, body)
       end
     elsif subscription.user&.phone_number.present?
       user = subscription.user
-      [recipient("u#{user.id}", user.first_name.to_s, user.phone_number, subscription.suburb, message)]
+      [recipient("u#{user.id}", user.first_name, user.first_name.to_s,
+                 user.phone_number, subscription.suburb, segment, body)]
     else
       []
     end
   end
 
-  def recipient(id, name, phone, suburb, message)
-    { id: id, name: name, phone: phone.to_s, suburb: suburb, message: message }
+  def recipient(id, first_name, name, phone, suburb, segment, body)
+    {
+      id: id, name: name, phone: phone.to_s, suburb: suburb, segment: segment,
+      message: body.gsub(NAME_PLACEHOLDER, first_name.to_s)
+    }
   end
 
-  # Resolve {skip_link} for this collection. Eligible customers get a real skip
-  # URL (minting the token on demand); everyone else has the whole line the
-  # placeholder sits on removed, so new and once-off customers are never asked.
-  # Minting writes, so it only happens when the message actually uses the token.
-  def personalise(collection)
-    return @message unless @message&.include?(SKIP_PLACEHOLDER)
+  # Resolve {skip_link} for this collection. Standard customers get a real skip
+  # URL (minting the token on demand); every other segment has the whole line the
+  # placeholder sits on removed, so they're never asked. Minting writes, so it
+  # only happens for the standard segment when the template uses the token.
+  def resolve_skip_link(body, collection, segment)
+    return body unless body.include?(SKIP_PLACEHOLDER)
 
-    if @skip_eligible_ids.include?(collection.id)
-      @message.gsub(SKIP_PLACEHOLDER, skip_url(collection.ensure_skip_token!))
+    if segment == :standard
+      body.gsub(SKIP_PLACEHOLDER, skip_url(collection.ensure_skip_token!))
     else
-      @message.lines.reject { |line| line.include?(SKIP_PLACEHOLDER) }.join.strip
+      body.lines.reject { |line| line.include?(SKIP_PLACEHOLDER) }.join.strip
     end
   end
 

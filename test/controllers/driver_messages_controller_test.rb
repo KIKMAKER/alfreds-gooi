@@ -10,8 +10,13 @@ class DriverMessagesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in @driver
 
-    # Target the next Tuesday, which is what the tool computes from "tuesday".
     @date = next_weekday("Tuesday")
+
+    # Distinctive templates so we can tell which one each recipient received.
+    DriverMessageTemplate.create!(segment: "standard",     body: "STD {first_name}! Skip: {skip_link}")
+    DriverMessageTemplate.create!(segment: "new_customer", body: "NEW welcome {first_name}!")
+    DriverMessageTemplate.create!(segment: "once_off",     body: "ONCE {first_name}, thanks for trying us!")
+    DriverMessageTemplate.create!(segment: "commercial",   body: "COMM {first_name}, bins out please.")
   end
 
   def next_weekday(name)
@@ -21,96 +26,112 @@ class DriverMessagesControllerTest < ActionDispatch::IntegrationTest
     Date.today + ahead
   end
 
-  def customer(plan: "Standard")
+  def customer
     User.create!(
-      first_name: "Cust", last_name: "Omer",
+      first_name: "Thandi", last_name: "Omer",
       phone_number: "+2782#{rand(1_000_000..9_999_999)}", password: "password",
       email: "cust-#{SecureRandom.hex(4)}@gmail.com", og: false
     )
   end
 
   def subscription_for(user, plan: "Standard")
-    Subscription.create!(
+    attrs = {
       user: user, street_address: "1 Test Rd, Rondebosch", suburb: "Rondebosch",
       collection_day: "Tuesday", plan: plan, duration: (plan == "once_off" ? nil : 3),
       status: :active, start_date: Date.current - 2.weeks, latitude: -33.96, longitude: 18.48
-    )
+    }
+    attrs.merge!(bucket_size: 25, buckets_per_collection: 2) if plan == "Commercial"
+    Subscription.create!(attrs)
   end
 
-  def collection_on(subscription, date, **attrs)
-    Collection.create!({ subscription: subscription, date: date, bags: 0, buckets: 0.0, skip: false }.merge(attrs))
+  def collection_on(subscription, date)
+    Collection.create!(subscription: subscription, date: date, bags: 0, buckets: 0.0, skip: false)
   end
 
-  # Reminder and skip invitation on separate lines, per the tool's guidance: the
-  # skip line is removed for ineligible customers, leaving the reminder.
-  SKIP_MSG = "Gooiday reminder!\nAway this week? Skip here: {skip_link}"
-  REMINDER_ENCODED = ERB::Util.url_encode("Gooiday reminder!")
+  # A returning customer of the given plan (>1 past collection so not "new").
+  def returning(plan: "Standard")
+    sub = subscription_for(customer, plan: plan)
+    2.times { |i| collection_on(sub, Date.current - (i + 1).weeks) }
+    collection_on(sub, @date)
+    sub
+  end
 
-  test "the page renders" do
+  def get_links
+    get driver_messages_path, params: { collection_day: "tuesday" }
+  end
+
+  test "the page renders without a day chosen" do
     get driver_messages_path
     assert_response :success
   end
 
-  test "a returning customer gets a real skip link in their message" do
-    sub = subscription_for(customer)
-    2.times { |i| collection_on(sub, Date.current - (i + 1).weeks) } # veteran
+  test "a returning standard customer gets the standard template with a real skip link" do
+    sub = returning(plan: "Standard")
+    upcoming = sub.collections.find_by(date: @date)
+
+    get_links
+
+    assert_response :success
+    assert_match(/STD%20Thandi/, response.body, "standard template, {first_name} filled")
+    assert_not_nil upcoming.reload.skip_token
+    assert_match %r{skipme%2F#{upcoming.skip_token}}, response.body
+  end
+
+  test "a new customer gets the new-customer template and no skip link" do
+    sub = subscription_for(customer)   # no past collections → new
     upcoming = collection_on(sub, @date)
 
-    get driver_messages_path, params: { collection_day: "tuesday", message: SKIP_MSG }
+    get_links
 
     assert_response :success
-    upcoming.reload
-    assert_not_nil upcoming.skip_token, "eligible customer's token was minted"
-    assert_match %r{wa\.me/[^"]*skipme%2F#{upcoming.skip_token}}, response.body
-  end
-
-  test "a once-off customer has the skip invitation removed" do
-    sub = subscription_for(customer, plan: "once_off")
-    collection_on(sub, @date)
-
-    get driver_messages_path, params: { collection_day: "tuesday", message: SKIP_MSG }
-
-    assert_response :success
-    # The customer still gets the reminder line, just no skip line/link.
-    assert_match %r{wa\.me/\d+\?text=#{REMINDER_ENCODED}}, response.body, "the once-off customer is still messaged"
+    assert_match(/NEW%20welcome%20Thandi/, response.body)
     assert_no_match %r{skipme%2F}, response.body
-  end
-
-  test "a brand-new customer has the skip invitation removed" do
-    sub = subscription_for(customer)
-    upcoming = collection_on(sub, @date) # first ever collection
-
-    get driver_messages_path, params: { collection_day: "tuesday", message: SKIP_MSG }
-
-    assert_response :success
-    assert_match %r{wa\.me/\d+\?text=#{REMINDER_ENCODED}}, response.body, "the new customer still gets the reminder"
-    assert_no_match %r{skipme%2F}, response.body
-    assert_nil upcoming.reload.skip_token, "no token minted for an ineligible customer"
-  end
-
-  test "a message without the placeholder mints no tokens" do
-    sub = subscription_for(customer)
-    2.times { |i| collection_on(sub, Date.current - (i + 1).weeks) }
-    upcoming = collection_on(sub, @date)
-
-    get driver_messages_path, params: { collection_day: "tuesday", message: "Just a friendly reminder!" }
-
-    assert_response :success
     assert_nil upcoming.reload.skip_token
   end
 
-  test "eligible and ineligible customers on the same day are handled independently" do
-    veteran_sub = subscription_for(customer)
-    2.times { |i| collection_on(veteran_sub, Date.current - (i + 1).weeks) }
-    veteran_upcoming = collection_on(veteran_sub, @date)
+  test "a once-off customer gets the once-off template and no skip link" do
+    sub = subscription_for(customer, plan: "once_off")
+    collection_on(sub, @date)
 
-    newbie_sub = subscription_for(customer)
-    newbie_upcoming = collection_on(newbie_sub, @date)
-
-    get driver_messages_path, params: { collection_day: "tuesday", message: SKIP_MSG }
+    get_links
 
     assert_response :success
-    assert_not_nil veteran_upcoming.reload.skip_token
-    assert_nil newbie_upcoming.reload.skip_token
+    assert_match(/ONCE%20Thandi/, response.body)
+    assert_no_match %r{skipme%2F}, response.body
+  end
+
+  test "a commercial customer gets the commercial template and no skip link" do
+    sub = returning(plan: "Commercial") # returning, but commercial still no skip
+    upcoming = sub.collections.find_by(date: @date)
+
+    get_links
+
+    assert_response :success
+    assert_match(/COMM%20Thandi/, response.body)
+    assert_no_match %r{skipme%2F}, response.body
+    assert_nil upcoming.reload.skip_token
+  end
+
+  test "each segment on the same day gets its own template" do
+    returning(plan: "Standard")
+    subscription_for(customer).tap { |s| collection_on(s, @date) }        # new
+    subscription_for(customer, plan: "once_off").tap { |s| collection_on(s, @date) }
+
+    get_links
+
+    assert_response :success
+    assert_match(/STD%20Thandi/, response.body)
+    assert_match(/NEW%20welcome/, response.body)
+    assert_match(/ONCE%20Thandi/, response.body)
+  end
+
+  test "falls back to the default template when none is saved" do
+    DriverMessageTemplate.delete_all
+    returning(plan: "Standard")
+
+    get_links
+
+    assert_response :success
+    assert_match(/gooi%20day/i, response.body, "default standard template shows through")
   end
 end

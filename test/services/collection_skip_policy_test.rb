@@ -11,11 +11,13 @@ class CollectionSkipPolicyTest < ActiveSupport::TestCase
   end
 
   def make_subscription(user, plan: "Standard")
-    Subscription.create!(
+    attrs = {
       user: user, street_address: "1 Test Rd, Rondebosch", suburb: "Rondebosch",
       collection_day: "Tuesday", plan: plan, duration: (plan == "once_off" ? nil : 3),
       status: :active, start_date: Date.current - 2.weeks, latitude: -33.96, longitude: 18.48
-    )
+    }
+    attrs.merge!(bucket_size: 25, buckets_per_collection: 2) if plan == "Commercial"
+    Subscription.create!(attrs)
   end
 
   # The upcoming collection every scenario is being messaged about.
@@ -42,6 +44,14 @@ class CollectionSkipPolicyTest < ActiveSupport::TestCase
   test "a once-off customer is never eligible" do
     sub = make_subscription(make_user, plan: "once_off")
     past_collections(sub, 3) # even with history, once-off is out
+    upcoming = upcoming_collection(sub)
+
+    assert_not_includes CollectionSkipPolicy.eligible_collection_ids([upcoming]), upcoming.id
+  end
+
+  test "a commercial customer is never eligible even with a long history" do
+    sub = make_subscription(make_user, plan: "Commercial")
+    past_collections(sub, 5)
     upcoming = upcoming_collection(sub)
 
     assert_not_includes CollectionSkipPolicy.eligible_collection_ids([upcoming]), upcoming.id

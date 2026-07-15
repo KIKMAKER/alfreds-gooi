@@ -6,6 +6,7 @@ class Admin::BulkMessagesController < ApplicationController
     @message = params[:message]
     @contacts = filter_contacts
     @action_collections = action_collections_by_subscription
+    @driver_templates = DriverMessageTemplate.bodies_by_segment
   end
 
   private
