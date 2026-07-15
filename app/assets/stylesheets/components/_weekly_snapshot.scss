@@ -1,0 +1,141 @@
+// Weekly Stats Instagram Post Template — fixed 1080x1350 canvas (67.5rem x 84.375rem @ 16px base).
+// Not a fluid/responsive component: it's an export artboard, screenshotted at 1080px viewport width.
+// Reuses the real brand texture (header-gooi-3.png, same file as the homepage hero) for the
+// tone-on-tone "gooi" + leaf pattern, rather than faking it with a gradient.
+
+// Cream isn't yet a design token — kept local until BRAND.md adopts it (see config/_tokens.scss precedent).
+$ig-cream: #f5eedc;
+
+.ig-post {
+  width: 67.5rem;    // 1080px
+  height: 84.375rem; // 1350px
+  margin: 2rem auto;
+  padding: 4.5rem 4.5rem 4rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: $dark-green url('header-gooi-3.png') center / cover no-repeat;
+  color: $ig-cream;
+}
+
+.ig-post__header {
+  text-align: center;
+}
+
+.ig-post__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: $dark-yellow;
+}
+
+.ig-post__headline {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  color: $ig-cream;
+  margin: 1rem 0 0;
+}
+
+.ig-post__hero {
+  text-align: center;
+}
+
+.ig-post__hero-number {
+  font-family: 'Fraunces', serif;
+  font-size: 15rem;
+  font-weight: 700;
+  line-height: 1;
+  color: $ig-cream;
+  letter-spacing: -0.02em;
+}
+
+.ig-post__hero-unit {
+  font-size: 4.5rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  color: $dark-yellow;
+}
+
+.ig-post__hero-caption {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 1.75rem;
+  color: $ig-cream;
+  margin-top: 0.875rem;
+}
+
+.ig-post__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.ig-post__stat-card {
+  background: $ig-cream;
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.25rem;
+  text-align: center;
+}
+
+.ig-post__stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 3.75rem;
+  font-weight: 700;
+  color: $dark-green;
+  line-height: 1;
+}
+
+.ig-post__stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: $medium-green;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  margin-top: 0.875rem;
+}
+
+.ig-post__equivalence {
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 2.125rem;
+  color: $ig-cream;
+
+  strong {
+    color: $dark-yellow;
+    font-weight: 700;
+  }
+}
+
+.ig-post__equivalence-emoji {
+  margin-left: 0.25rem;
+}
+
+.ig-post__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba($ig-cream, 0.2);
+}
+
+.ig-post__logo {
+  height: 2.75rem;
+  width: auto;
+}
+
+.ig-post__url {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: $dark-yellow;
+}
