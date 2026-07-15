@@ -1,0 +1,134 @@
+// Suburb Spotlight Instagram Post Template — fixed 1080x1350 canvas (67.5rem x 84.375rem @ 16px base).
+// Not a fluid/responsive component: it's an export artboard, screenshotted at 1080px viewport width.
+// Same structure/rhythm as _weekly_snapshot.scss, palette flipped: flat cream page, dark-green cards
+// (there it's a dark-green page with cream cards).
+
+// Cream isn't yet a design token — kept local until BRAND.md adopts it (see config/_tokens.scss precedent).
+$suburb-cream: #f5eedc;
+
+.suburb-post {
+  width: 67.5rem;    // 1080px
+  height: 84.375rem; // 1350px
+  margin: 2rem auto;
+  padding: 4.5rem 4.5rem 4rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: $suburb-cream;
+  color: $dark-green;
+  text-align: center;
+}
+
+.suburb-post__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: $dark-yellow;
+}
+
+.suburb-post__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.suburb-post__pin {
+  width: 3.5rem;
+  height: auto;
+  color: $dark-green;
+  margin-bottom: 1.25rem;
+}
+
+.suburb-post__suburb-name {
+  font-family: 'Fraunces', serif;
+  font-size: 6rem;
+  line-height: 1.05;
+  font-weight: 700;
+  color: $dark-green;
+  margin: 0;
+  max-width: 54rem;
+}
+
+.suburb-post__tagline {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: $medium-green;
+  margin-top: 0.875rem;
+}
+
+.suburb-post__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.suburb-post__stat-card {
+  background: $dark-green;
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.5rem;
+}
+
+.suburb-post__stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  color: $suburb-cream;
+  line-height: 1;
+}
+
+.suburb-post__stat-unit {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-left: 0.375rem;
+  color: $dark-yellow;
+}
+
+.suburb-post__stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: $dark-yellow;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.875rem;
+}
+
+.suburb-post__cta {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 2.125rem;
+  color: $dark-green;
+  max-width: 48rem;
+  margin: 0 auto;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.suburb-post__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba($dark-green, 0.15);
+}
+
+.suburb-post__logo {
+  height: 2.75rem;
+  width: auto;
+}
+
+.suburb-post__url {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: $dark-green;
+}

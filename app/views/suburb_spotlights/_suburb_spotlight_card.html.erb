@@ -1,0 +1,38 @@
+<%# Suburb Spotlight Instagram Post Template — fixed 1080x1350 canvas. %>
+<%# Screenshot this page at 1080px viewport width for a pixel-accurate export. %>
+
+<div class="suburb-post">
+  <div class="suburb-post__header">
+    <div class="suburb-post__eyebrow">SUBURB SPOTLIGHT · <%= spotlight.month_label.upcase %></div>
+  </div>
+
+  <div class="suburb-post__hero">
+    <svg class="suburb-post__pin" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20s12-11 12-20c0-6.63-5.37-12-12-12z" fill="currentColor"/>
+      <circle cx="12" cy="12" r="5" fill="#f5eedc"/>
+    </svg>
+    <h1 class="suburb-post__suburb-name"><%= spotlight.suburb %></h1>
+    <div class="suburb-post__tagline">Cape Town is gooi'ing</div>
+  </div>
+
+  <div class="suburb-post__stats">
+    <div class="suburb-post__stat-card">
+      <div class="suburb-post__stat-value"><%= number_with_delimiter(spotlight.kg_collected) %><span class="suburb-post__stat-unit">kg</span></div>
+      <div class="suburb-post__stat-label">Collected This Month</div>
+    </div>
+    <div class="suburb-post__stat-card">
+      <div class="suburb-post__stat-value"><%= spotlight.household_count %></div>
+      <div class="suburb-post__stat-label">Participating Households</div>
+    </div>
+  </div>
+
+  <div class="suburb-post__cta">
+    Want to gooi in <strong><%= spotlight.suburb %></strong>?<br>
+    Add your scraps to the bakkie every <%= spotlight.collection_day || "week" %>.
+  </div>
+
+  <div class="suburb-post__footer">
+    <%= image_tag "gooi_logo_icon_amber.svg", class: "suburb-post__logo", alt: "Gooi" %>
+    <div class="suburb-post__url">gooi.me</div>
+  </div>
+</div>

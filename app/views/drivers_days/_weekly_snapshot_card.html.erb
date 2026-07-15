@@ -1,0 +1,41 @@
+<%# Weekly Stats Instagram Post Template — fixed 1080x1350 canvas. %>
+<%# Screenshot this page at 1080px viewport width for a pixel-accurate export. %>
+<% compost_kg = (stats.kg_diverted * 0.35).round %>
+<%# ~65kg is a standard builder's wheelbarrow load of finished compost (90L @ ~0.7 kg/L) %>
+<% wheelbarrows = [(compost_kg / 65.0).round, 1].max %>
+
+<div class="ig-post">
+  <div class="ig-post__header">
+    <div class="ig-post__eyebrow">WEEK OF <%= stats.period_label.upcase %></div>
+    <h1 class="ig-post__headline">This week you gooi'd</h1>
+  </div>
+
+  <div class="ig-post__hero">
+    <div class="ig-post__hero-number"><%= number_with_delimiter(stats.kg_diverted.round) %><span class="ig-post__hero-unit">kg</span></div>
+    <div class="ig-post__hero-caption">of kitchen scraps kept out of landfill</div>
+  </div>
+
+  <div class="ig-post__stats">
+    <div class="ig-post__stat-card">
+      <div class="ig-post__stat-value"><%= stats.collections_completed %></div>
+      <div class="ig-post__stat-label">Collections<br>Completed</div>
+    </div>
+    <div class="ig-post__stat-card">
+      <div class="ig-post__stat-value"><%= stats.new_customers %></div>
+      <div class="ig-post__stat-label">New<br>Households</div>
+    </div>
+    <div class="ig-post__stat-card">
+      <div class="ig-post__stat-value"><%= number_with_delimiter(stats.kg_diverted_all_time) %></div>
+      <div class="ig-post__stat-label">Total kg<br>Since 2023</div>
+    </div>
+  </div>
+
+  <div class="ig-post__equivalence">
+    that's ~<strong><%= wheelbarrows %></strong> wheelbarrow<%= 's' unless wheelbarrows == 1 %> of compost <span class="ig-post__equivalence-emoji">🌱</span>
+  </div>
+
+  <div class="ig-post__footer">
+    <%= image_tag "gooi_logo_icon_white.svg", class: "ig-post__logo", alt: "Gooi" %>
+    <div class="ig-post__url">gooi.me</div>
+  </div>
+</div>
