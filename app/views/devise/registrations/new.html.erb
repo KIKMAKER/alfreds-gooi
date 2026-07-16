@@ -31,7 +31,7 @@
       <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
       <%= f.input :phone_number, required: true, autofocus: true,
                   label: "WhatsApp number",
-                  hint: "We'll contact you here about your collection. Format: +27 82 123 4567",
+                  hint: "We'll contact you here about your collection. Select your country, then enter your number.",
                   input_html: { autocomplete: "tel", data: { controller: "whatsapp-number", form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
 
       <% if params[:simple] == 'true' %>

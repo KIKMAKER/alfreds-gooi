@@ -1,0 +1,15 @@
+.whatsapp-number {
+  display: flex;
+  gap: 0.5rem;
+
+  &__country {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 45%;
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}

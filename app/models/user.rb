@@ -51,7 +51,6 @@ class User < ApplicationRecord
   # Callbacks
 
   before_validation :normalize_phone_number
-  before_validation :make_international
   before_validation :generate_referral_code, on: :create
   before_validation :generate_journey_token, on: :create
   before_validation :set_customer_id, on: :create
@@ -285,24 +284,14 @@ class User < ApplicationRecord
 
   ## phone number validation
 
-  # Strip spaces, dashes, parentheses, and dots from phone number
+  # Parse via phonelib (Google's libphonenumber) and store in E.164 format.
+  # Defaults to South Africa only when the customer hasn't specified a
+  # country themselves (e.g. no + prefix and no country picker used).
   def normalize_phone_number
     return if phone_number.blank?
 
-    # Remove common formatting characters but keep the + for international format
-    self.phone_number = phone_number.gsub(/[\s\-\(\)\.]/, '')
-  end
-
-  def make_international
-    Rails.logger.debug "phone before normalisation: #{self.phone_number}"
-    # return if valid_international_phone_number()
-
-    self.phone_number = starts_0? ? "+27#{phone_number[1..]}" : phone_number
-    Rails.logger.debug "phone after normalisation: #{self.phone_number}"
-  end
-
-  def starts_0?
-    phone_number.start_with?('0')
+    parsed = Phonelib.parse(phone_number, "ZA")
+    self.phone_number = parsed.e164 if parsed.e164.present?
   end
 
   # Validations
@@ -310,12 +299,8 @@ class User < ApplicationRecord
   def valid_international_phone_number
     return if phone_number.blank?
 
-    if phone_number.start_with?('+27')
-      return if /\A\+27\d{9}\z/.match?(phone_number)
-
-      errors.add(:phone_number, "#{phone_number} is not a valid South African WhatsApp number (should be +27 followed by 9 digits)")
-    elsif !/\A\+\d{9,13}\z/.match?(phone_number)
-      errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
+    unless Phonelib.valid?(phone_number)
+      errors.add(:phone_number, "#{phone_number} is not a valid WhatsApp number")
     end
   end
 

@@ -39,7 +39,7 @@
         </div>
 
         <%= f.input :phone_number, required: true, label: 'WhatsApp number',
-                    hint: "We'll contact them here about their collection. Format: +27 82 123 4567",
+                    hint: "We'll contact them here about their collection. Select their country, then enter their number.",
                     input_html: { class: 'form-control', data: { controller: 'whatsapp-number' } } %>
 
         <%= f.input :email, label: 'Email address (optional)',

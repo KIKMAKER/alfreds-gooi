@@ -238,6 +238,7 @@ GEM
     ostruct (0.6.3)
     pdf-core (0.10.0)
     pg (1.5.9)
+    phonelib (0.10.22)
     popper_js (2.11.8)
     postmark (1.25.1)
       json
@@ -407,6 +408,7 @@ DEPENDENCIES
   jbuilder
   letter_opener
   pg (~> 1.1)
+  phonelib
   postmark-rails
   prawn
   prawn-table

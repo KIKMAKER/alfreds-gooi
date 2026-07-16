@@ -27,21 +27,16 @@ class Contact < ApplicationRecord
 
   def normalize_phone_number
     return if phone_number.blank?
-    cleaned = phone_number.gsub(/[^\d+]/, '').strip
-    cleaned = "+#{cleaned}" if cleaned.start_with?('27') && !cleaned.start_with?('+')
-    cleaned = "+27#{cleaned[1..]}" if cleaned.start_with?('0')
-    self.phone_number = cleaned
+
+    parsed = Phonelib.parse(phone_number, "ZA")
+    self.phone_number = parsed.e164 if parsed.e164.present?
   end
 
   def valid_international_phone_number
     return if phone_number.blank?
 
-    if phone_number.start_with?('+27')
-      return if /\A\+27\d{9}\z/.match?(phone_number)
-
-      errors.add(:phone_number, "#{phone_number} is not a valid South African WhatsApp number (should be +27 followed by 9 digits)")
-    elsif !/\A\+\d{9,13}\z/.match?(phone_number)
-      errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
+    unless Phonelib.valid?(phone_number)
+      errors.add(:phone_number, "#{phone_number} is not a valid WhatsApp number")
     end
   end
 
