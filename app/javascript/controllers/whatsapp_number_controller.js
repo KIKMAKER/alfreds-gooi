@@ -37,10 +37,11 @@ export default class extends Controller {
     this.select?.remove()
   }
 
+  // Only ever adds a new sibling before the field - never detaches or
+  // moves `this.element` itself, since it's the controller's own root
+  // node and relocating it risks Stimulus treating the move as a
+  // disconnect+reconnect, which would run this method again forever.
   buildCountrySelect() {
-    const wrapper = document.createElement("div")
-    wrapper.className = "whatsapp-number"
-
     this.select = document.createElement("select")
     this.select.className = "form-select whatsapp-number__country"
     this.select.setAttribute("aria-label", "Country code")
@@ -53,9 +54,7 @@ export default class extends Controller {
     })
     this.select.value = "+27"
 
-    this.element.parentNode.insertBefore(wrapper, this.element)
-    wrapper.appendChild(this.select)
-    wrapper.appendChild(this.element)
+    this.element.insertAdjacentElement("beforebegin", this.select)
     this.element.classList.add("whatsapp-number__input")
   }
 

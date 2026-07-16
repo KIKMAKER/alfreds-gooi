@@ -1,15 +1,17 @@
-.whatsapp-number {
-  display: flex;
-  gap: 0.5rem;
+// The select and input sit side by side via inline-block, not flex,
+// since they share a parent with the field's label/hint text and a
+// flex display on that parent would pull those onto the same row too.
+.whatsapp-number__country {
+  display: inline-block;
+  width: auto;
+  max-width: 45%;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
 
-  &__country {
-    flex: 0 0 auto;
-    width: auto;
-    max-width: 45%;
-  }
-
-  &__input {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
+.whatsapp-number__input {
+  display: inline-block;
+  width: auto;
+  max-width: calc(55% - 0.5rem);
+  vertical-align: middle;
 }
