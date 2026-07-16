@@ -7,6 +7,7 @@ class Contact < ApplicationRecord
   validates :first_name, presence: true
   validates :phone_number, presence: true,
             uniqueness: { scope: :subscription_id, message: "already exists for this subscription" }
+  validate :valid_international_phone_number
   validates :relationship, inclusion: {
     in: %w[owner spouse housemate family other housekeeper],
     allow_blank: true
@@ -28,7 +29,20 @@ class Contact < ApplicationRecord
     return if phone_number.blank?
     cleaned = phone_number.gsub(/[^\d+]/, '').strip
     cleaned = "+#{cleaned}" if cleaned.start_with?('27') && !cleaned.start_with?('+')
+    cleaned = "+27#{cleaned[1..]}" if cleaned.start_with?('0')
     self.phone_number = cleaned
+  end
+
+  def valid_international_phone_number
+    return if phone_number.blank?
+
+    if phone_number.start_with?('+27')
+      return if /\A\+27\d{9}\z/.match?(phone_number)
+
+      errors.add(:phone_number, "#{phone_number} is not a valid South African WhatsApp number (should be +27 followed by 9 digits)")
+    elsif !/\A\+\d{9,13}\z/.match?(phone_number)
+      errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
+    end
   end
 
   public

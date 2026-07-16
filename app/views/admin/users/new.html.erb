@@ -9,8 +9,10 @@
     <%= f.input :email, placeholder: "e.g. sarah@example.com" %>
 
     <%= f.input :phone_number,
+          label: "WhatsApp number",
           placeholder: "+27 82 555 1234",
-          hint: "International format preferred (e.g. +27 82 555 1234)" %>
+          hint: "Format: +27 82 555 1234",
+          input_html: { data: { controller: "whatsapp-number" } } %>
 
     <%= f.input :role,
           as: :select,

@@ -22,8 +22,8 @@
         <%= f.text_field :contact_name, class: "form-control" %>
       </div>
       <div class="mb-3">
-        <%= f.label :phone_number, class: "form-label fw-semibold" %>
-        <%= f.text_field :phone_number, class: "form-control" %>
+        <%= f.label :phone_number, "WhatsApp number", class: "form-label fw-semibold" %>
+        <%= f.text_field :phone_number, class: "form-control", placeholder: "+27 82 123 4567", data: { controller: "whatsapp-number" } %>
       </div>
       <div class="mb-4">
         <%= f.label :notes, "Notes (access codes, special instructions, etc.)", class: "form-label fw-semibold" %>

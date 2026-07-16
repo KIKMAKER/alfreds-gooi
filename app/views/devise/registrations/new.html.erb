@@ -29,7 +29,10 @@
       <%= f.input :first_name, required: true, autofocus: true, input_html: { autocomplete: "given-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
       <%= f.input :last_name, required: true, autofocus: true, input_html: { autocomplete: "family-name", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
       <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
-      <%= f.input :phone_number, required: true, autofocus: true, input_html: { autocomplete: "tel", data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+      <%= f.input :phone_number, required: true, autofocus: true,
+                  label: "WhatsApp number",
+                  hint: "We'll contact you here about your collection. Format: +27 82 123 4567",
+                  input_html: { autocomplete: "tel", data: { controller: "whatsapp-number", form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
 
       <% if params[:simple] == 'true' %>
         <!-- SIMPLE MODE: No Mapbox, plain text input -->

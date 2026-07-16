@@ -46,9 +46,9 @@
           </div>
         </div>
 
-        <%= f.input :phone_number, required: true, label: 'Phone number',
-                    hint: '+27821234567 or 0821234567',
-                    input_html: { class: 'form-control' } %>
+        <%= f.input :phone_number, required: true, label: 'WhatsApp number',
+                    hint: "We'll contact them here about their collection. Format: +27 82 123 4567",
+                    input_html: { class: 'form-control', data: { controller: 'whatsapp-number' } } %>
 
         <%= f.input :email, label: 'Email address (optional)',
                     hint: 'Used for sending collection emails if different from account email',

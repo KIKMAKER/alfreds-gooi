@@ -308,13 +308,14 @@ class User < ApplicationRecord
   # Validations
 
   def valid_international_phone_number
-    return if /\A\+27\d{9}\z/.match?(phone_number)
+    return if phone_number.blank?
 
-    if /\A\+\d{9,13}\z/.match?(phone_number)
-      true
-    else
+    if phone_number.start_with?('+27')
+      return if /\A\+27\d{9}\z/.match?(phone_number)
+
+      errors.add(:phone_number, "#{phone_number} is not a valid South African WhatsApp number (should be +27 followed by 9 digits)")
+    elsif !/\A\+\d{9,13}\z/.match?(phone_number)
       errors.add(:phone_number, "#{phone_number} for #{first_name} is not a valid south african or international phone number")
-      false
     end
   end
 

@@ -14,7 +14,9 @@
       <%= f.input :phone_number,
                 required: true,
                 autofocus: true,
-                input_html: { autocomplete: "email" }%>
+                label: "WhatsApp number",
+                hint: "Format: +27 82 123 4567",
+                input_html: { autocomplete: "tel", data: { controller: "whatsapp-number" } }%>
       <%= f.input :email,
                 required: true,
                 autofocus: true,
