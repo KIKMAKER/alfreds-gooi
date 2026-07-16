@@ -8,18 +8,18 @@ import { Controller } from "@hotwired/stimulus"
 // picks their own country so a foreign number never gets guessed at, and
 // the dial code + digits are combined into the real field on submit.
 const COUNTRIES = [
-  ["+27", "🇿🇦 South Africa"],
-  ["+264", "🇳🇦 Namibia"],
-  ["+267", "🇧🇼 Botswana"],
-  ["+263", "🇿🇼 Zimbabwe"],
-  ["+258", "🇲🇿 Mozambique"],
-  ["+44", "🇬🇧 United Kingdom"],
-  ["+1", "🇺🇸 United States / Canada"],
-  ["+61", "🇦🇺 Australia"],
-  ["+49", "🇩🇪 Germany"],
-  ["+31", "🇳🇱 Netherlands"],
-  ["+33", "🇫🇷 France"],
-  ["", "🌍 Other — type full number with +"],
+  ["+27", "🇿🇦", "South Africa"],
+  ["+264", "🇳🇦", "Namibia"],
+  ["+267", "🇧🇼", "Botswana"],
+  ["+263", "🇿🇼", "Zimbabwe"],
+  ["+258", "🇲🇿", "Mozambique"],
+  ["+44", "🇬🇧", "United Kingdom"],
+  ["+1", "🇺🇸", "United States / Canada"],
+  ["+61", "🇦🇺", "Australia"],
+  ["+49", "🇩🇪", "Germany"],
+  ["+31", "🇳🇱", "Netherlands"],
+  ["+33", "🇫🇷", "France"],
+  ["", "🌍", "Other — type full number with +"],
 ]
 
 export default class extends Controller {
@@ -46,10 +46,11 @@ export default class extends Controller {
     this.select.className = "form-select whatsapp-number__country"
     this.select.setAttribute("aria-label", "Country code")
 
-    COUNTRIES.forEach(([dial, label]) => {
+    COUNTRIES.forEach(([dial, flag, name]) => {
       const option = document.createElement("option")
       option.value = dial
-      option.textContent = dial ? `${label} (${dial})` : label
+      option.title = name
+      option.textContent = dial ? `${flag} ${dial}` : `${flag} Other`
       this.select.appendChild(option)
     })
     this.select.value = "+27"

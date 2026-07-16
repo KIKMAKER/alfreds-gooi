@@ -4,7 +4,8 @@
 .whatsapp-number__country {
   display: inline-block;
   width: auto;
-  max-width: 45%;
+  max-width: 6.5rem;
+  font-size: 1.05rem;
   vertical-align: middle;
   margin-right: 0.5rem;
 }
@@ -12,6 +13,6 @@
 .whatsapp-number__input {
   display: inline-block;
   width: auto;
-  max-width: calc(55% - 0.5rem);
+  max-width: calc(100% - 7rem);
   vertical-align: middle;
 }
