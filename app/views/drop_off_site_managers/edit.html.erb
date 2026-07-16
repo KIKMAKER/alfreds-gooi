@@ -23,7 +23,8 @@
       </div>
       <div class="mb-3">
         <%= f.label :phone_number, "WhatsApp number", class: "form-label fw-semibold" %>
-        <%= f.text_field :phone_number, class: "form-control", placeholder: "82 123 4567", data: { controller: "whatsapp-number" } %>
+        <%= f.text_field :phone_number, class: "form-control #{'is-invalid' if @drop_off_site.errors[:phone_number].any?}", placeholder: "82 123 4567", data: { controller: "whatsapp-number" } %>
+        <div class="invalid-feedback"><%= @drop_off_site.errors[:phone_number].to_sentence %></div>
       </div>
       <div class="mb-4">
         <%= f.label :notes, "Notes (access codes, special instructions, etc.)", class: "form-label fw-semibold" %>

@@ -7,33 +7,48 @@ import { Controller } from "@hotwired/stimulus"
 // froze the page. This is a small native <select> instead: the customer
 // picks their own country so a foreign number never gets guessed at, and
 // the dial code + digits are combined into the real field on submit.
+//
+// minDigits/maxDigits are a rough national-significant-number length per
+// country, only for instant client-side feedback - not a substitute for
+// the server-side phonelib validation, which is the real authority.
 const COUNTRIES = [
-  ["+27", "🇿🇦", "South Africa"],
-  ["+264", "🇳🇦", "Namibia"],
-  ["+267", "🇧🇼", "Botswana"],
-  ["+263", "🇿🇼", "Zimbabwe"],
-  ["+258", "🇲🇿", "Mozambique"],
-  ["+44", "🇬🇧", "United Kingdom"],
-  ["+1", "🇺🇸", "United States / Canada"],
-  ["+61", "🇦🇺", "Australia"],
-  ["+49", "🇩🇪", "Germany"],
-  ["+31", "🇳🇱", "Netherlands"],
-  ["+33", "🇫🇷", "France"],
-  ["", "🌍", "Other — type full number with +"],
+  ["+27", "🇿🇦", "South Africa", 9, 9],
+  ["+264", "🇳🇦", "Namibia", 9, 9],
+  ["+267", "🇧🇼", "Botswana", 7, 8],
+  ["+263", "🇿🇼", "Zimbabwe", 9, 9],
+  ["+258", "🇲🇿", "Mozambique", 9, 9],
+  ["+44", "🇬🇧", "United Kingdom", 10, 10],
+  ["+1", "🇺🇸", "United States / Canada", 10, 10],
+  ["+61", "🇦🇺", "Australia", 9, 9],
+  ["+49", "🇩🇪", "Germany", 10, 11],
+  ["+31", "🇳🇱", "Netherlands", 9, 9],
+  ["+33", "🇫🇷", "France", 9, 9],
+  ["", "🌍", "Other — type full number with +", null, null],
 ]
 
 export default class extends Controller {
   connect() {
     this.buildCountrySelect()
     this.splitExistingValue()
+    this.feedback = this.findOrBuildFeedback()
+
+    this.inputHandler = this.validate.bind(this)
+    this.element.addEventListener("input", this.inputHandler)
+    this.select.addEventListener("change", this.inputHandler)
 
     this.form = this.element.closest("form")
     this.submitHandler = this.combine.bind(this)
     this.form?.addEventListener("submit", this.submitHandler)
+
+    // Only run our own check if the server hasn't already flagged this
+    // field - a server error is more specific than our length heuristic.
+    if (!this.element.classList.contains("is-invalid")) this.validate()
   }
 
   disconnect() {
     this.form?.removeEventListener("submit", this.submitHandler)
+    this.element.removeEventListener("input", this.inputHandler)
+    this.select?.removeEventListener("change", this.inputHandler)
     this.select?.remove()
   }
 
@@ -59,6 +74,16 @@ export default class extends Controller {
     this.element.classList.add("whatsapp-number__input")
   }
 
+  findOrBuildFeedback() {
+    const next = this.element.nextElementSibling
+    if (next?.classList.contains("invalid-feedback")) return next
+
+    const div = document.createElement("div")
+    div.className = "invalid-feedback"
+    this.element.insertAdjacentElement("afterend", div)
+    return div
+  }
+
   splitExistingValue() {
     const value = this.element.value.trim()
     if (!value.startsWith("+")) return
@@ -69,6 +94,23 @@ export default class extends Controller {
       this.element.value = value.slice(match[0].length).trim()
     } else {
       this.select.value = ""
+    }
+  }
+
+  validate() {
+    this.element.classList.remove("is-invalid", "is-valid")
+
+    const digits = this.element.value.replace(/\D/g, "")
+    if (!digits) return
+
+    const [, , name, min, max] = COUNTRIES.find(([dial]) => dial === this.select.value)
+    if (min === null) return // "Other" - no length data, defer to server
+
+    if (digits.length < min || digits.length > max) {
+      this.feedback.textContent = `${name} numbers usually have ${min === max ? min : `${min}-${max}`} digits after the country code - you've entered ${digits.length}.`
+      this.element.classList.add("is-invalid")
+    } else {
+      this.element.classList.add("is-valid")
     }
   }
 
