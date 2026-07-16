@@ -15,6 +15,21 @@ class Admin::DriverMessageTemplatesControllerTest < ActionDispatch::IntegrationT
     )
   end
 
+  test "the edit page renders the four segment fields for an admin" do
+    sign_in @admin
+    get edit_admin_driver_message_templates_path
+
+    assert_response :success
+    assert_select "textarea[name='driver_message_templates[standard]']"
+    assert_select "textarea[name='driver_message_templates[commercial]']"
+  end
+
+  test "a non-admin cannot open the edit page" do
+    sign_in @customer
+    get edit_admin_driver_message_templates_path
+    assert_redirected_to root_path
+  end
+
   test "an admin can save all segment templates at once" do
     sign_in @admin
     patch admin_driver_message_templates_path, params: {
@@ -26,7 +41,7 @@ class Admin::DriverMessageTemplatesControllerTest < ActionDispatch::IntegrationT
       }
     }
 
-    assert_redirected_to admin_bulk_messages_path(anchor: "driver-templates")
+    assert_redirected_to edit_admin_driver_message_templates_path
     assert_equal "New standard body {skip_link}", DriverMessageTemplate.body_for("standard")
     assert_equal "New commercial body", DriverMessageTemplate.body_for("commercial")
   end

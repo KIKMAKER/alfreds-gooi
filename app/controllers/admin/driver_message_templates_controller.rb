@@ -2,8 +2,12 @@ class Admin::DriverMessageTemplatesController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_admin
 
-  # Save all four segment templates at once from the form on the bulk messages
-  # page. A blank body is allowed — it falls back to the coded default.
+  def edit
+    @driver_templates = DriverMessageTemplate.bodies_by_segment
+  end
+
+  # Save all four segment templates at once. A blank body is allowed — it falls
+  # back to the coded default.
   def update
     submitted = params.fetch(:driver_message_templates, {})
 
@@ -14,7 +18,7 @@ class Admin::DriverMessageTemplatesController < ApplicationController
                            .update!(body: submitted[segment].to_s)
     end
 
-    redirect_to admin_bulk_messages_path(anchor: "driver-templates"),
+    redirect_to edit_admin_driver_message_templates_path,
                 notice: "Driver route messages saved."
   end
 

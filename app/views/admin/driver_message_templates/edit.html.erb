@@ -1,0 +1,32 @@
+<div class="user-wrapper">
+  <h1>Driver route messages</h1>
+  <p class="text-muted">
+    What the driver's <strong>Message a Day</strong> tool sends, per client type. Each customer
+    automatically gets the message for their type. Placeholders:
+    <code>{first_name}</code> everywhere, and <code>{skip_link}</code> on the standard message only.
+  </p>
+
+  <div class="card p-4 mb-4">
+    <%= form_with url: admin_driver_message_templates_path, method: :patch, local: true do |f| %>
+      <% [
+        ["standard",     "Standard & XL (returning)", "Gets a one-tap {skip_link} — keep the skip invitation on its own line."],
+        ["new_customer", "New customer (first collection)", "No skip link — we don't invite a skip on someone's first collection."],
+        ["once_off",     "Once-off", "No skip link — a single collection is the whole plan."],
+        ["commercial",   "Commercial", "No skip link — businesses are on contract."]
+      ].each do |segment, label, hint| %>
+        <div class="mb-3">
+          <label class="form-label mb-1"><strong><%= label %></strong></label>
+          <%= text_area_tag "driver_message_templates[#{segment}]",
+                            @driver_templates[segment],
+                            rows: 3, class: "form-control" %>
+          <small class="text-muted d-block mt-1"><i class="fa-solid fa-circle-info"></i> <%= hint %></small>
+        </div>
+      <% end %>
+
+      <div class="d-flex gap-2">
+        <%= f.submit "Save route messages", class: "btn btn-dark" %>
+        <%= link_to "Back to dashboard", admin_root_path, class: "btn btn-secondary-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
