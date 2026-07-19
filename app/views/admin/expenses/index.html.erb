@@ -10,6 +10,7 @@
     </div>
 
     <!-- Filters -->
+    <%= form_with url: admin_expenses_path, method: :get, class: "d-flex gap-2 align-items-center flex-wrap mb-4" do %>
       <%= select_tag :category,
           options_for_select(
             [['All Categories', '']] + Expense.categories.keys.map { |k| [k.titleize, k] },
