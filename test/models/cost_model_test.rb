@@ -47,10 +47,11 @@ class CostModelTest < ActiveSupport::TestCase
       street_address: "1 Test Street", suburb: "Claremont"
     )
     # 10 bags * 5L = 50L per collection, one collection a month back, one two months back.
-    Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 10, is_done: true, skip: false)
-    Collection.create!(subscription: subscription, date: 2.months.ago.to_date, bags: 10, is_done: true, skip: false)
-    # Skipped and not-done collections must not count towards real volume.
-    Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 99, is_done: false, skip: false)
+    # is_done is irrelevant here: the driver workflow never sets it, so real
+    # volume must count regardless of its value (see Collection.total_litres_between).
+    Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 10, is_done: false, skip: false)
+    Collection.create!(subscription: subscription, date: 2.months.ago.to_date, bags: 10, is_done: false, skip: false)
+    # Skipped collections must not count towards real volume.
     Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 99, is_done: true, skip: true)
 
     assert_in_delta 100.0, Collection.total_litres_between(3.months.ago.to_date, Date.current), 0.01

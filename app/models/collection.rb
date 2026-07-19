@@ -138,12 +138,16 @@ class Collection < ApplicationRecord
     end
   end
 
-  # Real litres actually collected (excludes skipped/not-yet-done rows) between
-  # two dates. Used as the "real data" volume baseline for cost-model floors —
-  # loads the (bounded, date-scoped) rows and sums via volume_litres so the
-  # plan-specific math stays defined in one place.
+  # Real litres actually collected (excludes skipped rows) between two dates.
+  # Used as the "real data" volume baseline for cost-model floors — loads the
+  # (bounded, date-scoped) rows and sums via volume_litres so the plan-specific
+  # math stays defined in one place. Deliberately doesn't filter on is_done:
+  # that flag is never set by the actual driver workflow (only bags/buckets/skip
+  # are), so requiring it excludes nearly every real collection — see
+  # Subscription#total_litres/#collected_volume_display, which only ever
+  # filter on skip for the same reason.
   def self.total_litres_between(start_date, end_date)
-    active.completed.where(date: start_date..end_date).includes(:subscription).sum(&:volume_litres)
+    active.where(date: start_date..end_date).includes(:subscription).sum(&:volume_litres)
   end
 
   # Save data outside of heroku
