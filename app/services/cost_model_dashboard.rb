@@ -42,14 +42,15 @@ class CostModelDashboard
   end
 
   # Real litres collected per calendar month, oldest first, for the last
-  # `months` completed months (this month included, partial).
+  # `months` *complete* months — excludes the current, still-in-progress
+  # month (see month_to_date_litres/month_to_date_projected_litres for that),
+  # so the trend lines up with trailing_3mo_avg_litres.
   def monthly_litres_trend(months = 3)
-    (months - 1).downto(0).map do |i|
+    months.downto(1).map do |i|
       month_start = i.months.ago.to_date.beginning_of_month
-      month_end = [month_start.end_of_month, Date.current].min
       Trend.new(
         label: month_start.strftime("%b %Y"),
-        litres: Collection.total_litres_between(month_start, month_end)
+        litres: Collection.total_litres_between(month_start, month_start.end_of_month)
       )
     end
   end

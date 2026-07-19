@@ -37,30 +37,64 @@ class CostModelTest < ActiveSupport::TestCase
     assert_nil @cost_model.price_guidance
   end
 
-  test "floor_current divides monthly_total by real trailing-3-month average litres" do
+  def build_collection(date:, bags:, skip: false)
     user = User.create!(
-      first_name: "Test", last_name: "Customer", email: "cost.model.test@gooi.test",
+      first_name: "Test", last_name: "Customer", email: "cost.model.test-#{SecureRandom.hex(4)}@gooi.test",
       phone_number: "+27821234567", password: "password"
     )
     subscription = Subscription.create!(
       user: user, plan: "Standard", duration: 3,
       street_address: "1 Test Street", suburb: "Claremont"
     )
-    # 10 bags * 5L = 50L per collection, one collection a month back, one two months back.
-    # is_done is irrelevant here: the driver workflow never sets it, so real
-    # volume must count regardless of its value (see Collection.total_litres_between).
-    Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 10, is_done: false, skip: false)
-    Collection.create!(subscription: subscription, date: 2.months.ago.to_date, bags: 10, is_done: false, skip: false)
-    # Skipped collections must not count towards real volume.
-    Collection.create!(subscription: subscription, date: 1.month.ago.to_date, bags: 99, is_done: true, skip: true)
-
-    assert_in_delta 100.0, Collection.total_litres_between(3.months.ago.to_date, Date.current), 0.01
-    assert_in_delta(100.0 / 3, @cost_model.trailing_3mo_avg_litres, 0.1)
-    assert_in_delta(43_898.0 / @cost_model.trailing_3mo_avg_litres, @cost_model.floor_current.to_f, 0.01)
+    Collection.create!(subscription: subscription, date: date, bags: bags, skip: skip)
   end
 
-  test "floor_current is nil when there is no real collection data" do
-    assert_equal 0, Collection.total_litres_between(3.months.ago.to_date, Date.current)
-    assert_nil @cost_model.floor_current
+  test "complete_months_range spans the 3 months strictly before as_of's month" do
+    range = CostModel.complete_months_range(3, as_of: Date.new(2026, 7, 19))
+    assert_equal Date.new(2026, 4, 1), range.first
+    assert_equal Date.new(2026, 6, 30), range.last
+  end
+
+  test "floor_current divides monthly_total by the real average over the last 3 complete months" do
+    travel_to Date.new(2026, 7, 19) do
+      # 10 bags * 5L = 50L per collection, one in the oldest complete month, one in the most recent.
+      build_collection(date: Date.new(2026, 4, 5), bags: 10)
+      build_collection(date: Date.new(2026, 6, 25), bags: 10)
+      # Skipped collections must not count towards real volume.
+      build_collection(date: Date.new(2026, 6, 10), bags: 99, skip: true)
+      # This month is still in progress — must not count towards the trailing average.
+      build_collection(date: Date.new(2026, 7, 19), bags: 99)
+
+      assert_in_delta(100.0 / 3, @cost_model.trailing_3mo_avg_litres, 0.1)
+      assert_in_delta(43_898.0 / @cost_model.trailing_3mo_avg_litres, @cost_model.floor_current.to_f, 0.01)
+    end
+  end
+
+  test "floor_current is nil when there is no real collection data in the last 3 complete months" do
+    travel_to Date.new(2026, 7, 19) do
+      # Only a current-month collection exists — doesn't count towards the trailing average.
+      build_collection(date: Date.new(2026, 7, 19), bags: 10)
+
+      assert_equal 0.0, @cost_model.trailing_3mo_avg_litres
+      assert_nil @cost_model.floor_current
+    end
+  end
+
+  test "month_to_date_litres sums only real collections from this month so far" do
+    travel_to Date.new(2026, 7, 19) do
+      build_collection(date: Date.new(2026, 7, 10), bags: 10) # 50L, this month
+      build_collection(date: Date.new(2026, 6, 25), bags: 10) # 50L, last month — excluded
+
+      assert_equal 50, @cost_model.month_to_date_litres
+    end
+  end
+
+  test "month_to_date_projected_litres straight-line projects by day of month" do
+    travel_to Date.new(2026, 7, 19) do # day 19 of a 31-day month
+      build_collection(date: Date.new(2026, 7, 10), bags: 10) # 50L so far
+
+      # 50L over 19 days -> 31 days = ~81.6L
+      assert_in_delta 81.6, @cost_model.month_to_date_projected_litres, 0.1
+    end
   end
 end

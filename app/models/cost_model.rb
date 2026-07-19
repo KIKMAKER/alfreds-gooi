@@ -39,13 +39,38 @@ class CostModel < ApplicationRecord
     people_total + (fixed_per_bakkie_total * num_bakkies) + variable_total
   end
 
-  # Real trailing-3-month average monthly litres, computed live from actual
-  # collection data (not persisted — it's a fact about the business, not a
-  # setting). Distinct from target_monthly_litres, which is the admin's
-  # capacity assumption used for forward-looking pricing.
+  # Real average monthly litres over the last 3 *complete* calendar months,
+  # computed live from actual collection data (not persisted — it's a fact
+  # about the business, not a setting). Distinct from target_monthly_litres,
+  # which is the admin's capacity assumption used for forward-looking
+  # pricing. Deliberately excludes the current, still-in-progress month —
+  # see month_to_date_litres/month_to_date_projected_litres for that —
+  # since a partial month drags the average down and understates the true
+  # run rate.
   def trailing_3mo_avg_litres
-    total = Collection.total_litres_between(3.months.ago.to_date, Date.current)
+    range = self.class.complete_months_range(3)
+    total = Collection.total_litres_between(range.first, range.last)
     (total / 3.0).round(1)
+  end
+
+  def month_to_date_litres
+    Collection.total_litres_between(Date.current.beginning_of_month, Date.current)
+  end
+
+  # Straight-line projection of the current month's total, based on litres
+  # collected so far and how far through the month today is.
+  def month_to_date_projected_litres
+    day = Date.current.day
+    return month_to_date_litres.to_f if day.zero?
+    (month_to_date_litres.to_f / day * Date.current.end_of_month.day).round(1)
+  end
+
+  # Start/end dates spanning the last `months` complete calendar months as
+  # of `as_of` — i.e. excludes the current, still-in-progress month.
+  def self.complete_months_range(months, as_of: Date.current)
+    end_date = as_of.beginning_of_month - 1.day
+    start_date = as_of.beginning_of_month - months.months
+    start_date..end_date
   end
 
   # R/L floor implied by what the business is actually collecting right now.

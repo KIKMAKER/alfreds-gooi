@@ -740,7 +740,13 @@
         <div class="fin-stat">
           <span class="fin-stat__label">Trailing 3mo avg litres/mo</span>
           <span class="fin-stat__value"><%= number_with_delimiter(cmd.trailing_3mo_avg_litres.round) %>L</span>
-          <span class="fin-stat__note">real collected volume, not the target assumption</span>
+          <span class="fin-stat__note">last 3 complete months, real collected volume — not the target assumption</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label"><%= Date.current.strftime("%b") %> month-to-date, projected</span>
+          <span class="fin-stat__value"><%= number_with_delimiter(cm.month_to_date_projected_litres.round) %>L</span>
+          <span class="fin-stat__note"><%= number_with_delimiter(cm.month_to_date_litres.round) %>L so far, day <%= Date.current.day %> of <%= Date.current.end_of_month.day %> — projected straight-line</span>
         </div>
 
         <div class="fin-stat">
@@ -753,10 +759,10 @@
           <span class="fin-stat__label">Floor (current volume)</span>
           <% if cm.floor_current %>
             <span class="fin-stat__value">R <%= format('%.2f', cm.floor_current) %>/L</span>
-            <span class="fin-stat__note">monthly_total ÷ trailing 3mo litres</span>
+            <span class="fin-stat__note">monthly_total ÷ trailing 3 complete months' litres</span>
           <% else %>
             <span class="fin-stat__value text-muted">—</span>
-            <span class="fin-stat__note">no completed collections in the last 3 months</span>
+            <span class="fin-stat__note">no completed collections in the last 3 complete months</span>
           <% end %>
         </div>
 
@@ -805,7 +811,7 @@
         </div>
       </div>
 
-      <h5 class="mb-2">Litres/month trend (last 3 months)</h5>
+      <h5 class="mb-2">Litres/month trend (last 3 complete months)</h5>
       <div class="fin-stat-grid mb-4">
         <% cmd.monthly_litres_trend.each do |t| %>
           <div class="fin-stat">
