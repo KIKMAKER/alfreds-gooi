@@ -22,7 +22,7 @@ class Admin::QuotationsController < ApplicationController
     if @quotation.save
       create_quotation_items(@quotation)
       @quotation.calculate_total
-      redirect_to quotation_path(@quotation), notice: 'Quotation was successfully created.'
+      redirect_to quotation_path(@quotation), notice: 'Quotation was successfully created.', alert: cost_floor_warning(@quotation)
     else
       @products = Product.quote_eligible.order(:title)
       @users = User.where(role: :customer).order(:first_name, :last_name)
@@ -40,7 +40,7 @@ class Admin::QuotationsController < ApplicationController
     @quotation.update(quotation_params)
     create_new_quotation_items(@quotation)
     @quotation.calculate_total
-    redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.'
+    redirect_to quotation_path(@quotation), notice: 'Quotation was successfully updated.', alert: cost_floor_warning(@quotation)
   end
 
   def destroy
@@ -52,7 +52,7 @@ class Admin::QuotationsController < ApplicationController
     begin
       QuotationMailer.with(quotation: @quotation).quotation_created.deliver_now
       @quotation.update(status: :sent) if @quotation.status == 'draft'
-      redirect_to quotation_path(@quotation), notice: "Quotation email sent successfully to #{@quotation.customer_email}"
+      redirect_to quotation_path(@quotation), notice: "Quotation email sent successfully to #{@quotation.customer_email}", alert: cost_floor_warning(@quotation)
     rescue StandardError => e
       redirect_to quotation_path(@quotation), alert: "Error sending quotation: #{e.message}"
     end
@@ -72,6 +72,16 @@ class Admin::QuotationsController < ApplicationController
 
   def set_quotation
     @quotation = Quotation.find(params[:id])
+  end
+
+  # Non-blocking heads-up when a quote's effective R/L falls below the
+  # CostModel floor. Never prevents save/send — just flags it.
+  def cost_floor_warning(quotation)
+    result = RandsPerLitre.for(quotation)
+    return nil unless result&.state == :red
+
+    "Below cost floor — proceed? This quote is priced at R#{format('%.2f', result.rate)}/L, " \
+      "below the R#{format('%.2f', result.floor_target)}/L floor."
   end
 
   def quotation_prefill_params

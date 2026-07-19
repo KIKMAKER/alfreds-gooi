@@ -719,6 +719,140 @@
             </table>
     <% end %>
 
+    <%# ─────────────────────────────────────────────────────────
+        COST MODEL & PRICING FLOOR
+    ──────────────────────────────────────────────────────────── %>
+    <% cmd = @cost_model_dashboard
+       cm  = cmd.cost_model %>
+    <div class="fin-section mb-5">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <h2 class="fin-section__title mb-0">Cost Model & Pricing Floor</h2>
+        <%= link_to "Edit Cost Model", edit_admin_cost_model_path, class: "link-title" %>
+      </div>
+
+      <div class="fin-stat-grid mb-3">
+        <div class="fin-stat fin-stat--highlight">
+          <span class="fin-stat__label">Monthly cost total</span>
+          <span class="fin-stat__value">R <%= number_with_delimiter(cmd.monthly_total.to_i) %></span>
+          <span class="fin-stat__note">people + fixed × <%= cm.num_bakkies %> bakkie<%= "s" if cm.num_bakkies != 1 %> + variable</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Trailing 3mo avg litres/mo</span>
+          <span class="fin-stat__value"><%= number_with_delimiter(cmd.trailing_3mo_avg_litres.round) %>L</span>
+          <span class="fin-stat__note">real collected volume, not the target assumption</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Target litres/mo</span>
+          <span class="fin-stat__value"><%= number_with_delimiter(cm.target_monthly_litres.to_i) %>L</span>
+          <span class="fin-stat__note">admin capacity assumption, edit below</span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Floor (current volume)</span>
+          <% if cm.floor_current %>
+            <span class="fin-stat__value">R <%= format('%.2f', cm.floor_current) %>/L</span>
+            <span class="fin-stat__note">monthly_total ÷ trailing 3mo litres</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">no completed collections in the last 3 months</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Floor (target volume)</span>
+          <% if cm.floor_target %>
+            <span class="fin-stat__value">R <%= format('%.2f', cm.floor_target) %>/L</span>
+            <span class="fin-stat__note">monthly_total ÷ target litres — never quote below this</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">set target_monthly_litres on the cost model</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat fin-stat--highlight">
+          <span class="fin-stat__label">Price guidance</span>
+          <% if cm.price_guidance %>
+            <span class="fin-stat__value">R <%= format('%.2f', cm.price_guidance) %>/L</span>
+            <span class="fin-stat__note">floor + <%= number_to_percentage(cm.minimum_margin_pct * 100, precision: 0) %> margin — quote at or above this</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+          <% end %>
+        </div>
+
+        <div class="fin-stat <%= 'fin-stat--danger' if cmd.burn_gap.negative? %>">
+          <span class="fin-stat__label">MRR vs cost (burn gap)</span>
+          <span class="fin-stat__value">R <%= number_with_delimiter(cmd.mrr.round) %> − R <%= number_with_delimiter(cmd.monthly_total.to_i) %></span>
+          <span class="fin-stat__note">
+            <% if cmd.burn_gap.negative? %>
+              short by R<%= number_with_delimiter(cmd.burn_gap.abs.round) %>/mo
+            <% else %>
+              covering costs with R<%= number_with_delimiter(cmd.burn_gap.round) %>/mo to spare
+            <% end %>
+          </span>
+        </div>
+
+        <div class="fin-stat">
+          <span class="fin-stat__label">Litres to break even</span>
+          <% if cmd.litres_needed_to_break_even %>
+            <span class="fin-stat__value"><%= number_with_delimiter(cmd.litres_needed_to_break_even.round) %>L</span>
+            <span class="fin-stat__note">at today's avg R<%= format('%.2f', cmd.current_avg_rate) %>/L blended rate</span>
+          <% else %>
+            <span class="fin-stat__value text-muted">—</span>
+            <span class="fin-stat__note">no real litres collected yet to establish a rate</span>
+          <% end %>
+        </div>
+      </div>
+
+      <h5 class="mb-2">Litres/month trend (last 3 months)</h5>
+      <div class="fin-stat-grid mb-4">
+        <% cmd.monthly_litres_trend.each do |t| %>
+          <div class="fin-stat">
+            <span class="fin-stat__label"><%= t.label %></span>
+            <span class="fin-stat__value"><%= number_with_delimiter(t.litres.round) %>L</span>
+          </div>
+        <% end %>
+      </div>
+
+      <h5 class="mb-2">Active subscriptions by effective R/L</h5>
+      <% if @ranked_subscriptions.any? %>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th class="text-end">Effective R/L</th>
+                <th>vs. floor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @ranked_subscriptions.each do |row| %>
+                <tr class="<%= 'table-danger' if row.result.state == :red %>">
+                  <td><%= link_to row.subscription.user&.first_name.to_s + " " + row.subscription.user&.last_name.to_s, admin_subscription_path(row.subscription) %></td>
+                  <td><%= row.subscription.plan %></td>
+                  <td class="text-end">R<%= format('%.2f', row.result.rate) %></td>
+                  <td>
+                    <% if row.result.state %>
+                      <span class="badge bg-<%= { green: 'success', amber: 'warning', red: 'danger' }[row.result.state] %>">
+                        <%= row.result.state == :red ? "Underwater" : row.result.state.to_s.titleize %>
+                      </span>
+                    <% else %>
+                      <span class="text-muted small">no cost floor set</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted small">Ranked by effective R/L against <%= cm.floor_target ? "R#{format('%.2f', cm.floor_target)}/L" : "the cost floor" %> — rows in red are priced below the floor on their most recent invoice.</p>
+      <% else %>
+        <p class="text-muted">No active subscriptions with an invoiced R/L yet.</p>
+      <% end %>
+    </div>
+
     <!-- Quick Actions -->
     <div class="d-flex gap-2 mt-4">
       <%= link_to "Add Expense", new_admin_expense_path, class: "btn-today-green" %>

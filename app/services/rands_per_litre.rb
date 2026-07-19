@@ -11,7 +11,11 @@
 class RandsPerLitre
   WEEKS_PER_MONTH = 4
 
-  Result = Struct.new(:rate, :litres, :note, keyword_init: true)
+  # state is one of :green (at/above price_guidance), :amber (between floor_target
+  # and price_guidance), :red (below floor_target), or nil (no cost floor set,
+  # i.e. CostModel#target_monthly_litres is 0 — nothing to compare against).
+  Result = Struct.new(:rate, :litres, :note, :floor_target, :price_guidance,
+                      :target_monthly_litres, :state, keyword_init: true)
 
   def self.for(record)
     case record
@@ -85,11 +89,28 @@ class RandsPerLitre
   def self.build(total, litres, basis)
     return nil unless litres.to_f.positive?
 
+    rate = (total.to_f / litres).round(2)
+    cost_model = CostModel.current
+    floor_target = cost_model.floor_target
+    price_guidance = cost_model.price_guidance
+
     Result.new(
-      rate: (total.to_f / litres).round(2),
+      rate: rate,
       litres: litres,
-      note: "R#{format('%.2f', total.to_f)} ÷ #{litres}L (#{basis})"
+      note: "R#{format('%.2f', total.to_f)} ÷ #{litres}L (#{basis})",
+      floor_target: floor_target,
+      price_guidance: price_guidance,
+      target_monthly_litres: cost_model.target_monthly_litres,
+      state: classify(rate, floor_target, price_guidance)
     )
   end
   private_class_method :build
+
+  def self.classify(rate, floor_target, price_guidance)
+    return nil unless floor_target && price_guidance
+    return :green if rate >= price_guidance
+    return :amber if rate >= floor_target
+    :red
+  end
+  private_class_method :classify
 end

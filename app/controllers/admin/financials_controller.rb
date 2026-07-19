@@ -8,6 +8,9 @@ class Admin::FinancialsController < ApplicationController
     @operational = OperationalMetrics.new.calculate
     @date_range = parse_date_range(params[:range] || 'this_month')
 
+    @cost_model_dashboard = CostModelDashboard.new
+    @ranked_subscriptions = UnderwaterSubscriptions.call
+
     # Get financial metrics for the date range
     start_year = @date_range.first.year
     start_month = @date_range.first.month

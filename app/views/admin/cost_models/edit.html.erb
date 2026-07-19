@@ -1,0 +1,123 @@
+<div class="gooi-container">
+  <div class="outline">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <h1 class="mb-0">Cost Model</h1>
+      <%= link_to "← Back to Financials", admin_financials_path, class: "link-title" %>
+    </div>
+    <p class="text-muted mb-4">
+      The single source of truth for the real cost structure behind every pricing floor
+      in the app. Editing these numbers changes floor_current, floor_target and price
+      guidance everywhere — the quote/invoice R/L pill, and the financials dashboard.
+    </p>
+
+    <%= form_with model: @cost_model, url: admin_cost_model_path, method: :patch, local: true do |f| %>
+      <div class="fin-section mb-4">
+        <h2 class="fin-section__title">People</h2>
+        <div class="row g-3 mb-2">
+          <div class="col-md-6">
+            <%= f.label :founder_salary, "Founder salary (R/mo)", class: "form-label" %>
+            <%= f.number_field :founder_salary, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.label :driver_salary, "Driver salary (R/mo)", class: "form-label" %>
+            <%= f.number_field :driver_salary, step: 0.01, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-section mb-4">
+        <h2 class="fin-section__title">Fixed costs per bakkie</h2>
+        <p class="text-muted small">Multiplied by num_bakkies below — these repeat per vehicle in the fleet.</p>
+        <div class="row g-3 mb-2">
+          <div class="col-md-4">
+            <%= f.label :depreciation, "Depreciation (R/mo)", class: "form-label" %>
+            <%= f.number_field :depreciation, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :maintenance, "Maintenance (R/mo)", class: "form-label" %>
+            <%= f.number_field :maintenance, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :hosting, "Hosting (R/mo)", class: "form-label" %>
+            <%= f.number_field :hosting, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :data_comms, "Data & comms (R/mo)", class: "form-label" %>
+            <%= f.number_field :data_comms, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :bank_fees, "Bank fees (R/mo)", class: "form-label" %>
+            <%= f.number_field :bank_fees, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :licence, "Licence (R/mo)", class: "form-label" %>
+            <%= f.number_field :licence, step: 0.01, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-section mb-4">
+        <h2 class="fin-section__title">Variable costs</h2>
+        <div class="row g-3 mb-2">
+          <div class="col-md-6">
+            <%= f.label :fuel_per_route_day, "Fuel (R/route day)", class: "form-label" %>
+            <%= f.number_field :fuel_per_route_day, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.label :route_days_per_month, "Route days / month", class: "form-label" %>
+            <%= f.number_field :route_days_per_month, step: 1, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :marketing, "Marketing (R/mo)", class: "form-label" %>
+            <%= f.number_field :marketing, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :supplies, "Supplies (R/mo)", class: "form-label" %>
+            <%= f.number_field :supplies, step: 0.01, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :other, "Other (R/mo)", class: "form-label" %>
+            <%= f.number_field :other, step: 0.01, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-section mb-4">
+        <h2 class="fin-section__title">Fleet & volume assumptions</h2>
+        <div class="row g-3 mb-2">
+          <div class="col-md-4">
+            <%= f.label :num_bakkies, "Number of bakkies", class: "form-label" %>
+            <%= f.number_field :num_bakkies, step: 1, min: 1, class: "form-control" %>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :target_monthly_litres, "Target litres / month", class: "form-label" %>
+            <%= f.number_field :target_monthly_litres, step: 1, class: "form-control" %>
+            <small class="text-muted">Capacity assumption used for floor_target — not the real trailing-3-month average, which is computed live from collections.</small>
+          </div>
+          <div class="col-md-4">
+            <%= f.label :minimum_margin_percent, "Minimum margin (%)", class: "form-label" %>
+            <%= f.number_field :minimum_margin_percent, step: 1, value: (@cost_model.minimum_margin_pct.to_f * 100).round, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-stat-grid mb-4">
+        <div class="fin-stat fin-stat--highlight">
+          <span class="fin-stat__label">Monthly total (current values)</span>
+          <span class="fin-stat__value">R <%= number_with_delimiter(@cost_model.monthly_total.to_i) %></span>
+          <span class="fin-stat__note">recalculates on save</span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat__label">Floor (target volume)</span>
+          <span class="fin-stat__value"><%= @cost_model.floor_target ? "R#{format('%.2f', @cost_model.floor_target)}/L" : "—" %></span>
+        </div>
+        <div class="fin-stat">
+          <span class="fin-stat__label">Price guidance</span>
+          <span class="fin-stat__value"><%= @cost_model.price_guidance ? "R#{format('%.2f', @cost_model.price_guidance)}/L" : "—" %></span>
+        </div>
+      </div>
+
+      <%= f.submit "Save Cost Model", class: "btn-today-green" %>
+    <% end %>
+  </div>
+</div>

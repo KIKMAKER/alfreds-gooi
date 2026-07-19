@@ -118,4 +118,50 @@ class RandsPerLitreTest < ActiveSupport::TestCase
     # No bucket-size product on the quote and no linked subscription
     assert_nil RandsPerLitre.for(build_quotation)
   end
+
+  # --- pill states (cost floor comparison) ---
+
+  def build_cost_model(**attrs)
+    CostModel.create!({
+      founder_salary: 1000, driver_salary: 0,
+      depreciation: 0, maintenance: 0, hosting: 0, data_comms: 0, bank_fees: 0, licence: 0,
+      fuel_per_route_day: 0, route_days_per_month: 0, marketing: 0, supplies: 0, other: 0,
+      num_bakkies: 1, target_monthly_litres: 1000, minimum_margin_pct: 0.25
+    }.merge(attrs))
+    # monthly_total is 1000 → floor_target R1.00/L, price_guidance R1.25/L
+  end
+
+  test "state is green when rate is at or above price_guidance" do
+    build_cost_model
+    sub = build_subscription(duration: 1) # 4 weeks x 5L = 20L
+    invoice = build_invoice(subscription: sub, total: 40.0) # R2.00/L
+
+    assert_equal :green, RandsPerLitre.for(invoice).state
+  end
+
+  test "state is amber when rate is between floor_target and price_guidance" do
+    build_cost_model
+    sub = build_subscription(duration: 1)
+    invoice = build_invoice(subscription: sub, total: 22.0) # R1.10/L
+
+    assert_equal :amber, RandsPerLitre.for(invoice).state
+  end
+
+  test "state is red when rate is below floor_target" do
+    build_cost_model
+    sub = build_subscription(duration: 1)
+    invoice = build_invoice(subscription: sub, total: 10.0) # R0.50/L
+
+    assert_equal :red, RandsPerLitre.for(invoice).state
+  end
+
+  test "state is nil when the cost model has no target_monthly_litres set" do
+    build_cost_model(target_monthly_litres: 0)
+    sub = build_subscription(duration: 1)
+    invoice = build_invoice(subscription: sub, total: 10.0)
+
+    result = RandsPerLitre.for(invoice)
+    assert_nil result.state
+    assert_nil result.floor_target
+  end
 end

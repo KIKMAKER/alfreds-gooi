@@ -49,19 +49,14 @@ module ApplicationHelper
 
   # Admin-only R/L badge for quotes and invoices. Renders nothing for
   # non-admins or when the document has no volume basis (order invoices,
-  # event quotes, zero totals). Hover shows the calculation.
+  # event quotes, zero totals). Click to expand the cost-floor comparison.
   def rands_per_litre_badge(record)
     return unless current_user&.admin?
 
     result = RandsPerLitre.for(record)
     return unless result
 
-    tag.span(class: "rpl-badge", title: result.note) do
-      safe_join([
-        tag.span("R#{format('%.2f', result.rate)}", class: "rpl-badge__rate"),
-        tag.span("/L", class: "rpl-badge__unit")
-      ])
-    end
+    render partial: "shared/rpl_badge", locals: { result: result }
   end
 
   def render_navbar

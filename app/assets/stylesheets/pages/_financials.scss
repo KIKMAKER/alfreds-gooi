@@ -32,6 +32,11 @@
     border-color: #ffc107;
   }
 
+  &--danger {
+    background: #fbeaec;
+    border-color: #dc3545;
+  }
+
   &__label {
     font-size: 0.75rem;
     color: #6c757d;

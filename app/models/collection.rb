@@ -138,6 +138,14 @@ class Collection < ApplicationRecord
     end
   end
 
+  # Real litres actually collected (excludes skipped/not-yet-done rows) between
+  # two dates. Used as the "real data" volume baseline for cost-model floors —
+  # loads the (bounded, date-scoped) rows and sums via volume_litres so the
+  # plan-specific math stays defined in one place.
+  def self.total_litres_between(start_date, end_date)
+    active.completed.where(date: start_date..end_date).includes(:subscription).sum(&:volume_litres)
+  end
+
   # Save data outside of heroku
   def self.to_csv
     attributes = %w[id created_at updated_at subscription_id date kiki_note alfred_message bags buckets is_done skip drivers_day_id new_customer buckets]

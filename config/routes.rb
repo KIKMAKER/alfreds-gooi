@@ -88,6 +88,7 @@ Rails.application.routes.draw do
 
     # Financial Dashboard
     get 'financials', to: 'financials#dashboard', as: :financials
+    resource :cost_model, only: [:edit, :update]
     get 'monthly_invoicing', to: 'monthly_invoicing#index', as: :monthly_invoicing
     get 'financials/chart_data', to: 'financials#chart_data', as: :chart_data_financials
     get 'financials/export_drivers_days', to: 'financials#export_drivers_days', as: :export_drivers_days_financials

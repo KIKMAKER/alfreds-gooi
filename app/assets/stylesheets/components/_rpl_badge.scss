@@ -1,22 +1,87 @@
 // Admin-only rand-per-litre badge shown beside invoice and quotation titles.
-// Yellow matches the admin panel accents on those pages.
+// A native <details>/<summary> pair: the pill is the summary, clicking it
+// expands the cost-floor breakdown. No JS needed for the expand/collapse.
+// Color communicates where the document's R/L sits versus CostModel's
+// floor_target/price_guidance: green ≥ guidance, amber ≥ floor, red < floor,
+// neutral yellow when no cost floor is configured yet.
 .rpl-badge {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.05rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(245, 177, 26, 0.15);
-  border: 1px solid rgba(245, 177, 26, 0.4);
-  color: rgb(150, 110, 15);
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: help;
+  position: relative;
+  display: inline-block;
+
+  summary {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.05rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(245, 177, 26, 0.15);
+    border: 1px solid rgba(245, 177, 26, 0.4);
+    color: rgb(150, 110, 15);
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
 
   &__unit {
     font-size: 0.75em;
     font-weight: 500;
     opacity: 0.8;
+  }
+
+  &__details {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    width: max-content;
+    max-width: 280px;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.5rem;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #333;
+    white-space: normal;
+  }
+
+  &__detail-row {
+    margin: 0 0 0.25rem;
+
+    &:last-of-type {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &__detail-note {
+    margin: 0.35rem 0 0;
+    color: #767676;
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  &--green summary {
+    background: rgba(40, 167, 69, 0.15);
+    border-color: rgba(40, 167, 69, 0.4);
+    color: rgb(30, 126, 52);
+  }
+
+  &--amber summary {
+    background: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.5);
+    color: rgb(133, 100, 4);
+  }
+
+  &--red summary {
+    background: rgba(220, 53, 69, 0.15);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: rgb(176, 42, 55);
   }
 }

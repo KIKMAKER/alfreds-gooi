@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_15_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_19_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -254,6 +254,27 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_15_120000) do
     t.index ["subscription_id", "is_primary"], name: "index_contacts_on_subscription_id_and_is_primary"
     t.index ["subscription_id", "phone_number"], name: "index_contacts_on_subscription_id_and_phone_number", unique: true
     t.index ["subscription_id"], name: "index_contacts_on_subscription_id"
+  end
+
+  create_table "cost_models", force: :cascade do |t|
+    t.decimal "founder_salary", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "driver_salary", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "depreciation", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "maintenance", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "hosting", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "data_comms", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "bank_fees", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "licence", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "fuel_per_route_day", precision: 10, scale: 2, default: "0.0", null: false
+    t.integer "route_days_per_month", default: 0, null: false
+    t.decimal "marketing", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "supplies", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "other", precision: 10, scale: 2, default: "0.0", null: false
+    t.integer "num_bakkies", default: 1, null: false
+    t.decimal "target_monthly_litres", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "minimum_margin_pct", precision: 5, scale: 4, default: "0.25", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "day_statistics", force: :cascade do |t|

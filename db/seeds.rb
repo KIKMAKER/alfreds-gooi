@@ -9,6 +9,7 @@ puts "  [collections] → reset all collections to be realistic for today's date
 puts "  [dropoffs]    → re-seed drop-off sites and event history"
 puts "  [quotes]      → re-seed quotations in all states"
 puts "  [payments]    → re-seed payment records"
+puts "  [costs]       → seed/update the cost model (idempotent)"
 puts ""
 
 proceed = STDIN.gets.chomp.downcase
@@ -90,6 +91,9 @@ elsif proceed == "collections"
   load_seed 'collections'
 
 # ── Quotations ────────────────────────────────────────────────────────────────
+
+elsif proceed == "costs"
+  load_seed 'cost_model'
 
 elsif proceed == "quotes"
   puts "This will clear and recreate all quotations. Continue? (y/n)"
