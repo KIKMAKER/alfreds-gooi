@@ -237,6 +237,8 @@
           <h3>Admin</h3>
         </div>
         <div class="dd-form-card__body">
+          <%= f.input :new_customer, as: :boolean, label: "New customer (starter kit)",
+                      hint: "Also updates the subscription's new customer flag." %>
           <%= f.input :kiki_note, as: :text, label: "Message for Alfred" %>
           <%= f.input :date %>
           <%= f.input :position, label: "Route position", as: :integer,

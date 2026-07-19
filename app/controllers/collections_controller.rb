@@ -103,7 +103,11 @@ class CollectionsController < ApplicationController
 
   def update
     if @collection.update(collection_params)
-      clear_new_customer_flags!(@collection)
+      if collection_params.key?(:new_customer)
+        sync_new_customer_to_subscription!(@collection)
+      else
+        clear_new_customer_flags!(@collection)
+      end
 
       if @collection.saved_change_to_skip? && @collection.skip?
         CollectionMailer.skipped(
@@ -259,6 +263,14 @@ class CollectionsController < ApplicationController
                 .where(new_customer: true)
                 .where(date: collection.date..)
                 .update_all(new_customer: false, updated_at: Time.current)
+  end
+
+  # Admin explicitly ticked/unticked "New customer" on this collection (the
+  # checkbox only appears for admins) — respect that intent rather than running
+  # the automatic drop-off clear above, and mirror it onto the subscription so
+  # is_new_customer stays in sync from either edit screen.
+  def sync_new_customer_to_subscription!(collection)
+    collection.subscription.update_column(:is_new_customer, collection.new_customer?)
   end
 
   def move_to_position!(collection, new_position)

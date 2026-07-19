@@ -288,6 +288,8 @@ class SubscriptionsController < ApplicationController
     # subscription = Subscription.find(params[:id])
     # user = subscription.user
     if @subscription.update(subscription_params)
+      sync_new_customer_to_next_collection!(@subscription) if @subscription.saved_change_to_is_new_customer?
+
       @subscription.collections
                  .where(date: @subscription.holiday_start..@subscription.holiday_end)
                  .find_each { |c| c.mark_skipped!(by: current_user, reason: "holiday_range") }
@@ -606,7 +608,7 @@ class SubscriptionsController < ApplicationController
   def subscription_params
     permitted = params.require(:subscription).permit(:title, :customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date, :end_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
-                  :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, :waste_stream, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
+                  :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, :waste_stream, :is_new_customer, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
 
     # Enum assignment raises ArgumentError on an unknown value, so an unrecognised
     # waste_stream would 500 rather than fail validation.
@@ -619,6 +621,13 @@ class SubscriptionsController < ApplicationController
 
   def set_subscription
     @subscription = Subscription.find(params[:id])
+  end
+
+  # Mirrors an admin's manual correction of is_new_customer onto the collection
+  # that will actually carry the starter kit, so the two flags don't drift apart.
+  def sync_new_customer_to_next_collection!(subscription)
+    next_collection = subscription.collections.where(date: Date.current..).order(:date).first
+    next_collection&.update_column(:new_customer, subscription.is_new_customer?)
   end
 
   def process_subscription(row)

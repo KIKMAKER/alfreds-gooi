@@ -128,6 +128,13 @@
                           label: "Paused",
                           wrapper_html: { class: 'mb-0' } %>
             </div>
+            <div class="col-md-4 d-flex align-items-end pb-1">
+              <%= f.input :is_new_customer,
+                          as: :boolean,
+                          label: "New customer",
+                          hint: "Also updates their next collection's starter kit flag.",
+                          wrapper_html: { class: 'mb-0' } %>
+            </div>
           </div>
         </div>
       </div>
