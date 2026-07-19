@@ -77,6 +77,30 @@ class RandsPerLitreTest < ActiveSupport::TestCase
     assert_equal 20.0, result.rate
   end
 
+  test "excludes a starter kit line item from the invoice total before computing rate" do
+    sub = build_subscription(duration: 1) # 4 weeks x 5L = 20L
+    invoice = build_invoice(subscription: sub, total: 540.0) # R220 subscription + R320 starter kit
+    starter = Product.create!(title: "Standard Starter Kit", price: 320.0,
+                              description: "kit", billing_type: "standard")
+    invoice.invoice_items.create!(product: starter, quantity: 1, amount: 320.0)
+
+    result = RandsPerLitre.for(invoice)
+
+    # (540 - 320) / 20L = R11/L, not 540/20 = R27/L
+    assert_equal 20, result.litres
+    assert_equal 11.0, result.rate
+  end
+
+  test "an invoice that is only a starter kit has no badge" do
+    sub = build_subscription(duration: 1)
+    invoice = build_invoice(subscription: sub, total: 320.0)
+    starter = Product.create!(title: "Standard Starter Kit", price: 320.0,
+                              description: "kit", billing_type: "standard")
+    invoice.invoice_items.create!(product: starter, quantity: 1, amount: 320.0)
+
+    assert_nil RandsPerLitre.for(invoice)
+  end
+
   test "order invoices and zero totals have no badge" do
     sub = build_subscription
     order = Order.create!(user: @user, status: :paid, total_amount: 90.0)

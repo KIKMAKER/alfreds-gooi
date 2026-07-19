@@ -31,21 +31,24 @@ class RandsPerLitre
     sub = invoice.subscription
     return nil unless sub
 
+    billed = recurring_amount(invoice)
+    return nil unless billed.positive?
+
     if sub.once_off?
       litres = sub.allowed_litres_per_collection
-      build(invoice.total_amount, litres, "1 once-off collection")
+      build(billed, litres, "1 once-off collection")
     elsif sub.monthly_invoicing?
       subs = billed_monthly_subs(sub)
       weekly = subs.sum { |s| with_satellites(s).sum(&:expected_weekly_volume_l) }
       note = "#{WEEKS_PER_MONTH} weeks × #{weekly}L/week"
       note += " across #{subs.size} subscriptions" if subs.size > 1
-      build(invoice.total_amount, weekly * WEEKS_PER_MONTH, note)
+      build(billed, weekly * WEEKS_PER_MONTH, note)
     else
       return nil unless sub.duration&.positive?
 
       weekly = with_satellites(sub).sum(&:expected_weekly_volume_l)
       weeks = sub.duration * WEEKS_PER_MONTH
-      build(invoice.total_amount, weekly * weeks, "#{weeks} weeks × #{weekly}L/week")
+      build(billed, weekly * weeks, "#{weeks} weeks × #{weekly}L/week")
     end
   end
 
@@ -85,6 +88,22 @@ class RandsPerLitre
     [sub] + sub.satellite_subscriptions.to_a
   end
   private_class_method :with_satellites
+
+  # Starter-kit/bucket-purchase line items are one-time charges bundled into
+  # a customer's first invoice (see InvoiceBuilder#add_starter_kit) —
+  # including them would make every new customer's first invoice look far
+  # more expensive per litre than their actual ongoing rate, even though the
+  # litres side of this calculation was never based on actual collections in
+  # the first place. Mirrors Quotation#one_time_cost, which excludes the
+  # same category of cost from its ongoing-rate methods.
+  def self.recurring_amount(invoice)
+    starter_total = invoice.invoice_items
+                           .joins(:product)
+                           .where("products.title ILIKE ?", "%starter%")
+                           .sum { |i| (i.amount || 0) * (i.quantity || 0) }
+    invoice.total_amount.to_f - starter_total
+  end
+  private_class_method :recurring_amount
 
   def self.build(total, litres, basis)
     return nil unless litres.to_f.positive?
