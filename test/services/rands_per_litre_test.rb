@@ -71,8 +71,27 @@ class RandsPerLitreTest < ActiveSupport::TestCase
     assert_nil RandsPerLitre.for(sub)
   end
 
-  test "a subscription never billed (no cached monthly amount yet) has no contracted rate" do
-    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil)
+  test "a Commercial subscription never billed (no cached monthly amount yet) has no contracted rate" do
+    sub = build_subscription(plan: "Commercial", monthly_subscription_amount: nil)
+    assert_nil RandsPerLitre.for(sub)
+  end
+
+  test "a Standard/XL subscription with no cached amount falls back to today's rate-card price" do
+    # InvoiceBuilder#add_monthly_subscription only persists monthly_subscription_amount
+    # on a subscription's very first invoice — every renewal after that never
+    # saves it back, even though the subscription is fully priced.
+    Product.create!(title: "Standard 3 month subscription", price: 660.0,
+                    description: "plan", billing_type: "invoice_only")
+    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3)
+
+    result = RandsPerLitre.for(sub)
+
+    # 660 / 3 months = R220/mo ÷ 18L = R12.22/L
+    assert_in_delta 12.22, result.rate, 0.01
+  end
+
+  test "a Standard/XL subscription with no cache and no matching product has no contracted rate" do
+    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3)
     assert_nil RandsPerLitre.for(sub)
   end
 

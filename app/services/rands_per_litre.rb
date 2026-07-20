@@ -83,14 +83,35 @@ class RandsPerLitre
   # kit installment (a one-off cost InvoiceBuilder already tracks separately
   # from these fields) and doesn't depend on whether/which invoice has been
   # generated. nil until the subscription has been billed at least once,
-  # since that's when these cached fields are first established.
+  # since that's when these cached fields are first established. Falls back
+  # to a live rate-card lookup for Standard/XL: InvoiceBuilder#add_monthly_subscription
+  # only ever persists monthly_subscription_amount on a subscription's very
+  # first invoice (gated on @is_new) — every renewal after that recomputes
+  # the same amount to charge but never saves it back, so any subscription
+  # that's renewed even once has a blank cache here despite being fully,
+  # unambiguously priced. Commercial has no such fallback: its price is
+  # negotiated per deal, not a flat catalogue rate, so a blank cache there
+  # genuinely means "never billed yet".
   def self.monthly_charge(subscription)
     return nil if subscription.once_off?
 
-    amount = subscription.monthly_subscription_amount.to_f + subscription.monthly_volume_amount.to_f
-    amount.positive? ? amount : nil
+    cached = subscription.monthly_subscription_amount.to_f + subscription.monthly_volume_amount.to_f
+    return cached if cached.positive?
+
+    rate_card_monthly_charge(subscription)
   end
   private_class_method :monthly_charge
+
+  def self.rate_card_monthly_charge(subscription)
+    return nil if subscription.Commercial?
+    return nil unless subscription.duration&.positive?
+
+    product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+    return nil unless product&.price
+
+    (product.price.to_f / subscription.duration).round(2)
+  end
+  private_class_method :rate_card_monthly_charge
 
   def self.active_for_whole_window?(subscription, range)
     start = subscription.start_date&.to_date
