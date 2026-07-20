@@ -1,0 +1,10 @@
+<div class="app-nudge" data-controller="app-nudge">
+  <button class="app-nudge-close" data-action="app-nudge#dismiss" aria-label="Dismiss">&times;</button>
+  <%= link_to get_the_app_path, class: "app-nudge-link" do %>
+    <span class="app-nudge-icon">📲</span>
+    <span class="app-nudge-text">
+      <strong>Get the Gooi app</strong>
+      <small>Track collections from your home screen</small>
+    </span>
+  <% end %>
+</div>

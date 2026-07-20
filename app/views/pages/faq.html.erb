@@ -102,6 +102,22 @@
         "@type": "Answer",
         "text": "Yes. We offer commercial collection for restaurants, cafés, offices, and other businesses. Pricing is volume-based (45L buckets) with flexible contract lengths. Get in touch via the Commercial inquiry form on our home page."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a Gooi app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — it's a web app you install straight from your browser, no App Store or Play Store needed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I install the Gooi app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Visit gooi.me/get-the-app on your phone — we'll detect whether you're on iOS, Android, or desktop and walk you through adding it to your home screen in a few taps."
+      }
     }
   ]
 }
@@ -236,6 +252,24 @@
       <div class="faq-answer">
         Yes. If weekly doorstep collection doesn't suit you, you can drop your scraps at one of our partner farms and community drop-off locations around Cape Town.
         <%= link_to "See drop-off locations →", farms_path %>
+      </div>
+    </details>
+
+    <%# ── The Gooi app ────────────────────────────────── %>
+    <div class="faq-section-label"><span>The Gooi app</span></div>
+
+    <details class="faq-item">
+      <summary>Is there a Gooi app?</summary>
+      <div class="faq-answer">
+        Yes — it's a web app you install straight from your browser, no App Store or Play Store needed.
+        <%= link_to "See how to install it →", get_the_app_path %>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I install the Gooi app?</summary>
+      <div class="faq-answer">
+        Visit <%= link_to "gooi.me/get-the-app", get_the_app_path %> on your phone — we'll detect whether you're on iOS, Android, or desktop and walk you through adding it to your home screen in a few taps.
       </div>
     </details>
 
