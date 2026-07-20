@@ -53,6 +53,7 @@ Rails.application.routes.draw do
         post :create_next_week_events
       end
     end
+    resources :suburbs, only: [:index, :new, :create, :edit, :update, :destroy]
     resources :disposal_fees, only: [:index]
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       get  :pending,          on: :collection

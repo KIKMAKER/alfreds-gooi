@@ -40,8 +40,20 @@ class Subscription < ApplicationRecord
   before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
   before_validation :normalize_referral_code
-  SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
-  validates :suburb, inclusion: { in: SUBURBS }
+  # Fallback used when the suburbs table is missing or empty (fresh dev/CI boot).
+  # Kept in sync with the backfill in db/migrate/20260720103529_create_suburbs.rb.
+  FALLBACK_SUBURBS = ["Bakoven", "Bantry Bay", "Camps Bay", "Cape Town", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Bo-Kaap", "De Waterkant", "Foreshore", "Gardens", "Higgovale", "District Six", "Ndabeni", "Oranjezicht", "Salt River", "Schotsche Kloof", "Tamboerskloof", "University Estate", "Vredehoek", "Woodstock", "Bergvliet", "Bishopscourt", "Claremont", "Constantia", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Mowbray", "Newlands", "Observatory", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Witteboomen", "Wynberg", "Clovelly", "Fish Hoek", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort.freeze
+
+  # DB-backed replacement for the old frozen SUBURBS constant. Falls back to
+  # FALLBACK_SUBURBS when the suburbs table doesn't exist yet or hasn't been
+  # backfilled (fresh dev/CI boot).
+  def self.SUBURBS
+    return FALLBACK_SUBURBS unless Suburb.table_exists?
+    names = Suburb.active.pluck(:name)
+    names.empty? ? FALLBACK_SUBURBS : names.sort
+  end
+
+  validates :suburb, inclusion: { in: ->(_record) { Subscription.SUBURBS } }
   validates :street_address, presence: true
   validates :suburb, :plan, presence: true
   validates :duration, presence: true, unless: :once_off?

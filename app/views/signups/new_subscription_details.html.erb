@@ -57,7 +57,7 @@
       <div class="mb-3">
         <%= f.label :suburb, class: "form-label" %>
         <%= f.select :suburb,
-            options_for_select(Subscription::SUBURBS, @subscription&.suburb),
+            options_for_select(Subscription.SUBURBS, @subscription&.suburb),
             { prompt: "Select a suburb" },
             { required: true,
               class: "form-select",

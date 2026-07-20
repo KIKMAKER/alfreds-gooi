@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_19_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -851,6 +851,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_19_120000) do
     t.index ["status"], name: "index_subscriptions_on_status"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
     t.index ["waste_stream"], name: "index_subscriptions_on_waste_stream"
+  end
+
+  create_table "suburbs", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_suburbs_on_name", unique: true
+    t.index ["slug"], name: "index_suburbs_on_slug", unique: true
   end
 
   create_table "testimonials", force: :cascade do |t|

@@ -1,0 +1,29 @@
+<div class="driver-wrapper">
+  <h1>Suburbs</h1>
+
+  <div class="d-flex flex-wrap gap-2 my-3">
+    <%= link_to "New Suburb", new_admin_suburb_path, class: "small-yellow-btn" %>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @suburbs.each do |suburb| %>
+        <tr>
+          <td><%= suburb.name %></td>
+          <td><%= suburb.status.titleize %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_suburb_path(suburb) %>
+            <%= link_to "Delete", admin_suburb_path(suburb), data: { turbo_method: :delete, turbo_confirm: "Delete #{suburb.name}?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

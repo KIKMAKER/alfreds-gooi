@@ -6,7 +6,7 @@ class SuburbSpotlight
   # drivers_day level, with no link back to a subscription/suburb). We estimate it
   # the same way Block#weight_kg already does: collection volume (litres) x density.
   def self.call(suburb:, month: Date.current)
-    raise ArgumentError, "invalid suburb" unless Subscription::SUBURBS.include?(suburb)
+    raise ArgumentError, "invalid suburb" unless Subscription.SUBURBS.include?(suburb)
 
     range = month.beginning_of_month..month.end_of_month
     collections = Collection.joins(:subscription)

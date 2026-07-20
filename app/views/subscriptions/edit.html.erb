@@ -30,7 +30,7 @@
         <div class="row g-3">
           <div class="col-md-6">
             <%= f.input :suburb,
-                        collection: Subscription::SUBURBS,
+                        collection: Subscription.SUBURBS,
                         prompt: "Select a suburb",
                         input_html: { class: 'form-select' },
                         wrapper_html: { class: 'mb-0' } %>

@@ -111,7 +111,7 @@
       <div class="col-md-4">
         <%= f.label :suburb, class: "form-label" %>
         <%= f.select :suburb,
-                     Subscription::SUBURBS.sort,
+                     Subscription.SUBURBS.sort,
                      { prompt: "Select suburb" },
                      class: "form-select" %>
       </div>

@@ -12,13 +12,25 @@ class DropOffSite < ApplicationRecord
 
   # Sites can sit in suburbs Gooi doesn't collect from — Langa hosts the AgriHub
   # BioBin but has no collection round, so it is not a customer-selectable suburb.
-  DROP_OFF_ONLY_SUBURBS = ["Langa", "Philippi", "Epping"].freeze
-  SUBURBS = (Subscription::SUBURBS + DROP_OFF_ONLY_SUBURBS).sort.freeze
+  # Fallback used when the suburbs table is missing or empty (fresh dev/CI boot).
+  FALLBACK_DROP_OFF_ONLY_SUBURBS = ["Langa", "Philippi", "Epping"].freeze
+
+  # DB-backed replacements for the old frozen DROP_OFF_ONLY_SUBURBS/SUBURBS
+  # constants. See Subscription.SUBURBS for the same fallback pattern.
+  def self.DROP_OFF_ONLY_SUBURBS
+    return FALLBACK_DROP_OFF_ONLY_SUBURBS unless Suburb.table_exists?
+    names = Suburb.drop_off_only.pluck(:name)
+    names.empty? ? FALLBACK_DROP_OFF_ONLY_SUBURBS : names.sort
+  end
+
+  def self.SUBURBS
+    (Subscription.SUBURBS + DROP_OFF_ONLY_SUBURBS()).sort
+  end
 
   # Validations
   validates :name, presence: true
   validates :street_address, presence: true
-  validates :suburb, inclusion: { in: SUBURBS }
+  validates :suburb, inclusion: { in: ->(_record) { DropOffSite.SUBURBS } }
   validates :collection_day, presence: true
   validates :slug, presence: true, uniqueness: true
   validates :fee_per_kg, numericality: { greater_than_or_equal_to: 0 }

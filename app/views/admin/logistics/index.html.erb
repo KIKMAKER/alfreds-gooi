@@ -52,7 +52,7 @@
             <div class="spotlight-picker__field">
               <label for="spotlight_suburb" class="form-label">Suburb</label>
               <select name="suburb" id="spotlight_suburb" class="form-select">
-                <% Subscription::SUBURBS.each do |suburb| %>
+                <% Subscription.SUBURBS.each do |suburb| %>
                   <option value="<%= suburb %>"><%= suburb %></option>
                 <% end %>
               </select>

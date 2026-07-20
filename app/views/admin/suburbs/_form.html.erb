@@ -1,0 +1,10 @@
+<%= simple_form_for [:admin, @suburb] do |f| %>
+  <%= f.input :name, placeholder: "e.g. Woodstock" %>
+
+  <%= f.input :status,
+        as: :select,
+        collection: Suburb.statuses.keys.map { |s| [s.titleize, s] },
+        prompt: false %>
+
+  <%= f.button :submit, class: "small-yellow-btn" %>
+<% end %>
