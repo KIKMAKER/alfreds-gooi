@@ -6,5 +6,10 @@
         collection: Suburb.statuses.keys.map { |s| [s.titleize, s] },
         prompt: false %>
 
+  <%= f.input :collection_day,
+        as: :select,
+        collection: Suburb.collection_days.keys.map { |d| [d, d] },
+        include_blank: "None yet" %>
+
   <%= f.button :submit, class: "small-yellow-btn" %>
 <% end %>

@@ -7,7 +7,7 @@ require "test_helper"
 class SubscriptionSuburbsTest < ActiveSupport::TestCase
   test "SUBURBS reflects active Suburb records" do
     Suburb.destroy_all
-    Suburb.create!(name: "Test Suburb", status: :active)
+    Suburb.create!(name: "Test Suburb", status: :active, collection_day: "Monday")
     Suburb.create!(name: "Other Suburb", status: :waitlist)
 
     assert_equal ["Test Suburb"], Subscription.SUBURBS

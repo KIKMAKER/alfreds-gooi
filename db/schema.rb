@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -189,7 +189,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "registration_number"
+    t.bigint "suburb_id"
     t.index ["subscription_id"], name: "index_business_profiles_on_subscription_id"
+    t.index ["suburb_id"], name: "index_business_profiles_on_suburb_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -393,7 +395,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
     t.integer "completed_dropoffs_count", default: 0
     t.decimal "fee_per_kg", precision: 8, scale: 2, default: "0.0", null: false
     t.boolean "accepts_protein", default: false, null: false
+    t.bigint "suburb_id"
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
+    t.index ["suburb_id"], name: "index_drop_off_sites_on_suburb_id"
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
   end
 
@@ -500,6 +504,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
     t.text "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "suburb_id"
+    t.index ["suburb_id"], name: "index_interests_on_suburb_id"
   end
 
   create_table "invoice_discount_codes", force: :cascade do |t|
@@ -844,11 +850,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
     t.bigint "quotation_id"
     t.bigint "block_id"
     t.integer "waste_stream", default: 0, null: false
+    t.bigint "suburb_id"
     t.index ["block_id"], name: "index_subscriptions_on_block_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
     t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"
     t.index ["status", "collection_day"], name: "index_subscriptions_on_status_and_collection_day"
     t.index ["status"], name: "index_subscriptions_on_status"
+    t.index ["suburb_id"], name: "index_subscriptions_on_suburb_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
     t.index ["waste_stream"], name: "index_subscriptions_on_waste_stream"
   end
@@ -859,6 +867,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "collection_day"
+    t.index ["collection_day"], name: "index_suburbs_on_collection_day"
     t.index ["name"], name: "index_suburbs_on_name", unique: true
     t.index ["slug"], name: "index_suburbs_on_slug", unique: true
   end
@@ -931,6 +941,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
   add_foreign_key "buckets", "drivers_days"
   add_foreign_key "buckets", "drop_off_events"
   add_foreign_key "business_profiles", "subscriptions"
+  add_foreign_key "business_profiles", "suburbs"
   add_foreign_key "collections", "drivers_days"
   add_foreign_key "collections", "subscriptions"
   add_foreign_key "commercial_inquiries", "users"
@@ -940,6 +951,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
   add_foreign_key "drivers_days", "users"
   add_foreign_key "drop_off_events", "drivers_days"
   add_foreign_key "drop_off_events", "drop_off_sites"
+  add_foreign_key "drop_off_sites", "suburbs"
   add_foreign_key "drop_off_sites", "users"
   add_foreign_key "expense_imports", "users"
   add_foreign_key "expenses", "expense_imports"
@@ -947,6 +959,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
   add_foreign_key "festival_participants", "festival_events"
   add_foreign_key "festival_waste_logs", "festival_events"
   add_foreign_key "festival_waste_logs", "festival_participants"
+  add_foreign_key "interests", "suburbs"
   add_foreign_key "invoice_discount_codes", "discount_codes"
   add_foreign_key "invoice_discount_codes", "invoices"
   add_foreign_key "invoice_items", "invoices"
@@ -977,6 +990,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_103529) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "blocks"
   add_foreign_key "subscriptions", "quotations"
+  add_foreign_key "subscriptions", "suburbs"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "testimonials", "users"
   add_foreign_key "whatsapp_messages", "contacts"

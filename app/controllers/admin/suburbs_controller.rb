@@ -31,8 +31,11 @@ class Admin::SuburbsController < Admin::BaseController
   end
 
   def destroy
-    @suburb.destroy
-    redirect_to admin_suburbs_path, notice: "Suburb deleted successfully!"
+    if @suburb.destroy
+      redirect_to admin_suburbs_path, notice: "Suburb deleted successfully!"
+    else
+      redirect_to admin_suburbs_path, alert: @suburb.errors.full_messages.to_sentence
+    end
   end
 
   private
@@ -42,6 +45,6 @@ class Admin::SuburbsController < Admin::BaseController
   end
 
   def suburb_params
-    params.require(:suburb).permit(:name, :status)
+    params.require(:suburb).permit(:name, :status, :collection_day)
   end
 end
