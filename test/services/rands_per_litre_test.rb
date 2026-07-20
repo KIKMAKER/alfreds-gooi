@@ -76,23 +76,60 @@ class RandsPerLitreTest < ActiveSupport::TestCase
     assert_nil RandsPerLitre.for(sub)
   end
 
-  test "a Standard/XL subscription with no cached amount falls back to today's rate-card price" do
-    # InvoiceBuilder#add_monthly_subscription only persists monthly_subscription_amount
-    # on a subscription's very first invoice — every renewal after that never
-    # saves it back, even though the subscription is fully priced.
+  test "a Standard/XL subscription with no cached amount falls back to its own subscription_product's price" do
+    # InvoiceBuilder#add_subscription_product refreshes subscription_product_id on
+    # every invoice (new or renewal) for non-monthly-invoicing Standard/XL subs, so
+    # it's the reliable pointer to what this subscription actually pays — unlike
+    # monthly_subscription_amount, which only ever gets cached on the very first invoice.
+    Product.create!(title: "Standard 3 month subscription", price: 999.0,
+                    description: "generic rate card — must NOT be used", billing_type: "invoice_only")
+    linked = Product.create!(title: "Standard 3 month subscription (this customer's actual product)",
+                             price: 660.0, description: "plan", billing_type: "invoice_only")
+    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3,
+                             subscription_product: linked)
+
+    result = RandsPerLitre.for(sub)
+
+    # 660 / 3 months = R220/mo ÷ 18L = R12.22/L — from the linked product, not the generic-titled one
+    assert_in_delta 12.22, result.rate, 0.01
+  end
+
+  test "an OG subscription with no cached amount shows a different rate than a non-OG one at the same duration" do
+    # InvoiceBuilder#add_subscription_product picks between a "<plan> <duration> month
+    # subscription" and a "<plan> <duration> month OG subscription" Product depending on
+    # the customer, at a different price. Guessing the plain title (ignoring
+    # subscription_product) would charge every OG subscriber as if paying full price.
+    og_product     = Product.create!(title: "Standard 6 month OG subscription", price: 720.0,
+                                     description: "OG rate", billing_type: "invoice_only")
+    non_og_product = Product.create!(title: "Standard 6 month subscription", price: 1080.0,
+                                     description: "standard rate", billing_type: "invoice_only")
+    og_sub     = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 6,
+                                    subscription_product: og_product)
+    non_og_sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 6,
+                                    subscription_product: non_og_product)
+
+    og_rate     = RandsPerLitre.for(og_sub).rate
+    non_og_rate = RandsPerLitre.for(non_og_sub).rate
+
+    # OG: 720/6/18 = R6.67/L. Non-OG: 1080/6/18 = R10.00/L.
+    assert_in_delta 6.67, og_rate, 0.01
+    assert_in_delta 10.00, non_og_rate, 0.01
+    refute_equal og_rate, non_og_rate
+  end
+
+  test "a Standard/XL subscription with no cache, no linked product, and no matching rate-card product has no contracted rate" do
+    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3)
+    assert_nil RandsPerLitre.for(sub)
+  end
+
+  test "falls back to the generic rate-card title only when there's no linked subscription_product at all" do
     Product.create!(title: "Standard 3 month subscription", price: 660.0,
                     description: "plan", billing_type: "invoice_only")
     sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3)
 
     result = RandsPerLitre.for(sub)
 
-    # 660 / 3 months = R220/mo ÷ 18L = R12.22/L
     assert_in_delta 12.22, result.rate, 0.01
-  end
-
-  test "a Standard/XL subscription with no cache and no matching product has no contracted rate" do
-    sub = build_subscription(plan: "Standard", monthly_subscription_amount: nil, duration: 3)
-    assert_nil RandsPerLitre.for(sub)
   end
 
   test "starter kit installment never affects the contracted rate" do

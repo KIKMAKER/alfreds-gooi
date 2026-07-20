@@ -106,7 +106,18 @@ class RandsPerLitre
     return nil if subscription.Commercial?
     return nil unless subscription.duration&.positive?
 
-    product = Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
+    # subscription_product is refreshed on every invoice for non-monthly-
+    # invoicing Standard/XL subs (InvoiceBuilder#add_subscription_product,
+    # unconditional — new customer or renewal), so it's the reliable pointer
+    # to what this specific subscription is actually billed against. Crucial
+    # for OG (grandfathered) pricing: InvoiceBuilder picks between a
+    # "<plan> <duration> month subscription" and a "<plan> <duration> month
+    # OG subscription" Product depending on the customer, at a different
+    # price — guessing the plain title here would silently charge every OG
+    # subscriber as if they were paying full price. Only fall back to the
+    # generic title for the rare legacy row that predates this field.
+    product = subscription.subscription_product ||
+              Product.find_by(title: "#{subscription.plan} #{subscription.duration} month subscription")
     return nil unless product&.price
 
     (product.price.to_f / subscription.duration).round(2)
