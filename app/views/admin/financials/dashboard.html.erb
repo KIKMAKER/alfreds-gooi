@@ -821,7 +821,14 @@
         <% end %>
       </div>
 
-      <h5 class="mb-2">Active subscriptions by effective R/L</h5>
+      <h5 class="mb-2">Active subscriptions by contracted R/L</h5>
+      <p class="text-muted small">
+        Contracted R/L is deterministic — monthly charge ÷ plan-expected litres, same for every
+        subscription on the same plan and price regardless of age or collection history.
+        Realised R/L (actual revenue ÷ actual litres, last 3 complete months) is a diagnostic
+        shown only for subscriptions active the whole window — it flags who's under/over-delivering
+        volume relative to what their plan assumes, not a pricing floor comparison.
+      </p>
       <% if @ranked_subscriptions.any? %>
         <div class="table-responsive">
           <table class="table table-bordered table-sm">
@@ -829,7 +836,8 @@
               <tr>
                 <th>Customer</th>
                 <th>Plan</th>
-                <th class="text-end">Effective R/L</th>
+                <th class="text-end">Contracted R/L</th>
+                <th class="text-end">Realised R/L</th>
                 <th>vs. floor</th>
               </tr>
             </thead>
@@ -839,6 +847,13 @@
                   <td><%= link_to row.subscription.user&.first_name.to_s + " " + row.subscription.user&.last_name.to_s, admin_subscription_path(row.subscription) %></td>
                   <td><%= row.subscription.plan %></td>
                   <td class="text-end">R<%= format('%.2f', row.result.rate) %></td>
+                  <td class="text-end">
+                    <% if row.result.realised_rate %>
+                      R<%= format('%.2f', row.result.realised_rate) %>
+                    <% else %>
+                      <span class="text-muted small">—</span>
+                    <% end %>
+                  </td>
                   <td>
                     <% if row.result.state %>
                       <span class="badge bg-<%= { green: 'success', amber: 'warning', red: 'danger' }[row.result.state] %>">
@@ -853,9 +868,9 @@
             </tbody>
           </table>
         </div>
-        <p class="text-muted small">Ranked by effective R/L against <%= cm.floor_target ? "R#{format('%.2f', cm.floor_target)}/L" : "the cost floor" %> — rows in red are priced below the floor on their most recent invoice.</p>
+        <p class="text-muted small">Ranked by contracted R/L against <%= cm.floor_target ? "R#{format('%.2f', cm.floor_target)}/L" : "the cost floor" %> — rows in red are priced below the floor.</p>
       <% else %>
-        <p class="text-muted">No active subscriptions with an invoiced R/L yet.</p>
+        <p class="text-muted">No active subscriptions with a contracted R/L yet — they need at least one invoice generated to establish their monthly pricing.</p>
       <% end %>
     </div>
 

@@ -3,7 +3,11 @@
     <span class="rpl-badge__rate">R<%= format('%.2f', result.rate) %></span><span class="rpl-badge__unit">/L</span>
   </summary>
   <div class="rpl-badge__details">
-    <p class="rpl-badge__detail-row"><strong>This document:</strong> R<%= format('%.2f', result.rate) %>/L</p>
+    <p class="rpl-badge__detail-row"><strong>Contracted R/L:</strong> R<%= format('%.2f', result.rate) %>/L</p>
+    <% if result.realised_rate %>
+      <p class="rpl-badge__detail-row"><strong>Realised R/L:</strong> R<%= format('%.2f', result.realised_rate) %>/L
+        <span class="rpl-badge__detail-note">(actual, last 3 complete months)</span></p>
+    <% end %>
     <% if result.floor_target %>
       <p class="rpl-badge__detail-row"><strong>Cost floor:</strong> R<%= format('%.2f', result.floor_target) %>/L</p>
       <p class="rpl-badge__detail-row"><strong>Price guidance:</strong> R<%= format('%.2f', result.price_guidance) %>/L</p>

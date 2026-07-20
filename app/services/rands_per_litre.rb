@@ -1,111 +1,109 @@
-# Contracted rand-per-litre for an invoice or quotation: total charged ÷
-# litres of collection capacity over the period the document covers.
+# Two distinct R/L metrics, named consistently everywhere they're used:
 #
-# Uses contracted volume (allowed litres × collections/week × weeks), not
-# actual collected litres — quotes and fresh invoices have no collections
-# yet. Weeks follow the billing convention of 4 per month (see
-# Quotation#weeks_in_contract and next_invoice_date advancing 4 weeks).
+# - contracted_r_per_litre = monthly_charge ÷ expected_monthly_litres (see
+#   PlanVolume). Deterministic: identical for any two subscriptions on the
+#   same plan and price, regardless of subscription age or collection
+#   history. This is what the quote/invoice pill, the underwater-
+#   subscriptions ranking, and the cost floor comparison all use.
+# - realised_r_per_litre = actual revenue ÷ actual litres collected, over
+#   the last 3 *complete* calendar months, only computed for subscriptions
+#   that were active the whole window. Diagnostic only — shows who is
+#   under/over-delivering litres relative to what their plan assumes.
 #
-# Returns nil when the document has no volume basis (order invoices, event
-# quotes, zero totals, missing bucket config) — callers hide the badge.
+# Both exclude one-off charges (starter kits, once-off collections) from the
+# revenue side in one place: monthly_charge reads only the cached recurring
+# fields (monthly_subscription_amount/monthly_volume_amount), which
+# InvoiceBuilder already keeps separate from starter_kit_installment.
 class RandsPerLitre
-  WEEKS_PER_MONTH = 4
-
   # state is one of :green (at/above price_guidance), :amber (between floor_target
   # and price_guidance), :red (below floor_target), or nil (no cost floor set,
   # i.e. CostModel#target_monthly_litres is 0 — nothing to compare against).
   Result = Struct.new(:rate, :litres, :note, :floor_target, :price_guidance,
-                      :target_monthly_litres, :state, keyword_init: true)
+                      :target_monthly_litres, :state, :realised_rate, keyword_init: true)
 
   def self.for(record)
     case record
-    when Invoice then for_invoice(record)
+    when Subscription then for_subscription(record)
     when Quotation then for_quotation(record)
+    when Invoice then for_invoice(record)
     end
   end
 
+  def self.for_subscription(subscription)
+    charge = monthly_charge(subscription)
+    litres = PlanVolume.expected_monthly_litres(subscription)
+    return nil unless charge&.positive? && litres&.positive?
+
+    build(charge, litres, "R#{format('%.2f', charge)}/mo ÷ #{litres}L/mo (plan average)",
+          realised_rate: realised_r_per_litre(subscription))
+  end
+
+  def self.for_quotation(quotation)
+    return nil if quotation.event?
+
+    charge = quotation.ongoing_monthly_rate
+    return nil unless charge.to_f.positive?
+
+    litres = PlanVolume.expected_monthly_litres_for_quotation(quotation)
+    return nil unless litres&.positive?
+
+    build(charge, litres, "R#{format('%.2f', charge)}/mo ÷ #{litres}L/mo")
+  end
+
+  # Every invoice for a given subscription shows the *same* contracted rate —
+  # which invoice happens to be "most recent" no longer affects the number.
   def self.for_invoice(invoice)
-    return nil if invoice.total_amount.to_f <= 0
     return nil if invoice.order_id.present?
 
     sub = invoice.subscription
     return nil unless sub
 
-    billed = recurring_amount(invoice)
-    return nil unless billed.positive?
-
-    if sub.once_off?
-      litres = sub.allowed_litres_per_collection
-      build(billed, litres, "1 once-off collection")
-    elsif sub.monthly_invoicing?
-      subs = billed_monthly_subs(sub)
-      weekly = subs.sum { |s| with_satellites(s).sum(&:expected_weekly_volume_l) }
-      note = "#{WEEKS_PER_MONTH} weeks × #{weekly}L/week"
-      note += " across #{subs.size} subscriptions" if subs.size > 1
-      build(billed, weekly * WEEKS_PER_MONTH, note)
-    else
-      return nil unless sub.duration&.positive?
-
-      weekly = with_satellites(sub).sum(&:expected_weekly_volume_l)
-      weeks = sub.duration * WEEKS_PER_MONTH
-      build(billed, weekly * weeks, "#{weeks} weeks × #{weekly}L/week")
-    end
+    for_subscription(sub)
   end
 
-  def self.for_quotation(quotation)
-    return nil if quotation.event?
-    return nil if quotation.total_amount.to_f <= 0
+  # Diagnostic: actual revenue ÷ actual litres over the last 3 complete
+  # calendar months, only for subscriptions active the entire window (a
+  # subscription that started or ended mid-window hasn't had a fair chance
+  # to deliver a full 3 months of volume). nil whenever there's nothing
+  # meaningful to compare — new subscriptions, once_off, no real litres.
+  def self.realised_r_per_litre(subscription)
+    charge = monthly_charge(subscription)
+    return nil unless charge&.positive?
 
-    per_collection =
-      if quotation.buckets_per_collection && quotation.inferred_bucket_size
-        quotation.buckets_per_collection * quotation.inferred_bucket_size
-      elsif quotation.subscription
-        quotation.subscription.allowed_litres_per_collection
-      end
-    return nil unless per_collection&.positive?
+    range = CostModel.complete_months_range(3)
+    return nil unless active_for_whole_window?(subscription, range)
 
-    weekly = per_collection * quotation.effective_collections_per_week
-    weeks = quotation.weeks_in_contract
-    return nil unless weeks.positive?
+    litres = subscription.total_litres_between(range.first, range.last)
+    return nil unless litres.to_f.positive?
 
-    build(quotation.total_amount, weekly * weeks, "#{weeks} weeks × #{weekly}L/week")
+    (charge * 3 / litres).round(2)
   end
 
-  # Monthly invoices can combine every active monthly subscription the user
-  # has (MonthlyInvoiceService merges same-day billing into one invoice), so
-  # litres must count them all — e.g. Loading Bay's two locations on one
-  # invoice. Falls back to the invoice's own subscription for historical
-  # invoices whose subscription is no longer active.
-  def self.billed_monthly_subs(sub)
-    siblings = sub.user.subscriptions
-                  .where(monthly_invoicing: true, status: :active, primary_subscription_id: nil)
-                  .to_a
-    siblings.include?(sub) ? siblings : [sub]
-  end
-  private_class_method :billed_monthly_subs
+  # The subscription's real recurring monthly charge — excludes the starter
+  # kit installment (a one-off cost InvoiceBuilder already tracks separately
+  # from these fields) and doesn't depend on whether/which invoice has been
+  # generated. nil until the subscription has been billed at least once,
+  # since that's when these cached fields are first established.
+  def self.monthly_charge(subscription)
+    return nil if subscription.once_off?
 
-  def self.with_satellites(sub)
-    [sub] + sub.satellite_subscriptions.to_a
+    amount = subscription.monthly_subscription_amount.to_f + subscription.monthly_volume_amount.to_f
+    amount.positive? ? amount : nil
   end
-  private_class_method :with_satellites
+  private_class_method :monthly_charge
 
-  # Starter-kit/bucket-purchase line items are one-time charges bundled into
-  # a customer's first invoice (see InvoiceBuilder#add_starter_kit) —
-  # including them would make every new customer's first invoice look far
-  # more expensive per litre than their actual ongoing rate, even though the
-  # litres side of this calculation was never based on actual collections in
-  # the first place. Mirrors Quotation#one_time_cost, which excludes the
-  # same category of cost from its ongoing-rate methods.
-  def self.recurring_amount(invoice)
-    starter_total = invoice.invoice_items
-                           .joins(:product)
-                           .where("products.title ILIKE ?", "%starter%")
-                           .sum { |i| (i.amount || 0) * (i.quantity || 0) }
-    invoice.total_amount.to_f - starter_total
+  def self.active_for_whole_window?(subscription, range)
+    start = subscription.start_date&.to_date
+    return false unless start && start <= range.first
+
+    finish = subscription.end_date&.to_date
+    return false if finish && finish < range.last
+
+    true
   end
-  private_class_method :recurring_amount
+  private_class_method :active_for_whole_window?
 
-  def self.build(total, litres, basis)
+  def self.build(total, litres, basis, realised_rate: nil)
     return nil unless litres.to_f.positive?
 
     rate = (total.to_f / litres).round(2)
@@ -120,7 +118,8 @@ class RandsPerLitre
       floor_target: floor_target,
       price_guidance: price_guidance,
       target_monthly_litres: cost_model.target_monthly_litres,
-      state: classify(rate, floor_target, price_guidance)
+      state: classify(rate, floor_target, price_guidance),
+      realised_rate: realised_rate
     )
   end
   private_class_method :build

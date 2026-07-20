@@ -194,6 +194,19 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Real litres actually collected between two dates (excludes skipped rows).
+  # Used by RandsPerLitre#realised_r_per_litre — deliberately date-bounded
+  # rather than "n months ago" so it can be pinned to the same complete-months
+  # window CostModel uses elsewhere.
+  def total_litres_between(start_date, end_date)
+    scope = collections.where(skip: false, date: start_date..end_date)
+    if Standard? || once_off?
+      scope.sum("bags * 5")
+    else
+      scope.sum(BUCKET_VOLUME_SQL)
+    end
+  end
+
   def avg_litres_per_collection
     return 0 if total_collections.zero?
     (total_litres.to_f / total_collections).round(1)
