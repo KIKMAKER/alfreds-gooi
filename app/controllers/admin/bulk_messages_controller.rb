@@ -82,8 +82,8 @@ class Admin::BulkMessagesController < ApplicationController
       subscriptions = subscriptions.distinct
     end
 
-    if params[:suburb].present? && params[:suburb] != 'all'
-      subscriptions = subscriptions.where(suburb: params[:suburb])
+    if params[:suburb_id].present? && params[:suburb_id] != 'all'
+      subscriptions = subscriptions.where(suburb_id: params[:suburb_id])
     end
 
     if params[:plan].present? && params[:plan] != 'all'

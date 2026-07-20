@@ -27,7 +27,7 @@
                 Seed planted, <%= @first_name %>.
               </p>
               <p style="margin:0 0 24px;font-size:15px;color:#525560;line-height:1.7;">
-                Thanks for letting us know you're interested in Gooi coming to <strong style="color:#023F3A;"><%= @interest.suburb %></strong>.
+                Thanks for letting us know you're interested in Gooi coming to <strong style="color:#023F3A;"><%= (@interest.suburb&.name || "Other") %></strong>.
                 We've noted your details and we'll be in touch as soon as we expand your way.
               </p>
 
@@ -38,7 +38,7 @@
                   <td style="padding:20px 24px;">
                     <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#FBB718;">Your details</p>
                     <p style="margin:0 0 4px;font-size:14px;color:#023F3A;"><strong>Name:</strong> <%= @interest.name %></p>
-                    <p style="margin:0 0 4px;font-size:14px;color:#023F3A;"><strong>Suburb:</strong> <%= @interest.suburb %></p>
+                    <p style="margin:0 0 4px;font-size:14px;color:#023F3A;"><strong>Suburb:</strong> <%= (@interest.suburb&.name || "Other") %></p>
                     <p style="margin:0;font-size:14px;color:#023F3A;"><strong>Email:</strong> <%= @interest.email %></p>
                   </td>
                 </tr>

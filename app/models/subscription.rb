@@ -1,6 +1,12 @@
 class Subscription < ApplicationRecord
   belongs_to :user
   belongs_to :block, optional: true
+  # Named suburb_record (not suburb) until PR 5 of the suburb FK migration converts
+  # every remaining string-column read/write site: belongs_to :suburb would define a
+  # `suburb` reader that shadows the still-in-use suburb string column, silently
+  # breaking the existing inclusion validation and unconverted views. Rename to
+  # :suburb once those call sites are cut over.
+  belongs_to :suburb_record, class_name: "Suburb", foreign_key: :suburb_id, optional: true
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
@@ -39,6 +45,10 @@ class Subscription < ApplicationRecord
   after_save :sync_collection_positions
   before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
   before_validation :canonicalize_suburb
+  # Transitional bridge until customer-facing forms submit suburb_id directly (see
+  # suburb FK migration plan, PR 5): keeps suburb_id in sync whenever a form still
+  # only writes the legacy suburb string. Safe to remove once PR 5 lands.
+  before_validation :sync_suburb_id_from_name, if: -> { suburb.present? && will_save_change_to_suburb? }
   before_validation :normalize_referral_code
   # Fallback used when the suburbs table is missing or empty (fresh dev/CI boot).
   # Kept in sync with the backfill in db/migrate/20260720103529_create_suburbs.rb.
@@ -604,6 +614,10 @@ class Subscription < ApplicationRecord
   def canonicalize_suburb
     return if suburb.blank?
     self.suburb = LEGACY_TO_CANONICAL.fetch(suburb, suburb)
+  end
+
+  def sync_suburb_id_from_name
+    self.suburb_id = Suburb.find_by(name: suburb)&.id
   end
 
   # def set_customer_id

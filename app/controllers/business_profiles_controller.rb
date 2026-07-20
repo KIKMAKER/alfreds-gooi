@@ -49,7 +49,7 @@ class BusinessProfilesController < ApplicationController
       :vat_number,
       :contact_person,
       :street_address,
-      :suburb,
+      :suburb_id,
       :postal_code
     )
   end

@@ -91,7 +91,7 @@ class MailchimpSyncService
         LNAME: user.last_name || '',
         PHONE: user.phone_number || '',
         PLAN: subscription.plan || '',
-        SUBURB: subscription.suburb || '',
+        SUBURB: subscription.suburb&.name || '',
         COLLDAY: subscription.collection_day || '',
         CUSTID: subscription.customer_id || '',
         CREATED: user.created_at.strftime("%b %d, %Y"),

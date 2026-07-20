@@ -1,11 +1,11 @@
 Seed planted, <%= @first_name %>.
 
-Thanks for letting us know you're interested in Gooi coming to <%= @interest.suburb %>.
+Thanks for letting us know you're interested in Gooi coming to <%= (@interest.suburb&.name || "Other") %>.
 We've noted your details and we'll be in touch as soon as we expand your way.
 
 Your details:
   Name:   <%= @interest.name %>
-  Suburb: <%= @interest.suburb %>
+  Suburb: <%= (@interest.suburb&.name || "Other") %>
   Email:  <%= @interest.email %>
 
 In the meantime, spread the word to your neighbours — the more people in your area,

@@ -2,7 +2,7 @@
   <section class="farm-page-header">
     <div class="inner-header-container">
       <h1 class="blog-header-header"><%= @farm.name %></h1>
-      <h4 class="text-white blog-header-subheader"><%= @farm.suburb %></h4>
+      <h4 class="text-white blog-header-subheader"><%= @farm.suburb&.name %></h4>
       <p class="blog-paragraph-content"><em>
           One of our valued composting partners, helping turn Cape Town's food waste into healthy soil.
         </em></p>
@@ -154,7 +154,7 @@
     <% end %>
     <div class="d-flex mt-4">
       <p class="blog-paragraph-content w-75">
-        <%= @farm.name %> can be found in <%= @farm.suburb %>. Feel free to pop in and connect with the soil, the farmers and the produce.
+        <%= @farm.name %> can be found in <%= @farm.suburb&.name %>. Feel free to pop in and connect with the soil, the farmers and the produce.
       </p>
 
       <% if @farm.latitude.present? && @farm.longitude.present? %>

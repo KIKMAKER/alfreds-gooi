@@ -26,7 +26,7 @@
             <div class="farm-card-content">
               <div class="d-flex justify-content-between align-items-center">
                 <h3><%= farm.name %></h3>
-                <p class="farm-suburb"><i class="fa-solid fa-location-dot"></i> <%= farm.suburb %></p>
+                <p class="farm-suburb"><i class="fa-solid fa-location-dot"></i> <%= farm.suburb&.name %></p>
               </div>
               <span class="farm-stat"><%= number_with_precision(farm.total_weight_kg || 0, precision: 0) %> kg collected</span>
             </div>

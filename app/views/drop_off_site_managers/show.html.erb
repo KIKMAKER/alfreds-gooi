@@ -55,7 +55,7 @@
       </tr>
       <tr>
         <td class="fad-table__meta">Address</td>
-        <td><%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb %></td>
+        <td><%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb&.name %></td>
       </tr>
       <tr>
         <td class="fad-table__meta">Contact</td>

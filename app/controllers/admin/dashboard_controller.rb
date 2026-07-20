@@ -18,7 +18,9 @@ class Admin::DashboardController < Admin::BaseController
     @pending_inquiries     = CommercialInquiry.where(status: :pending).count
     @draft_posts           = Post.where(published: false).count
 
-    interests_by_suburb    = Interest.group(:suburb).count.sort_by { |_, n| -n }
+    interests_by_suburb    = Interest.left_joins(:suburb)
+                                      .group("COALESCE(suburbs.name, 'Other')")
+                                      .count.sort_by { |_, n| -n }
     @interests_count       = interests_by_suburb.sum(&:last)
     @top_interest_suburb   = interests_by_suburb.first&.then { |suburb, n| "#{suburb} (#{n})" }
 

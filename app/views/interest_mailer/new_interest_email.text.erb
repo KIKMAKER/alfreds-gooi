@@ -2,7 +2,7 @@ New signup interest for Gooi
 
 Name:   <%= @interest.name %>
 Email:  <%= @interest.email %>
-Suburb: <%= @interest.suburb %>
+Suburb: <%= (@interest.suburb&.name || "Other") %>
 
 Note:
 <%= @interest.note.to_s.strip.presence || "(none)" %>

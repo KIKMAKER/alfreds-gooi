@@ -31,7 +31,8 @@ class Block < ApplicationRecord
   # Primary suburb (from the most common suburb among linked subscriptions, or the first one).
   def suburb
     return nil if subscriptions.none?
-    subscriptions.group(:suburb).order("count_all DESC").count.first&.first
+    suburb_id = subscriptions.group(:suburb_id).order("count_all DESC").count.first&.first
+    Suburb.find_by(id: suburb_id)&.name
   end
 
   # A human-readable display address: prefer the first subscription's street address

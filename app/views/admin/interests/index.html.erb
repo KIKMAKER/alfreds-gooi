@@ -48,7 +48,7 @@
                     <td class="interests-table__name"><%= interest.name %></td>
                     <td>
                       <%= mail_to interest.email, interest.email,
-                            subject: "Gooi coming to #{interest.suburb}" %>
+                            subject: "Gooi coming to #{interest.suburb&.name || 'Other'}" %>
                     </td>
                     <td class="interests-table__note">
                       <% if interest.note.present? %>

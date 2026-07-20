@@ -18,11 +18,11 @@ class Admin::DisposalFeesControllerTest < ActionDispatch::IntegrationTest
     )
 
     @langa = DropOffSite.create!(
-      name: "Langa AgriHub", street_address: "Washington Street, Langa", suburb: "Langa",
+      name: "Langa AgriHub", street_address: "Washington Street, Langa", suburb: Suburb.find_or_create_by!(name: "Langa") { |s| s.status = :drop_off_only },
       collection_day: "Wednesday", accepts_protein: true, fee_per_kg: 0.50
     )
     @sfl = DropOffSite.create!(
-      name: "Soil for Life", street_address: "Rosemead Avenue, Constantia", suburb: "Constantia",
+      name: "Soil for Life", street_address: "Rosemead Avenue, Constantia", suburb: Suburb.find_or_create_by!(name: "Constantia") { |s| s.collection_day = "Wednesday" },
       collection_day: "Wednesday", fee_per_kg: 0
     )
 

@@ -6,9 +6,9 @@
 
     <%= f.input :street_address, placeholder: "e.g. Paris Road, Fish Hoek" %>
 
-    <%= f.input :suburb,
-          as: :select,
-          collection: DropOffSite.SUBURBS,
+    <%= f.association :suburb,
+          collection: Suburb.where(status: [:active, :drop_off_only]).order(:name),
+          label_method: :name,
           prompt: "Select a suburb" %>
 
     <%= f.input :collection_day,

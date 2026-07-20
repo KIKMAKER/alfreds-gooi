@@ -46,7 +46,7 @@
               <%= link_to "Weigh", drivers_day_drop_off_event_path(@drivers_day, item), class: "small-yellow-btn" %>
             </div>
             <div class="address">
-              <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb}", target: :_blank %>
+              <%= link_to item.drop_off_site.street_address, "https://maps.google.com/?q=#{item.drop_off_site.street_address}, #{item.drop_off_site.suburb&.name}", target: :_blank %>
             </div>
             <div class="emojies">
               <% omw_message = "Hello #{item.drop_off_site.contact_name}. I am on my way!" %>

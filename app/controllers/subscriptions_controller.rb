@@ -6,7 +6,7 @@ class SubscriptionsController < ApplicationController
 
   SORTABLE_SUB_COLS = {
     "name"                  => "users.first_name",
-    "suburb"                => "subscriptions.suburb",
+    "suburb"                => "suburbs.name",
     "plan"                  => "subscriptions.plan",
     "duration"              => "subscriptions.duration",
     "start_date"            => "subscriptions.start_date",
@@ -25,6 +25,7 @@ class SubscriptionsController < ApplicationController
       @subscriptions = Subscription.active
                                     .includes(:user, :invoices)
                                     .joins(:user)
+                                    .left_joins(:suburb_record)
                                     .order(Arel.sql("#{order_col} #{@dir}"))
     else
       @subscriptions = Subscription.where(user_id: current_user.id)

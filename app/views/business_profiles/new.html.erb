@@ -25,9 +25,9 @@
             placeholder: "e.g. 123 Business Park Road",
             hint: "Optional - billing address if different from collection address" %>
 
-      <%= f.input :suburb,
-            as: :select,
-            collection: Subscription.SUBURBS,
+      <%= f.association :suburb,
+            collection: Suburb.active.order(:name),
+            label_method: :name,
             prompt: "Select a suburb",
             hint: "Optional" %>
 

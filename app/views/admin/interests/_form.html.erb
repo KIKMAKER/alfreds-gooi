@@ -20,10 +20,11 @@
   </div>
 
   <div class="mb-3">
-    <%= f.label :suburb, class: "form-label" %>
-    <%= f.select :suburb,
-          options_for_select(Interest::SUBURBS, interest.suburb),
-          { include_blank: "— select suburb —" },
+    <%= f.label :suburb_id, "Suburb", class: "form-label" %>
+    <%= f.collection_select :suburb_id,
+          Suburb.target.order(:name),
+          :id, :name,
+          { include_blank: "Other" },
           class: "form-select" %>
   </div>
 

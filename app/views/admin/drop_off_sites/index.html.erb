@@ -16,7 +16,7 @@
           <div class="fad-event-row__main">
             <%= link_to site.name, admin_drop_off_site_path(site.slug || site.id), class: "fad-event-row__name" %>
             <span class="fad-event-row__dates">
-              <%= site.collection_day %> &middot; <%= site.suburb %> &middot;
+              <%= site.collection_day %> &middot; <%= site.suburb&.name %> &middot;
               <%= number_with_precision(site.total_weight_kg, precision: 1) %> kg &middot;
               <%= site.total_dropoffs_count %> drops
             </span>

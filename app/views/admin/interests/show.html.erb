@@ -18,7 +18,7 @@
         </dd>
 
         <dt class="col-sm-3">Suburb</dt>
-        <dd class="col-sm-9"><%= @interest.suburb %></dd>
+        <dd class="col-sm-9"><%= (@interest.suburb&.name || "Other") %></dd>
 
         <dt class="col-sm-3">Note</dt>
         <dd class="col-sm-9"><%= @interest.note.presence || "—" %></dd>

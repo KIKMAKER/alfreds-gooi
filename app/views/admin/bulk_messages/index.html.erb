@@ -38,9 +38,9 @@
 
         <!-- Suburb -->
         <div class="col-md-3">
-          <%= f.label :suburb, "Suburb", class: "form-label" %>
-          <%= f.select :suburb,
-                       options_for_select([['All Suburbs', 'all']] + Subscription.SUBURBS.map { |s| [s, s] }, params[:suburb]),
+          <%= f.label :suburb_id, "Suburb", class: "form-label" %>
+          <%= f.select :suburb_id,
+                       options_for_select([['All Suburbs', 'all']] + Suburb.active.order(:name).pluck(:name, :id), params[:suburb_id]),
                        {},
                        class: "form-select" %>
         </div>

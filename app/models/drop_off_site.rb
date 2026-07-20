@@ -1,6 +1,7 @@
 class DropOffSite < ApplicationRecord
   has_many :drop_off_events, dependent: :nullify
   belongs_to :user, optional: true
+  belongs_to :suburb
   has_one_attached :photo
 
   # Geocoding
@@ -30,7 +31,6 @@ class DropOffSite < ApplicationRecord
   # Validations
   validates :name, presence: true
   validates :street_address, presence: true
-  validates :suburb, inclusion: { in: ->(_record) { DropOffSite.SUBURBS } }
   validates :collection_day, presence: true
   validates :slug, presence: true, uniqueness: true
   validates :fee_per_kg, numericality: { greater_than_or_equal_to: 0 }
@@ -98,18 +98,8 @@ class DropOffSite < ApplicationRecord
 
   # Class method to get suburbs for a given collection day
   def self.suburbs_for_day(day)
-    case day.to_s.capitalize
-      when "Monday"
-      Subscription::MONDAY_SUBURBS
-    when "Tuesday"
-      Subscription::TUESDAY_SUBURBS
-    when "Wednesday"
-      Subscription::WEDNESDAY_SUBURBS
-    when "Thursday"
-      Subscription::THURSDAY_SUBURBS
-    else
-      []
-    end
+    return [] unless Suburb.collection_days.key?(day.to_s.capitalize)
+    Suburb.active.where(collection_day: day.to_s.capitalize).order(:name).pluck(:name)
   end
 
   # Instance method to get suburbs served by this drop-off site

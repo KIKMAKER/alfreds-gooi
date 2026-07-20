@@ -2,8 +2,8 @@ class Admin::InterestsController < Admin::BaseController
   before_action :set_interest, only: %i[show edit update destroy]
 
   def index
-    @interests = Interest.order(created_at: :desc)
-    @by_suburb = @interests.group_by(&:suburb)
+    @interests = Interest.includes(:suburb).order(created_at: :desc)
+    @by_suburb = @interests.group_by { |interest| interest.suburb&.name || "Other" }
                            .sort_by { |_, entries| -entries.size }
   end
 
@@ -31,6 +31,6 @@ class Admin::InterestsController < Admin::BaseController
   end
 
   def interest_params
-    params.require(:interest).permit(:name, :email, :suburb, :note)
+    params.require(:interest).permit(:name, :email, :suburb_id, :note)
   end
 end

@@ -8,7 +8,7 @@ class InterestsController < ApplicationController
 
     interest = Interest.new(interest_params)
     if interest.save
-      redirect_to interest_success_path(suburb: interest.suburb)
+      redirect_to interest_success_path(suburb: interest.suburb&.name || "your area")
     else
       redirect_back fallback_location: root_path,
                     alert: interest.errors.full_messages.to_sentence
@@ -22,6 +22,6 @@ class InterestsController < ApplicationController
   private
 
   def interest_params
-    params.require(:interest).permit(:name, :email, :suburb, :note)
+    params.require(:interest).permit(:name, :email, :suburb_id, :note)
   end
 end

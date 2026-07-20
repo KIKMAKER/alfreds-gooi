@@ -79,7 +79,7 @@ class Admin::DropOffSitesController < Admin::BaseController
     params.require(:drop_off_site).permit(
       :name,
       :street_address,
-      :suburb,
+      :suburb_id,
       :contact_name,
       :phone_number,
       :notes,

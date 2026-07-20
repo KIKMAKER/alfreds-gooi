@@ -29,8 +29,8 @@
                 <% end %>
               </div>
               <div class="quick-msg-row__meta">
-                <%= link_to event.drop_off_site.suburb,
-                    "https://maps.google.com/?q=#{event.drop_off_site.street_address}, #{event.drop_off_site.suburb}",
+                <%= link_to event.drop_off_site.suburb&.name,
+                    "https://maps.google.com/?q=#{event.drop_off_site.street_address}, #{event.drop_off_site.suburb&.name}",
                     target: :_blank %> &middot;
                 <%= pluralize(event.buckets.count, 'bucket') %>
               </div>
