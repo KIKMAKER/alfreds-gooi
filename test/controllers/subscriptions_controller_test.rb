@@ -49,8 +49,7 @@ class SubscriptionsControllerTest < ActionController::TestCase
       subscription: {
         plan: "Standard",
         duration: 1,
-        street_address: "ignored by controller (copied from last)",
-        suburb: "Rondebosch"
+        street_address: "ignored by controller (copied from last)"
       },
       og: "false",
       new: "true"
@@ -76,7 +75,7 @@ class SubscriptionsControllerTest < ActionController::TestCase
 
   test "create uses early-renewal behavior (day after prev end, aligned to weekday)" do
     params = {
-      subscription: { plan: "Standard", duration: 1, street_address: "x", suburb: "Rondebosch" },
+      subscription: { plan: "Standard", duration: 1, street_address: "x" },
       og: "false", new: "true"
     }
 
