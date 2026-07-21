@@ -8,14 +8,16 @@
       Gooi makes composting your food waste as easy as throwing it in the bin — weekly
       doorstep collection, no mess, no effort.
     </p>
-    <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi mt-3" %>
+    <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi suburb-hero__cta" %>
   </div>
 
   <div class="suburb-hero__image-wrap">
     <%= image_tag "suburb_launch_hero.jpg", alt: "Gooi kitchen scrap collection", class: "suburb-hero__image" %>
     <div class="suburb-hero__overlay-card">
-      Coming to <strong><%= @suburb.name %></strong>, lock in a discount rate before
-      <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
+      <p class="suburb-hero__overlay-card-main">Coming to <strong><%= @suburb.name %></strong></p>
+      <p class="suburb-hero__overlay-card-sub">
+        Lock in a discount rate before <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
+      </p>
     </div>
   </div>
 
