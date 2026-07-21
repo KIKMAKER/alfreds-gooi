@@ -588,8 +588,16 @@ class Subscription < ApplicationRecord
   # start_date was already computed and clamped back then — this only flips
   # status, it never recomputes dates against "today" (go-live day may be long
   # after the original payment date).
+  #
+  # Re-syncs collection_day from the suburb here too: set_collection_day only
+  # fires once, when suburb_id is first assigned, so a subscription created
+  # before the suburb's collection_day was finalized (a real gap during
+  # pre-launch admin setup) would otherwise stay stuck with a blank
+  # collection_day forever — go-live is the one point we can guarantee the
+  # suburb's collection_day is actually correct (Suburb requires it to be
+  # active), so it's safe to trust here.
   def finalize_deferred_activation!
-    update!(status: :active)
+    update!(status: :active, collection_day: suburb.collection_day)
   end
 
 

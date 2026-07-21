@@ -56,9 +56,15 @@ class Suburb < ApplicationRecord
     # them now rather than waiting on a background job (there are none in prod).
     # Their first collection couldn't be created at payment time (the suburb
     # wasn't live yet), so it's created here instead, now that it is.
+    #
+    # Rescued per-subscription: one bad record (e.g. a first-collection job
+    # failure) must not abort the loop and silently strand every other paid
+    # signup in this suburb pending forever.
     subscriptions.pending.joins(:invoices).merge(Invoice.paid).distinct.find_each do |subscription|
       subscription.finalize_deferred_activation!
       CreateFirstCollectionJob.perform_now(subscription)
+    rescue StandardError => e
+      Rails.logger.error("go_live!: failed to finalize subscription #{subscription.id} for suburb #{id}: #{e.class} #{e.message}")
     end
     true
   end

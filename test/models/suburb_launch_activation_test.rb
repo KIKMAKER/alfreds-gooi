@@ -82,6 +82,36 @@ class SuburbLaunchActivationTest < ActiveSupport::TestCase
     assert sub.reload.active?
   end
 
+  test "finalize_deferred_activation! heals a subscription whose collection_day never got set" do
+    # Reproduces a real bug: a subscription created before the suburb's own
+    # collection_day was finalized stays stuck with collection_day nil forever
+    # (set_collection_day only fires once, when suburb_id is first assigned).
+    suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
+    sub = build_paid_pending_subscription(suburb)
+    sub.update_column(:collection_day, nil)
+
+    sub.finalize_deferred_activation!
+
+    assert_equal "Tuesday", sub.reload.collection_day
+  end
+
+  test "Suburb#go_live! does not abort the whole batch when one subscription's first collection fails" do
+    suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
+    broken_sub = build_paid_pending_subscription(suburb)
+    healthy_sub = build_paid_pending_subscription(suburb)
+
+    call_count = 0
+    CreateFirstCollectionJob.stub :perform_now, ->(subscription) {
+      call_count += 1
+      raise "boom" if subscription.id == broken_sub.id
+    } do
+      suburb.go_live!
+    end
+
+    assert_equal 2, call_count
+    assert healthy_sub.reload.active?
+  end
+
   test "activate_subscription returns false when deferred, true when it actually activates" do
     waitlist_suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
     deferred_sub = build_paid_pending_subscription(waitlist_suburb)
