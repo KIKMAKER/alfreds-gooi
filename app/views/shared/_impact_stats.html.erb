@@ -1,0 +1,28 @@
+<%# Reusable "live impact strip" — matches docs/gooi-public-ui-overhaul-brief.md
+    section 2.3 (homepage) and is used as-is on the active-suburb public page
+    (app/views/suburbs/show.html.erb). Locals:
+      title:            String heading
+      total_kg:         Integer, all-time kg diverted in scope
+      kg_this_week:     Integer, kg diverted so far this week in scope
+      household_count:  Integer, neighbours gooi-ing weekly in scope
+    Presentation-only — all the arithmetic belongs in the caller (brand voice:
+    ground every claim in a specific number, call people "neighbours"). %>
+<section class="impact-summary">
+  <div class="impact-summary__inner">
+    <h2 class="impact-summary__title"><%= title %></h2>
+    <div class="impact-summary__grid">
+      <div class="impact-summary__item">
+        <span class="impact-summary__number">~<%= number_with_delimiter(total_kg) %>kg</span>
+        <span class="impact-summary__desc">diverted from landfill in total</span>
+      </div>
+      <div class="impact-summary__item">
+        <span class="impact-summary__number">~<%= number_with_delimiter(kg_this_week) %>kg</span>
+        <span class="impact-summary__desc">diverted this week</span>
+      </div>
+      <div class="impact-summary__item impact-summary__item--accent">
+        <span class="impact-summary__number"><%= household_count %></span>
+        <span class="impact-summary__desc"><%= "neighbour".pluralize(household_count) %> gooi-ing weekly</span>
+      </div>
+    </div>
+  </div>
+</section>

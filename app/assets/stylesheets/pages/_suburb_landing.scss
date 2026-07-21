@@ -30,6 +30,10 @@
     margin-bottom: $space-5;
   }
 
+  &__title-highlight {
+    color: $color-accent;
+  }
+
   &__subtitle {
     font-size: $fs-md;
     color: rgba(white, 0.9);

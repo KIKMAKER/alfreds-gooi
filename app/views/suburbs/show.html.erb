@@ -1,23 +1,35 @@
-<%# Public launch/waitlist landing page for a suburb.waitlist? suburb — lets people
-    lock in the OG rate before the suburb's launch_date. No auth required. %>
+<%# Public page for a suburb — two states:
+    - waitlist?: pre-launch "lock in your OG rate" page with signup CTAs
+    - active?:   "we're here" page — collection day, subscriber count, impact stats,
+                 no signup CTAs (those live on the homepage)
+    SuburbsController#show 404s for any other status. %>
 
 <div class="suburb-hero">
   <div class="suburb-hero__text">
-    <h1 class="suburb-hero__title">Your kitchen scraps deserve a second life.</h1>
+    <h1 class="suburb-hero__title">Your kitchen scraps deserve a <span class="suburb-hero__title-highlight">second life</span>.</h1>
     <p class="suburb-hero__subtitle">
       Gooi makes composting your food waste as easy as throwing it in the bin — weekly
       doorstep collection, no mess, no effort.
     </p>
-    <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi suburb-hero__cta" %>
+    <% if @suburb.waitlist? %>
+      <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi suburb-hero__cta" %>
+    <% end %>
   </div>
 
   <div class="suburb-hero__image-wrap">
     <%= image_tag "suburb_launch_hero.jpg", alt: "Gooi kitchen scrap collection", class: "suburb-hero__image" %>
     <div class="suburb-hero__overlay-card">
-      <p class="suburb-hero__overlay-card-main">Coming to <strong><%= @suburb.name %></strong></p>
-      <p class="suburb-hero__overlay-card-sub">
-        Lock in a discount rate before <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
-      </p>
+      <% if @suburb.waitlist? %>
+        <p class="suburb-hero__overlay-card-main">Coming to <strong><%= @suburb.name %></strong></p>
+        <p class="suburb-hero__overlay-card-sub">
+          Lock in a discount rate before <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
+        </p>
+      <% else %>
+        <p class="suburb-hero__overlay-card-main">Now serving <strong><%= @suburb.name %></strong></p>
+        <p class="suburb-hero__overlay-card-sub">
+          Collections every <strong><%= @suburb.collection_day&.capitalize %></strong>.
+        </p>
+      <% end %>
     </div>
   </div>
 
@@ -36,50 +48,70 @@
       ) %>
 </div>
 
-<section id="pricing" class="suburb-pricing">
-  <p class="suburb-pricing__eyebrow">Locked-in launch rate</p>
-  <h2 class="suburb-pricing__title">Sign up early, save for the life of your subscription</h2>
+<% if @suburb.waitlist? %>
 
-  <div class="standard-months-container">
-    <% if @standard_og %>
-      <div class="month-card popular">
-        <h4>Most popular</h4>
-        <h3>Standard</h3>
-        <p class="pricing-text">
-          <strong>R<%= number_with_precision(@standard_og.price / 6.0, precision: 0) %></strong> per month
-        </p>
-        <p class="pricing-text">
-          <strong>Total:</strong> R<%= number_with_precision(@standard_og.price, precision: 0) %>
-        </p>
-        <div class="sign-up-btn">
-          <%= link_to "Select", new_account_signup_path(plan: "Standard", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+  <section id="pricing" class="suburb-pricing">
+    <p class="suburb-pricing__eyebrow">Locked-in launch rate</p>
+    <h2 class="suburb-pricing__title">Sign up early, save for the life of your subscription</h2>
+
+    <div class="standard-months-container">
+      <% if @standard_og %>
+        <div class="month-card popular">
+          <h4>Most popular</h4>
+          <h3>Standard</h3>
+          <p class="pricing-text">
+            <strong>R<%= number_with_precision(@standard_og.price / 6.0, precision: 0) %></strong> per month
+          </p>
+          <p class="pricing-text">
+            <strong>Total:</strong> R<%= number_with_precision(@standard_og.price, precision: 0) %>
+          </p>
+          <div class="sign-up-btn">
+            <%= link_to "Select", new_account_signup_path(plan: "Standard", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
 
-    <% if @xl_og %>
-      <div class="month-card">
-        <h3>XL</h3>
-        <p class="pricing-text">
-          <strong>R<%= number_with_precision(@xl_og.price / 6.0, precision: 0) %></strong> per month
-        </p>
-        <p class="pricing-text">
-          <strong>Total:</strong> R<%= number_with_precision(@xl_og.price, precision: 0) %>
-        </p>
-        <div class="sign-up-btn">
-          <%= link_to "Select", new_account_signup_path(plan: "XL", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+      <% if @xl_og %>
+        <div class="month-card">
+          <h3>XL</h3>
+          <p class="pricing-text">
+            <strong>R<%= number_with_precision(@xl_og.price / 6.0, precision: 0) %></strong> per month
+          </p>
+          <p class="pricing-text">
+            <strong>Total:</strong> R<%= number_with_precision(@xl_og.price, precision: 0) %>
+          </p>
+          <div class="sign-up-btn">
+            <%= link_to "Select", new_account_signup_path(plan: "XL", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
 
-  <p class="suburb-pricing__note">
-    Pricing goes up to R180/month once <%= @suburb.name %> launches — lock in this rate now.
-  </p>
-  <p class="suburb-pricing__link">
-    <%= link_to "See all plans and pricing", root_path(anchor: "pricing") %>
-  </p>
-</section>
+    <p class="suburb-pricing__note">
+      Pricing goes up to R180/month once <%= @suburb.name %> launches — lock in this rate now.
+    </p>
+    <p class="suburb-pricing__link">
+      <%= link_to "See all plans and pricing", root_path(anchor: "pricing") %>
+    </p>
+  </section>
+
+<% else %>
+
+  <%= render "shared/impact_stats",
+        title: "#{@suburb.name}'s impact so far",
+        total_kg: @impact_total_kg,
+        kg_this_week: @impact_kg_this_week,
+        household_count: @household_count %>
+
+  <section class="suburb-pricing">
+    <p class="suburb-pricing__link">
+      Want to join <%= @suburb.name %>'s <%= @household_count %>
+      <%= "neighbour".pluralize(@household_count) %>?
+      <%= link_to "See plans and pricing", root_path(anchor: "pricing") %>
+    </p>
+  </section>
+
+<% end %>
 
 <section class="suburb-cta-section">
   <div class="suburb-cta-section__overlay">
