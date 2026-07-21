@@ -18,7 +18,7 @@
     <tbody>
       <% @suburbs.each do |suburb| %>
         <tr>
-          <td><%= suburb.name %></td>
+          <td><%= link_to suburb.name, admin_suburb_path(suburb) %></td>
           <td><%= suburb.status.titleize %></td>
           <td><%= suburb.collection_day || "—" %></td>
           <td><%= suburb.launch_date&.strftime("%-d %b %Y") || "—" %></td>

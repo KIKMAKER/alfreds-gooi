@@ -1,8 +1,23 @@
 class Admin::SuburbsController < Admin::BaseController
-  before_action :set_suburb, only: [:edit, :update, :destroy, :start_launch, :go_live]
+  before_action :set_suburb, only: [:show, :edit, :update, :destroy, :start_launch, :go_live]
 
   def index
     @suburbs = Suburb.order(:name)
+  end
+
+  def show
+    case @suburb.status
+    when "target"
+      @interests = @suburb.interests.order(created_at: :desc)
+    when "waitlist"
+      subscriptions = @suburb.subscriptions.includes(:user, :invoices).order(created_at: :desc).to_a
+      @paid_pending_subscriptions = subscriptions.select { |s| s.pending? && s.invoices.any?(&:paid?) }
+      @unpaid_pending_subscriptions = subscriptions.select { |s| s.pending? && s.invoices.none?(&:paid?) }
+    when "active"
+      @subscriptions = @suburb.subscriptions.includes(:user).order(:status)
+    when "drop_off_only"
+      @drop_off_sites = @suburb.drop_off_sites.order(:name)
+    end
   end
 
   def new

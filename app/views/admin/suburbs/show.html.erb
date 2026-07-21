@@ -1,0 +1,211 @@
+<div class="page-container">
+  <div class="container py-4">
+
+    <%# ── Header ──────────────────────────────────────────────────── %>
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h1 class="mb-1"><%= @suburb.name %></h1>
+        <p class="text-muted mb-0">
+          <span class="badge bg-<%= @suburb.active? ? 'success' : (@suburb.waitlist? ? 'warning text-dark' : 'secondary') %>">
+            <%= @suburb.status.titleize %>
+          </span>
+          &nbsp;·&nbsp;
+          Collection day: <%= @suburb.collection_day&.capitalize || "—" %>
+          <% if @suburb.launch_date.present? %>
+            &nbsp;·&nbsp; Launch date: <%= @suburb.launch_date.strftime("%-d %b %Y") %>
+          <% end %>
+        </p>
+      </div>
+      <div class="d-flex gap-2">
+        <%= link_to "Edit", edit_admin_suburb_path(@suburb), class: "btn btn-sm btn-outline-secondary" %>
+        <% if @suburb.launch_date.present? && !@suburb.active? && !@suburb.waitlist? %>
+          <%= link_to "Start Pre-Launch", start_launch_admin_suburb_path(@suburb),
+                class: "btn btn-sm btn-outline-primary",
+                data: { turbo_method: :post, turbo_confirm: "Open #{@suburb.name} for pre-launch signups?" } %>
+        <% end %>
+        <% if @suburb.waitlist? %>
+          <%= link_to "We're Live", go_live_admin_suburb_path(@suburb),
+                class: "btn btn-sm btn-success",
+                data: { turbo_method: :post, turbo_confirm: "Go live in #{@suburb.name}? This closes the launch offer." } %>
+        <% end %>
+        <% if @suburb.waitlist? %>
+          <%= link_to "View public page →", suburb_path(@suburb), target: "_blank", class: "btn btn-sm btn-outline-secondary" %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Status-specific content ────────────────────────────────── %>
+    <% case @suburb.status %>
+    <% when "target" %>
+
+      <div class="mb-3">
+        <h5>Interest signups (<%= @interests.count %>)</h5>
+        <p class="text-muted small">People who've said they want Gooi in this suburb before it's officially planned.</p>
+
+        <% if @interests.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Note</th>
+                <th>Submitted</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @interests.each do |interest| %>
+                <tr>
+                  <td><%= interest.name %></td>
+                  <td><%= mail_to interest.email, interest.email %></td>
+                  <td class="text-muted small"><%= truncate(interest.note, length: 60) if interest.note.present? %></td>
+                  <td><%= interest.created_at.strftime("%-d %b %Y") %></td>
+                  <td class="text-end"><%= link_to "View", admin_interest_path(interest), class: "btn btn-sm btn-outline-secondary" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No interest submissions yet.</p>
+        <% end %>
+      </div>
+
+    <% when "waitlist" %>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase small mb-1">Locked in (paid)</h6>
+              <p class="mb-0"><strong><%= @paid_pending_subscriptions.count %></strong> signups will activate automatically once this suburb goes live.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase small mb-1">Started, not yet paid</h6>
+              <p class="mb-0"><strong><%= @unpaid_pending_subscriptions.count %></strong> signups still need to complete payment.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <h5>Locked-in signups (<%= @paid_pending_subscriptions.count %>)</h5>
+        <% if @paid_pending_subscriptions.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Signed up</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @paid_pending_subscriptions.each do |sub| %>
+                <tr>
+                  <td><%= link_to "#{sub.user.first_name} #{sub.user.last_name}", admin_user_path(sub.user) %></td>
+                  <td><%= sub.human_plan %></td>
+                  <td><%= sub.created_at.strftime("%-d %b %Y") %></td>
+                  <td class="text-end"><span class="badge bg-success">Paid</span></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No locked-in signups yet.</p>
+        <% end %>
+      </div>
+
+      <div class="mb-3">
+        <h5>Unpaid signups (<%= @unpaid_pending_subscriptions.count %>)</h5>
+        <% if @unpaid_pending_subscriptions.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Signed up</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @unpaid_pending_subscriptions.each do |sub| %>
+                <tr>
+                  <td><%= link_to "#{sub.user.first_name} #{sub.user.last_name}", admin_user_path(sub.user) %></td>
+                  <td><%= sub.human_plan %></td>
+                  <td><%= sub.created_at.strftime("%-d %b %Y") %></td>
+                  <td class="text-end"><span class="badge bg-secondary">Awaiting payment</span></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No unpaid signups.</p>
+        <% end %>
+      </div>
+
+    <% when "active" %>
+
+      <div class="mb-3">
+        <h5>Subscriptions (<%= @subscriptions.count %>)</h5>
+        <% if @subscriptions.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @subscriptions.each do |sub| %>
+                <tr>
+                  <td><%= link_to "#{sub.user.first_name} #{sub.user.last_name}", admin_user_path(sub.user) %></td>
+                  <td><%= sub.human_plan %></td>
+                  <td>
+                    <span class="badge bg-<%= sub.active? ? 'success' : 'secondary' %>"><%= sub.status %></span>
+                  </td>
+                  <td class="text-end"><%= link_to "View", admin_subscription_path(sub), class: "btn btn-sm btn-outline-secondary" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No subscriptions in this suburb yet.</p>
+        <% end %>
+      </div>
+
+    <% when "drop_off_only" %>
+
+      <div class="mb-3">
+        <h5>Drop-off sites (<%= @drop_off_sites.count %>)</h5>
+        <% if @drop_off_sites.any? %>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @drop_off_sites.each do |site| %>
+                <tr>
+                  <td><%= site.name %></td>
+                  <td class="text-end"><%= link_to "View", admin_drop_off_site_path(site), class: "btn btn-sm btn-outline-secondary" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">No drop-off sites in this suburb yet.</p>
+        <% end %>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>

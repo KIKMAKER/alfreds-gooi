@@ -49,4 +49,54 @@ class Admin::SuburbsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New Area is live!", flash[:notice]
     assert suburb.reload.active?
   end
+
+  test "show renders interest signups for a target suburb" do
+    suburb = Suburb.create!(name: "New Area", status: :target)
+    Interest.create!(name: "Prospective Customer", email: "prospect@example.com", suburb: suburb)
+
+    get admin_suburb_path(suburb)
+
+    assert_response :success
+    assert_select "td", text: "Prospective Customer"
+  end
+
+  test "show splits paid vs unpaid signups for a waitlist suburb" do
+    suburb = Suburb.create!(name: "New Area", status: :waitlist, launch_date: Date.tomorrow, collection_day: "Monday")
+
+    paid_user = User.create!(first_name: "Paid", last_name: "Customer", email: "paid@example.com", phone_number: "+27831110001", password: "password")
+    paid_sub = Subscription.create!(user: paid_user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test St", status: :pending)
+    Invoice.create!(subscription: paid_sub, paid: true, total_amount: 220, issued_date: Date.current, due_date: Date.current + 14)
+
+    unpaid_user = User.create!(first_name: "Unpaid", last_name: "Customer", email: "unpaid@example.com", phone_number: "+27831110002", password: "password")
+    Subscription.create!(user: unpaid_user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test St", status: :pending)
+
+    get admin_suburb_path(suburb)
+
+    assert_response :success
+    assert_select "td", text: "Paid Customer"
+    assert_select "td", text: "Unpaid Customer"
+    assert_select "span.badge", text: "Paid"
+    assert_select "span.badge", text: "Awaiting payment"
+  end
+
+  test "show renders subscriptions for an active suburb" do
+    suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+    user = User.create!(first_name: "Active", last_name: "Customer", email: "active@example.com", phone_number: "+27831110003", password: "password")
+    Subscription.create!(user: user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test St", status: :active)
+
+    get admin_suburb_path(suburb)
+
+    assert_response :success
+    assert_select "td", text: "Active Customer"
+  end
+
+  test "show renders drop-off sites for a drop_off_only suburb" do
+    suburb = Suburb.create!(name: "Drop Off Area", status: :drop_off_only)
+    DropOffSite.create!(name: "Test Farm", street_address: "1 Test St", suburb: suburb, collection_day: "Monday", fee_per_kg: 0)
+
+    get admin_suburb_path(suburb)
+
+    assert_response :success
+    assert_select "td", text: "Test Farm"
+  end
 end

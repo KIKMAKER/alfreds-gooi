@@ -53,7 +53,7 @@ Rails.application.routes.draw do
         post :create_next_week_events
       end
     end
-    resources :suburbs, only: [:index, :new, :create, :edit, :update, :destroy] do
+    resources :suburbs, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
       member do
         post :start_launch
         post :go_live
