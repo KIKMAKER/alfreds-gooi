@@ -13,7 +13,7 @@ module RevenueRecognitions
         plan: "Standard",
         duration: 3,
         street_address: "1 Test St",
-        suburb: "Rondebosch"
+        suburb: suburb_fixture("Rondebosch")
       )
     end
 
@@ -74,7 +74,7 @@ module RevenueRecognitions
     test "reconciliation: recognized totals equal invoiced totals for resolvable invoices" do
       monthly_sub = Subscription.create!(
         user: @user, plan: "Commercial", duration: 12, monthly_invoicing: true,
-        street_address: "2 Test St", suburb: "Rondebosch",
+        street_address: "2 Test St", suburb: suburb_fixture("Rondebosch"),
         bucket_size: 45, buckets_per_collection: 2
       )
       invoices = [

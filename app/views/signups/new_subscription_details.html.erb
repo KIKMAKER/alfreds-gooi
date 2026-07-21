@@ -35,10 +35,7 @@
        data-form-abandonment-form-name-value="signup-subscription"
        data-form-abandonment-plan-value="<%= @plan %>"
        data-form-abandonment-duration-value="<%= @duration %>"
-       data-once-off-date-monday-suburbs-value="<%= Subscription::MONDAY_SUBURBS.to_json %>"
-       data-once-off-date-tuesday-suburbs-value="<%= Subscription::TUESDAY_SUBURBS.to_json %>"
-       data-once-off-date-wednesday-suburbs-value="<%= Subscription::WEDNESDAY_SUBURBS.to_json %>"
-       data-once-off-date-thursday-suburbs-value="<%= Subscription::THURSDAY_SUBURBS.to_json %>"
+       data-once-off-date-collection-days-value="<%= Suburb.active.pluck(:id, :collection_day).to_h.to_json %>"
        data-once-off-date-selected-date-value="<%= @subscription&.start_date %>">
     <%= form_with model: @subscription, url: create_subscription_path, method: :post, local: true, html: { data: { action: "submit->form-abandonment#formSubmit" } } do |f| %>
       <% if @subscription && @subscription.errors.any? %>
@@ -55,9 +52,9 @@
       <h3 class="mb-3">Pick Up Location</h3>
 
       <div class="mb-3">
-        <%= f.label :suburb, class: "form-label" %>
-        <%= f.select :suburb,
-            options_for_select(Subscription.SUBURBS, @subscription&.suburb),
+        <%= f.label :suburb_id, "Suburb", class: "form-label" %>
+        <%= f.select :suburb_id,
+            options_for_select(Suburb.active.order(:name).pluck(:name, :id), @subscription&.suburb_id),
             { prompt: "Select a suburb" },
             { required: true,
               class: "form-select",

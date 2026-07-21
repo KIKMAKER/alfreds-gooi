@@ -12,7 +12,7 @@ class InvoiceTest < ActiveSupport::TestCase
       plan: "Standard",
       duration: 1,
       street_address: "1 Test St",
-      suburb: "Rondebosch"
+      suburb: suburb_fixture("Rondebosch")
     )
   end
 

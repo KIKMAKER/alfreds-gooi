@@ -21,6 +21,17 @@ class ActiveSupport::TestCase
   end
   create_number_sequences
   parallelize_setup { create_number_sequences }
+
+  # Suburb is now a real referenced record (not a frozen string list), so tests that
+  # used to pass a bare suburb name need a Suburb row to point at. Defaults to Monday
+  # since most tests don't care which day, only that one is set (Suburb#collection_day
+  # is required for active suburbs).
+  def suburb_fixture(name, collection_day: "Monday", status: :active)
+    Suburb.find_or_create_by!(name: name) do |s|
+      s.status = status
+      s.collection_day = collection_day unless status.to_s == "target"
+    end
+  end
   # Geocoder stub (keeps tests offline)
   require "geocoder"
   Geocoder.configure(lookup: :test)

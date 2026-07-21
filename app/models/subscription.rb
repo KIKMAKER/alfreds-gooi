@@ -1,12 +1,7 @@
 class Subscription < ApplicationRecord
   belongs_to :user
   belongs_to :block, optional: true
-  # Named suburb_record (not suburb) until PR 5 of the suburb FK migration converts
-  # every remaining string-column read/write site: belongs_to :suburb would define a
-  # `suburb` reader that shadows the still-in-use suburb string column, silently
-  # breaking the existing inclusion validation and unconverted views. Rename to
-  # :suburb once those call sites are cut over.
-  belongs_to :suburb_record, class_name: "Suburb", foreign_key: :suburb_id, optional: true
+  belongs_to :suburb
   has_many :collections, dependent: :nullify
   has_many :invoices, dependent: :nullify
   has_many :invoice_items, through: :invoices
@@ -43,12 +38,7 @@ class Subscription < ApplicationRecord
   before_create :inherit_collection_order
   after_create :create_owner_contact
   after_save :sync_collection_positions
-  before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb?) && collection_day.nil? }
-  before_validation :canonicalize_suburb
-  # Transitional bridge until customer-facing forms submit suburb_id directly (see
-  # suburb FK migration plan, PR 5): keeps suburb_id in sync whenever a form still
-  # only writes the legacy suburb string. Safe to remove once PR 5 lands.
-  before_validation :sync_suburb_id_from_name, if: -> { suburb.present? && will_save_change_to_suburb? }
+  before_validation :set_collection_day, if: -> { (will_save_change_to_street_address? || will_save_change_to_suburb_id?) && collection_day.nil? }
   before_validation :normalize_referral_code
   # Fallback used when the suburbs table is missing or empty (fresh dev/CI boot).
   # Kept in sync with the backfill in db/migrate/20260720103529_create_suburbs.rb.
@@ -63,9 +53,8 @@ class Subscription < ApplicationRecord
     names.empty? ? FALLBACK_SUBURBS : names.sort
   end
 
-  validates :suburb, inclusion: { in: ->(_record) { Subscription.SUBURBS } }
   validates :street_address, presence: true
-  validates :suburb, :plan, presence: true
+  validates :plan, presence: true
   validates :duration, presence: true, unless: :once_off?
   validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
   validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
@@ -102,17 +91,6 @@ class Subscription < ApplicationRecord
   # Constants
   GRACE_BACK_DAYS = 7  # Grace period for subscription continuity when resubscribing
 
-  MONDAY_SUBURBS = ["Woodstock", "De Waterkant",  "Bo-Kaap", "Foreshore"]
-  TUESDAY_SUBURBS = ["Bergvliet", "Bishopscourt", "Claremont", "Diep River", "Grassy Park", "Harfield Village", "Heathfield", "Kenilworth", "Kirstenhof", "Meadowridge", "Newlands", "Plumstead", "Retreat", "Rondebosch", "Rondebosch East", "Rosebank", "Southfield", "Steenberg", "Tokai", "Wynberg", "Clovelly", "Fish Hoek", "Glencairn", "Kalk Bay", "Lakeside", "Marina da Gama", "Muizenberg", "St James", "Sunnydale", "Sun Valley", "Vrygrond"].sort!.freeze
-  WEDNESDAY_SUBURBS = ["Mowbray", "Observatory", "Bakoven", "Bantry Bay", "Camps Bay", "Clifton", "Fresnaye", "Green Point", "Hout Bay", "Mouille Point", "Sea Point", "Three Anchor Bay", "Schotsche Kloof", "Constantia", "Witteboomen"].sort!.freeze
-  THURSDAY_SUBURBS = ["Gardens", "Higgovale", "District Six", "Oranjezicht", "Cape Town", "Salt River", "Tamboerskloof", "University Estate", "Vredehoek", "Observatory" ].sort!.freeze
-  FUTURE_SUBURBS = ["Sunnydale", "Sun Valley", "Noordhoek", "Glencairn", "Milnerton", "Tableview", "Grassy Park"]
-  LEGACY_TO_CANONICAL = {
-                          "Devil's Peak Estate"            => "Vredehoek",
-                          "Zonnebloem (District Six)"      => "District Six",
-                          "Walmer Estate (District Six)"   => "District Six",
-                          "Lower Vrede (District Six)"     => "District Six",
-                        }.freeze
   def calculate_next_collection_day
     target_day = Date::DAYNAMES.index(collection_day.capitalize)
     current_day = Time.zone.today.wday # Use Time.zone.today for time zone awareness
@@ -290,17 +268,8 @@ class Subscription < ApplicationRecord
   end
 
   def set_collection_day
-    if MONDAY_SUBURBS.include?(suburb)
-      self.collection_day = "Monday"
-    elsif TUESDAY_SUBURBS.include?(suburb)
-      self.collection_day = "Tuesday"
-    elsif WEDNESDAY_SUBURBS.include?(suburb)
-      self.collection_day = "Wednesday"
-    elsif THURSDAY_SUBURBS.include?(suburb)
-      self.collection_day = "Thursday"
-    else
-      Rails.logger.warn "suburb allocation issue for #{user.first_name} in #{suburb}"
-    end
+    self.collection_day = suburb&.collection_day
+    Rails.logger.warn "suburb allocation issue for #{user.first_name} in #{suburb&.name}" if collection_day.nil?
   end
 
   def set_customer_id
@@ -494,7 +463,7 @@ class Subscription < ApplicationRecord
   # a stronger signal than "just incomplete": the suburb itself may be wrong.
   def suburb_missing_from_address?
     return false if suburb.blank?
-    !street_address.to_s.downcase.include?(suburb.downcase)
+    !street_address.to_s.downcase.include?(suburb.name.downcase)
   end
 
   # Contact helper methods
@@ -609,15 +578,6 @@ class Subscription < ApplicationRecord
 
   def normalize_referral_code
     self.referral_code = referral_code.strip.upcase if referral_code.present?
-  end
-
-  def canonicalize_suburb
-    return if suburb.blank?
-    self.suburb = LEGACY_TO_CANONICAL.fetch(suburb, suburb)
-  end
-
-  def sync_suburb_id_from_name
-    self.suburb_id = Suburb.find_by(name: suburb)&.id
   end
 
   # def set_customer_id

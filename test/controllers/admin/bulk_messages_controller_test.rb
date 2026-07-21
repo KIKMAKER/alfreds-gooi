@@ -19,7 +19,7 @@ class Admin::BulkMessagesControllerTest < ActionDispatch::IntegrationTest
     @subscription = Subscription.create!(
       user: @customer,
       street_address: "12 Rouwkoop Rd, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch"),
       collection_day: "Tuesday",
       plan: "Standard",
       duration: 3,
@@ -119,7 +119,7 @@ class Admin::BulkMessagesControllerTest < ActionDispatch::IntegrationTest
     other_sub = Subscription.create!(
       user: @customer,
       street_address: "9 Main Rd, Kalk Bay",
-      suburb: "Kalk Bay",
+      suburb: suburb_fixture("Kalk Bay"),
       collection_day: "Tuesday",
       plan: "Standard",
       duration: 3,

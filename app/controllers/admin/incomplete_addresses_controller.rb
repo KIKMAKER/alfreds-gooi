@@ -5,7 +5,7 @@ class Admin::IncompleteAddressesController < ApplicationController
   def index
     active = Subscription.where(status: "active").includes(:user)
     @subscriptions = active.reject(&:complete_mapbox_address?)
-                            .sort_by { |s| [s.suburb_missing_from_address? ? 0 : 1, s.suburb.to_s] }
+                            .sort_by { |s| [s.suburb_missing_from_address? ? 0 : 1, s.suburb&.name.to_s] }
   end
 
   private

@@ -131,7 +131,7 @@ class StatementPdfGenerator
       end
 
       # Truncate address if too long
-      address = "#{subscription.short_address}, #{subscription.suburb}"
+      address = "#{subscription.short_address}, #{subscription.suburb&.name}"
       address = address.length > 35 ? "#{address[0..32]}..." : address
 
       table_data << [

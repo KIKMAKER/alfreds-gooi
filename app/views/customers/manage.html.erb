@@ -10,7 +10,7 @@
         <h1>Hey <%= current_user.first_name %>!</h1>
         <% if @subscriptions&.count == 1 && @subscription&.collection_day.present? %>
           <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
-            <%= @subscription.collection_day %>s &middot; <%= @subscription.suburb %>
+            <%= @subscription.collection_day %>s &middot; <%= @subscription.suburb&.name %>
           </p>
         <% elsif @subscriptions&.count > 1 %>
           <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
@@ -154,7 +154,7 @@
           <i class="fa-solid fa-location-dot"></i>
           <div style="flex: 1; min-width: 0; overflow: hidden;">
             <h3 style="margin: 0; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= sub.short_address %></h3>
-            <small class="text-muted" style="white-space: nowrap;"><%= sub.suburb %> &middot; <%= sub.collection_day %>s</small>
+            <small class="text-muted" style="white-space: nowrap;"><%= sub.suburb&.name %> &middot; <%= sub.collection_day %>s</small>
           </div>
           <% if sub.active? %>
             <span class="subscription-status-badge active">Active</span>

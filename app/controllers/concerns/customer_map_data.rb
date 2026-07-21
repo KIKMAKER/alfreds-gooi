@@ -38,7 +38,7 @@ module CustomerMapData
           marker_size:             subscription_marker_size(sub, avg_bags, avg_buckets),
           customer_name:           sub.user&.first_name || sub.user&.email,
           address:                 sub.short_address,
-          suburb:                  sub.suburb,
+          suburb:                  sub.suburb&.name,
           bucket_size:             sub.Commercial? ? sub.bucket_size : nil,
           buckets_per_collection:  sub.Commercial? ? sub.buckets_per_collection : nil
         }

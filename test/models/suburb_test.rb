@@ -37,7 +37,7 @@ class SuburbTest < ActiveSupport::TestCase
   test "cannot be destroyed while a subscription references it" do
     suburb = Suburb.create!(name: "Referenced Suburb", collection_day: "Monday")
     user = User.create!(first_name: "Test", last_name: "User", email: "suburb_test@example.com", phone_number: "+27831112222", password: "password")
-    Subscription.create!(user: user, plan: "Standard", duration: 1, suburb: suburb.name, suburb_id: suburb.id, street_address: "1 Test Street", collection_day: "Monday")
+    Subscription.create!(user: user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test Street", collection_day: "Monday")
 
     assert_not suburb.destroy
     assert_includes suburb.errors[:base], "Cannot delete record because dependent subscriptions exist"

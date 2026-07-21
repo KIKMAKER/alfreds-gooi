@@ -16,7 +16,7 @@ class RandsPerLitreTest < ActiveSupport::TestCase
       plan: plan,
       duration: 3,
       street_address: "1 Test St",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch"),
       status: :active,
       monthly_subscription_amount: monthly_subscription_amount,
       monthly_volume_amount: monthly_volume_amount,

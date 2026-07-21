@@ -47,7 +47,7 @@ class ReferralTest < ActiveSupport::TestCase
       duration: 3,
       referral_code: @referrer.referral_code,
       street_address: "123 Bree Street",
-      suburb: "Cape Town"
+      suburb: suburb_fixture("Cape Town")
     )
     @referral = Referral.new(
       referrer: @referrer,

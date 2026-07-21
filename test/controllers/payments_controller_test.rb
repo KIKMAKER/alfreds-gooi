@@ -33,7 +33,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
       plan: "Standard",
       duration: 1,
       street_address: "123 Main",
-      suburb: "Cape Town",
+      suburb: suburb_fixture("Cape Town"),
       referral_code: @referrer.referral_code,
       customer_id: "GFWC999"
     )

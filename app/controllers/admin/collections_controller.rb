@@ -22,7 +22,7 @@ class Admin::CollectionsController < ApplicationController
     if params[:q].present?
       q = "%#{params[:q].strip.downcase}%"
       scope = scope.joins(subscription: :user)
-                   .left_joins(subscription: :suburb_record)
+                   .left_joins(subscription: :suburb)
                    .where("LOWER(users.first_name) LIKE :q
                            OR LOWER(users.last_name) LIKE :q
                            OR LOWER(users.email) LIKE :q

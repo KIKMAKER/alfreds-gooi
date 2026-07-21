@@ -25,7 +25,7 @@ class SubscriptionsController < ApplicationController
       @subscriptions = Subscription.active
                                     .includes(:user, :invoices)
                                     .joins(:user)
-                                    .left_joins(:suburb_record)
+                                    .left_joins(:suburb)
                                     .order(Arel.sql("#{order_col} #{@dir}"))
     else
       @subscriptions = Subscription.where(user_id: current_user.id)
@@ -607,7 +607,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    permitted = params.require(:subscription).permit(:title, :customer_id, :access_code, :apartment_unit_number, :street_address, :suburb, :duration, :start_date, :end_date,
+    permitted = params.require(:subscription).permit(:title, :customer_id, :access_code, :apartment_unit_number, :street_address, :suburb_id, :duration, :start_date, :end_date,
                   :collection_day, :plan, :status, :is_paused, :user_id, :holiday_start, :holiday_end, :collection_order, :referral_code, :discount_code,
                   :buckets_per_collection, :bucket_size, :collections_per_week, :monthly_invoicing, :waste_stream, :is_new_customer, user_attributes: [:id, :first_name, :last_name, :phone_number, :email])
 
@@ -669,7 +669,7 @@ class SubscriptionsController < ApplicationController
           sub.user.email,
           sub.user.phone_number,
           sub.street_address,
-          sub.suburb,
+          sub.suburb&.name,
           sub.collection_day,
           sub.plan,
           sub.duration,

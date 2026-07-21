@@ -43,7 +43,7 @@ class QuotationTest < ActiveSupport::TestCase
       plan: "Commercial",
       duration: 6,
       street_address: "1 Main Road",
-      suburb: Subscription::TUESDAY_SUBURBS.first,
+      suburb: suburb_fixture("Claremont", collection_day: "Tuesday"),
       buckets_per_collection: 2,
       quotation_id: @quotation.id
     )

@@ -8,7 +8,7 @@
   <% if @subscription.once_off? %>
 
     <p style="font-size: 1.1rem;">
-      Your once-off collection slot in <strong><%= @subscription.suburb %></strong> on
+      Your once-off collection slot in <strong><%= @subscription.suburb&.name %></strong> on
       <strong><%= @subscription.collection_day %>s</strong> is all set up and ready to go.
       We just need your payment to confirm the booking.
     </p>
@@ -16,7 +16,7 @@
   <% else %>
 
     <p style="font-size: 1.1rem;">
-      Your <strong><%= @subscription.plan %></strong> subscription in <strong><%= @subscription.suburb %></strong>,
+      Your <strong><%= @subscription.plan %></strong> subscription in <strong><%= @subscription.suburb&.name %></strong>,
       with collections every <strong><%= @subscription.collection_day %></strong>, is all set up and waiting.
       We just need your payment to get things rolling.
     </p>

@@ -100,7 +100,7 @@
 
           <h3 class="my-3">Pick Up Location</h3>
 
-          <%= subscription_fields.input :suburb,  collection: Subscription.SUBURBS, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+          <%= subscription_fields.association :suburb, collection: Suburb.active.order(:name), label_method: :name, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
           <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
           <%= subscription_fields.input :street_address, label: "Street Address", placeholder: "e.g., 123 Main Street, Gardens", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
         <% end %>
@@ -171,7 +171,7 @@
 
             <h3 class="my-3">Pick Up Location</h3>
 
-            <%= subscription_fields.input :suburb,  collection: Subscription.SUBURBS, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
+            <%= subscription_fields.association :suburb, collection: Suburb.active.order(:name), label_method: :name, prompt: "Select a suburb", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
             <%= subscription_fields.input :apartment_unit_number, label: "Building name and unit number (if relevant)", placeholder: "e.g Unit 1 Garden View", input_html: { data: { form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" } } %>
             <%= subscription_fields.input :street_address, input_html: { data: { address_autocomplete_target: "address", form_abandonment_target: "field", action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur" },  class: "d-none"}, label_html: {class: "street-label"} %>
           <% end %>

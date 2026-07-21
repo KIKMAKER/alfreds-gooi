@@ -55,7 +55,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       duration: 3,
       referral_code: @referrer.referral_code,
       street_address: "123 Referee Rd",
-      suburb: "Cape Town"
+      suburb: suburb_fixture("Cape Town")
     )
 
     invoice = InvoiceBuilder.new(subscription: subscription, og: nil, is_new:true, referee: @referrer, referred_friends: nil).call
@@ -75,7 +75,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       duration: 3,
       referral_code: @referrer.referral_code,
       street_address: "123 Gooi Ave",
-      suburb: "Cape Town"
+      suburb: suburb_fixture("Cape Town")
     )
     Referral.create!(
       referrer: @referrer,
@@ -89,7 +89,7 @@ class ReferralFlowTest < ActionDispatch::IntegrationTest
       plan: "XL",
       duration: 3,
       street_address: "456 Gooi Blvd",
-      suburb: "Cape Town"
+      suburb: suburb_fixture("Cape Town")
     )
 
     invoice = InvoiceBuilder.new(

@@ -61,7 +61,7 @@
           <span class="info-label">Address</span>
           <span class="info-value" style="text-align: right;">
             <%= @next_collection.subscription.short_address %>,
-            <%= @next_collection.subscription.suburb %>
+            <%= @next_collection.subscription.suburb&.name %>
           </span>
         </div>
         <p class="text-muted small mb-0 mt-3" style="line-height: 1.5;">

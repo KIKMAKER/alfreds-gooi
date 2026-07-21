@@ -36,7 +36,7 @@ class DriverMessagesControllerTest < ActionDispatch::IntegrationTest
 
   def subscription_for(user, plan: "Standard")
     attrs = {
-      user: user, street_address: "1 Test Rd, Rondebosch", suburb: "Rondebosch",
+      user: user, street_address: "1 Test Rd, Rondebosch", suburb: suburb_fixture("Rondebosch"),
       collection_day: "Tuesday", plan: plan, duration: (plan == "once_off" ? nil : 3),
       status: :active, start_date: Date.current - 2.weeks, latitude: -33.96, longitude: 18.48
     }

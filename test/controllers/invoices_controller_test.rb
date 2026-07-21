@@ -29,7 +29,7 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
       plan:           "Standard",
       duration:       1,
       street_address: "1 Test St",
-      suburb:         "Rondebosch",
+      suburb:         suburb_fixture("Rondebosch"),
       status:         :pending
     )
 

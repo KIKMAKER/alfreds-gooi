@@ -19,7 +19,7 @@ class UnderwaterSubscriptionsTest < ActiveSupport::TestCase
     )
     Subscription.create!({
       user: user, plan: "Standard", duration: 1, status: :active,
-      street_address: "1 Test St", suburb: "Claremont",
+      street_address: "1 Test St", suburb: suburb_fixture("Claremont"),
       monthly_subscription_amount: monthly_subscription_amount
     }.merge(attrs))
   end

@@ -27,7 +27,7 @@
             <%= sub.user&.full_name %><br>
             <span class="text-muted small"><%= sub.user&.email %></span>
           </td>
-          <td><%= sub.suburb %></td>
+          <td><%= sub.suburb&.name %></td>
           <td><%= sub.street_address %></td>
           <td><%= link_to "Edit", edit_subscription_path(sub), class: "btn btn-sm btn-primary", target: "_blank" %></td>
         </tr>

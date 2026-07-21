@@ -50,7 +50,7 @@ class ProteinQuoteToSubscriptionTest < ActionDispatch::IntegrationTest
   def subscription_params(**overrides)
     {
       plan: "Commercial", duration: 6,
-      street_address: "18 Kloof Street, Gardens", suburb: "Gardens",
+      street_address: "18 Kloof Street, Gardens", suburb_id: suburb_fixture("Gardens").id,
       bucket_size: 25, buckets_per_collection: 2, collections_per_week: 3,
       title: "Nina's Kitchen"
     }.merge(overrides)

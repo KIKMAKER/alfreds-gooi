@@ -54,7 +54,7 @@ class InvoicePdfGenerator
       ['For:', "#{@user&.first_name} #{@user&.last_name}"],
       ['Email:', @user&.email || 'N/A'],
       ['Customer ID:', @subscription&.customer_id || 'N/A'],
-      ['Address:', "#{@subscription&.short_address}, #{@subscription&.suburb}"],
+      ['Address:', "#{@subscription&.short_address}, #{@subscription&.suburb&.name}"],
       ['Invoice Date:', @invoice.issued_date&.strftime('%e %b %Y') || 'N/A'],
       ['Due Date:', @invoice.paid ? 'PAID' : (@invoice.due_date&.strftime('%e %b %Y') || 'N/A')]
     ]

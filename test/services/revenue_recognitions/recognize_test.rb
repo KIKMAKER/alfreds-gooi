@@ -18,7 +18,7 @@ module RevenueRecognitions
         monthly_invoicing: monthly_invoicing,
         start_date: start_date,
         street_address: "1 Test St",
-        suburb: "Rondebosch"
+        suburb: suburb_fixture("Rondebosch")
       }
       attrs.merge!(bucket_size: 45, buckets_per_collection: 2) if plan == "Commercial"
       Subscription.create!(attrs)

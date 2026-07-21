@@ -22,7 +22,7 @@ class ProteinDriverUxTest < ActionDispatch::IntegrationTest
     @protein_sub = Subscription.create!(
       user: @customer, plan: "Commercial", waste_stream: :protein,
       collections_per_week: 3, duration: 6,
-      street_address: "18 Kloof Street, Gardens", suburb: "Gardens",
+      street_address: "18 Kloof Street, Gardens", suburb: suburb_fixture("Gardens"),
       bucket_size: 25, buckets_per_collection: 2, title: "Nina's Kitchen",
       status: :active
     )

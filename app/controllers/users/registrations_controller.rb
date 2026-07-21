@@ -111,7 +111,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.permit(:sign_up, keys: [
       :first_name, :last_name, :email, :phone_number, :password, :password_confirmation,
       subscriptions_attributes: [
-        :plan, :duration, :street_address, :suburb, :referral_code,
+        :plan, :duration, :street_address, :suburb_id, :referral_code,
         :discount_code, :apartment_unit_number, :is_paused, :buckets_per_collection
       ]
     ])

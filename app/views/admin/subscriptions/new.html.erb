@@ -109,9 +109,9 @@
       </div>
 
       <div class="col-md-4">
-        <%= f.label :suburb, class: "form-label" %>
-        <%= f.select :suburb,
-                     Subscription.SUBURBS.sort,
+        <%= f.label :suburb_id, "Suburb", class: "form-label" %>
+        <%= f.select :suburb_id,
+                     Suburb.active.order(:name).pluck(:name, :id),
                      { prompt: "Select suburb" },
                      class: "form-select" %>
       </div>

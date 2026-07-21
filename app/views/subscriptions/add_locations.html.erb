@@ -15,9 +15,9 @@
       <div data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
         <%= f.input :street_address, input_html: { data: { address_autocomplete_target: "address" },  class: "d-none"}, label_html: {class: "street-label"} %>
       </div>
-      <%= f.input :suburb,
-            as: :select,
-            collection: Subscription.SUBURBS,
+      <%= f.association :suburb,
+            collection: Suburb.active.order(:name),
+            label_method: :name,
             prompt: "Select a suburb",
             required: true %>
 
@@ -52,7 +52,7 @@
           <div class="mb-4">
             <% @subscriptions.each_with_index do |sub, index| %>
               <strong>Location <%= index + 1 %>:</strong>
-              <%= sub.short_address %>, <%= sub.suburb %>
+              <%= sub.short_address %>, <%= sub.suburb&.name %>
               <br>
               <small class="text-muted">
                 Plan: <%= sub.human_plan %> | Duration: <%= sub.duration %> months | Collection Day: <%= sub.collection_day %>

@@ -139,7 +139,7 @@ class SignupsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:street_address, :suburb, :apartment_unit_number, :start_date)
+    params.require(:subscription).permit(:street_address, :suburb_id, :apartment_unit_number, :start_date)
   end
 
   def clear_signup_session

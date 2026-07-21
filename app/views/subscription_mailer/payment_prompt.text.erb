@@ -3,9 +3,9 @@ Hi <%= @subscription.user.first_name %>,
 You signed up on <%= @subscription.created_at.strftime("%-d %B") %> — and your spot is still holding.
 
 <% if @subscription.once_off? %>
-Your once-off collection slot in <%= @subscription.suburb %> on <%= @subscription.collection_day %>s is all set up and ready to go. We just need your payment to confirm the booking.
+Your once-off collection slot in <%= @subscription.suburb&.name %> on <%= @subscription.collection_day %>s is all set up and ready to go. We just need your payment to confirm the booking.
 <% else %>
-Your <%= @subscription.plan %> subscription in <%= @subscription.suburb %>, with collections every <%= @subscription.collection_day %>, is all set up and waiting. We just need your payment to get things rolling.
+Your <%= @subscription.plan %> subscription in <%= @subscription.suburb&.name %>, with collections every <%= @subscription.collection_day %>, is all set up and waiting. We just need your payment to get things rolling.
 <% end %>
 
 <% if @invoice %>

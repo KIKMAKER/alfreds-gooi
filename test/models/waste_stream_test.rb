@@ -18,7 +18,7 @@ class WasteStreamTest < ActiveSupport::TestCase
       plan:                   "Commercial",
       duration:               6,
       street_address:         "1 Test St",
-      suburb:                 "Gardens",
+      suburb:                 suburb_fixture("Gardens"),
       bucket_size:            25,
       buckets_per_collection: 2,
       collections_per_week:   3

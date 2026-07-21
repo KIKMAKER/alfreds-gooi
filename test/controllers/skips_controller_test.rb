@@ -12,7 +12,7 @@ class SkipsControllerTest < ActionDispatch::IntegrationTest
     @subscription = Subscription.create!(
       user: @user,
       street_address: "12 Rouwkoop Rd, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch"),
       collection_day: "Tuesday",
       plan: "Standard",
       duration: 3,

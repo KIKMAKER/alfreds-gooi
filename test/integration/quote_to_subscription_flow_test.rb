@@ -64,7 +64,7 @@ class QuoteToSubscriptionFlowTest < ActionDispatch::IntegrationTest
       plan:                   "Commercial",
       duration:               6,
       street_address:         "18 Kloof Street, Gardens",
-      suburb:                 "Gardens",
+      suburb_id:              suburb_fixture("Gardens").id,
       bucket_size:            45,
       buckets_per_collection: 2,
       collections_per_week:   2,

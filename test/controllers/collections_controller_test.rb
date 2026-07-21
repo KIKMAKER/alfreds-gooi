@@ -15,7 +15,7 @@ class CollectionsControllerTest < ActionController::TestCase
     @subscription = Subscription.create!(
       user: @driver,
       street_address: "123 Demo St, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch", collection_day: "Tuesday"),
       collection_day: "Tuesday",
       plan: "Standard",
       duration: 1,
@@ -85,7 +85,7 @@ class NewCustomerFlagTest < ActionController::TestCase
     @subscription = Subscription.create!(
       user: @driver,
       street_address: "123 Demo St, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch", collection_day: "Tuesday"),
       collection_day: "Tuesday",
       plan: "Standard",
       duration: 1,
@@ -117,7 +117,9 @@ class NewCustomerFlagTest < ActionController::TestCase
   end
 
   test "drop-off clears the flag even when the subscription fails validation" do
-    @subscription.update_column(:suburb, "Llandudno") # legacy suburb, no longer in SUBURBS
+    # No suburb (belongs_to :suburb requires presence) — the FK-era equivalent of
+    # the old out-of-list-suburb-string case this test used to force.
+    @subscription.update_column(:suburb_id, nil)
     assert_not @subscription.reload.valid?, "sanity: subscription should be invalid"
 
     drop_off!

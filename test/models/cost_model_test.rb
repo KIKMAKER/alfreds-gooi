@@ -44,7 +44,7 @@ class CostModelTest < ActiveSupport::TestCase
     )
     subscription = Subscription.create!(
       user: user, plan: "Standard", duration: 3,
-      street_address: "1 Test Street", suburb: "Claremont"
+      street_address: "1 Test Street", suburb: suburb_fixture("Claremont")
     )
     Collection.create!(subscription: subscription, date: date, bags: bags, skip: skip)
   end

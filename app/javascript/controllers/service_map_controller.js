@@ -5,20 +5,17 @@ export default class extends Controller {
   static values = {
     token: String,
     geoUrl: String,
-    monday: Array,
-    tuesday: Array,
-    wednesday: Array,
-    thursday: Array
+    collectionDays: Object
   }
 
   connect() {
     if (!this.hasTokenValue || !this.hasGeoUrlValue) return
 
-    // Precompute normalized sets for fast lookup
-    this.mondaySet    = new Set((this.mondayValue || []).map(n => this.standardize(n)))
-    this.tuesdaySet   = new Set((this.tuesdayValue || []).map(n => this.standardize(n)))
-    this.wednesdaySet = new Set((this.wednesdayValue || []).map(n => this.standardize(n)))
-    this.thursdaySet  = new Set((this.thursdayValue  || []).map(n => this.standardize(n)))
+    // Precompute a normalized-name -> day lookup
+    this.dayByStandardizedName = {}
+    for (const [name, day] of Object.entries(this.collectionDaysValue || {})) {
+      this.dayByStandardizedName[this.standardize(name)] = day
+    }
 
     mapboxgl.accessToken = this.tokenValue
 
@@ -147,12 +144,7 @@ export default class extends Controller {
   standardize(n) { return this.alias(this.normalize(n)) }
 
   dayFor(name) {
-    const key = this.standardize(name)
-    if (this.mondaySet.has(key))    return "Monday"
-    if (this.tuesdaySet.has(key))   return "Tuesday"
-    if (this.wednesdaySet.has(key)) return "Wednesday"
-    if (this.thursdaySet.has(key))  return "Thursday"
-    return null
+    return this.dayByStandardizedName[this.standardize(name)] || null
   }
 
   // ---------- view helpers ----------

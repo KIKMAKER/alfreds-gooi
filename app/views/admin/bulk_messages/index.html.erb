@@ -245,7 +245,7 @@
                   <% end %>
                 </td>
                 <td><%= contact.phone_number %></td>
-                <td><%= sub&.suburb %></td>
+                <td><%= sub&.suburb&.name %></td>
                 <td><%= sub&.collection_day&.titleize %></td>
                 <td><%= sub&.human_plan %></td>
                 <td><%= sub&.total_collections || 0 %></td>
@@ -259,7 +259,7 @@
                       '{last_name}'      => contact.last_name.to_s,
                       '{full_name}'      => contact.full_name,
                       '{collection_day}' => sub&.collection_day&.titleize.to_s,
-                      '{suburb}'         => sub&.suburb.to_s,
+                      '{suburb}'         => sub&.suburb&.name.to_s,
                       '{plan}'           => sub&.human_plan.to_s,
                       '{account_start}'  => sub&.start_date&.strftime("%d %b %Y").to_s,
                       '{relationship}'      => (contact.is_primary? ? 'Owner' : contact.relationship&.titleize).to_s,

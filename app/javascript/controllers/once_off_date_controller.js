@@ -4,11 +4,8 @@ export default class extends Controller {
   static targets = ["suburbSelect", "dateContainer", "dateSelect"]
 
   static values = {
-    mondaySuburbs:    { type: Array, default: [] },
-    tuesdaySuburbs:   { type: Array, default: [] },
-    wednesdaySuburbs: { type: Array, default: [] },
-    thursdaySuburbs:  { type: Array, default: [] },
-    selectedDate:     { type: String, default: "" }
+    collectionDays: { type: Object, default: {} },
+    selectedDate:   { type: String, default: "" }
   }
 
   connect() {
@@ -21,17 +18,17 @@ export default class extends Controller {
   }
 
   suburbChanged(event) {
-    const suburb = event.target.value
-    if (suburb) {
-      this.populateDates(suburb)
+    const suburbId = event.target.value
+    if (suburbId) {
+      this.populateDates(suburbId)
     } else {
       this.dateContainerTarget.hidden = true
       this.dateSelectTarget.innerHTML = ""
     }
   }
 
-  populateDates(suburb) {
-    const dayName = this.collectionDayFor(suburb)
+  populateDates(suburbId) {
+    const dayName = this.collectionDayFor(suburbId)
     if (!dayName) { this.dateContainerTarget.hidden = true; return }
 
     const dates = this.nextCollectionDates(dayName, 8, 3)
@@ -46,13 +43,8 @@ export default class extends Controller {
     this.dateContainerTarget.hidden = false
   }
 
-  collectionDayFor(suburb) {
-    // Priority order mirrors set_collection_day callback in subscription.rb
-    if (this.mondaySuburbsValue.includes(suburb))    return "Monday"
-    if (this.tuesdaySuburbsValue.includes(suburb))   return "Tuesday"
-    if (this.wednesdaySuburbsValue.includes(suburb)) return "Wednesday"
-    if (this.thursdaySuburbsValue.includes(suburb))  return "Thursday"
-    return null
+  collectionDayFor(suburbId) {
+    return this.collectionDaysValue[suburbId] || null
   }
 
   nextCollectionDates(dayName, count, leadDays) {

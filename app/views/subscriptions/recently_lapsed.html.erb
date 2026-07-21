@@ -37,7 +37,7 @@
             <div>
               <div class="quick-msg-row__name"><%= user.first_name %> <%= user.last_name %></div>
               <div class="quick-msg-row__meta">
-                <%= subscription.suburb %> &middot;
+                <%= subscription.suburb&.name %> &middot;
                 ended <%= subscription.end_date.strftime('%-d %b') %>
                 <% if days_since_last %>
                   &middot; last collected <%= days_since_last %> days ago
@@ -87,7 +87,7 @@
           <% next unless sub %>
           <option value="<%= sub.id %>">
             <%= cust.first_name %> <%= cust.last_name %>
-            (<%= sub.suburb %> · <%= sub.collection_day %> · <%= sub.status %>)
+            (<%= sub.suburb&.name %> · <%= sub.collection_day %> · <%= sub.status %>)
           </option>
         <% end %>
       </select>

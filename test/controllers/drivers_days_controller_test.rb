@@ -20,7 +20,7 @@ class DriversDaysControllerTest < ActionDispatch::IntegrationTest
     @subscription = Subscription.create!(
       user: @customer,
       street_address: "12 Rouwkoop Rd, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch"),
       collection_day: Date::DAYNAMES[Date.current.wday],
       plan: "Standard",
       duration: 3,

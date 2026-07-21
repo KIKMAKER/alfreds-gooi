@@ -39,7 +39,7 @@
         <p><strong>For:</strong> <%= link_to "#{@subscription.user.first_name} #{@subscription.user.last_name}", admin_subscription_path(@subscription), class: "link-text" %></p>
         <p><strong>Email:</strong> <%= @subscription.user.email %></p>
         <p><strong>Customer ID:</strong> <%= @subscription.customer_id %>
-          <p><strong>Address:</strong> <%= @subscription.short_address %>, <%= @subscription.suburb %></p>
+          <p><strong>Address:</strong> <%= @subscription.short_address %>, <%= @subscription.suburb&.name %></p>
           <p><strong>Due Date:</strong> <%= @invoice.due_date.strftime('%A, %b %d') %> - <%= @invoice.paid ? 'paid!' : 'pending' %></p>
           <% if current_user.admin? && !@invoice.paid %>
             <div class="payment-type-buttons">

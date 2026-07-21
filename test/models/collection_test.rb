@@ -24,7 +24,7 @@ class CollectionTest < ActiveSupport::TestCase
       plan: "Standard",
       duration: 3,
       street_address: "12 Palmboom Road",
-      suburb: "Claremont"
+      suburb: suburb_fixture("Claremont")
     )
 
     @tuesday = Date.new(2026, 7, 7)

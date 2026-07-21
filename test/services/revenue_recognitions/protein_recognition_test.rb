@@ -21,7 +21,7 @@ module RevenueRecognitions
         duration:               6,
         start_date:             Date.new(2026, 3, 1),
         street_address:         "18 Kloof Street, Gardens",
-        suburb:                 "Gardens",
+        suburb:                 suburb_fixture("Gardens"),
         bucket_size:            25,
         buckets_per_collection: 2
       )

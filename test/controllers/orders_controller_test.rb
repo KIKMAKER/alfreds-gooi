@@ -21,7 +21,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       plan:           "Standard",
       duration:       1,
       street_address: "1 Demo Rd",
-      suburb:         "Rondebosch",
+      suburb:         suburb_fixture("Rondebosch"),
       status:         :active
     )
 

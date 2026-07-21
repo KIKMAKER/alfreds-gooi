@@ -24,7 +24,7 @@ class SubscriptionsControllerTest < ActionController::TestCase
     @prev = Subscription.create!(
       user: @user,
       street_address: "123 Demo St, Rondebosch",
-      suburb: "Rondebosch",
+      suburb: suburb_fixture("Rondebosch", collection_day: "Tuesday"),
       collection_day: "Tuesday",
       collection_order: 42,
       duration: 1,
@@ -95,15 +95,15 @@ class SubscriptionsControllerTest < ActionController::TestCase
     assert_equal aligned, created.start_date.to_date
   end
 
-  test "create raises error when previous subscription has invalid suburb" do
+  test "create raises error when previous subscription has no suburb" do
     params = {
       subscription: { plan: "Standard", duration: 1 },
       og: "false",
       new: "false"
     }
 
-    # Force the new sub to fail validation by making the copied suburb invalid
-    @prev.update_column(:suburb, "InvalidSuburb")
+    # Force the new sub to fail validation by making the copied suburb blank
+    @prev.update_column(:suburb_id, nil)
 
     @user.stub :referrals_as_referrer, @ref_stub do
       assert_raises(ActiveRecord::RecordInvalid) do

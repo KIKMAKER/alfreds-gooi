@@ -6,7 +6,7 @@ class PlanVolumeTest < ActiveSupport::TestCase
       email: "pv-#{SecureRandom.hex(4)}@example.com", password: "password",
       phone_number: "+27800000005"
     )
-    defaults = { user: user, plan: plan, duration: 3, street_address: "1 Test St", suburb: "Rondebosch", status: :active }
+    defaults = { user: user, plan: plan, duration: 3, street_address: "1 Test St", suburb: suburb_fixture("Rondebosch"), status: :active }
     defaults.merge!(bucket_size: 45, buckets_per_collection: 2, collections_per_week: 1) if plan == "Commercial"
     Subscription.create!(defaults.merge(attrs))
   end

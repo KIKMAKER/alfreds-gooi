@@ -40,12 +40,12 @@ class DriverMessagesController < ApplicationController
     if contacts.any?
       contacts.map do |contact|
         recipient("c#{contact.id}", contact.first_name, "#{contact.first_name} #{contact.last_name}".strip,
-                  contact.formatted_phone, subscription.suburb, segment, body)
+                  contact.formatted_phone, subscription.suburb&.name, segment, body)
       end
     elsif subscription.user&.phone_number.present?
       user = subscription.user
       [recipient("u#{user.id}", user.first_name, user.first_name.to_s,
-                 user.phone_number, subscription.suburb, segment, body)]
+                 user.phone_number, subscription.suburb&.name, segment, body)]
     else
       []
     end

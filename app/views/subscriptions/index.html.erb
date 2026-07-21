@@ -50,7 +50,7 @@
                   <%= subscription.remaining_collections&.to_i %>
                 <% end %>
               </td>
-              <td><%= subscription.suburb %></td>
+              <td><%= subscription.suburb&.name %></td>
               <td><%= subscription.human_plan %></td>
               <td><%= subscription.collection_day %></td>
             </tr>

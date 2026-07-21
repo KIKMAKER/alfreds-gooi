@@ -8,7 +8,7 @@
       <div>
         <h1>Edit Subscription</h1>
         <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
-          <%= @subscription.user.first_name %> <%= @subscription.user.last_name %> &mdash; <%= @subscription.suburb %>
+          <%= @subscription.user.first_name %> <%= @subscription.user.last_name %> &mdash; <%= @subscription.suburb&.name %>
         </p>
       </div>
     </div>
@@ -29,8 +29,9 @@
       <div class="info-card-body" data-controller="address-autocomplete" data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
         <div class="row g-3">
           <div class="col-md-6">
-            <%= f.input :suburb,
-                        collection: Subscription.SUBURBS,
+            <%= f.association :suburb,
+                        collection: Suburb.active.order(:name),
+                        label_method: :name,
                         prompt: "Select a suburb",
                         input_html: { class: 'form-select' },
                         wrapper_html: { class: 'mb-0' } %>

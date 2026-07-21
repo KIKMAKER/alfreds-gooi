@@ -22,7 +22,7 @@ class ResubscribeFlowTest < ActionDispatch::IntegrationTest
       duration:        1,
       status:          :completed,
       street_address:  "18 Kloof Street, Gardens",
-      suburb:          "Gardens",
+      suburb:          suburb_fixture("Gardens", collection_day: "Thursday"),
       collection_day:  "Thursday",
       collection_order: 5,
       start_date:      4.weeks.ago.to_date,
@@ -53,7 +53,7 @@ class ResubscribeFlowTest < ActionDispatch::IntegrationTest
     assert_equal "pending",  new_sub.status
     assert_equal "Standard", new_sub.plan
     assert_equal 1,          new_sub.duration
-    assert_equal "Gardens",  new_sub.suburb, "copies suburb from last sub"
+    assert_equal "Gardens",  new_sub.suburb.name, "copies suburb from last sub"
     assert_equal "18 Kloof Street, Gardens", new_sub.street_address, "copies street address"
     assert_equal false,      new_sub.is_new_customer
 
@@ -134,7 +134,7 @@ class ResubscribeFlowTest < ActionDispatch::IntegrationTest
       duration:        1,
       status:          :active,
       street_address:  "55 Main Road, Observatory",
-      suburb:          "Observatory",
+      suburb:          suburb_fixture("Observatory"),
       collection_day:  "Thursday",
       start_date:      Date.current,
       latitude:        -33.93,

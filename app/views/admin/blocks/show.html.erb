@@ -146,7 +146,7 @@
                 <% @unassigned_subscriptions.each do |sub| %>
                   <option value="<%= sub.id %>">
                     <%= sub.user.first_name %> <%= sub.user.last_name %>
-                    — <%= sub.suburb %> (<%= sub.plan %>, <%= sub.status %>)
+                    — <%= sub.suburb&.name %> (<%= sub.plan %>, <%= sub.status %>)
                   </option>
                 <% end %>
               </select>

@@ -64,9 +64,9 @@
                         label: "Street address" %>
           </div>
           <br>
-          <%= f.input :suburb,
-                      as: :select,
-                      collection: Subscription.SUBURBS,
+          <%= f.association :suburb,
+                      collection: Suburb.active.order(:name),
+                      label_method: :name,
                       prompt: "Select a suburb" %>
           <%= f.input :access_code, label: "Access code", hint: "Gate code or special access instructions" %>
           <%= f.button :submit, "Save address", class: "tiny-yellow-btn mt-2" %>
