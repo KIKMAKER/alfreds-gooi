@@ -230,7 +230,14 @@ class Subscription < ApplicationRecord
   end
 
   def self.active_subs_for(day)
-    all.where(collection_day: day).includes(:collections).order(:collection_order)
+    # Despite the name, this used to match on collection_day alone — any status.
+    # That was harmless while every subscription with a collection_day was already
+    # active-or-about-to-be, but the suburb launch mechanic introduced long-lived
+    # `pending` subscriptions with collection_day already set (paid, deferred until
+    # the suburb goes live). Without the status filter, a deferred subscription
+    # would show up on the driver's daily list (today_notes) on its collection day
+    # weeks before the suburb actually launches.
+    active.where(collection_day: day).includes(:collections).order(:collection_order)
   end
 
   def self.count_skip_subs_for(day)

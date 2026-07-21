@@ -120,4 +120,20 @@ class SuburbLaunchActivationTest < ActiveSupport::TestCase
 
     assert unpaid_sub.reload.pending?
   end
+
+  test "active_subs_for excludes a deferred (pending, paid) subscription on its collection day" do
+    suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
+    deferred_sub = build_paid_pending_subscription(suburb)
+    deferred_sub.activate_subscription # stays pending — suburb is still waitlist
+
+    assert_not_includes Subscription.active_subs_for("Tuesday"), deferred_sub
+  end
+
+  test "active_subs_for includes an active subscription on its collection day" do
+    suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+    user = User.create!(first_name: "Active", last_name: "Test", email: "launch_active_#{SecureRandom.hex(4)}@example.com", phone_number: "+2783#{rand(1_000_000..9_999_999)}", password: "password")
+    sub = Subscription.create!(user: user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test Street", status: :active, collection_day: "Tuesday")
+
+    assert_includes Subscription.active_subs_for("Tuesday"), sub
+  end
 end
