@@ -1,15 +1,30 @@
 <%= simple_form_for [:admin, @suburb] do |f| %>
   <%= f.input :name, placeholder: "e.g. Woodstock" %>
 
+  <%
+    # A brand-new suburb can still be created directly as any status (e.g. Active for a
+    # no-launch case like splitting a suburb for day-routing). Once a suburb is persisted,
+    # waitlist/active are only reachable via the guarded Start Pre-Launch / We're Live
+    # actions, not this dropdown — except the suburb's own current status always stays
+    # selectable so an unrelated edit (e.g. renaming) doesn't silently revert it.
+    status_options = if @suburb.persisted?
+      (Suburb.statuses.keys - %w[waitlist active]) | [@suburb.status]
+    else
+      Suburb.statuses.keys
+    end
+  %>
   <%= f.input :status,
         as: :select,
-        collection: Suburb.statuses.keys.map { |s| [s.titleize, s] },
+        collection: status_options.map { |s| [s.titleize, s] },
         prompt: false %>
 
   <%= f.input :collection_day,
         as: :select,
         collection: Suburb.collection_days.keys.map { |d| [d, d] },
         include_blank: "None yet" %>
+
+  <%= f.input :launch_date, as: :date, html5: true,
+        hint: "Date service goes live. Required before Start Pre-Launch can open the waitlist." %>
 
   <%= f.button :submit, class: "small-yellow-btn" %>
 <% end %>

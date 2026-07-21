@@ -8,7 +8,7 @@ class SubscriptionSuburbsTest < ActiveSupport::TestCase
   test "SUBURBS reflects active Suburb records" do
     Suburb.destroy_all
     Suburb.create!(name: "Test Suburb", status: :active, collection_day: "Monday")
-    Suburb.create!(name: "Other Suburb", status: :waitlist)
+    Suburb.create!(name: "Other Suburb", status: :waitlist, launch_date: Date.tomorrow)
 
     assert_equal ["Test Suburb"], Subscription.SUBURBS
   end
@@ -29,7 +29,7 @@ class SubscriptionSuburbsTest < ActiveSupport::TestCase
   end
 
   test "set_collection_day leaves collection_day nil and logs a warning when the suburb has none" do
-    suburb = Suburb.create!(name: "No Day Suburb", status: :waitlist)
+    suburb = Suburb.create!(name: "No Day Suburb", status: :waitlist, launch_date: Date.tomorrow)
     user = User.create!(first_name: "Test", last_name: "User", email: "sub_day_test2@example.com", phone_number: "+27831112226", password: "password")
 
     sub = Subscription.new(user: user, plan: "Standard", duration: 1, suburb: suburb, street_address: "1 Test Street")

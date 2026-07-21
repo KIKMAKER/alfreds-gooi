@@ -11,6 +11,7 @@
         <th>Name</th>
         <th>Status</th>
         <th>Collection Day</th>
+        <th>Launch Date</th>
         <th></th>
       </tr>
     </thead>
@@ -20,9 +21,18 @@
           <td><%= suburb.name %></td>
           <td><%= suburb.status.titleize %></td>
           <td><%= suburb.collection_day || "—" %></td>
+          <td><%= suburb.launch_date&.strftime("%-d %b %Y") || "—" %></td>
           <td>
             <%= link_to "Edit", edit_admin_suburb_path(suburb) %>
             <%= link_to "Delete", admin_suburb_path(suburb), data: { turbo_method: :delete, turbo_confirm: "Delete #{suburb.name}?" } %>
+            <% if suburb.launch_date.present? && !suburb.active? && !suburb.waitlist? %>
+              <%= link_to "Start Pre-Launch", start_launch_admin_suburb_path(suburb),
+                    data: { turbo_method: :post, turbo_confirm: "Open #{suburb.name} for pre-launch signups?" } %>
+            <% end %>
+            <% if suburb.waitlist? %>
+              <%= link_to "We're Live", go_live_admin_suburb_path(suburb),
+                    data: { turbo_method: :post, turbo_confirm: "Go live in #{suburb.name}? This closes the launch offer." } %>
+            <% end %>
           </td>
         </tr>
       <% end %>

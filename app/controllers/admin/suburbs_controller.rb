@@ -1,5 +1,5 @@
 class Admin::SuburbsController < Admin::BaseController
-  before_action :set_suburb, only: [:edit, :update, :destroy]
+  before_action :set_suburb, only: [:edit, :update, :destroy, :start_launch, :go_live]
 
   def index
     @suburbs = Suburb.order(:name)
@@ -38,6 +38,22 @@ class Admin::SuburbsController < Admin::BaseController
     end
   end
 
+  def start_launch
+    if @suburb.start_launch!
+      redirect_to admin_suburbs_path, notice: "#{@suburb.name} is now on the pre-launch waitlist."
+    else
+      redirect_to admin_suburbs_path, alert: "Set a launch date before starting pre-launch."
+    end
+  end
+
+  def go_live
+    if @suburb.go_live!
+      redirect_to admin_suburbs_path, notice: "#{@suburb.name} is live!"
+    else
+      redirect_to admin_suburbs_path, alert: "#{@suburb.name} isn't on the pre-launch waitlist."
+    end
+  end
+
   private
 
   def set_suburb
@@ -45,6 +61,6 @@ class Admin::SuburbsController < Admin::BaseController
   end
 
   def suburb_params
-    params.require(:suburb).permit(:name, :status, :collection_day)
+    params.require(:suburb).permit(:name, :status, :collection_day, :launch_date)
   end
 end
