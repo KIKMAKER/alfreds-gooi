@@ -43,6 +43,7 @@ xl_sub_products = [
   { title: "XL 1 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for one calendar month",             price: 300,  billing_type: "invoice_only" },
   { title: "XL 3 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for three calendar months (R270pm)", price: 810,  billing_type: "invoice_only" },
   { title: "XL 6 month subscription",      description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (R240pm)",   price: 1440, billing_type: "invoice_only" },
+  { title: "XL 6 month OG subscription",   description: "Weekly collection of up to 20L of your kitchen waste for six calendar months (OG rate)",   price: 960,  billing_type: "invoice_only" },
   { title: "Referral discount XL 1 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -45,  billing_type: "invoice_only" },
   { title: "Referral discount XL 3 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -122, billing_type: "invoice_only" },
   { title: "Referral discount XL 6 month", description: "You get 15% off and your friend gets a discount on their next subscription too!",         price: -216, billing_type: "invoice_only" }

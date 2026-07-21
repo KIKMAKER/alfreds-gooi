@@ -1,0 +1,146 @@
+// ─── Suburb launch landing page ────────────────────────────────────────────────
+// Public page for a suburb.waitlist? suburb — lets people lock in the OG rate
+// before launch_date. Pricing cards reuse .month-card/.standard-months-container
+// from _home.scss as-is; only the hero and CTA wrapper get page-specific styling.
+
+.suburb-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-8;
+  background: $dark-green;
+  padding: $space-16 5% $space-20;
+  overflow: hidden;
+
+  &__text {
+    flex: 1 1 420px;
+    color: white;
+    z-index: 1;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    font-size: $fs-hero;
+    line-height: 1.15;
+    margin-bottom: $space-4;
+  }
+
+  &__subtitle {
+    font-size: $fs-md;
+    color: rgba(white, 0.9);
+    line-height: 1.6;
+    max-width: 32rem;
+  }
+
+  &__image-wrap {
+    position: relative;
+    flex: 1 1 380px;
+    z-index: 1;
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+    display: block;
+  }
+
+  &__overlay-card {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1rem;
+    max-width: 15rem;
+    background: white;
+    color: $dark-green;
+    border-radius: $radius-md;
+    box-shadow: $shadow-base;
+    padding: $space-4 $space-5;
+    font-size: $fs-sm;
+    line-height: 1.5;
+
+    strong {
+      color: $color-accent;
+    }
+
+    @media (max-width: 700px) {
+      position: static;
+      margin-top: $space-4;
+      max-width: none;
+    }
+  }
+
+  .wave-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 0;
+  }
+
+  .waves {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-10 5% $space-16;
+    text-align: center;
+
+    &__title {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+
+    &__subtitle {
+      margin: 0 auto;
+    }
+  }
+}
+
+.suburb-pricing {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: $space-14 5% $space-10;
+  text-align: center;
+
+  &__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: $fs-xs;
+    font-weight: 600;
+    color: $color-accent;
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-display;
+    margin-bottom: $space-8;
+  }
+
+  &__note {
+    margin-top: $space-6;
+    color: $color-text-body;
+    font-size: $fs-base;
+  }
+
+  &__link a {
+    color: $dark-green;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
+
+.suburb-cta-section {
+  background: $color-surface-alt;
+  padding: $space-14 0;
+
+  &__overlay {
+    // Reuses .other-option-card--commercial's own background/border styling —
+    // this wrapper just centers a single card where _home.scss expects a row.
+  }
+}

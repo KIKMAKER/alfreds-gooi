@@ -57,7 +57,9 @@ class Admin::SuburbsController < Admin::BaseController
   private
 
   def set_suburb
-    @suburb = Suburb.find(params[:id])
+    # Suburb#to_param now returns the slug, so admin_suburb_path(@suburb) et al.
+    # generate a slug — fall back to a numeric id for any old/bookmarked link.
+    @suburb = Suburb.find_by(slug: params[:id]) || Suburb.find(params[:id])
   end
 
   def suburb_params

@@ -8,6 +8,8 @@ class SignupsController < ApplicationController
     @discount_code = params[:discount_code]
     @referral_code = params[:referral]
     @buckets_per_collection = params[:buckets_per_collection]
+    @suburb_id = params[:suburb_id]
+    @og = params[:og]
 
     # Store subscription details in session
     session[:signup_plan] = @plan
@@ -15,6 +17,10 @@ class SignupsController < ApplicationController
     session[:signup_discount_code] = @discount_code
     session[:signup_referral_code] = @referral_code
     session[:signup_buckets_per_collection] = @buckets_per_collection
+    # Carried through from a suburb launch page (see SuburbsController) — locks the
+    # suburb on step 2 and marks the resulting User as OG (grandfathered rate).
+    session[:signup_suburb_id] = @suburb_id
+    session[:signup_og] = @og
 
     @once_off_price = Product.find_by(title: "Once-off Collection")&.price if @plan == 'once_off'
     @user = User.new
@@ -62,6 +68,7 @@ class SignupsController < ApplicationController
 
     @once_off_price = Product.find_by(title: "Once-off Collection")&.price if @plan == 'once_off'
     @subscription = Subscription.new
+    @locked_suburb = Suburb.find_by(id: session[:signup_suburb_id])
   end
 
   # Step 2: Create user + subscription
@@ -73,13 +80,21 @@ class SignupsController < ApplicationController
       email: session[:signup_email],
       phone_number: session[:signup_phone_number],
       password: session[:signup_password],
-      password_confirmation: session[:signup_password]
+      password_confirmation: session[:signup_password],
+      # Set when this signup started from a suburb launch page — grandfathers the
+      # OG rate onto every future invoice, not just this one (see InvoiceBuilder call below).
+      og: ActiveModel::Type::Boolean.new.cast(session[:signup_og])
     )
 
     # Use discount/referral from form if provided, otherwise from session
     discount_code = params[:discount_code].presence || session[:signup_discount_code]
     referral_code = (params[:referral_code].presence || session[:signup_referral_code])&.strip&.upcase
     @user.referred_by_code = referral_code if referral_code.present?
+
+    # A suburb carried through from a launch page overrides whatever step 2's form
+    # posted for suburb_id — it's rendered as a locked field there, not a free pick,
+    # so the server is the source of truth rather than trusting the client.
+    locked_suburb_id = session[:signup_suburb_id].presence
 
     # Build subscription with address details
     @user.subscriptions.build(subscription_params.merge(
@@ -89,7 +104,7 @@ class SignupsController < ApplicationController
       referral_code: referral_code,
       buckets_per_collection: session[:signup_buckets_per_collection],
       is_paused: true
-    ))
+    ).tap { |attrs| attrs[:suburb_id] = locked_suburb_id if locked_suburb_id })
 
     if @user.save
       # Clear session data
@@ -103,7 +118,7 @@ class SignupsController < ApplicationController
 
       InvoiceBuilder.new(
         subscription: subscription,
-        og: nil,
+        og: @user.og?,
         is_new: true,
         referee: referee,
         auto_approve: true
@@ -125,6 +140,7 @@ class SignupsController < ApplicationController
       @discount_code = session[:signup_discount_code]
       @referral_code = session[:signup_referral_code]
       @buckets_per_collection = session[:signup_buckets_per_collection]
+      @locked_suburb = Suburb.find_by(id: session[:signup_suburb_id])
 
       @subscription = @user.subscriptions.first
 
@@ -148,6 +164,8 @@ class SignupsController < ApplicationController
     session.delete(:signup_discount_code)
     session.delete(:signup_referral_code)
     session.delete(:signup_buckets_per_collection)
+    session.delete(:signup_suburb_id)
+    session.delete(:signup_og)
     session.delete(:signup_first_name)
     session.delete(:signup_last_name)
     session.delete(:signup_email)

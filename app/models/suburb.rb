@@ -63,6 +63,11 @@ class Suburb < ApplicationRecord
     true
   end
 
+  # So suburb_path(@suburb) and friends emit the slug, not the id.
+  def to_param
+    slug
+  end
+
   private
 
   def generate_slug

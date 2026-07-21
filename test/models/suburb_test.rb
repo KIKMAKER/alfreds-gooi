@@ -12,6 +12,11 @@ class SuburbTest < ActiveSupport::TestCase
     assert_equal "sea-point-1", suburb.slug
   end
 
+  test "to_param returns the slug" do
+    suburb = Suburb.create!(name: "Sea Point", collection_day: "Wednesday")
+    assert_equal suburb.slug, suburb.to_param
+  end
+
   test "defaults to active status" do
     suburb = Suburb.create!(name: "Woodstock", collection_day: "Monday")
     assert suburb.active?

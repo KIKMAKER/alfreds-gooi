@@ -1,0 +1,101 @@
+<%# Public launch/waitlist landing page for a suburb.waitlist? suburb — lets people
+    lock in the OG rate before the suburb's launch_date. No auth required. %>
+
+<div class="suburb-hero">
+  <div class="suburb-hero__text">
+    <h1 class="suburb-hero__title">Your kitchen scraps deserve a second life.</h1>
+    <p class="suburb-hero__subtitle">
+      Gooi makes composting your food waste as easy as throwing it in the bin — weekly
+      doorstep collection, no mess, no effort.
+    </p>
+    <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi mt-3" %>
+  </div>
+
+  <div class="suburb-hero__image-wrap">
+    <%= image_tag "suburb_launch_hero.jpg", alt: "Gooi kitchen scrap collection", class: "suburb-hero__image" %>
+    <div class="suburb-hero__overlay-card">
+      Coming to <strong><%= @suburb.name %></strong>, lock in a discount rate before
+      <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
+    </div>
+  </div>
+
+  <%= raw %(
+        <div class="wave-container">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="suburb-gentle-wave"
+                d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <g class="parallax">
+              <use href="#suburb-gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+            </g>
+          </svg>
+        </div>
+      ) %>
+</div>
+
+<section id="pricing" class="suburb-pricing">
+  <p class="suburb-pricing__eyebrow">Locked-in launch rate</p>
+  <h2 class="suburb-pricing__title">Sign up early, save for the life of your subscription</h2>
+
+  <div class="standard-months-container">
+    <% if @standard_og %>
+      <div class="month-card popular">
+        <h4>Most popular</h4>
+        <h3>Standard</h3>
+        <p class="pricing-text">
+          <strong>R<%= number_with_precision(@standard_og.price / 6.0, precision: 0) %></strong> per month
+        </p>
+        <p class="pricing-text">
+          <strong>Total:</strong> R<%= number_with_precision(@standard_og.price, precision: 0) %>
+        </p>
+        <div class="sign-up-btn">
+          <%= link_to "Select", new_account_signup_path(plan: "Standard", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @xl_og %>
+      <div class="month-card">
+        <h3>XL</h3>
+        <p class="pricing-text">
+          <strong>R<%= number_with_precision(@xl_og.price / 6.0, precision: 0) %></strong> per month
+        </p>
+        <p class="pricing-text">
+          <strong>Total:</strong> R<%= number_with_precision(@xl_og.price, precision: 0) %>
+        </p>
+        <div class="sign-up-btn">
+          <%= link_to "Select", new_account_signup_path(plan: "XL", duration: "6", suburb_id: @suburb.id, og: true), class: "link-title-light" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <p class="suburb-pricing__note">
+    Pricing goes up to R180/month once <%= @suburb.name %> launches — lock in this rate now.
+  </p>
+  <p class="suburb-pricing__link">
+    <%= link_to "See all plans and pricing", root_path(anchor: "pricing") %>
+  </p>
+</section>
+
+<section class="suburb-cta-section">
+  <div class="suburb-cta-section__overlay">
+    <div class="other-options-section">
+      <div class="other-options-row">
+        <div class="other-option-card other-option-card--commercial">
+          <h3>Commercial Collection</h3>
+          <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
+          <ul>
+            <li>Weekly or multiple collections per week</li>
+            <li>Volume-based pricing (45L buckets)</li>
+            <li>Flexible contract lengths (3, 6, or 12 months)</li>
+          </ul>
+          <div class="mt-auto pt-3">
+            <%= link_to "Get Started", new_commercial_inquiry_account_path, class: "btn-gooi" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

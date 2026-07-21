@@ -360,6 +360,9 @@ Rails.application.routes.draw do
     get "survey/thanks", to: "block_surveys#thanks", as: :survey_thanks
   end
 
+  # suburb launch landing pages (public, waitlist? suburbs only)
+  resources :suburbs, only: [:show], param: :slug
+
 
 
   # Block WordPress scanning bots (short-circuits before Rails controller stack)

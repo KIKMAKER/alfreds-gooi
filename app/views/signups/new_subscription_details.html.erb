@@ -52,17 +52,25 @@
       <h3 class="mb-3">Pick Up Location</h3>
 
       <div class="mb-3">
-        <%= f.label :suburb_id, "Suburb", class: "form-label" %>
-        <%= f.select :suburb_id,
-            options_for_select(Suburb.active.order(:name).pluck(:name, :id), @subscription&.suburb_id),
-            { prompt: "Select a suburb" },
-            { required: true,
-              class: "form-select",
-              data: {
-                form_abandonment_target: "field",
-                action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur change->once-off-date#suburbChanged",
-                once_off_date_target: "suburbSelect"
-              } } %>
+        <% if @locked_suburb %>
+          <%# Carried through from a suburb launch page — locked, not re-pickable, so the
+              server-side override in SignupsController#create_subscription can't be bypassed. %>
+          <label class="form-label">Suburb</label>
+          <p class="form-control-plaintext"><%= @locked_suburb.name %></p>
+          <%= f.hidden_field :suburb_id, value: @locked_suburb.id, data: { once_off_date_target: "suburbSelect" } %>
+        <% else %>
+          <%= f.label :suburb_id, "Suburb", class: "form-label" %>
+          <%= f.select :suburb_id,
+              options_for_select(Suburb.active.order(:name).pluck(:name, :id), @subscription&.suburb_id),
+              { prompt: "Select a suburb" },
+              { required: true,
+                class: "form-select",
+                data: {
+                  form_abandonment_target: "field",
+                  action: "focus->form-abandonment#fieldFocus blur->form-abandonment#fieldBlur change->once-off-date#suburbChanged",
+                  once_off_date_target: "suburbSelect"
+                } } %>
+        <% end %>
       </div>
 
       <% if @plan == 'once_off' %>
