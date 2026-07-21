@@ -72,27 +72,9 @@
 
     <% when "waitlist" %>
 
-      <div class="row g-3 mb-4">
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body">
-              <h6 class="text-muted text-uppercase small mb-1">Locked in (paid)</h6>
-              <p class="mb-0"><strong><%= @paid_pending_subscriptions.count %></strong> signups will activate automatically once this suburb goes live.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body">
-              <h6 class="text-muted text-uppercase small mb-1">Started, not yet paid</h6>
-              <p class="mb-0"><strong><%= @unpaid_pending_subscriptions.count %></strong> signups still need to complete payment.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="mb-5">
         <h5>Locked-in signups (<%= @paid_pending_subscriptions.count %>)</h5>
+        <p class="text-muted small">Paid — will activate automatically once this suburb goes live.</p>
         <% if @paid_pending_subscriptions.any? %>
           <table class="table table-sm">
             <thead>
@@ -121,6 +103,7 @@
 
       <div class="mb-3">
         <h5>Unpaid signups (<%= @unpaid_pending_subscriptions.count %>)</h5>
+        <p class="text-muted small">Started signup but haven't completed payment yet.</p>
         <% if @unpaid_pending_subscriptions.any? %>
           <table class="table table-sm">
             <thead>
