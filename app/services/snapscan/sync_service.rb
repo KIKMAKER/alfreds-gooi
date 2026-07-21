@@ -34,8 +34,7 @@ module Snapscan
             invoice.update!(paid: true)
             subscription = invoice.subscription
             if subscription&.status&.to_sym == :pending
-              subscription.activate_subscription
-              CreateFirstCollectionJob.perform_later(subscription)
+              CreateFirstCollectionJob.perform_later(subscription) if subscription.activate_subscription
             end
           end
         end

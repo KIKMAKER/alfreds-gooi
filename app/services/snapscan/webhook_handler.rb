@@ -62,7 +62,8 @@ module Snapscan
         @invoice.update!(paid: true)
 
         @user.subscriptions.where(status: :pending).order(created_at: :asc).each do |subscription|
-          subscription.activate_subscription
+          next unless subscription.activate_subscription
+
           first_collection = CreateFirstCollectionJob.perform_now(subscription)
           add_order_items_to_collection(first_collection)
         end

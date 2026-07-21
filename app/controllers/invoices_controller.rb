@@ -125,8 +125,7 @@ class InvoicesController < ApplicationController
       unless @invoice.for_order?
         subscription = @invoice.subscription
         if subscription&.status&.to_sym == :pending
-          subscription.activate_subscription
-          CreateFirstCollectionJob.perform_now(subscription)
+          CreateFirstCollectionJob.perform_now(subscription) if subscription.activate_subscription
         end
       end
     end

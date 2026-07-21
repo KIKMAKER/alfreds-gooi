@@ -48,7 +48,19 @@ class Suburb < ApplicationRecord
   # otherwise raise RecordInvalid here instead of failing the transition cleanly.
   def go_live!
     return false unless waitlist?
-    update(status: :active)
+    return false unless update(status: :active)
+
+    # Subscriptions paid for while this suburb was still on the waitlist stayed
+    # pending with a pre-computed near-launch start_date (see
+    # Subscription#activate_subscription/#deferred_launch_start_date) — finalize
+    # them now rather than waiting on a background job (there are none in prod).
+    # Their first collection couldn't be created at payment time (the suburb
+    # wasn't live yet), so it's created here instead, now that it is.
+    subscriptions.pending.joins(:invoices).merge(Invoice.paid).distinct.find_each do |subscription|
+      subscription.finalize_deferred_activation!
+      CreateFirstCollectionJob.perform_now(subscription)
+    end
+    true
   end
 
   private

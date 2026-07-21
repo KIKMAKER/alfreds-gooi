@@ -442,6 +442,21 @@ class Subscription < ApplicationRecord
     date + delta
   end
 
+  def normal_activation_start_date
+    once_off? && start_date.present? ? start_date : suggested_start_date
+  end
+
+  # launch_date - 1.week, aligned to the suburb's collection weekday, clamped forward
+  # so it's never earlier than what a normal signup would compute — covers paying on
+  # or after the actual launch_date while the suburb hasn't been manually flipped live
+  # yet (Suburb#waitlist? deliberately doesn't auto-close on the date itself).
+  def deferred_launch_start_date
+    earliest = suburb.launch_date - 1.week
+    ruby_wday = normalize_to_ruby_wday(collection_day)
+    aligned_earliest = ruby_wday ? align_to_wday(earliest, ruby_wday) : earliest
+    [aligned_earliest, normal_activation_start_date].max
+  end
+
   def delete_invoices
     invoices.each { |inv| inv.invoice_items.delete_all }
     invoices.delete_all
@@ -518,13 +533,22 @@ class Subscription < ApplicationRecord
     user.update_column(:referred_by_code, referral_code)
   end
 
+  # Returns true if the subscription actually went active, false if it was deferred
+  # (waitlist suburb) — callers use this to decide whether to run
+  # CreateFirstCollectionJob now. A deferred subscription's first collection must
+  # wait for Suburb#go_live!, not fire on payment, or a driver's route would gain a
+  # stop for a suburb that isn't being serviced yet.
   def activate_subscription
-    resolved_start = once_off? && start_date.present? ? start_date : suggested_start_date
-    update!(
-      status: :active,
-      start_date: resolved_start,
-      is_paused: false
-    )
+    # A waitlist suburb (locked-in-rate pre-launch signup) stays pending until the
+    # suburb actually goes live — Suburb#go_live! finds paid pending subs like this
+    # one and calls finalize_deferred_activation! at that point. See
+    # deferred_launch_start_date for why start_date still gets set now.
+    deferred = suburb&.waitlist?
+    resolved_start = deferred ? deferred_launch_start_date : normal_activation_start_date
+
+    activation_attrs = { start_date: resolved_start, is_paused: false }
+    activation_attrs[:status] = :active unless deferred
+    update!(activation_attrs)
 
     effective_referral_code = referral_code.presence || user.referred_by_code
     if effective_referral_code.present?
@@ -544,8 +568,21 @@ class Subscription < ApplicationRecord
 
     # Activate any satellite subscriptions so they also start generating collections
     satellite_subscriptions.where(status: :pending).each do |sat|
-      sat.update!(status: :active, start_date: resolved_start, is_paused: false)
+      sat_attrs = { start_date: resolved_start, is_paused: false }
+      sat_attrs[:status] = :active unless deferred
+      sat.update!(sat_attrs)
     end
+
+    !deferred
+  end
+
+  # Called by Suburb#go_live! for a subscription whose payment already ran
+  # activate_subscription while its suburb was still on the pre-launch waitlist.
+  # start_date was already computed and clamped back then — this only flips
+  # status, it never recomputes dates against "today" (go-live day may be long
+  # after the original payment date).
+  def finalize_deferred_activation!
+    update!(status: :active)
   end
 
 
