@@ -48,6 +48,12 @@
 <div class="page-container">
   <%= render "pages/home/hero" %>
 
+  <%= render "shared/impact_stats",
+        title: "Our impact so far",
+        total_kg: @total_kg,
+        kg_this_week: @kg_this_week,
+        household_count: @household_count %>
+
   <!-- Pricing -->
   <section data-controller="pricing" class="pricing-section" id="pricing">
     <p class="text-uppercase fw-semibold mb-1 mt-5" style="color: #FBB718; font-size: 0.75rem; letter-spacing: 0.1em;">Weekly collection service</p>

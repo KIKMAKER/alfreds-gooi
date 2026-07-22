@@ -11,19 +11,31 @@
     ground every claim in a specific number, call people "neighbours"). %>
 <%# locals: (title:, total_kg:, kg_this_week:, household_count:, footnote: nil) %>
 <section class="impact-summary">
-  <div class="impact-summary__inner">
+  <div class="impact-summary__inner" data-controller="counter">
     <h2 class="impact-summary__title"><%= title %></h2>
     <div class="impact-summary__grid">
       <div class="impact-summary__item">
-        <span class="impact-summary__number">~<%= number_with_delimiter(total_kg) %>kg</span>
+        <span class="impact-summary__number"
+              data-counter-target="number"
+              data-counter-value="<%= total_kg %>"
+              data-counter-prefix="~"
+              data-counter-suffix="kg">~<%= number_with_delimiter(total_kg) %>kg</span>
         <span class="impact-summary__desc">diverted from landfill in total</span>
       </div>
       <div class="impact-summary__item">
-        <span class="impact-summary__number">~<%= number_with_delimiter(kg_this_week) %>kg</span>
+        <span class="impact-summary__number"
+              data-counter-target="number"
+              data-counter-value="<%= kg_this_week %>"
+              data-counter-prefix="~"
+              data-counter-suffix="kg">~<%= number_with_delimiter(kg_this_week) %>kg</span>
         <span class="impact-summary__desc">diverted this week</span>
       </div>
       <div class="impact-summary__item">
-        <span class="impact-summary__number"><%= household_count %></span>
+        <span class="impact-summary__number"
+              data-counter-target="number"
+              data-counter-value="<%= household_count %>">
+          <%= household_count %>
+        </span>
         <span class="impact-summary__desc"><%= "neighbour".pluralize(household_count) %> gooi-ing weekly</span>
       </div>
     </div>

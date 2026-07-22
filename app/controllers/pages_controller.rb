@@ -19,6 +19,8 @@ class PagesController < ApplicationController
     @amt = (@discount_amount || 0.0).to_f
     @referral_code = params[:referral]
     @total_kg = DropOffSite.sum(:total_weight_kg).round
+    @kg_this_week = DropOffEvent.where(date: Date.current.beginning_of_week..Date.current.end_of_week).sum(:weight_kg).round
+    @household_count = Subscription.active.count
   end
 
   def today
