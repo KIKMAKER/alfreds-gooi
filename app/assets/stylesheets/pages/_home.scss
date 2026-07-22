@@ -50,14 +50,22 @@
 }
 
 .btn-gooi-outline {
-  border: 1px solid #333;
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 8px;
-}
+  border: 1.5px solid $dark-green;
+  color: $dark-green;
+  background: white;
+  padding: $space-2 $space-4;
+  border-radius: $radius-pill;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
 
-.btn-gooi-outline:hover {
-  background: #f4f4f4;
+  &:hover {
+    background: rgba($dark-green, 0.08);
+  }
+
+  &.active {
+    background: $dark-green;
+    color: white;
+  }
 }
 
 
@@ -89,27 +97,24 @@
 }
 
 .map-controls {
-  padding: 0.7rem;
-  background-color: #ffffffc2;
+  padding: $space-3;
+  background-color: rgba(white, 0.9);
+  border-radius: $radius-base;
 
   .filter-buttons {
     display: flex;
-    gap: 8px;
+    gap: $space-2;
     flex: 1 1 220px;
+    flex-wrap: wrap;
     justify-content: flex-start;
     min-width: 200px;
   }
 
   .btn-gooi-outline {
     font-size: $fs-xs;
-    /* text size */
     line-height: 1.2;
-    /* tighter height */
-    padding: 4px 8px;
-    /* smaller pill */
-    border-radius: 6px;
-    /* a bit tighter corners */
-    margin: 0px
+    padding: $space-1 $space-3;
+    margin: 0;
   }
 }
 

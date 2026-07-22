@@ -18,7 +18,10 @@
 }
 
 .faq-item {
-  border-bottom: 1px solid $color-border;
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-base;
+  margin-bottom: $space-4;
 
   &__question {
     width: 100%;
@@ -30,16 +33,25 @@
     border: none;
     text-align: left;
     font-family: $headers-font;
+    font-weight: 700;
     color: $dark-green;
     font-size: $fs-lg;
-    padding: $space-5 0;
+    padding: $space-5 $space-6;
     cursor: pointer;
   }
 
   &__icon {
     flex-shrink: 0;
-    font-size: $fs-xl;
-    color: $color-accent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: $radius-full;
+    background: $dark-yellow;
+    color: $dark-green;
+    font-size: $fs-base;
+    font-weight: 700;
     transition: transform 0.2s ease;
   }
 
@@ -52,7 +64,7 @@
       color: $color-text-body;
       font-size: $fs-base;
       line-height: 1.6;
-      padding-bottom: $space-5;
+      padding: 0 $space-6 $space-5;
       margin: 0;
     }
   }

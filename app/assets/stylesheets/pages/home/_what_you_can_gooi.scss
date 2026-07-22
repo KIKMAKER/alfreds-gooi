@@ -1,41 +1,51 @@
 // ─── Phase 2 homepage overhaul, section 5: what you can gooi ───────────────
+// Dark-green wavy band (matches the reference mockup) — different from the
+// impact-strip/B2B band texture on purpose: this one's a flat $dark-green
+// fill with two cards floating on it, not the header-gooi-3.png photo texture.
 
 .what-you-can-gooi {
-  padding: $space-20 5%;
+  position: relative;
+  overflow: hidden;
+  background: $dark-green;
+  padding: $space-16 5%;
 
   &__inner {
     max-width: 1000px;
     margin: 0 auto;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   &__title {
     font-family: $headers-font;
-    color: $dark-green;
+    color: white;
     font-size: $fs-hero;
     margin-bottom: $space-3;
   }
 
   &__subtitle {
-    color: $color-text-body;
+    color: rgba(white, 0.85);
     font-size: $fs-md;
-    margin-bottom: $space-14;
+    margin-bottom: $space-12;
   }
 
   &__columns {
     display: flex;
     flex-wrap: wrap;
-    gap: $space-8;
+    justify-content: center;
+    gap: $space-6;
   }
 
   &__column {
     flex: 1 1 320px;
+    max-width: 380px;
     border-radius: $radius-xl;
     padding: $space-8;
     text-align: left;
 
     &--yes {
-      background: $dark-green;
+      background: $medium-green;
       color: white;
     }
 
@@ -49,36 +59,40 @@
   &__column-title {
     font-family: $headers-font;
     font-size: $fs-xl;
-    margin-bottom: $space-6;
+    margin-bottom: $space-5;
+
+    .what-you-can-gooi__column--yes & {
+      color: $color-accent;
+    }
   }
 
   &__list {
+    list-style: none;
     margin: 0;
+    padding: 0;
 
-    div {
-      display: flex;
-      align-items: baseline;
-      gap: $space-2;
-      padding: $space-2 0;
-      border-bottom: 1px solid rgba($dark-green, 0.1);
-
-      .what-you-can-gooi__column--yes & {
-        border-bottom-color: rgba(white, 0.15);
-      }
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    dt {
+    li {
+      position: relative;
+      padding: $space-2 0 $space-2 $space-5;
       font-weight: 600;
-    }
+      font-size: $fs-base;
 
-    dd {
-      margin: 0;
-      font-size: $fs-sm;
-      opacity: 0.75;
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.85em;
+        width: 6px;
+        height: 6px;
+        border-radius: $radius-full;
+        background: $color-accent;
+      }
+
+      span {
+        font-weight: 400;
+        opacity: 0.75;
+        font-size: $fs-sm;
+      }
     }
   }
 
@@ -87,7 +101,7 @@
     font-size: $fs-base;
 
     a {
-      color: $dark-green;
+      color: white;
       font-weight: 600;
       text-decoration: underline;
     }

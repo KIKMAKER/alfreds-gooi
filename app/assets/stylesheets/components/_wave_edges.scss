@@ -1,0 +1,30 @@
+// ─── Shared organic wave-edge top/bottom treatment ─────────────────────────
+// For dark-green textured bands that should read as a floating shape rather
+// than a hard rectangle (impact strip, what-you-can-gooi, B2B band). The
+// including section needs `position: relative; overflow: hidden;`.
+
+.wave-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3.75rem;
+  z-index: 0;
+
+  .waves {
+    width: 100%;
+    height: 100%;
+
+    use {
+      fill: $color-surface-cream;
+    }
+  }
+
+  &--top {
+    top: 0;
+    transform: scaleY(-1);
+  }
+
+  &--bottom {
+    bottom: 0;
+  }
+}

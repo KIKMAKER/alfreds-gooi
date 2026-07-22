@@ -1,5 +1,28 @@
-// ─── Phase 2 homepage overhaul, section 8: waitlist "seed #N" nudge ────────
-// .interest-card itself is reused as-is from components/_card.scss.
+// ─── Phase 2 homepage overhaul, section 8: waitlist prompt + modal ─────────
+// .interest-card content markup inside the modal reuses form styling from
+// components/_card.scss where it still applies via shared class names.
+
+.waitlist-prompt {
+  text-align: center;
+  padding: $space-8 5%;
+
+  &__text {
+    color: $color-text-body;
+    font-size: $fs-base;
+    margin: 0;
+  }
+
+  &__link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: $dark-green;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+  }
+}
 
 .waitlist-seed-line {
   color: $color-accent;
@@ -7,4 +30,43 @@
   font-size: $fs-sm;
   margin: $space-1 0 $space-3;
   min-height: 1.2em;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba($dark-green, 0.5);
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+
+  &--open {
+    display: flex;
+  }
+
+  &__panel {
+    position: relative;
+    background: $color-surface-cream;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    padding: $space-8;
+    max-width: 32rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  &__close {
+    position: absolute;
+    top: $space-4;
+    right: $space-4;
+    background: none;
+    border: none;
+    font-size: $fs-2xl;
+    line-height: 1;
+    color: $color-text-body;
+    cursor: pointer;
+  }
 }

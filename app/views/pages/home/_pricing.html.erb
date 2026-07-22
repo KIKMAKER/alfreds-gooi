@@ -1,20 +1,17 @@
-<%# Phase 2 homepage overhaul, section 6: pricing.
-    Standard/XL toggle and all discount/referral-code price math are
-    unchanged from the previous inline version — only relocated, restyled,
-    and given a duration selector (Stimulus, defaults to 6 months: the 1-
-    and 3-month cards start with the `hide` class server-side, so this is
-    correct even before JS loads). "From R180/mo" anchor style is used for
-    the plain (no code) case per the brief's pricing decision — the
-    strikethrough only appears when a real discount/referral is active,
-    which is a genuine saving, not a fake anchor price. %>
-<section data-controller="pricing" class="pricing" id="pricing">
+<%# Phase 2 homepage overhaul, section 6: pricing (rebuilt per the reference
+    mockup — three side-by-side cards, each with its own 1/3/6-month
+    duration toggle, defaulting to 6 months server-side via the `hide`
+    class on the 1/3-month panels). Discount/referral-code math is
+    unchanged, just extracted into app/services/plan_pricing.rb so it
+    isn't tripled per duration. "From R180/mo" anchor style is used for
+    the plain (no code) case — the strikethrough only appears for a real
+    active discount/referral, which is a genuine saving, not a fake
+    anchor price. %>
+<section class="pricing" id="pricing">
   <div class="pricing__inner">
     <p class="pricing__eyebrow">Weekly collection service</p>
-    <h2 class="pricing__title">Choose your plan</h2>
-    <p class="pricing__subtitle">
-      Standard covers the average small household — up to two 5L bags a week.
-      Bigger family, or just a very avid juicer? XL fills a 25L bucket weekly.
-    </p>
+    <h2 class="pricing__title">Simple monthly plans</h2>
+    <p class="pricing__subtitle">Longer plans, lower price. Cancel anytime.</p>
 
     <% if @referral_code %>
       <div class="yellow-block">
@@ -35,293 +32,50 @@
       <% end %>
     <% end %>
 
-    <div class="toggle-subscription">
-      <h2>Subscription rates</h2>
-      <div class="toggle">
-        <h5 data-pricing-target="title">Standard</h5>
-        <div class="toggle-container">
-          <input type="checkbox" id="check" class="toggle d-none" data-action="click->pricing#toggle">
-          <label for="check" class="toggle-label"></label>
-        </div>
-        <h5>XL</h5>
-      </div>
+    <div class="pricing__cards">
+      <% [
+           { plan: "Standard", blurb: "Up to two 5L bags a week — perfect for the average home.", popular: false },
+           { plan: "XL", blurb: "A full 25L bucket weekly — for big families & avid juicers.", popular: true },
+         ].each do |card| %>
+        <div class="pricing-card <%= 'pricing-card--popular' if card[:popular] %>" data-controller="pricing-card">
+          <% if card[:popular] %><span class="pricing-card__badge">Most popular</span><% end %>
+          <h3 class="pricing-card__title"><%= card[:plan] %></h3>
 
-      <div class="duration-pills">
-        <button type="button" class="duration-pill" data-duration-pill data-duration="1" data-action="click->pricing#selectDuration">1 month</button>
-        <button type="button" class="duration-pill" data-duration-pill data-duration="3" data-action="click->pricing#selectDuration">3 months</button>
-        <button type="button" class="duration-pill duration-pill--active" data-duration-pill data-duration="6" data-action="click->pricing#selectDuration">6 months</button>
-      </div>
-    </div>
+          <% [1, 3, 6].each do |duration| %>
+            <% quote = PlanPricing.quote(plan: card[:plan], duration: duration, referral_code: @referral_code, discount_code: @discount_code, pct: @pct, amt: @amt) %>
+            <div class="pricing-card__panel <%= 'hide' unless duration == 6 %>" data-pricing-card-target="panel" data-duration="<%= duration %>">
+              <p class="pricing-card__price">
+                <% if quote.discounted? %>
+                  <s>R<%= number_with_precision(quote.original_per_month, precision: 0) %></s>
+                <% elsif duration == 6 %>
+                  From
+                <% end %>
+                R<%= number_with_precision(quote.per_month, precision: 0) %><span>/mo</span>
+              </p>
+              <p class="pricing-card__total">Total: R<%= number_with_precision(quote.total, precision: 0) %></p>
+              <p class="pricing-card__blurb"><%= card[:blurb] %></p>
+              <%= link_to "Choose #{card[:plan]}",
+                    new_account_signup_path(plan: card[:plan], duration: duration, discount_code: @discount_code, referral: @referral_code),
+                    class: "btn-gooi pricing-card__cta" %>
+            </div>
+          <% end %>
 
-    <% if @referral_code %>
-      <div class="standard-months-container" data-pricing-target="standard">
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text"><s>R260</s> <strong>R<%= number_with_precision(260 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R260</s> <strong>R<%= number_with_precision(260 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
+          <div class="pricing-card__pills">
+            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="1" data-action="click->pricing-card#select">1 mo</button>
+            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="3" data-action="click->pricing-card#select">3 mo</button>
+            <button type="button" class="duration-pill duration-pill--active" data-pricing-card-target="pill" data-duration="6" data-action="click->pricing-card#select">6 mo</button>
           </div>
         </div>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><s>R220</s> <strong>R<%= number_with_precision(220 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R660</s> <strong>R<%= number_with_precision(660 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card popular" data-duration="6">
-          <h4>Most popular</h4>
-          <h3>6 months</h3>
-          <p class="pricing-text"><s>R180</s> <strong>R<%= number_with_precision(180 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R1080</s> <strong>R<%= number_with_precision(1080 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
+      <% end %>
 
-      <div class="standard-months-container hide" data-pricing-target="extra">
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text"><s>R300</s> <strong>R<%= number_with_precision(300 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R300</s> <strong>R<%= number_with_precision(300 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><s>R270</s> <strong>R<%= number_with_precision(270 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R810</s> <strong>R<%= number_with_precision(810 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card" data-duration="6">
-          <h3>6 months</h3>
-          <p class="pricing-text"><s>R240</s> <strong>R<%= number_with_precision(240 * 0.85, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R1440</s> <strong>R<%= number_with_precision(1440 * 0.85, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
-
-    <% elsif @discount_code %>
-      <div class="standard-months-container" data-pricing-target="standard">
-        <%# 1 month (260) %>
-        <% orig = 260.0; dur = 1.0
-          total = if @discount_code&.upcase == "NEWSOIL26"
-                    orig * dur
-                  elsif @pct.positive?
-                    orig * dur * (1 - @pct)
-                  else
-                    [orig * dur - @amt, 0].max
-                  end
-          per = total / dur
-          has_discount = (total < orig * dur) %>
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text">
-            <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month
-          </p>
-          <p class="pricing-text">
-            <strong>Total:</strong>
-            <% if has_discount %><s>R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(total, precision: 2) %></strong>
-          </p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-
-        <%# 3 months (220 * 3 = 660) %>
-        <% orig = 220.0; dur = 3.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per = total / dur %>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><s>R<%= number_with_precision(orig, precision: 2) %></s> <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R<%= number_with_precision(orig * dur, precision: 2) %></s> <strong>R<%= number_with_precision(total, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-
-        <%# 6 months (180 * 6 = 1080) %>
-        <% orig = 180.0; dur = 6.0
-          total = if @discount_code&.upcase == "NEWSOIL26"
-                    orig * dur
-                  elsif @pct.positive?
-                    orig * dur * (1 - @pct)
-                  else
-                    [orig * dur - @amt, 0].max
-                  end
-          per = total / dur
-          has_discount = (total < orig * dur) %>
-        <div class="month-card popular" data-duration="6">
-          <h4>Most popular</h4>
-          <h3>6 months</h3>
-          <p class="pricing-text">
-            <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month
-          </p>
-          <p class="pricing-text">
-            <strong>Total:</strong>
-            <% if has_discount %><s>R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(total, precision: 2) %></strong>
-          </p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
-
-      <div class="standard-months-container hide" data-pricing-target="extra">
-        <%# XL 1 month (300) %>
-        <% orig = 300.0; dur = 1.0
-          total = if @discount_code&.upcase == "NEWSOIL26"
-                    orig * dur
-                  elsif @pct.positive?
-                    orig * dur * (1 - @pct)
-                  else
-                    [orig * dur - @amt, 0].max
-                  end
-          per = total / dur
-          has_discount = (total < orig * dur) %>
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text">
-            <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month
-          </p>
-          <p class="pricing-text">
-            <strong>Total:</strong>
-            <% if has_discount %><s>R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(total, precision: 2) %></strong>
-          </p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-
-        <%# XL 3 months (270 * 3 = 810) %>
-        <% orig = 270.0; dur = 3.0
-          total = @pct.positive? ? (orig * dur * (1 - @pct)) : [orig * dur - @amt, 0].max
-          per = total / dur %>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><s>R<%= number_with_precision(orig, precision: 2) %></s> <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> <s>R<%= number_with_precision(orig * dur, precision: 2) %></s> <strong>R<%= number_with_precision(total, precision: 2) %></strong></p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-
-        <%# XL 6 months (240 * 6 = 1440) %>
-        <% orig = 240.0; dur = 6.0
-          total = if @discount_code&.upcase == "NEWSOIL26"
-                    orig * dur
-                  elsif @pct.positive?
-                    orig * dur * (1 - @pct)
-                  else
-                    [orig * dur - @amt, 0].max
-                  end
-          per = total / dur
-          has_discount = (total < orig * dur) %>
-        <div class="month-card" data-duration="6">
-          <h3>6 months</h3>
-          <p class="pricing-text">
-            <% if has_discount %><s>R<%= number_with_precision(orig, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(per, precision: 2) %></strong> per month
-          </p>
-          <p class="pricing-text">
-            <strong>Total:</strong>
-            <% if has_discount %><s>R<%= number_with_precision(orig * dur, precision: 2) %></s><% end %>
-            <strong>R<%= number_with_precision(total, precision: 2) %></strong>
-          </p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
-
-    <% else %>
-      <div class="standard-months-container" data-pricing-target="standard">
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text"><strong>R260</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R260</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><strong>R220</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R660</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card popular" data-duration="6">
-          <h4>Most popular</h4>
-          <h3>6 months</h3>
-          <p class="pricing-text"><strong>From R180</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R1080</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'Standard', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
-      <div class="standard-months-container hide" data-pricing-target="extra">
-        <div class="month-card hide" data-duration="1">
-          <h3>1 month</h3>
-          <p class="pricing-text"><strong>R300</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R300</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '1', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card hide" data-duration="3">
-          <h3>3 months</h3>
-          <p class="pricing-text"><strong>R270</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R810</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '3', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-        <div class="month-card" data-duration="6">
-          <h3>6 months</h3>
-          <p class="pricing-text"><strong>From R240</strong> per month</p>
-          <p class="pricing-text"><strong>Total:</strong> R1440</p>
-          <div class="sign-up-btn">
-            <%= link_to 'Select', new_account_signup_path(plan: 'XL', duration: '6', discount_code: @discount_code, referral: @referral_code), class: "link-title-light" %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-    <div class="other-options-section mt-5">
-      <h2 class="other-options-title">Once-off collection</h2>
-      <div class="other-options-row">
-        <div class="other-option-card other-option-card--once-off">
-          <h3>Once-off Collection</h3>
-          <p>Dinner party or overflowing worm bin, we're happy to help get your extra waste into the soil.</p>
-          <ul>
-            <li>One collection of your organic waste</li>
-            <li>No commitment, no recurring charges</li>
-            <li>Pick your collection date based on our route</li>
-          </ul>
-          <p class="other-option-price">R<%= number_with_precision(@once_off_price, precision: 0) %></p>
-          <div class="mt-auto pt-3">
-            <%= link_to 'Book Now', new_account_signup_path(plan: 'once_off'), class: 'btn-gooi' %>
-          </div>
-        </div>
+      <div class="pricing-card">
+        <h3 class="pricing-card__title">Once-off</h3>
+        <p class="pricing-card__price">R<%= number_with_precision(@once_off_price, precision: 0) %></p>
+        <p class="pricing-card__blurb">Just trying it out? Book a single collection, no commitment.</p>
+        <%= link_to "Book once-off", new_account_signup_path(plan: 'once_off'), class: "btn-gooi-outline pricing-card__cta" %>
       </div>
     </div>
+
+    <p class="pricing__footnote">Per month on 1, 3 or 6-month plans — the longer you commit, the less you pay.</p>
   </div>
 </section>

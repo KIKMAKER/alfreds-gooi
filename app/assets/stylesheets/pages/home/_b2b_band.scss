@@ -4,6 +4,8 @@
 // not a flat fill.
 
 .b2b-band {
+  position: relative;
+  overflow: hidden;
   background-image: url('header-gooi-3.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -14,6 +16,8 @@
   &__inner {
     max-width: 720px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   &__title {

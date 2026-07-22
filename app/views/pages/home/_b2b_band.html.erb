@@ -2,6 +2,16 @@
     Full-width dark band — replaces the old small "Commercial Collection"
     side card (that copy is reused here, expanded). %>
 <section id="business" class="b2b-band">
+  <%= raw %(
+        <div class="wave-edge wave-edge--top">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="b2b-wave-top" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <use href="#b2b-wave-top" x="0" y="0" />
+          </svg>
+        </div>
+      ) %>
   <div class="b2b-band__inner">
     <h2 class="b2b-band__title">Restaurant owner or building manager?</h2>
     <p class="b2b-band__subtitle">
@@ -11,4 +21,14 @@
     </p>
     <%= link_to "Get in touch", new_commercial_inquiry_account_path, class: "btn-gooi b2b-band__cta" %>
   </div>
+  <%= raw %(
+        <div class="wave-edge wave-edge--bottom">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="b2b-wave-bottom" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <use href="#b2b-wave-bottom" x="0" y="0" />
+          </svg>
+        </div>
+      ) %>
 </section>

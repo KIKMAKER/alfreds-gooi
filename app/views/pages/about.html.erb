@@ -14,19 +14,21 @@
     <%= render_breadcrumbs(breadcrumb_items) %>
   </div>
 
+  <%= render 'shared/mission_section' %>
+
+  <%# Soil for Life video — not deleted, just not displayed for now, per the user. %>
+  <%# <div class="video-container mt-4 mb-5">
+        <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
+      </div> %>
+
+  <%= render 'shared/why_compost_section' %>
+
   <%= render "shared/impact_stats",
         title: "Our impact so far",
         total_kg: @total_kg,
         kg_this_week: @kg_this_week,
         household_count: @household_count %>
 
-  <%= render 'shared/mission_section' %>
-
-  <div class="video-container mt-4 mb-5">
-    <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
-  </div>
-
-  <%= render 'shared/why_compost_section' %>
   <%= render 'shared/compostable_section' %>
 
   <div class="text-center my-4">

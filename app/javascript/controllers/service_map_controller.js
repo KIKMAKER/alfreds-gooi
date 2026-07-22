@@ -211,6 +211,8 @@ export default class extends Controller {
     const buttons = this.element.querySelectorAll("[data-day-filter]")
     buttons.forEach(btn => {
       btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.toggle("active", b === btn))
+
         const val = btn.getAttribute("data-day-filter")
         if (val === "all") {
           this.map.setFilter("areas-fill", null)

@@ -11,6 +11,16 @@
     ground every claim in a specific number, call people "neighbours"). %>
 <%# locals: (title:, total_kg:, kg_this_week:, household_count:, footnote: nil) %>
 <section class="impact-summary">
+  <%= raw %(
+        <div class="wave-edge wave-edge--top">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="impact-wave-top" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <use href="#impact-wave-top" x="0" y="0" />
+          </svg>
+        </div>
+      ) %>
   <div class="impact-summary__inner" data-controller="counter">
     <h2 class="impact-summary__title"><%= title %></h2>
     <div class="impact-summary__grid">
@@ -43,4 +53,14 @@
       <p class="impact-summary__footnote"><%= footnote %></p>
     <% end %>
   </div>
+  <%= raw %(
+        <div class="wave-edge wave-edge--bottom">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="impact-wave-bottom" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <use href="#impact-wave-bottom" x="0" y="0" />
+          </svg>
+        </div>
+      ) %>
 </section>
