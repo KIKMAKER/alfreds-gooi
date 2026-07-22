@@ -1,0 +1,103 @@
+// ─── Phase 2 homepage overhaul, section 4: how gooi works ──────────────────
+
+.how-it-works {
+  background: $color-surface-cream;
+  padding: $space-16 5%;
+
+  &__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-display;
+    text-align: center;
+    margin-bottom: $space-2;
+  }
+
+  &__subtitle {
+    color: $color-text-body;
+    text-align: center;
+    font-size: $fs-md;
+    margin-bottom: $space-12;
+  }
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-10;
+  }
+
+  &__image-wrap {
+    flex: 1 1 420px;
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+    display: block;
+  }
+
+  &__steps {
+    flex: 1 1 380px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $space-8;
+  }
+
+  &__step {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-4;
+  }
+
+  &__step-number {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: $radius-full;
+    background: $dark-yellow;
+    color: $dark-green;
+    font-family: $headers-font;
+    font-weight: 700;
+    font-size: $fs-lg;
+  }
+
+  &__step-title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-lg;
+    margin-bottom: $space-1;
+  }
+
+  &__step-desc {
+    color: $color-text-body;
+    font-size: $fs-base;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-10 5%;
+    text-align: center;
+
+    &__grid {
+      flex-direction: column;
+    }
+
+    &__step {
+      text-align: left;
+    }
+  }
+}
