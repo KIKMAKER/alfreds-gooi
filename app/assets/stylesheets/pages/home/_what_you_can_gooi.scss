@@ -1,0 +1,103 @@
+// ─── Phase 2 homepage overhaul, section 5: what you can gooi ───────────────
+
+.what-you-can-gooi {
+  padding: $space-20 5%;
+
+  &__inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-hero;
+    margin-bottom: $space-3;
+  }
+
+  &__subtitle {
+    color: $color-text-body;
+    font-size: $fs-md;
+    margin-bottom: $space-14;
+  }
+
+  &__columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-8;
+  }
+
+  &__column {
+    flex: 1 1 320px;
+    border-radius: $radius-xl;
+    padding: $space-8;
+    text-align: left;
+
+    &--yes {
+      background: $dark-green;
+      color: white;
+    }
+
+    &--no {
+      background: white;
+      color: $dark-green;
+      box-shadow: $shadow-base;
+    }
+  }
+
+  &__column-title {
+    font-family: $headers-font;
+    font-size: $fs-xl;
+    margin-bottom: $space-6;
+  }
+
+  &__list {
+    margin: 0;
+
+    div {
+      display: flex;
+      align-items: baseline;
+      gap: $space-2;
+      padding: $space-2 0;
+      border-bottom: 1px solid rgba($dark-green, 0.1);
+
+      .what-you-can-gooi__column--yes & {
+        border-bottom-color: rgba(white, 0.15);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    dt {
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+      font-size: $fs-sm;
+      opacity: 0.75;
+    }
+  }
+
+  &__link {
+    margin-top: $space-10;
+    font-size: $fs-base;
+
+    a {
+      color: $dark-green;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-14 5%;
+
+    &__subtitle {
+      margin-bottom: $space-10;
+    }
+  }
+}

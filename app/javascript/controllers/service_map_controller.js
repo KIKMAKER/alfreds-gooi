@@ -8,9 +8,26 @@ export default class extends Controller {
     collectionDays: Object
   }
 
+  // Mapbox GL is a heavy bundle to load and render — defer it until the
+  // map section actually nears the viewport instead of on every page load.
   connect() {
     if (!this.hasTokenValue || !this.hasGeoUrlValue) return
 
+    this.observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        this.observer.disconnect()
+        this.initMap()
+      }
+    }, { rootMargin: "200px" })
+
+    this.observer.observe(this.element)
+  }
+
+  disconnect() {
+    this.observer?.disconnect()
+  }
+
+  initMap() {
     // Precompute a normalized-name -> day lookup
     this.dayByStandardizedName = {}
     for (const [name, day] of Object.entries(this.collectionDaysValue || {})) {

@@ -1,0 +1,37 @@
+// ─── Phase 2 homepage overhaul, section 11: B2B band ───────────────────────
+// Same textured background as the hero/impact-strip — see
+// feedback_stats_strip_style memory: dark-green bands use header-gooi-3.png,
+// not a flat fill.
+
+.b2b-band {
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: $space-16 5%;
+  text-align: center;
+
+  &__inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: white;
+    font-size: $fs-display;
+    margin-bottom: $space-4;
+  }
+
+  &__subtitle {
+    color: rgba(white, 0.85);
+    font-size: $fs-md;
+    line-height: 1.6;
+    margin-bottom: $space-8;
+  }
+
+  &__cta {
+    display: inline-block;
+    text-decoration: none;
+  }
+}

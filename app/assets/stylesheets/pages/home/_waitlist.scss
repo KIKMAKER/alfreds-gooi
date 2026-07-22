@@ -1,0 +1,10 @@
+// ─── Phase 2 homepage overhaul, section 8: waitlist "seed #N" nudge ────────
+// .interest-card itself is reused as-is from components/_card.scss.
+
+.waitlist-seed-line {
+  color: $color-accent;
+  font-weight: 600;
+  font-size: $fs-sm;
+  margin: $space-1 0 $space-3;
+  min-height: 1.2em;
+}

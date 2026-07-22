@@ -1,0 +1,59 @@
+<%# Phase 2 homepage overhaul, section 12: FAQ / good to know.
+    Stimulus accordion per the user's explicit instruction (not the
+    <details> pattern the standalone /faq page uses) — 5 questions from
+    the brief's suggested list. %>
+<section id="faq" class="home-faq" data-controller="faq">
+  <div class="home-faq__inner">
+    <h2 class="home-faq__title">Good to know</h2>
+
+    <div class="faq-item" data-faq-target="item">
+      <button type="button" class="faq-item__question" aria-expanded="false" data-action="click->faq#toggle">
+        Where do you collect?
+        <span class="faq-item__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-item__answer">
+        <p>Weekly doorstep pickups around Table Mountain, Tuesday to Thursday depending on your suburb — check the map above or drop your details below if you're not on the route yet.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-faq-target="item">
+      <button type="button" class="faq-item__question" aria-expanded="false" data-action="click->faq#toggle">
+        What do I do with the bucket?
+        <span class="faq-item__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-item__answer">
+        <p>Fill it with your fruit and veg scraps, coffee grounds, eggshells and the rest of what's on our "what you can gooi" list as the week goes, then leave it out on your collection day. Alfred swaps it for a clean one.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-faq-target="item">
+      <button type="button" class="faq-item__question" aria-expanded="false" data-action="click->faq#toggle">
+        Does it really become compost?
+        <span class="faq-item__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-item__answer">
+        <p>Yes — your scraps go to partner farms and projects like Soil for Life and Streetscapes, where they're composted and put back into growing food, not left to rot in a landfill.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-faq-target="item">
+      <button type="button" class="faq-item__question" aria-expanded="false" data-action="click->faq#toggle">
+        Can I cancel anytime?
+        <span class="faq-item__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-item__answer">
+        <p>Yes, there's no lock-in beyond the plan length you choose. Manage or pause your subscription anytime from your account.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-faq-target="item">
+      <button type="button" class="faq-item__question" aria-expanded="false" data-action="click->faq#toggle">
+        What's the 2027 Western Cape organics mandate?
+        <span class="faq-item__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-item__answer">
+        <p>The Western Cape is working toward diverting organic waste from landfill by 2027. Signing up now means you're already ahead of it — and helping prove the system works before it's mandatory.</p>
+      </div>
+    </div>
+  </div>
+</section>

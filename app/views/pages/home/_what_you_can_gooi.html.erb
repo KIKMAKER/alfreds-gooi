@@ -1,0 +1,41 @@
+<%# Phase 2 homepage overhaul, section 5: what you can gooi.
+    Yes/Nope two-column cheat sheet — also an SEO asset, so this is marked
+    up as real content (a definition list), not just decorative cards. %>
+<section id="what-you-can-gooi" class="what-you-can-gooi">
+  <div class="what-you-can-gooi__inner">
+    <h2 class="what-you-can-gooi__title">What you can gooi</h2>
+    <p class="what-you-can-gooi__subtitle">If it grew, it goes. Simple as that.</p>
+
+    <div class="what-you-can-gooi__columns">
+      <div class="what-you-can-gooi__column what-you-can-gooi__column--yes">
+        <h3 class="what-you-can-gooi__column-title">Gooi it</h3>
+        <dl class="what-you-can-gooi__list">
+          <div><dt>Fruit &amp; veg scraps</dt></div>
+          <div><dt>Coffee grounds &amp; filters</dt></div>
+          <div><dt>Tea bags</dt><dd>(paper ones)</dd></div>
+          <div><dt>Eggshells</dt></div>
+          <div><dt>Bread &amp; grains</dt></div>
+          <div><dt>Cooked food</dt><dd>(small amounts)</dd></div>
+          <div><dt>Paper napkins</dt></div>
+        </dl>
+      </div>
+
+      <div class="what-you-can-gooi__column what-you-can-gooi__column--no">
+        <h3 class="what-you-can-gooi__column-title">Not this time</h3>
+        <dl class="what-you-can-gooi__list">
+          <div><dt>Meat &amp; fish</dt></div>
+          <div><dt>Dairy</dt></div>
+          <div><dt>Oils &amp; fats</dt></div>
+          <div><dt>Bones</dt></div>
+          <div><dt>Pet waste</dt></div>
+          <div><dt>Plastic &amp; glass</dt></div>
+          <div><dt>Any non-food materials</dt></div>
+        </dl>
+      </div>
+    </div>
+
+    <p class="what-you-can-gooi__link">
+      <%= link_to "See the full list", about_path %>
+    </p>
+  </div>
+</section>

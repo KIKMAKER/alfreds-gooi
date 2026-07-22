@@ -1,0 +1,21 @@
+<%# Phase 2 homepage overhaul, section 10: straight from the gooi feed.
+    Static curated images (app/services/gooi_feed.rb) — confirmed with the
+    user, no Instagram API yet. All 6 link out to the profile since
+    individual post permalinks don't exist for a manually curated set. %>
+<section class="gooi-feed">
+  <div class="gooi-feed__inner">
+    <h2 class="gooi-feed__title">Straight from the gooi feed</h2>
+    <p class="gooi-feed__subtitle">
+      <%= link_to "@gooi_capetown", "https://instagram.com/gooi_capetown", target: "_blank", rel: "noopener" %> on Instagram
+    </p>
+
+    <div class="gooi-feed__grid">
+      <% GooiFeed.current_posts.each do |post| %>
+        <%= link_to "https://instagram.com/gooi_capetown", target: "_blank", rel: "noopener", class: "gooi-feed__item" do %>
+          <%= image_tag post.image, alt: post.caption, class: "gooi-feed__image" %>
+          <span class="gooi-feed__caption"><%= post.caption %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>

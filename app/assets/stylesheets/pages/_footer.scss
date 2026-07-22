@@ -11,6 +11,13 @@ footer {
   gap: 0.5rem;
 }
 
+.footer-strapline {
+  font-family: $headers-font;
+  color: white;
+  font-size: $fs-lg;
+  margin-bottom: $space-2;
+}
+
 // Page navigation links
 .footer-pages {
   display: flex;

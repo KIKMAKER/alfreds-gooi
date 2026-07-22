@@ -1,0 +1,62 @@
+// ─── Phase 2 homepage overhaul, section 6: pricing ─────────────────────────
+// .month-card, .toggle*, .other-option*, .yellow-block, .sign-up-btn are
+// reused as-is from pages/_home.scss (untouched, still tokenized well
+// enough and already proven against the discount/referral-code paths).
+
+.pricing {
+  padding: $space-20 5%;
+
+  &__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: $fs-xs;
+    font-weight: 600;
+    color: $color-accent;
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-hero;
+    margin-bottom: $space-3;
+  }
+
+  &__subtitle {
+    color: $color-text-body;
+    font-size: $fs-md;
+    max-width: 40rem;
+    margin: 0 auto $space-8;
+  }
+}
+
+.duration-pills {
+  display: flex;
+  justify-content: center;
+  gap: $space-2;
+  margin-top: $space-4;
+}
+
+.duration-pill {
+  font-family: 'Montserrat', sans-serif;
+  font-size: $fs-sm;
+  font-weight: 600;
+  color: $dark-green;
+  background: transparent;
+  border: 1.5px solid $dark-green;
+  border-radius: $radius-pill;
+  padding: $space-2 $space-4;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &--active {
+    background: $dark-green;
+    color: white;
+  }
+}

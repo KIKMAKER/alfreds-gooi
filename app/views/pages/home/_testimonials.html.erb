@@ -1,0 +1,39 @@
+<%# Phase 2 homepage overhaul, section 9: testimonials.
+    Kept verbatim from the previous inline version — already the
+    best-tokenized section in the old file. %>
+<section class="testimonial-section">
+  <h1>Testimonials</h1>
+  <p class="section-subtitle">What our community says</p>
+  <div class="content-wrapper" style="max-width: 960px; margin: 0 auto;">
+    <% if @testimonials.count >= 3 %>
+      <div class="testimonials-container">
+        <% @testimonials.sample(3).each do |testimonial| %>
+          <div class="testimonial-card">
+            <% if testimonial.photo.attached? %>
+              <div class="testimonial-image">
+                <%= image_tag testimonial.photo, alt: "#{testimonial.user.first_name}'s photo" %>
+              </div>
+            <% end %>
+            <p><%= testimonial.content %></p>
+            <h4><%= testimonial.user.first_name || "Anonymous" %></h4>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p>We love composting our waste, and Alfred is the sweetest man.</p>
+          <h4>Megan</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>It's been so helpful and has really made composting so much easier and more convenient!</p>
+          <h4>Simone</h4>
+        </div>
+        <div class="testimonial-card">
+          <p>Alfred is always on time and always so kind and with a happy smile.</p>
+          <h4>Ryan</h4>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
