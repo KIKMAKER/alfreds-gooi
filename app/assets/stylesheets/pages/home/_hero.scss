@@ -110,6 +110,12 @@
   .waves {
     width: 100%;
     height: 100%;
+
+    // Overrides the inline fill="rgba(255,255,255)" set on the <use> element —
+    // the page background is cream now (.background--cream), not white.
+    use {
+      fill: $color-surface-cream;
+    }
   }
 
   @media (max-width: 700px) {
