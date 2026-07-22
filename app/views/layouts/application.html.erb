@@ -144,7 +144,8 @@
 
     <%= yield :structured_data %>
   </head>
-  <body class="background">
+  <% staff_signed_in = user_signed_in? && (current_user.driver? || current_user.admin? || current_user.drop_off?) %>
+  <body class="background <%= 'background--cream' unless staff_signed_in %>">
     <% if user_signed_in? %>
       <%if current_user.driver? %>
         <%= render "shared/driver_navbar" %>

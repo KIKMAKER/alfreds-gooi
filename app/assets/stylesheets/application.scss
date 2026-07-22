@@ -84,6 +84,12 @@ ul {
   flex-direction: column;
 }
 
+// Client-facing pages (guest + logged-in customers, not staff dashboards) use
+// the warm cream tone instead of white — see app/views/layouts/application.html.erb.
+.background--cream {
+  background-color: $color-surface-cream;
+}
+
 
 .radio-buttons {
 
