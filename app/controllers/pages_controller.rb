@@ -3,7 +3,7 @@ class PagesController < ApplicationController
 
   def home
     @discount_code = params[:discount_code]
-    @interest = Interest.new
+    @interest = Interest.new(suburb_id: params[:suburb_id])
     @farms = DropOffSite.order(:name).limit(4)
     @testimonials = Testimonial.public_testimonials.includes(:user).limit(6)
     @once_off_price = Product.find_by(title: "Once-off Collection")&.price

@@ -1,7 +1,10 @@
-<%# Public page for a suburb — two states:
+<%# Public page for a suburb — three states:
     - waitlist?: pre-launch "lock in your OG rate" page with signup CTAs
     - active?:   "we're here" page — collection day, subscriber count, impact stats,
                  no signup CTAs (those live on the homepage)
+    - target?:   "not here yet" page — no pricing/signup at all, just a nudge
+                 toward the homepage's existing interest form (see the
+                 suburb-cta-section swap below)
     SuburbsController#show 404s for any other status. %>
 
 <div class="suburb-hero">
@@ -13,13 +16,18 @@
     </p>
     <% if @suburb.waitlist? %>
       <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi suburb-hero__cta" %>
-    <% else %>
+    <% elsif @suburb.active? %>
       <p class="suburb-hero__stats">
         <strong>~<%= number_with_delimiter(@impact_total_kg) %>kg</strong> diverted from landfill,
         <strong>~<%= number_with_delimiter(@impact_kg_this_week) %>kg</strong> this week —
         <strong><%= @household_count %></strong> <%= "neighbour".pluralize(@household_count) %> gooi-ing weekly.
       </p>
       <%= link_to "Sign up here", root_path(anchor: "pricing"), class: "btn-gooi suburb-hero__cta" %>
+    <% else %>
+      <p class="suburb-hero__stats">
+        We're not gooi-ing in <%= @suburb.name %> yet — but every neighbour who lets us know moves it up the list.
+      </p>
+      <%= link_to "Let us know you're ready", root_path(anchor: "interest", suburb_id: @suburb.id), class: "btn-gooi suburb-hero__cta" %>
     <% end %>
   </div>
 
@@ -31,10 +39,15 @@
         <p class="suburb-hero__overlay-card-sub">
           Lock in a discount rate before <strong><%= @suburb.launch_date.strftime("%-d %B %Y") %></strong>.
         </p>
-      <% else %>
+      <% elsif @suburb.active? %>
         <p class="suburb-hero__overlay-card-main">Now serving <strong><%= @suburb.name %></strong></p>
         <p class="suburb-hero__overlay-card-sub">
           Collections every <strong><%= @suburb.collection_day&.capitalize %></strong>.
+        </p>
+      <% else %>
+        <p class="suburb-hero__overlay-card-main">Not in <strong><%= @suburb.name %></strong> yet</p>
+        <p class="suburb-hero__overlay-card-sub">
+          Register your interest and we'll let you know the moment we're ready.
         </p>
       <% end %>
     </div>
@@ -108,18 +121,33 @@
   <div class="suburb-cta-section__overlay">
     <div class="other-options-section">
       <div class="other-options-row">
-        <div class="other-option-card other-option-card--commercial">
-          <h3>Commercial Collection</h3>
-          <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
-          <ul>
-            <li>Weekly or multiple collections per week</li>
-            <li>Volume-based pricing (45L buckets)</li>
-            <li>Flexible contract lengths (3, 6, or 12 months)</li>
-          </ul>
-          <div class="mt-auto pt-3">
-            <%= link_to "Get Started", new_commercial_inquiry_account_path, class: "btn-gooi" %>
+        <% if @suburb.target? %>
+          <div class="other-option-card other-option-card--interest">
+            <h3>We're not in <%= @suburb.name %> yet</h3>
+            <p>We plan our routes suburb by suburb, and interest is what tips the decision. Let us know you're ready and we'll be in touch the moment we're headed your way.</p>
+            <ul>
+              <li>No commitment, just a show of hands</li>
+              <li>We'll email you the moment we launch nearby</li>
+              <li>Bring your street along too — the more neighbours, the sooner we come</li>
+            </ul>
+            <div class="mt-auto pt-3">
+              <%= link_to "Register your interest", root_path(anchor: "interest", suburb_id: @suburb.id), class: "btn-gooi" %>
+            </div>
           </div>
-        </div>
+        <% else %>
+          <div class="other-option-card other-option-card--commercial">
+            <h3>Commercial Collection</h3>
+            <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
+            <ul>
+              <li>Weekly or multiple collections per week</li>
+              <li>Volume-based pricing (45L buckets)</li>
+              <li>Flexible contract lengths (3, 6, or 12 months)</li>
+            </ul>
+            <div class="mt-auto pt-3">
+              <%= link_to "Get Started", new_commercial_inquiry_account_path, class: "btn-gooi" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

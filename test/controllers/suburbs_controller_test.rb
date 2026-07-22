@@ -10,12 +10,26 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: /kitchen scraps/i
   end
 
-  test "404s for a target suburb (not yet planned)" do
+  test "renders the interest page for a target suburb, with no pricing or sign-up CTA" do
     suburb = Suburb.create!(name: "Future Area", status: :target)
 
     get suburb_path(suburb)
 
-    assert_response :not_found
+    assert_response :success
+    assert_select "h1", text: /kitchen scraps/i
+    assert_select ".suburb-hero__overlay-card-main", text: /Not in Future Area yet/
+    assert_select "#pricing", count: 0
+    assert_select "a[href*='new_account_signup']", count: 0
+  end
+
+  test "target-suburb page links to the homepage interest form with the suburb preselected" do
+    suburb = Suburb.create!(name: "Future Area", status: :target)
+
+    get suburb_path(suburb)
+
+    assert_select ".suburb-hero__cta[href=?]", "/?suburb_id=#{suburb.id}#interest"
+    assert_select ".other-option-card--interest a[href=?]", "/?suburb_id=#{suburb.id}#interest"
+    assert_select ".other-option-card--commercial", count: 0
   end
 
   test "404s for a drop_off_only suburb" do

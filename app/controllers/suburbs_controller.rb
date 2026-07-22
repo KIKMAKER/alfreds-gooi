@@ -3,12 +3,12 @@ class SuburbsController < ApplicationController
 
   def show
     @suburb = Suburb.find_by!(slug: params[:slug])
-    raise ActiveRecord::RecordNotFound unless @suburb.waitlist? || @suburb.active?
+    raise ActiveRecord::RecordNotFound unless @suburb.waitlist? || @suburb.active? || @suburb.target?
 
     if @suburb.waitlist?
       @standard_og = Product.find_by(title: "Standard 6 month OG subscription")
       @xl_og = Product.find_by(title: "XL 6 month OG subscription")
-    else
+    elsif @suburb.active?
       active_subscriptions = @suburb.subscriptions.active.to_a
       @household_count = active_subscriptions.count
       # Estimated, same approach Block/SuburbSpotlight already use — there's no

@@ -770,6 +770,11 @@ input[type="checkbox"].toggle:checked+label::before {
     background-color: rgba(2, 63, 58, 0.05);
     border: 2px solid $dark-green;
   }
+
+  &--interest {
+    background-color: rgba(251, 183, 24, 0.08);
+    border: 2px solid $dark-yellow;
+  }
 }
 
 .other-option-price {
