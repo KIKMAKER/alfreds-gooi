@@ -1,9 +1,19 @@
-// ─── Reusable impact stats grid ────────────────────────────────────────────
+// ─── Reusable impact stats strip ───────────────────────────────────────────
 // Used on the active-suburb public page; built to be dropped into the
 // homepage redesign too (see app/views/shared/_impact_stats.html.erb).
+// Styled to match the "Gooi Homepage" PDF mockup's stats band: a full-bleed
+// green strip using the same textured background image as the homepage/
+// suburb hero (header-gooi-3.png, see _home.scss .gooi-header and
+// _suburb_landing.scss .suburb-hero — not a flat colour), numbers sitting
+// directly on the background (no card boxes/shadows — that boxed-card look
+// belongs to the unrelated _daily_snapshot.scss component, don't reuse it
+// here), a thin divider under the row, and one muted footnote line underneath.
 
 .impact-summary {
-  background: $color-surface-alt;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   padding: $space-14 5%;
 
   &__inner {
@@ -14,7 +24,7 @@
 
   &__title {
     font-family: $headers-font;
-    color: $dark-green;
+    color: white;
     font-size: $fs-display;
     margin-bottom: $space-10;
   }
@@ -23,9 +33,12 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $space-6;
+    padding-bottom: $space-8;
+    border-bottom: 1px solid rgba(white, 0.15);
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
+      gap: $space-8;
     }
   }
 
@@ -33,32 +46,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: white;
-    border-radius: $radius-md;
-    box-shadow: $shadow-base;
-    padding: $space-6 $space-4;
-
-    &--accent {
-      background: $dark-green;
-
-      .impact-summary__number,
-      .impact-summary__desc {
-        color: white;
-      }
-    }
   }
 
   &__number {
     font-family: $headers-font;
     font-size: $fs-3xl;
     font-weight: 700;
-    color: $dark-green;
+    color: white;
     line-height: 1.2;
   }
 
   &__desc {
     font-size: $fs-sm;
-    color: $color-text-body;
+    color: rgba(white, 0.7);
     margin-top: $space-2;
+  }
+
+  &__footnote {
+    font-size: $fs-xs;
+    color: rgba(white, 0.55);
+    margin-top: $space-6;
   }
 }

@@ -1,12 +1,15 @@
-<%# Reusable "live impact strip" — matches docs/gooi-public-ui-overhaul-brief.md
-    section 2.3 (homepage) and is used as-is on the active-suburb public page
+<%# Reusable "live impact strip" — matches the stats band in the "Gooi Homepage"
+    PDF mockup (dark-green full-bleed strip, numbers on the background, no card
+    boxes) and is used as-is on the active-suburb public page
     (app/views/suburbs/show.html.erb). Locals:
       title:            String heading
       total_kg:         Integer, all-time kg diverted in scope
       kg_this_week:     Integer, kg diverted so far this week in scope
       household_count:  Integer, neighbours gooi-ing weekly in scope
+      footnote:         optional String, shown small under the divider
     Presentation-only — all the arithmetic belongs in the caller (brand voice:
     ground every claim in a specific number, call people "neighbours"). %>
+<%# locals: (title:, total_kg:, kg_this_week:, household_count:, footnote: nil) %>
 <section class="impact-summary">
   <div class="impact-summary__inner">
     <h2 class="impact-summary__title"><%= title %></h2>
@@ -19,10 +22,13 @@
         <span class="impact-summary__number">~<%= number_with_delimiter(kg_this_week) %>kg</span>
         <span class="impact-summary__desc">diverted this week</span>
       </div>
-      <div class="impact-summary__item impact-summary__item--accent">
+      <div class="impact-summary__item">
         <span class="impact-summary__number"><%= household_count %></span>
         <span class="impact-summary__desc"><%= "neighbour".pluralize(household_count) %> gooi-ing weekly</span>
       </div>
     </div>
+    <% if footnote.present? %>
+      <p class="impact-summary__footnote"><%= footnote %></p>
+    <% end %>
   </div>
 </section>
