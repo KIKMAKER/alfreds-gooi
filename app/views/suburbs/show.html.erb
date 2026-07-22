@@ -13,6 +13,13 @@
     </p>
     <% if @suburb.waitlist? %>
       <%= link_to "Lock in your rate", "#pricing", class: "btn-gooi suburb-hero__cta" %>
+    <% else %>
+      <p class="suburb-hero__stats">
+        <strong>~<%= number_with_delimiter(@impact_total_kg) %>kg</strong> diverted from landfill,
+        <strong>~<%= number_with_delimiter(@impact_kg_this_week) %>kg</strong> this week —
+        <strong><%= @household_count %></strong> <%= "neighbour".pluralize(@household_count) %> gooi-ing weekly.
+      </p>
+      <%= link_to "Sign up here", root_path(anchor: "pricing"), class: "btn-gooi suburb-hero__cta" %>
     <% end %>
   </div>
 
@@ -92,22 +99,6 @@
     </p>
     <p class="suburb-pricing__link">
       <%= link_to "See all plans and pricing", root_path(anchor: "pricing") %>
-    </p>
-  </section>
-
-<% else %>
-
-  <%= render "shared/impact_stats",
-        title: "#{@suburb.name}'s impact so far",
-        total_kg: @impact_total_kg,
-        kg_this_week: @impact_kg_this_week,
-        household_count: @household_count %>
-
-  <section class="suburb-pricing">
-    <p class="suburb-pricing__link">
-      Want to join <%= @suburb.name %>'s <%= @household_count %>
-      <%= "neighbour".pluralize(@household_count) %>?
-      <%= link_to "See plans and pricing", root_path(anchor: "pricing") %>
     </p>
   </section>
 

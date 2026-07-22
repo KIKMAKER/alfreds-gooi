@@ -26,7 +26,7 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "renders the active-suburb page with collection day, no signup CTA in the hero" do
+  test "renders the active-suburb page with collection day and a sign-up link to home page pricing" do
     suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
 
     get suburb_path(suburb)
@@ -34,11 +34,11 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: /kitchen scraps/i
     assert_select ".suburb-hero__overlay-card-sub", text: /Tuesday/
-    assert_select ".suburb-hero__cta", count: 0
+    assert_select ".suburb-hero__cta[href=?]", "/#pricing"
     assert_select "#pricing", count: 0
   end
 
-  test "active-suburb page shows impact stats with the right household count" do
+  test "active-suburb page shows impact stats in the hero with the right household count" do
     suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
     2.times do |i|
       user = User.create!(first_name: "Neighbour#{i}", last_name: "Test", email: "neighbour#{i}_#{SecureRandom.hex(3)}@example.com", phone_number: "+2783#{rand(1_000_000..9_999_999)}", password: "password")
@@ -48,7 +48,7 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
     get suburb_path(suburb)
 
     assert_response :success
-    assert_select ".impact-summary__item .impact-summary__number", text: "2"
+    assert_select ".suburb-hero__stats", text: /2 neighbours gooi-ing weekly/
   end
 
   test "pricing card links carry suburb_id, plan, duration, and og=true" do
