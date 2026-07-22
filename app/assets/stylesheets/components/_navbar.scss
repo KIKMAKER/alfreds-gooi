@@ -199,7 +199,9 @@
   margin: 0.5rem 0;
 }
 
-@media screen and (max-width: 640px) {
+// 860px, not 640px — the homepage nav's longer labels ("What you can gooi")
+// need more room before they fit without wrapping.
+@media screen and (max-width: 860px) {
   .new-navbar {
     .links-container {
       display: none !important;

@@ -106,8 +106,11 @@
     }
 
     &__image {
-      height: auto;
-      object-fit: initial;
+      // Keep the cover crop on mobile too (rather than reverting to the raw
+      // 3:4 portrait) — full height:auto here showed way too much sky/tree
+      // canopy above the bakkie, reading as off-centre.
+      height: 300px;
+      object-position: center 50%;
     }
 
     &__step {
