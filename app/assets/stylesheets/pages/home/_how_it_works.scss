@@ -93,24 +93,44 @@
     margin: 0;
   }
 
+  // Stacks well before the row layout would actually run out of room: the
+  // row needs image-wrap(560px) + steps(480px) + gap(64px) ≈ 1104px of
+  // *inner* width, and &__inner is capped at 1140px with 5% side padding
+  // eaten out of the viewport before that — so anything narrower than
+  // ~1200px viewport was wrapping mid-row (image flush-left, steps pushed
+  // onto their own off-centre row) instead of cleanly stacking. 700px was
+  // too low a cutoff for that; this covers the whole "tablet" gap too.
+  @media (max-width: 1200px) {
+    &__grid {
+      flex-direction: column;
+    }
+
+    // align-items: center (set above, for the row layout) makes a flex
+    // item in column mode shrink to its content's width instead of
+    // filling the container — without this the image-wrap collapsed to a
+    // tiny box with a huge gap of empty cream space around it.
+    &__image-wrap {
+      flex: 0 1 auto;
+      width: 100%;
+    }
+
+    &__image {
+      // Keep the cover crop when stacked too (rather than reverting to the
+      // raw 3:4 portrait) — full height:auto showed way too much sky/tree
+      // canopy above the bakkie, reading as off-centre. Scales with
+      // viewport width so it isn't a flat too-short banner on wider
+      // stacked (tablet) widths.
+      height: clamp(240px, 40vw, 420px);
+      object-position: center 50%;
+    }
+  }
+
   @media (max-width: 700px) {
     padding: $space-14 5%;
     text-align: center;
 
     &__subtitle {
       margin-bottom: $space-10;
-    }
-
-    &__grid {
-      flex-direction: column;
-    }
-
-    &__image {
-      // Keep the cover crop on mobile too (rather than reverting to the raw
-      // 3:4 portrait) — full height:auto here showed way too much sky/tree
-      // canopy above the bakkie, reading as off-centre.
-      height: 300px;
-      object-position: center 50%;
     }
 
     &__step {
