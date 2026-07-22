@@ -7,10 +7,18 @@
 ] %>
 <% breadcrumb_schema(breadcrumb_items) %>
 
+<%= render "pages/about_hero" %>
+
 <div class="page-container">
   <div class="container mt-3">
     <%= render_breadcrumbs(breadcrumb_items) %>
   </div>
+
+  <%= render "shared/impact_stats",
+        title: "Our impact so far",
+        total_kg: @total_kg,
+        kg_this_week: @kg_this_week,
+        household_count: @household_count %>
 
   <%= render 'shared/mission_section' %>
 

@@ -39,6 +39,9 @@ class PagesController < ApplicationController
 
   def about
     @farms = DropOffSite.order(:name).limit(4)
+    @total_kg = DropOffSite.sum(:total_weight_kg).round
+    @kg_this_week = DropOffEvent.where(date: Date.current.beginning_of_week..Date.current.end_of_week).sum(:weight_kg).round
+    @household_count = Subscription.active.count
   end
 
   def story

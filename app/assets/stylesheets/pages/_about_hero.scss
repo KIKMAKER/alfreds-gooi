@@ -1,0 +1,76 @@
+// ─── About page hero ────────────────────────────────────────────────────
+// Same pattern as the homepage/suburb hero — see pages/home/_hero.scss and
+// pages/_suburb_landing.scss (deliberately not abstracted into a shared
+// partial yet; three near-identical copies is fine until a fourth shows up).
+
+.about-hero {
+  position: relative;
+  text-align: center;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: $space-16 5% $space-20;
+  overflow: hidden;
+
+  &__inner {
+    max-width: 42rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: $fs-xs;
+    font-weight: 600;
+    color: $color-accent;
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    font-size: $fs-hero;
+    line-height: 1.15;
+    color: white;
+    margin-bottom: $space-5;
+  }
+
+  &__title-highlight {
+    color: $color-accent;
+  }
+
+  &__subtitle {
+    font-size: $fs-md;
+    color: rgba(white, 0.9);
+    line-height: 1.6;
+  }
+
+  .wave-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 0;
+  }
+
+  .waves {
+    width: 100%;
+    height: 100%;
+
+    use {
+      fill: $color-surface-cream;
+    }
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-10 5% $space-16;
+
+    &__title {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+  }
+}

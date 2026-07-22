@@ -1,56 +1,44 @@
 <div class="blog-container">
-  <section class="farm-page-header">
-    <div class="inner-header-container">
-      <h1 class="blog-header-header"><%= @farm.name %></h1>
-      <h4 class="text-white blog-header-subheader"><%= @farm.suburb&.name %></h4>
-      <p class="blog-paragraph-content"><em>
-          One of our valued composting partners, helping turn Cape Town's food waste into healthy soil.
-        </em></p>
-      <p><%= @farm.story %></p>
+  <section class="farm-hero">
+    <div class="farm-hero__inner">
+      <p class="farm-hero__eyebrow">Partner farm</p>
+      <h1 class="farm-hero__title"><%= @farm.name %></h1>
+      <h4 class="farm-hero__subtitle"><%= @farm.suburb&.name %></h4>
+      <p class="farm-hero__story"><em>One of our valued composting partners, helping turn Cape Town's food waste into healthy soil.</em></p>
+      <p class="farm-hero__story"><%= @farm.story %></p>
     </div>
-    <div class="wave-container">
-      <svg
-        class="waves"
-        viewBox="0 24 150 28"
-        preserveAspectRatio="none"
-        shape-rendering="auto"
-      >
-        <defs>
-          <path
-            id="gentle-wave"
-            d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
-          ></path>
-        </defs>
-        <g class="parallax">
-          <use
-            href="#gentle-wave"
-            x="0"
-            y="0"
-            fill="rgba(255,255,255)"
-          ></use>
-        </g>
-      </svg>
-
-    </div>
+    <%= raw %(
+          <div class="wave-container">
+            <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+              <defs>
+                <path id="farm-gentle-wave"
+                  d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+              </defs>
+              <g class="parallax">
+                <use href="#farm-gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+              </g>
+            </svg>
+          </div>
+        ) %>
   </section>
 
-  <!-- Image and Impact Stats -->
-  <section class="farm-text-img-flex">
-    <div class="flex-wrapper">
-      <div class="text-container">
-        <h1>Our Impact Together<span class="yellow-txt">.</span></h1>
-        <p class="mb-3">
-          Since partnering with <%= @farm.name %>, we've made a real difference in diverting organic waste from landfills.
-        </p>
-        <div class="mt-4">
-          <h3 class="yellow-txt"><%= number_with_precision(@farm.total_weight_kg || 0, precision: 1) %> kg</h3>
-          <p>Total organic waste collected</p>
-
-          <h3 class="yellow-txt mt-4"><%= @farm.total_dropoffs_count || 0 %></h3>
-          <p>Drop-offs completed</p>
-
-          <h3 class="yellow-txt mt-4">Every <%= @farm.collection_day %></h3>
-          <p>Collection day</p>
+  <!-- Impact stats -->
+  <section class="farm-impact">
+    <div class="farm-impact__inner">
+      <h2 class="farm-impact__title">Our impact together</h2>
+      <p class="farm-impact__subtitle">Since partnering with <%= @farm.name %>, we've made a real difference in diverting organic waste from landfills.</p>
+      <div class="farm-impact__grid">
+        <div class="farm-impact__item">
+          <span class="farm-impact__number"><%= number_with_precision(@farm.total_weight_kg || 0, precision: 1) %>kg</span>
+          <span class="farm-impact__desc">Total organic waste collected</span>
+        </div>
+        <div class="farm-impact__item">
+          <span class="farm-impact__number"><%= @farm.total_dropoffs_count || 0 %></span>
+          <span class="farm-impact__desc">Drop-offs completed</span>
+        </div>
+        <div class="farm-impact__item">
+          <span class="farm-impact__number">Every <%= @farm.collection_day %></span>
+          <span class="farm-impact__desc">Collection day</span>
         </div>
       </div>
     </div>

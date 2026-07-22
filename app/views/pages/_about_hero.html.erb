@@ -1,0 +1,27 @@
+<%# About page hero — same visual language as the homepage/suburb hero
+    (header-gooi-3.png texture, big serif heading, wave transition into
+    cream). %>
+<section class="about-hero">
+  <div class="about-hero__inner">
+    <p class="about-hero__eyebrow">Our story</p>
+    <h1 class="about-hero__title">Turning kitchen scraps into <span class="about-hero__title-highlight">soil</span>.</h1>
+    <p class="about-hero__subtitle">
+      Gooi started with one bucket and one bakkie. Since 2023, we've grown into a
+      weekly loop connecting Cape Town households to local farms — no landfill required.
+    </p>
+  </div>
+
+  <%= raw %(
+        <div class="wave-container">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="about-gentle-wave"
+                d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <g class="parallax">
+              <use href="#about-gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+            </g>
+          </svg>
+        </div>
+      ) %>
+</section>
