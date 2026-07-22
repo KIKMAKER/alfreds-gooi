@@ -4,13 +4,22 @@
       <%= image_tag('gooi_logo_CR.svg', class: 'gooi-logo') %>
     <% end %>
 
-    <%# Desktop links %>
+    <%# Desktop links — the homepage gets the brief's simpler, anchor-driven set;
+        every other guest page keeps the full site nav (those anchors only make
+        sense on the page that actually has #how-it-works etc.). %>
     <div class="links-container">
-      <%= link_to 'About', about_path, class: "link-title" %>
-      <%= link_to 'FAQ', faq_path, class: "link-title" %>
-      <%= link_to 'Get the app', get_the_app_path, class: "link-title" %>
-      <%= link_to 'Blog', posts_path, class: "link-title" %>
-      <%#= link_to 'RFF', new_festival_session_path, class: "link-title" %>
+      <% if current_page?(root_path) %>
+        <%= link_to 'How it works', "#how-it-works", class: "link-title" %>
+        <%= link_to 'What you can gooi', "#what-you-can-gooi", class: "link-title" %>
+        <%= link_to 'Pricing', "#pricing", class: "link-title" %>
+        <%= link_to 'Business', "#business", class: "link-title" %>
+        <%= link_to 'Sign up', "#pricing", class: "new-nav-cta-btn" %>
+      <% else %>
+        <%= link_to 'About', about_path, class: "link-title" %>
+        <%= link_to 'FAQ', faq_path, class: "link-title" %>
+        <%= link_to 'Get the app', get_the_app_path, class: "link-title" %>
+        <%= link_to 'Blog', posts_path, class: "link-title" %>
+      <% end %>
 
       <% if user_signed_in? %>
         <%= link_to "Log out", destroy_user_session_path,
@@ -29,11 +38,19 @@
 
   <%# Mobile drawer %>
   <div class="new-nav-drawer" id="newNavDrawer">
-    <%= link_to 'About', about_path, class: "new-nav-drawer-link" %>
-    <%= link_to 'FAQ', faq_path, class: "new-nav-drawer-link" %>
-    <%= link_to 'Get the app', get_the_app_path, class: "new-nav-drawer-link" %>
-    <%= link_to 'Blog', posts_path, class: "new-nav-drawer-link" %>
-    <%= link_to 'RFF', new_festival_session_path, class: "new-nav-drawer-link" %>
+    <% if current_page?(root_path) %>
+      <%= link_to 'How it works', "#how-it-works", class: "new-nav-drawer-link" %>
+      <%= link_to 'What you can gooi', "#what-you-can-gooi", class: "new-nav-drawer-link" %>
+      <%= link_to 'Pricing', "#pricing", class: "new-nav-drawer-link" %>
+      <%= link_to 'Business', "#business", class: "new-nav-drawer-link" %>
+      <%= link_to 'Sign up', "#pricing", class: "new-nav-drawer-link" %>
+    <% else %>
+      <%= link_to 'About', about_path, class: "new-nav-drawer-link" %>
+      <%= link_to 'FAQ', faq_path, class: "new-nav-drawer-link" %>
+      <%= link_to 'Get the app', get_the_app_path, class: "new-nav-drawer-link" %>
+      <%= link_to 'Blog', posts_path, class: "new-nav-drawer-link" %>
+      <%= link_to 'RFF', new_festival_session_path, class: "new-nav-drawer-link" %>
+    <% end %>
     <div class="new-nav-drawer-divider"></div>
     <% if user_signed_in? %>
       <%= link_to "Log out", destroy_user_session_path,

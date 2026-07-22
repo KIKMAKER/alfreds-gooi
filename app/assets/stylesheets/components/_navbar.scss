@@ -100,6 +100,27 @@
   }
 }
 
+// Sign-up CTA pill — homepage nav only, brief's Phase 2 nav spec
+.new-nav-cta-btn {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: $fs-sm;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: $dark-green;
+  background: $dark-yellow;
+  border-radius: $radius-pill;
+  padding: $space-2 $space-5;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: $space-3;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
 // Mobile hamburger button
 .new-nav-burger {
   display: none;
