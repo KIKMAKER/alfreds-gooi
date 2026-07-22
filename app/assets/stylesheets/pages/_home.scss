@@ -4,44 +4,11 @@
   margin-bottom: 4rem;
 }
 
-.gooi-header {
-  position: relative;
-  text-align: center;
-  background-image: url('header-gooi-3.png');
-  background-size: cover;
-  height: 100vh;
-  width: 100%;
-  background-repeat: no-repeat;
-
-  h1 {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 3rem;
-    color: white;
-    text-align: center;
-    padding-top: 15vh;
-    margin-bottom: 1vh;
-  }
-
-  h2 {
-    font-family: 'Libre Baskerville', serif;
-    font-size: $fs-base;
-    color: $dark-yellow;
-    text-align: center;
-  }
-
-  p {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.9);
-    text-align: center;
-    line-height: 1.7;
-  }
-}
-
-.inner-header-container {
-  margin: 0 10%;
-}
+// .gooi-header / .inner-header-container removed — replaced by pages/home/_hero.scss
+// (Phase 2 rebuild). The scattered `.gooi-header` overrides inside the
+// responsive blocks further down this file are now dead too but left alone
+// per this codebase's "opportunistic, not a batch sweep" cleanup convention —
+// see docs/design-tokens.md.
 
 // MAP STYLE
 .map-section {

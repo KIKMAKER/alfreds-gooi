@@ -46,52 +46,8 @@
 
 <!--header-->
 <div class="page-container">
-  <section class="gooi-header">
-    <div class="inner-header-container mb-4">
-      <h1>Organic waste recycling made easy</h1>
-      <p>Gooi makes composting your food waste as easy as throwing it in the bin.
-        Gooi offers weekly collection of food scraps from your doorstep.
-        Our goal is to divert <strong class="yellow-txt">organic waste</strong> from landfills and ensure it nourishes the earth instead.
-        Since 2023 we have collected <strong class="yellow-txt"><%= number_with_delimiter(@total_kg) %> kg</strong> of organic waste.
-        Ready to join the food waste revolution?</p>
-      <div class="mt-5 mb-3">
-        <%= link_to 'Sign Up', '#pricing', class: 'btn-gooi' %>
+  <%= render "pages/home/hero" %>
 
-      </div>
-      <br>
-    </div>
-    <!--video-->
-
-    <div class="video-container mt-4">
-      <%= video_tag("Our_Mission_at_Soil_For_Life.mp4", class: "gooi-video", controls: true, loop: true) %>
-    </div>
-    <!--code to create the wave in the header section-->
-    <%= raw %(
-              <div class="wave-container">
-                <svg
-                  class="waves"
-                  viewBox="0 24 150 28"
-                  preserveAspectRatio="none"
-                  shape-rendering="auto"
-                >
-                <defs>
-                  <path
-                  id="gentle-wave"
-                  d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
-                  />
-                </defs>
-                  <g class="parallax">
-                    <use
-                      href="#gentle-wave"
-                      x="0"
-                      y="0"
-                      fill="rgba(255,255,255)"
-                    />
-                  </g>
-                </svg>
-                </div>
-                ) %>
-  </section>
   <!-- Pricing -->
   <section data-controller="pricing" class="pricing-section" id="pricing">
     <p class="text-uppercase fw-semibold mb-1 mt-5" style="color: #FBB718; font-size: 0.75rem; letter-spacing: 0.1em;">Weekly collection service</p>

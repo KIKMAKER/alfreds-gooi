@@ -1,0 +1,39 @@
+<%# Phase 2 homepage overhaul, section 2: hero.
+    Photo hero (brief decision: photo, not video — better LCP), badge copy
+    reads "Collected weekly" not "Every Thursday" (was wrong on the old
+    hero badge). Mirrors the suburb-launch hero's proven two-column layout
+    (app/views/suburbs/show.html.erb / pages/_suburb_landing.scss) rather
+    than reinventing one. %>
+<section class="home-hero">
+  <div class="home-hero__text">
+    <h1 class="home-hero__title">Your kitchen scraps deserve a <span class="home-hero__title-highlight">second life</span>.</h1>
+    <p class="home-hero__subtitle">
+      Gooi makes composting your food waste as easy as throwing it in the bin — weekly
+      doorstep collection, no mess, no effort. Since 2023 we've collected
+      <strong>~<%= number_with_delimiter(@total_kg) %>kg</strong> of organic waste.
+    </p>
+    <%= link_to "Sign up", "#pricing", class: "btn-gooi home-hero__cta" %>
+  </div>
+
+  <div class="home-hero__image-wrap">
+    <%= image_tag "suburb_launch_hero.jpg", alt: "A gooi bucket full of kitchen scraps ready for collection", class: "home-hero__image" %>
+    <div class="home-hero__overlay-card">
+      <p class="home-hero__overlay-card-main">Collected weekly</p>
+      <p class="home-hero__overlay-card-sub">Straight to compost, not landfill.</p>
+    </div>
+  </div>
+
+  <%= raw %(
+        <div class="wave-container">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="home-gentle-wave"
+                d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <g class="parallax">
+              <use href="#home-gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+            </g>
+          </svg>
+        </div>
+      ) %>
+</section>
