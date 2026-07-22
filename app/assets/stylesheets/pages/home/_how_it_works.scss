@@ -32,12 +32,17 @@
   }
 
   &__image-wrap {
-    flex: 0 1 360px;
+    flex: 0 1 560px;
   }
 
   &__image {
     width: 100%;
-    height: auto;
+    // The source photo is a tall portrait crop (3:4) — cover+object-position
+    // reframes it into the wider, zoomed-in landscape crop from the reference
+    // design without needing a separately-cropped image asset.
+    height: 480px;
+    object-fit: cover;
+    object-position: center 42%;
     border-radius: $radius-xl;
     box-shadow: $shadow-lg;
     display: block;
@@ -98,6 +103,11 @@
 
     &__grid {
       flex-direction: column;
+    }
+
+    &__image {
+      height: auto;
+      object-fit: initial;
     }
 
     &__step {
