@@ -50,8 +50,11 @@
 
 .pricing-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   flex: 1 1 260px;
   max-width: 300px;
+  height: 30rem;
   background: white;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
@@ -113,17 +116,27 @@
   }
 
   &__blurb {
+    flex: 1;
     font-size: $fs-sm;
     color: $color-text-body;
     line-height: 1.5;
     margin-bottom: $space-5;
-    min-height: 2.5rem;
   }
 
   &__cta {
     display: inline-block;
     width: 100%;
     text-decoration: none;
+  }
+
+  &__panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    &.hide {
+      display: none;
+    }
   }
 
   &__pills {

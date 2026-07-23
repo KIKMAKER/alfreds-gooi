@@ -1,13 +1,8 @@
 // ─── Reusable impact stats strip ───────────────────────────────────────────
-// Used on the active-suburb public page; built to be dropped into the
-// homepage redesign too (see app/views/shared/_impact_stats.html.erb).
-// Styled to match the "Gooi Homepage" PDF mockup's stats band: a full-bleed
-// green strip using the same textured background image as the homepage/
-// suburb hero (header-gooi-3.png, see _home.scss .gooi-header and
-// _suburb_landing.scss .suburb-hero — not a flat colour), numbers sitting
-// directly on the background (no card boxes/shadows — that boxed-card look
-// belongs to the unrelated _daily_snapshot.scss component, don't reuse it
-// here), a thin divider under the row, and one muted footnote line underneath.
+// Dark-green textured band (header-gooi-3.png, same texture as the hero),
+// numbers directly on the background in marigold (no card boxes/shadows —
+// that boxed-card look belongs to the unrelated _daily_snapshot.scss
+// component, don't reuse it here), plus a "road to 100 tonnes" progress bar.
 
 .impact-summary {
   position: relative;
@@ -24,19 +19,11 @@
     text-align: center;
   }
 
-  &__title {
-    font-family: $headers-font;
-    color: white;
-    font-size: $fs-display;
-    margin-bottom: $space-10;
-  }
-
   &__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $space-6;
-    padding-bottom: $space-8;
-    border-bottom: 1px solid rgba(white, 0.15);
+    margin-bottom: $space-10;
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
@@ -54,7 +41,7 @@
     font-family: $headers-font;
     font-size: $fs-3xl;
     font-weight: 700;
-    color: white;
+    color: $color-accent;
     line-height: 1.2;
   }
 
@@ -64,9 +51,45 @@
     margin-top: $space-2;
   }
 
+  &__road {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  &__road-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: white;
+    font-size: $fs-sm;
+    font-weight: 600;
+    margin-bottom: $space-2;
+  }
+
+  &__road-percent {
+    color: $color-accent;
+    font-weight: 700;
+  }
+
+  &__road-track {
+    width: 100%;
+    height: 0.5rem;
+    border-radius: $radius-full;
+    background: rgba(white, 0.2);
+    overflow: hidden;
+  }
+
+  &__road-fill {
+    height: 100%;
+    border-radius: $radius-full;
+    background: $color-accent;
+  }
+
   &__footnote {
     font-size: $fs-xs;
     color: rgba(white, 0.55);
     margin-top: $space-6;
+    text-align: center;
   }
 }

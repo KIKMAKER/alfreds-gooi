@@ -50,15 +50,14 @@
 <div class="page-container">
   <%= render "pages/home/hero" %>
   <%= render "pages/home/how_it_works" %>
+  <%= render "pages/home/what_you_can_gooi" %>
+  <%= render "pages/home/pricing" %>
 
   <%= render "shared/impact_stats",
-        title: "Our impact so far",
         total_kg: @total_kg,
         kg_this_week: @kg_this_week,
         household_count: @household_count %>
 
-  <%= render "pages/home/what_you_can_gooi" %>
-  <%= render "pages/home/pricing" %>
   <%= render "pages/home/where_we_collect" %>
   <%= render "pages/home/waitlist" %>
   <%= render "pages/home/testimonials" %>
