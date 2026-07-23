@@ -11,7 +11,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding: $space-20 5%;
+  padding: $space-24 5%;
 
   &__inner {
     max-width: 1140px;
@@ -22,8 +22,8 @@
   &__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: $space-6;
-    margin-bottom: $space-10;
+    gap: $space-8;
+    margin-bottom: $space-12;
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
@@ -39,14 +39,14 @@
 
   &__number {
     font-family: $headers-font;
-    font-size: $fs-3xl;
+    font-size: $fs-hero;
     font-weight: 700;
     color: $color-accent;
     line-height: 1.2;
   }
 
   &__desc {
-    font-size: $fs-sm;
+    font-size: $fs-base;
     color: rgba(white, 0.7);
     margin-top: $space-2;
   }
