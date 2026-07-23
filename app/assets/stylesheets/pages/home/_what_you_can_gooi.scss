@@ -1,12 +1,14 @@
 // ─── Phase 2 homepage overhaul, section 5: what you can gooi ───────────────
-// Dark-green wavy band (matches the reference mockup) — different from the
-// impact-strip/B2B band texture on purpose: this one's a flat $dark-green
-// fill with two cards floating on it, not the header-gooi-3.png photo texture.
+// Same textured background as the hero/impact-strip/B2B band (header-gooi-3.png,
+// not a flat fill) — see feedback_stats_strip_style memory.
 
 .what-you-can-gooi {
   position: relative;
   overflow: hidden;
-  background: $dark-green;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   padding: $space-20 5%;
 
   &__inner {
