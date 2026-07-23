@@ -45,6 +45,12 @@ $radius-full: 9999px;    // circles, avatars
 // Semantic names for the palette already defined in config/_colors.scss
 $color-primary:      $dark-green;
 $color-accent:       $dark-yellow;
+$color-bright-yellow: rgb(251, 183, 24); // reference-mockup yellow — same value
+                                          // as $dark-yellow today, but named/used
+                                          // independently for the hero, impact
+                                          // strip, and B2B band specifically so
+                                          // those don't drift if $dark-yellow ever
+                                          // changes for the rest of the site
 $color-secondary:    $medium-green;
 $color-text-body:    $font-grey;
 $color-text-dark:    #18191F;    // nav links, mobile text — not yet in _colors.scss

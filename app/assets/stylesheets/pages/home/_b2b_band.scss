@@ -24,6 +24,14 @@
     font-family: $headers-font;
     color: white;
     font-size: $fs-display;
+    margin-bottom: $space-2;
+  }
+
+  &__highlight {
+    font-family: $headers-font;
+    color: $color-bright-yellow;
+    font-size: $fs-xl;
+    font-weight: 700;
     margin-bottom: $space-4;
   }
 

@@ -41,7 +41,7 @@
     font-family: $headers-font;
     font-size: $fs-hero;
     font-weight: 700;
-    color: $color-accent;
+    color: $color-bright-yellow;
     line-height: 1.2;
   }
 
@@ -68,7 +68,7 @@
   }
 
   &__road-percent {
-    color: $color-accent;
+    color: $color-bright-yellow;
     font-weight: 700;
   }
 
@@ -83,7 +83,7 @@
   &__road-fill {
     height: 100%;
     border-radius: $radius-full;
-    background: $color-accent;
+    background: $color-bright-yellow;
   }
 
   &__footnote {

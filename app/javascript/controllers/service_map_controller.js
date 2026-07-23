@@ -72,7 +72,9 @@ export default class extends Controller {
 
       this.map.addSource("service-areas", { type: "geojson", data: geo })
 
-      // Fills
+      // Fills — colours match config/_colors.scss ($red/$blue/$medium-green/
+      // $orange). Mapbox paint expressions can't reference SCSS variables, so
+      // these have to stay in sync by hand if the palette ever changes.
       this.map.addLayer({
         id: "areas-fill",
         type: "fill",
@@ -81,10 +83,10 @@ export default class extends Controller {
           "fill-color": [
             "match",
             ["get", "day"],
-            "Monday",    "#E74C3C",
-            "Tuesday",   "#5DADE2",
-            "Wednesday", "#58D68D",
-            "Thursday",  "#F5B041",
+            "Monday",    "#bc4749", // $red
+            "Tuesday",   "#0D6EFD", // $blue
+            "Wednesday", "#108A63", // $medium-green
+            "Thursday",  "#E67E22", // $orange
             /* default */ "#BDC3C7"
           ],
           "fill-opacity": 0.35
@@ -199,10 +201,10 @@ export default class extends Controller {
     const el = this.element.querySelector("#service-map-legend")
     if (!el) return
     el.innerHTML = `
-      <div class="legend-row"><span class="swatch" style="background:#E74C3C"></span> Monday</div>
-      <div class="legend-row"><span class="swatch" style="background:#5DADE2"></span> Tuesday</div>
-      <div class="legend-row"><span class="swatch" style="background:#58D68D"></span> Wednesday</div>
-      <div class="legend-row"><span class="swatch" style="background:#F5B041"></span> Thursday</div>
+      <div class="legend-row"><span class="swatch" style="background:#bc4749"></span> Monday</div>
+      <div class="legend-row"><span class="swatch" style="background:#0D6EFD"></span> Tuesday</div>
+      <div class="legend-row"><span class="swatch" style="background:#108A63"></span> Wednesday</div>
+      <div class="legend-row"><span class="swatch" style="background:#E67E22"></span> Thursday</div>
       <div class="legend-row"><span class="swatch" style="background:#BDC3C7"></span> Not yet serviced</div>
     `
   }
