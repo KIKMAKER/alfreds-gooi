@@ -10,7 +10,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding: $space-24 5%;
+  padding: $space-32 $space-16;
   text-align: center;
 
   &__inner {
@@ -37,5 +37,9 @@
   &__cta {
     display: inline-block;
     text-decoration: none;
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-16 $space-6;
   }
 }
