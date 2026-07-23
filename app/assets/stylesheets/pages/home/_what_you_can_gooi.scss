@@ -74,16 +74,16 @@
     padding: 0;
 
     li {
-      position: relative;
-      padding: $space-2 0 $space-2 $space-5;
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+      padding: $space-2 0;
       font-weight: 600;
       font-size: $fs-base;
 
       &::before {
         content: '';
-        position: absolute;
-        left: 0;
-        top: 0.85em;
+        flex-shrink: 0;
         width: 6px;
         height: 6px;
         border-radius: $radius-full;
