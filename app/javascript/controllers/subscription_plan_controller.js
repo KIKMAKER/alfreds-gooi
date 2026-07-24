@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["durationField", "dateField", "commercialField"]
+  static targets = ["durationField", "dateField", "commercialField", "monthlyInvoicingField"]
 
   connect() {
     const select = this.element.querySelector("select[name*='[plan]']")
@@ -18,5 +18,8 @@ export default class extends Controller {
     this.durationFieldTarget.style.display  = isOnceOff ? "none" : ""
     this.dateFieldTarget.style.display      = isOnceOff ? ""     : "none"
     this.commercialFieldTarget.style.display = isCommercial ? "" : "none"
+    if (this.hasMonthlyInvoicingFieldTarget) {
+      this.monthlyInvoicingFieldTarget.style.display = isOnceOff ? "none" : ""
+    }
   }
 }
