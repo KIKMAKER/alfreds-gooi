@@ -112,9 +112,9 @@
     height: 100%;
 
     // Overrides the inline fill="rgba(255,255,255)" set on the <use> element —
-    // the page background is cream now (.background--cream), not white.
+    // page background is white (.background); this fill just needs to match it.
     use {
-      fill: $color-surface-cream;
+      fill: white;
     }
   }
 
