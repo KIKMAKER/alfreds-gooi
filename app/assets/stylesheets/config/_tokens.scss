@@ -60,8 +60,13 @@ $color-surface-mint: #f5faf9;    // testimonial section bg — not yet in _color
 $color-surface-cream: #f5eedc;  // warm cream bg (BRAND.md) — same value already used
                                  // locally as $suburb-cream/$ig-cream in
                                  // components/_suburb_spotlight.scss and
-                                 // _weekly_snapshot.scss; formalized here since a
-                                 // third consumer (home/_how_it_works) needs it too
+                                 // _weekly_snapshot.scss
+
+// Single adjustable background for "alternate" light sections that sit on
+// an otherwise-white page (how-it-works, the waitlist modal panel) — change
+// this one value to retheme all of them at once instead of hunting through
+// each section's own SCSS file.
+$section-alt-bg: white;
 $color-border:       #e8efee;    // drawer divider, light borders — not yet in _colors.scss
 $color-danger:       $red;
 
