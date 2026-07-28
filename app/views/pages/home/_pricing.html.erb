@@ -49,6 +49,12 @@
           <% if card[:popular] %><span class="pricing-card__badge">Most popular</span><% end %>
           <h3 class="pricing-card__title"><%= card[:plan] %></h3>
 
+          <div class="pricing-card__pills">
+            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="1" data-action="click->pricing-card#select">1 mo</button>
+            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="3" data-action="click->pricing-card#select">3 mo</button>
+            <button type="button" class="duration-pill duration-pill--active" data-pricing-card-target="pill" data-duration="6" data-action="click->pricing-card#select">6 mo</button>
+          </div>
+
           <% [1, 3, 6].each do |duration| %>
             <% quote = PlanPricing.quote(plan: card[:plan], duration: duration, referral_code: @referral_code, discount_code: @discount_code, pct: @pct, amt: @amt) %>
             <div class="pricing-card__panel <%= 'hide' unless duration == 6 %>" data-pricing-card-target="panel" data-duration="<%= duration %>">
@@ -64,15 +70,9 @@
               <p class="pricing-card__blurb"><%= card[:blurb] %></p>
               <%= link_to "Choose #{card[:plan]}",
                     new_account_signup_path(plan: card[:plan], duration: duration, discount_code: @discount_code, referral: @referral_code),
-                    class: "btn-gooi pricing-card__cta" %>
+                    class: "btn-gooi-outline pricing-card__cta" %>
             </div>
           <% end %>
-
-          <div class="pricing-card__pills">
-            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="1" data-action="click->pricing-card#select">1 mo</button>
-            <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="3" data-action="click->pricing-card#select">3 mo</button>
-            <button type="button" class="duration-pill duration-pill--active" data-pricing-card-target="pill" data-duration="6" data-action="click->pricing-card#select">6 mo</button>
-          </div>
         </div>
       <% end %>
     </div>
