@@ -22,6 +22,32 @@
         ) %>
   </section>
 
+  <% if @farm.photo.attached? %>
+    <div class="farm-images-container">
+      <div class="img-1 farm-image">
+        <%= image_tag @farm.photo, alt: @farm.name %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Neighborhoods Served -->
+  <% if @served_suburbs.any? %>
+    <section class="suburbs-index__group mt-3">
+      <h2 class="suburbs-index__group-title">Neighbourhoods served</h2>
+      <p class="suburbs-index__group-subtitle">
+        Every <%= @farm.collection_day %>, Alfred collects organic waste from these neighbourhoods and delivers it to <%= @farm.name %>.
+      </p>
+      <div class="suburbs-index__grid">
+        <% @served_suburbs.each do |suburb| %>
+          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+            <span class="suburbs-index__card-name"><%= suburb.name %></span>
+            <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
   <!-- Impact stats -->
   <section class="farm-impact">
     <div class="farm-impact__inner">
@@ -44,33 +70,6 @@
     </div>
   </section>
 
-  <% if @farm.photo.attached? %>
-    <div class="farm-images-container">
-      <div class="img-1 farm-image">
-        <%= image_tag @farm.photo, alt: @farm.name %>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Neighborhoods Served -->
-  <section class="blog-text-section mt-3">
-    <h1>Neighborhoods Served<span class="yellow-txt">.</span></h1>
-    <p class="blog-paragraph-content">
-      Every <%= @farm.collection_day %>, Alfred collects organic waste from these neighborhoods and delivers it to <%= @farm.name %>:
-    </p>
-    <div class="row mt-4" style="margin: 0 4%">
-      <% @farm.served_suburbs.each_slice((@farm.served_suburbs.size / 3.0).ceil) do |suburb_group| %>
-        <div class="col-md-4">
-          <ul class="list-unstyled">
-            <% suburb_group.each do |suburb| %>
-              <li class="mb-2 text-start">• <%= suburb %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-    </div>
-  </section>
-
   <!--Call to sign up-->
   <div class="yellow-block">
     <h3>Want to add your kitchen scraps to the next compost pile?</h3>
@@ -79,27 +78,27 @@
     </div>
   </div>
 
-  <!-- Recent Drop-offs -->
+  <!-- Recent Drop-offs — same list-row styling as the driver's-day index -->
   <% if @recent_events.any? %>
     <section class="blog-text-section mt-4">
       <h1>Recent Drop-offs<span class="yellow-txt">.</span></h1>
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Weight (kg)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @recent_events.each do |event| %>
-              <tr>
-                <td><%= event.date.strftime('%B %e, %Y') %></td>
-                <td><%= number_with_precision(event.weight_kg || 0, precision: 1) %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+      <div class="dd-list mt-4">
+        <% @recent_events.each do |event| %>
+          <div class="dd-list-item">
+            <div class="dd-list-item__icon">
+              <i class="fa-solid fa-seedling"></i>
+            </div>
+            <div class="dd-list-item__main">
+              <div class="dd-list-item__date"><%= event.date.strftime('%a, %d %b %Y') %></div>
+            </div>
+            <div class="dd-metrics">
+              <div class="dd-metric">
+                <div class="dd-metric__value"><%= number_with_precision(event.weight_kg || 0, precision: 1) %> kg</div>
+                <div class="dd-metric__label">Weight</div>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </div>
     </section>
   <% end %>
