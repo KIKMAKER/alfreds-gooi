@@ -121,29 +121,44 @@
 <% if feeder_farms.any? %>
   <section class="suburb-farms">
     <div class="suburb-farms__inner">
-      <h2 class="suburb-farms__title">
-        <%= "Farm".pluralize(feeder_farms.size) %> <%= @suburb.name %> feeds
-      </h2>
+      <h2 class="suburb-farms__title">The Farm(s) <%= @suburb.name %> feeds</h2>
       <p class="suburb-farms__subtitle">
         Every <%= @suburb.collection_day %>, scraps from <%= @suburb.name %> head here to become compost.
       </p>
-      <div class="suburb-farms__grid">
+      <div class="farms-grid">
         <% feeder_farms.each do |farm| %>
-          <%= link_to farm_path(farm), class: "suburb-farms__card" do %>
-            <span class="suburb-farms__card-name"><%= farm.name %></span>
-            <span class="suburb-farms__card-meta"><%= farm.suburb&.name %></span>
-          <% end %>
+          <div class="farm-card-mini">
+            <%= link_to farm_path(farm), class: "farm-card-link" do %>
+              <div class="farm-image-container">
+                <% if farm.photo.attached? %>
+                  <%= image_tag farm.photo, alt: farm.name, class: "farm-image" %>
+                <% else %>
+                  <div class="farm-image-placeholder">
+                    <i class="fa-solid fa-seedling"></i>
+                  </div>
+                <% end %>
+                <span class="collection-day-badge"><%= farm.collection_day %></span>
+              </div>
+              <div class="farm-card-content">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3><%= farm.name %></h3>
+                  <p class="farm-suburb"><i class="fa-solid fa-location-dot"></i> <%= farm.suburb&.name %></p>
+                </div>
+                <span class="farm-stat"><%= number_with_precision(farm.total_weight_kg || 0, precision: 0) %> kg collected</span>
+              </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
   </section>
 <% end %>
 
-<section class="suburb-cta-section">
-  <div class="suburb-cta-section__overlay">
-    <div class="other-options-section">
-      <div class="other-options-row">
-        <% if @suburb.target? %>
+<% if @suburb.target? %>
+  <section class="suburb-cta-section">
+    <div class="suburb-cta-section__overlay">
+      <div class="other-options-section">
+        <div class="other-options-row">
           <div class="other-option-card other-option-card--interest">
             <h3>We're not in <%= @suburb.name %> yet</h3>
             <p>We plan our routes suburb by suburb, and interest is what tips the decision. Let us know you're ready and we'll be in touch the moment we're headed your way.</p>
@@ -156,21 +171,8 @@
               <%= link_to "Register your interest", root_path(anchor: "interest", suburb_id: @suburb.id), class: "btn-gooi" %>
             </div>
           </div>
-        <% else %>
-          <div class="other-option-card other-option-card--commercial">
-            <h3>Commercial Collection</h3>
-            <p>Running a restaurant, café, or business? We offer flexible commercial collection tailored to your needs.</p>
-            <ul>
-              <li>Weekly or multiple collections per week</li>
-              <li>Volume-based pricing (45L buckets)</li>
-              <li>Flexible contract lengths (3, 6, or 12 months)</li>
-            </ul>
-            <div class="mt-auto pt-3">
-              <%= link_to "Get Started", new_commercial_inquiry_account_path, class: "btn-gooi" %>
-            </div>
-          </div>
-        <% end %>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+<% end %>

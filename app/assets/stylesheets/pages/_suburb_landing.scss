@@ -196,6 +196,9 @@
 }
 
 // ─── Farm(s) this suburb feeds — see Suburb#feeder_farms ───────────────────
+// .farms-grid/.farm-card-mini (and their inner classes) are reused as-is
+// from pages/_home.scss — the same cards the About page's partner-farms
+// section uses, not a bespoke card style for this page.
 .suburb-farms {
   padding: $space-14 5%;
   text-align: center;
@@ -216,41 +219,5 @@
     color: $color-text-body;
     font-size: $fs-base;
     margin-bottom: $space-8;
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: $space-4;
-  }
-
-  &__card {
-    display: flex;
-    flex-direction: column;
-    gap: $space-1;
-    background: white;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    box-shadow: $shadow-base;
-    padding: $space-5;
-    text-decoration: none;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-
-    &:hover {
-      box-shadow: $shadow-lg;
-      transform: translateY(-2px);
-    }
-  }
-
-  &__card-name {
-    font-family: $headers-font;
-    color: $dark-green;
-    font-size: $fs-lg;
-    font-weight: 700;
-  }
-
-  &__card-meta {
-    color: $color-text-body;
-    font-size: $fs-sm;
   }
 }

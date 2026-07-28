@@ -88,7 +88,15 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
 
     get suburb_path(suburb)
 
-    assert_select ".suburb-farms__card[href=?]", farm_path(farm), text: /Soil for Life/
+    assert_select ".farm-card-link[href=?]", farm_path(farm), text: /Soil for Life/
+  end
+
+  test "active-suburb page has no commercial-collection CTA (dropped from this page)" do
+    suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+
+    get suburb_path(suburb)
+
+    assert_select ".suburb-cta-section", count: 0
   end
 
   test "active-suburb page hides the farms section when no farm matches the day" do
