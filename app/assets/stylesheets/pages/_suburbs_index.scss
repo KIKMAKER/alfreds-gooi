@@ -1,0 +1,138 @@
+// ─── Public suburbs index ───────────────────────────────────────────────
+// Hero matches the about/home hero pattern (header-gooi-3.png texture,
+// wave into the page background) — see pages/_about_hero.scss.
+
+.suburbs-hero {
+  position: relative;
+  text-align: center;
+  background-image: url('header-gooi-3.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: $space-16 5% $space-20;
+  overflow: hidden;
+
+  &__inner {
+    max-width: 42rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: $fs-xs;
+    font-weight: 600;
+    color: $color-accent;
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    font-size: $fs-hero;
+    line-height: 1.15;
+    color: white;
+    margin-bottom: $space-5;
+  }
+
+  &__title-highlight {
+    color: $color-accent;
+  }
+
+  &__subtitle {
+    font-size: $fs-md;
+    color: rgba(white, 0.9);
+    line-height: 1.6;
+  }
+
+  .wave-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 0;
+  }
+
+  .waves {
+    width: 100%;
+    height: 100%;
+
+    use {
+      fill: white;
+    }
+  }
+
+  @media (max-width: 700px) {
+    padding: $space-10 5% $space-16;
+
+    &__title {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+  }
+}
+
+.suburbs-index {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: $space-16 5%;
+
+  &__group {
+    margin-bottom: $space-16;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__group-title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-2xl;
+    margin-bottom: $space-2;
+  }
+
+  &__group-subtitle {
+    color: $color-text-body;
+    font-size: $fs-base;
+    margin-bottom: $space-6;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: $space-4;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    background: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    box-shadow: $shadow-base;
+    padding: $space-5;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      box-shadow: $shadow-lg;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__card-name {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-lg;
+    font-weight: 700;
+  }
+
+  &__card-meta {
+    color: $color-text-body;
+    font-size: $fs-sm;
+  }
+}

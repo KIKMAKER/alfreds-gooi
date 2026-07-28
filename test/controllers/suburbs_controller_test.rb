@@ -1,6 +1,21 @@
 require "test_helper"
 
 class SuburbsControllerTest < ActionDispatch::IntegrationTest
+  test "index lists active, waitlist, and target suburbs, but not drop_off_only" do
+    active = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+    waitlist = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
+    target = Suburb.create!(name: "Future Area", status: :target)
+    drop_off = Suburb.create!(name: "Drop Off Only", status: :drop_off_only)
+
+    get suburbs_path
+
+    assert_response :success
+    assert_select "a.suburbs-index__card[href=?]", suburb_path(active)
+    assert_select "a.suburbs-index__card[href=?]", suburb_path(waitlist)
+    assert_select "a.suburbs-index__card[href=?]", suburb_path(target)
+    assert_select "a.suburbs-index__card[href=?]", suburb_path(drop_off), count: 0
+  end
+
   test "renders the launch page for a waitlist suburb" do
     suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
 

@@ -5,7 +5,8 @@ export default class extends Controller {
   static values = {
     token: String,
     geoUrl: String,
-    collectionDays: Object
+    collectionDays: Object,
+    suburbSlugs: Object
   }
 
   // Mapbox GL is a heavy bundle to load and render — defer it until the
@@ -32,6 +33,14 @@ export default class extends Controller {
     this.dayByStandardizedName = {}
     for (const [name, day] of Object.entries(this.collectionDaysValue || {})) {
       this.dayByStandardizedName[this.standardize(name)] = day
+    }
+
+    // Same idea for suburb page slugs, so a click can link to /suburbs/:slug
+    // when one exists (active/waitlist-with-launch-date/target suburbs only —
+    // see Suburb.publicly_visible).
+    this.slugByStandardizedName = {}
+    for (const [name, slug] of Object.entries(this.suburbSlugsValue || {})) {
+      this.slugByStandardizedName[this.standardize(name)] = slug
     }
 
     mapboxgl.accessToken = this.tokenValue
@@ -107,9 +116,11 @@ export default class extends Controller {
         if (!f) return
         const name = f.properties?._label || this.nameFromProps(f.properties) || "Area"
         const day  = f.properties?.day || "Not yet serviced"
+        const slug = this.slugByStandardizedName[this.standardize(name)]
+        const link = slug ? `<br/><a href="/suburbs/${slug}">Visit suburb page &rarr;</a>` : ""
         new mapboxgl.Popup()
           .setLngLat(e.lngLat)
-          .setHTML(`<strong>${name}</strong><br/>${day}`)
+          .setHTML(`<strong>${name}</strong><br/>${day}${link}`)
           .addTo(this.map)
       })
       this.map.on("mouseenter", "areas-fill", () => this.map.getCanvas().style.cursor = "pointer")

@@ -24,6 +24,16 @@ class Suburb < ApplicationRecord
     %w[Monday Tuesday Wednesday Thursday].index_with { |day| active.where(collection_day: day).order(:name).pluck(:name) }
   end
 
+  # Suburbs that actually have a live /suburbs/:slug page — active, or waitlist
+  # with a launch_date set (mirrors the #waitlist? override), or target. Used
+  # by the public suburbs index and the homepage map's click-to-suburb-page
+  # feature so neither links anywhere SuburbsController#show would 404.
+  def self.publicly_visible
+    where(status: :active)
+      .or(where(status: :waitlist).where.not(launch_date: nil))
+      .or(where(status: :target))
+  end
+
   # Overrides the enum-generated waitlist? (which would just check status == "waitlist").
   # Single source of truth for "is this suburb currently taking locked-in-rate launch
   # signups" — new-signup validation, payment processing, and the public launch page all

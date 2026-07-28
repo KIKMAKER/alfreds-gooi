@@ -26,6 +26,7 @@ class PagesController < ApplicationController
     @kg_this_week = DropOffEvent.where(date: Date.current.beginning_of_week..Date.current.end_of_week).sum(:weight_kg).round
     @household_count = Subscription.active.count
     @interest_counts = Interest.where.not(suburb_id: nil).group(:suburb_id).count
+    @suburb_slugs_by_name = Suburb.publicly_visible.pluck(:name, :slug).to_h
   end
 
   def today

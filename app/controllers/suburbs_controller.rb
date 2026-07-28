@@ -1,6 +1,15 @@
 class SuburbsController < ApplicationController
   skip_before_action :authenticate_user!
 
+  def index
+    @active_suburbs = Suburb.active.order(:name)
+    # Suburb#waitlist? (overridden on the model) also requires launch_date to
+    # be present — mirrored here in SQL so this list matches exactly what
+    # #show will actually render instead of 404 on.
+    @waitlist_suburbs = Suburb.where(status: :waitlist).where.not(launch_date: nil).order(:name)
+    @target_suburbs = Suburb.target.order(:name)
+  end
+
   def show
     @suburb = Suburb.find_by!(slug: params[:slug])
     raise ActiveRecord::RecordNotFound unless @suburb.waitlist? || @suburb.active? || @suburb.target?

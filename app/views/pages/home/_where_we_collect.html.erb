@@ -14,7 +14,8 @@
       data-controller="service-map"
       data-service-map-token-value="<%= Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>"
       data-service-map-geo-url-value="<%= asset_path('Suburbs.geojson') %>"
-      data-service-map-collection-days-value='<%= raw Suburb.active.pluck(:name, :collection_day).to_h.to_json %>'>
+      data-service-map-collection-days-value='<%= raw Suburb.active.pluck(:name, :collection_day).to_h.to_json %>'
+      data-service-map-suburb-slugs-value='<%= raw @suburb_slugs_by_name.to_json %>'>
 
       <div class="where-we-collect__controls">
         <div class="where-we-collect__toggle">
@@ -35,7 +36,8 @@
 
     <p class="where-we-collect__note">
       <strong>Heads-up:</strong> boundaries are indicative; if you're on the edge we'll
-      confirm your day.
+      confirm your day. Click a suburb on the map, or
+      <%= link_to "learn about gooi in your suburb", suburbs_path %> for the full list.
     </p>
 
     <div class="where-we-collect__cards">

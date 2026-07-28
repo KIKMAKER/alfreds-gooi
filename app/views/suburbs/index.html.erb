@@ -1,0 +1,75 @@
+<% content_for :meta_title, "Suburbs We Collect In - Gooi Cape Town" %>
+<% content_for :meta_description, "See every Cape Town suburb Gooi collects from, is launching in soon, or is planning to reach next." %>
+
+<%# Public suburbs index — same hero language as the homepage/About page. %>
+<section class="suburbs-hero">
+  <div class="suburbs-hero__inner">
+    <p class="suburbs-hero__eyebrow">Where we're headed</p>
+    <h1 class="suburbs-hero__title">Gooi in your <span class="suburbs-hero__title-highlight">neighbourhood</span>.</h1>
+    <p class="suburbs-hero__subtitle">
+      Every suburb we're already serving, launching in soon, or planning to reach next — find
+      yours and see what's on offer.
+    </p>
+  </div>
+
+  <%= raw %(
+        <div class="wave-container">
+          <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+              <path id="suburbs-index-gentle-wave"
+                d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+            </defs>
+            <g class="parallax">
+              <use href="#suburbs-index-gentle-wave" x="0" y="0" fill="rgba(255,255,255)" />
+            </g>
+          </svg>
+        </div>
+      ) %>
+</section>
+
+<div class="suburbs-index">
+  <% if @active_suburbs.any? %>
+    <section class="suburbs-index__group">
+      <h2 class="suburbs-index__group-title">Now serving</h2>
+      <p class="suburbs-index__group-subtitle">Weekly collections are already running in these suburbs.</p>
+      <div class="suburbs-index__grid">
+        <% @active_suburbs.each do |suburb| %>
+          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+            <span class="suburbs-index__card-name"><%= suburb.name %></span>
+            <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @waitlist_suburbs.any? %>
+    <section class="suburbs-index__group">
+      <h2 class="suburbs-index__group-title">Launching soon</h2>
+      <p class="suburbs-index__group-subtitle">Lock in the OG rate before we go live.</p>
+      <div class="suburbs-index__grid">
+        <% @waitlist_suburbs.each do |suburb| %>
+          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+            <span class="suburbs-index__card-name"><%= suburb.name %></span>
+            <span class="suburbs-index__card-meta">Launching <%= suburb.launch_date.strftime("%-d %B %Y") %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @target_suburbs.any? %>
+    <section class="suburbs-index__group">
+      <h2 class="suburbs-index__group-title">Coming eventually</h2>
+      <p class="suburbs-index__group-subtitle">Not on the route yet — register your interest and help us get there sooner.</p>
+      <div class="suburbs-index__grid">
+        <% @target_suburbs.each do |suburb| %>
+          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+            <span class="suburbs-index__card-name"><%= suburb.name %></span>
+            <span class="suburbs-index__card-meta">Not yet planned</span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>
