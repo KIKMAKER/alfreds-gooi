@@ -7,6 +7,10 @@ class PagesController < ApplicationController
     @farms = DropOffSite.order(:name).limit(4)
     @testimonials = Testimonial.public_testimonials.includes(:user).limit(6)
     @once_off_price = Product.find_by(title: "Once-off Collection")&.price
+    @starter_kit_prices = {
+      "Standard" => Product.find_by(title: "Standard Starter Kit")&.price,
+      "XL" => Product.find_by(title: "XL Starter Kit")&.price,
+    }
     if @discount_code.present?
       found_code = DiscountCode.find_by(code: @discount_code.upcase)
       if found_code.discount_cents.present?

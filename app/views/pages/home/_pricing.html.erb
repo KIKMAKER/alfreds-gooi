@@ -61,6 +61,9 @@
                 R<%= number_with_precision(quote.per_month, precision: 0) %><span>/mo</span>
               </p>
               <p class="pricing-card__total">Total: R<%= number_with_precision(quote.total, precision: 0) %></p>
+              <% if @starter_kit_prices[card[:plan]] %>
+                <p class="pricing-card__starter-kit">+ R<%= number_with_precision(@starter_kit_prices[card[:plan]], precision: 0) %> starter kit</p>
+              <% end %>
               <p class="pricing-card__blurb"><%= card[:blurb] %></p>
               <div class="pricing-card__pills">
                 <button type="button" class="duration-pill" data-pricing-card-target="pill" data-duration="1" data-action="click->pricing-card#select">1 mo</button>
