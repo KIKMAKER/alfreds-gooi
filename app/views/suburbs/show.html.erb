@@ -121,7 +121,7 @@
 <% if feeder_farms.any? %>
   <section class="suburb-farms">
     <div class="suburb-farms__inner">
-      <h2 class="suburb-farms__title">The Farm(s) <%= @suburb.name %> feeds</h2>
+      <h2 class="suburb-farms__title">The <%= "Farm".pluralize(feeder_farms.size) %> <%= @suburb.name %> feeds</h2>
       <p class="suburb-farms__subtitle">
         Every <%= @suburb.collection_day %>, scraps from <%= @suburb.name %> head here to become compost.
       </p>
