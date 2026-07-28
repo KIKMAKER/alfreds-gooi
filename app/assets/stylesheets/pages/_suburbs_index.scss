@@ -75,9 +75,12 @@
 }
 
 .suburbs-index {
-  max-width: 1140px;
-  margin: 0 auto;
   padding: $space-16 5%;
+
+  &__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
 
   &__group {
     margin-bottom: $space-16;

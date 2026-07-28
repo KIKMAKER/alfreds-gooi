@@ -27,49 +27,51 @@
       ) %>
 </section>
 
-<div class="suburbs-index">
-  <% if @active_suburbs.any? %>
-    <section class="suburbs-index__group">
-      <h2 class="suburbs-index__group-title">Now serving</h2>
-      <p class="suburbs-index__group-subtitle">Weekly collections are already running in these suburbs.</p>
-      <div class="suburbs-index__grid">
-        <% @active_suburbs.each do |suburb| %>
-          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
-            <span class="suburbs-index__card-name"><%= suburb.name %></span>
-            <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+<section class="suburbs-index">
+  <div class="suburbs-index__inner">
+    <% if @active_suburbs.any? %>
+      <section class="suburbs-index__group">
+        <h2 class="suburbs-index__group-title">Now serving</h2>
+        <p class="suburbs-index__group-subtitle">Weekly collections are already running in these suburbs.</p>
+        <div class="suburbs-index__grid">
+          <% @active_suburbs.each do |suburb| %>
+            <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+              <span class="suburbs-index__card-name"><%= suburb.name %></span>
+              <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
+        </div>
+      </section>
+    <% end %>
 
-  <% if @waitlist_suburbs.any? %>
-    <section class="suburbs-index__group">
-      <h2 class="suburbs-index__group-title">Launching soon</h2>
-      <p class="suburbs-index__group-subtitle">Lock in the OG rate before we go live.</p>
-      <div class="suburbs-index__grid">
-        <% @waitlist_suburbs.each do |suburb| %>
-          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
-            <span class="suburbs-index__card-name"><%= suburb.name %></span>
-            <span class="suburbs-index__card-meta">Launching <%= suburb.launch_date.strftime("%-d %B %Y") %></span>
+    <% if @waitlist_suburbs.any? %>
+      <section class="suburbs-index__group">
+        <h2 class="suburbs-index__group-title">Launching soon</h2>
+        <p class="suburbs-index__group-subtitle">Lock in the OG rate before we go live.</p>
+        <div class="suburbs-index__grid">
+          <% @waitlist_suburbs.each do |suburb| %>
+            <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+              <span class="suburbs-index__card-name"><%= suburb.name %></span>
+              <span class="suburbs-index__card-meta">Launching <%= suburb.launch_date.strftime("%-d %B %Y") %></span>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
+        </div>
+      </section>
+    <% end %>
 
-  <% if @target_suburbs.any? %>
-    <section class="suburbs-index__group">
-      <h2 class="suburbs-index__group-title">Coming eventually</h2>
-      <p class="suburbs-index__group-subtitle">Not on the route yet — register your interest and help us get there sooner.</p>
-      <div class="suburbs-index__grid">
-        <% @target_suburbs.each do |suburb| %>
-          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
-            <span class="suburbs-index__card-name"><%= suburb.name %></span>
-            <span class="suburbs-index__card-meta">Not yet planned</span>
+    <% if @target_suburbs.any? %>
+      <section class="suburbs-index__group">
+        <h2 class="suburbs-index__group-title">Coming eventually</h2>
+        <p class="suburbs-index__group-subtitle">Not on the route yet — register your interest and help us get there sooner.</p>
+        <div class="suburbs-index__grid">
+          <% @target_suburbs.each do |suburb| %>
+            <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+              <span class="suburbs-index__card-name"><%= suburb.name %></span>
+              <span class="suburbs-index__card-meta">Not yet planned</span>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
-</div>
+        </div>
+      </section>
+    <% end %>
+  </div>
+</section>
