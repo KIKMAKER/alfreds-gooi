@@ -6,6 +6,7 @@
       <h4 class="farm-hero__subtitle"><%= @farm.suburb&.name %></h4>
       <p class="farm-hero__story"><em>One of our valued composting partners, helping turn Cape Town's food waste into healthy soil.</em></p>
       <p class="farm-hero__story"><%= @farm.story %></p>
+      <%= link_to "Sign up", root_path(anchor: "pricing"), class: "btn-gooi farm-hero__cta" %>
     </div>
     <%= raw %(
           <div class="wave-container">
@@ -32,24 +33,36 @@
 
   <!-- Neighborhoods Served -->
   <% if @served_suburbs.any? %>
-    <section class="suburbs-index__group mt-3">
-      <h2 class="suburbs-index__group-title">Neighbourhoods served</h2>
-      <p class="suburbs-index__group-subtitle">
-        Every <%= @farm.collection_day %>, Alfred collects organic waste from these neighbourhoods and delivers it to <%= @farm.name %>.
-      </p>
-      <div class="suburbs-index__grid">
-        <% @served_suburbs.each do |suburb| %>
-          <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
-            <span class="suburbs-index__card-name"><%= suburb.name %></span>
-            <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+    <section class="farm-neighbourhoods">
+      <div class="farm-neighbourhoods__inner">
+        <h2 class="farm-neighbourhoods__title">Neighbourhoods served</h2>
+        <p class="farm-neighbourhoods__subtitle">
+          Every <%= @farm.collection_day %>, Alfred collects organic waste from these neighbourhoods and delivers it to <%= @farm.name %>.
+        </p>
+        <div class="suburbs-index__grid">
+          <% @served_suburbs.each do |suburb| %>
+            <%= link_to suburb_path(suburb), class: "suburbs-index__card" do %>
+              <span class="suburbs-index__card-name"><%= suburb.name %></span>
+              <span class="suburbs-index__card-meta">Collections every <%= suburb.collection_day&.capitalize %></span>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
       </div>
     </section>
   <% end %>
 
   <!-- Impact stats -->
   <section class="farm-impact">
+    <%= raw %(
+          <div class="wave-edge wave-edge--top">
+            <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+              <defs>
+                <path id="farm-impact-wave-top" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+              </defs>
+              <use href="#farm-impact-wave-top" x="0" y="0" />
+            </svg>
+          </div>
+        ) %>
     <div class="farm-impact__inner">
       <h2 class="farm-impact__title">Our impact together</h2>
       <p class="farm-impact__subtitle">Since partnering with <%= @farm.name %>, we've made a real difference in diverting organic waste from landfills.</p>
@@ -68,20 +81,22 @@
         </div>
       </div>
     </div>
+    <%= raw %(
+          <div class="wave-edge wave-edge--bottom">
+            <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+              <defs>
+                <path id="farm-impact-wave-bottom" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+              </defs>
+              <use href="#farm-impact-wave-bottom" x="0" y="0" />
+            </svg>
+          </div>
+        ) %>
   </section>
-
-  <!--Call to sign up-->
-  <div class="yellow-block">
-    <h3>Want to add your kitchen scraps to the next compost pile?</h3>
-    <div class="mt-4 mb-3">
-      <%= link_to 'Sign Up', root_path(anchor: "pricing"), class: 'btn-gooi' %>
-    </div>
-  </div>
 
   <!-- Recent Drop-offs — same list-row styling as the driver's-day index -->
   <% if @recent_events.any? %>
     <section class="blog-text-section mt-4">
-      <h1>Recent Drop-offs<span class="yellow-txt">.</span></h1>
+      <h1 class="farm-section-title">Recent Drop-offs</h1>
       <div class="dd-list mt-4">
         <% @recent_events.each do |event| %>
           <div class="dd-list-item">
@@ -103,13 +118,13 @@
     </section>
   <% end %>
 
-  <!-- Social Links and Website -->
-  <!-- Location and Contact -->
-  <section class="blog-text-section my-5">
-    <h1>Connect with <%= @farm.name %><span class="yellow-txt">.</span></h1>
-    <% if @farm.website.present? || @farm.instagram_handle.present? || @farm.facebook_url.present? %>
-      <section class="blog-text-section">
-        <div class="d-flex justify-content-between gap-4 mt-4">
+  <!-- Social Links, Website, Location -->
+  <section class="farm-connect">
+    <div class="farm-connect__inner">
+      <h1 class="farm-section-title">Connect with <%= @farm.name %></h1>
+
+      <% if @farm.website.present? || @farm.instagram_handle.present? || @farm.facebook_url.present? %>
+        <div class="farm-connect__social">
           <% if @farm.website.present? %>
             <%= link_to @farm.website, target: "_blank", class: "text-decoration-none" do %>
               <div class="farm-social-link">
@@ -137,20 +152,25 @@
             <% end %>
           <% end %>
         </div>
-      </section>
-    <% end %>
-    <div class="d-flex mt-4">
-      <p class="blog-paragraph-content w-75">
-        <%= @farm.name %> can be found in <%= @farm.suburb&.name %>. Feel free to pop in and connect with the soil, the farmers and the produce.
+      <% end %>
+
+      <p class="farm-connect__text">
+        <%= @farm.name %> can be found in <%= @farm.suburb&.name %>. Feel free to pop in and connect with
+        the soil, the farmers and the produce.
       </p>
 
       <% if @farm.latitude.present? && @farm.longitude.present? %>
-        <div class="mt-2 w-25">
-          <%= link_to "Google Maps",
-              "https://maps.google.com/?q=#{@farm.latitude},#{@farm.longitude}",
-              target: "_blank",
-              class: "btn-gooi-green mb-2" %>
-        </div>
+        <% mapbox_token = Rails.application.credentials.dig(:mapbox, :public_token) || ENV['MAPBOX_API_KEY'] %>
+        <% if mapbox_token.present? %>
+          <div class="farm-connect__map">
+            <%= image_tag "https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-l+013f3a(#{@farm.longitude},#{@farm.latitude})/#{@farm.longitude},#{@farm.latitude},14,0/800x400@2x?access_token=#{mapbox_token}",
+                  alt: "Map showing #{@farm.name}'s location", loading: "lazy" %>
+          </div>
+        <% end %>
+        <%= link_to "Open in Google Maps",
+            "https://maps.google.com/?q=#{@farm.latitude},#{@farm.longitude}",
+            target: "_blank",
+            class: "btn-gooi-green farm-connect__map-cta" %>
       <% end %>
     </div>
   </section>

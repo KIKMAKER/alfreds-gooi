@@ -49,6 +49,12 @@
     line-height: 1.6;
   }
 
+  &__cta {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: $space-6;
+  }
+
   .wave-container {
     position: absolute;
     left: 0;
@@ -78,16 +84,20 @@
 }
 
 .farm-impact {
+  position: relative;
+  overflow: hidden;
   background-image: url('header-gooi-3.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding: $space-14 5%;
+  padding: $space-16 5%;
   text-align: center;
 
   &__inner {
     max-width: 1140px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   &__title {
@@ -133,5 +143,86 @@
     font-size: $fs-sm;
     color: rgba(white, 0.7);
     margin-top: $space-2;
+  }
+}
+
+// ─── Neighbourhoods served — cards reused from .suburbs-index__grid/__card,
+// but this section's own heading is deliberately not shared with the
+// suburbs index page (that one needs left-aligned, this one centred).
+.farm-neighbourhoods {
+  padding: $space-14 5%;
+
+  &__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-family: $headers-font;
+    color: $dark-green;
+    font-size: $fs-display;
+    text-align: center;
+    margin-bottom: $space-2;
+  }
+
+  &__subtitle {
+    color: $color-text-body;
+    font-size: $fs-base;
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto $space-8;
+  }
+}
+
+// Shared centred heading for the page's remaining plain content sections
+// (Recent Drop-offs, Connect with X) — replaces the old left-aligned
+// .blog-text-section > h1 + yellow-txt-dot convention on this page.
+.farm-section-title {
+  text-align: center;
+  font-family: $headers-font;
+  color: $dark-green;
+  font-size: $fs-display;
+  margin-bottom: $space-6;
+}
+
+.farm-connect {
+  padding: $space-14 5%;
+  text-align: center;
+
+  &__inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  &__social {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: $space-6;
+    margin-bottom: $space-6;
+  }
+
+  &__text {
+    color: $color-text-body;
+    font-size: $fs-base;
+    line-height: 1.6;
+    margin-bottom: $space-6;
+  }
+
+  &__map {
+    margin-bottom: $space-6;
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: $radius-lg;
+      box-shadow: $shadow-base;
+      display: block;
+    }
+  }
+
+  &__map-cta {
+    display: inline-block;
+    text-decoration: none;
   }
 }
