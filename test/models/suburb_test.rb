@@ -97,6 +97,23 @@ class SuburbTest < ActiveSupport::TestCase
     assert suburb.reload.waitlist?
   end
 
+  test "feeder_farms returns drop-off sites open on the same collection_day" do
+    suburb = Suburb.create!(name: "Bakoven", collection_day: "Wednesday")
+    wednesday_farm = DropOffSite.create!(name: "Soil for Life", street_address: "Rosemead Avenue, Constantia",
+      suburb: Suburb.find_or_create_by!(name: "Constantia") { |s| s.collection_day = "Wednesday" },
+      collection_day: "Wednesday", fee_per_kg: 0)
+    DropOffSite.create!(name: "Langa AgriHub", street_address: "Washington Street, Langa",
+      suburb: Suburb.find_or_create_by!(name: "Langa") { |s| s.status = :drop_off_only },
+      collection_day: "Monday", fee_per_kg: 0)
+
+    assert_equal [wednesday_farm], suburb.feeder_farms.to_a
+  end
+
+  test "feeder_farms is empty when the suburb has no collection_day yet" do
+    suburb = Suburb.create!(name: "Not Yet Planned", status: :target)
+    assert_empty suburb.feeder_farms
+  end
+
   test "cannot be destroyed while a subscription references it" do
     suburb = Suburb.create!(name: "Referenced Suburb", collection_day: "Monday")
     user = User.create!(first_name: "Test", last_name: "User", email: "suburb_test@example.com", phone_number: "+27831112222", password: "password")

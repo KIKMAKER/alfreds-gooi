@@ -80,6 +80,25 @@ class SuburbsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".suburb-hero__stats", text: /2 neighbours gooi-ing weekly/
   end
 
+  test "active-suburb page lists the farm(s) it feeds, linking to their show pages" do
+    suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+    farm = DropOffSite.create!(name: "Soil for Life", street_address: "Rosemead Avenue, Constantia",
+      suburb: Suburb.find_or_create_by!(name: "Constantia") { |s| s.collection_day = "Tuesday" },
+      collection_day: "Tuesday", fee_per_kg: 0)
+
+    get suburb_path(suburb)
+
+    assert_select ".suburb-farms__card[href=?]", farm_path(farm), text: /Soil for Life/
+  end
+
+  test "active-suburb page hides the farms section when no farm matches the day" do
+    suburb = suburb_fixture("Rondebosch", collection_day: "Tuesday")
+
+    get suburb_path(suburb)
+
+    assert_select ".suburb-farms", count: 0
+  end
+
   test "pricing card links carry suburb_id, plan, duration, and og=true" do
     suburb = Suburb.create!(name: "Launch Area", status: :waitlist, launch_date: Date.current + 3.weeks, collection_day: "Tuesday")
     Product.find_or_create_by!(title: "Standard 6 month OG subscription") { |p| p.description = "OG rate"; p.price = 720; p.billing_type = "invoice_only" }

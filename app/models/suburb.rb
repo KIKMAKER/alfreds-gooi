@@ -34,6 +34,19 @@ class Suburb < ApplicationRecord
       .or(where(status: :target))
   end
 
+  # Which partner farm(s) this suburb's scraps end up at. There's no direct
+  # FK for this (a DropOffSite's own #suburb association is where that farm
+  # is *located*, not who it receives from) — the only real link is that a
+  # driver's route on a given day collects from suburbs on that day and
+  # drops off at farms open that same day. DropOffSite#served_suburbs
+  # already uses this exact same day-match in the other direction; this is
+  # its mirror, kept intentionally just as simple (no per-route/capacity
+  # modelling — day-matching is the established convention here).
+  def feeder_farms
+    return DropOffSite.none if collection_day.blank?
+    DropOffSite.where(collection_day: collection_day).order(:name)
+  end
+
   # Overrides the enum-generated waitlist? (which would just check status == "waitlist").
   # Single source of truth for "is this suburb currently taking locked-in-rate launch
   # signups" — new-signup validation, payment processing, and the public launch page all

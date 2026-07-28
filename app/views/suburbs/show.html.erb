@@ -117,6 +117,28 @@
 
 <% end %>
 
+<% feeder_farms = @suburb.feeder_farms %>
+<% if feeder_farms.any? %>
+  <section class="suburb-farms">
+    <div class="suburb-farms__inner">
+      <h2 class="suburb-farms__title">
+        <%= "Farm".pluralize(feeder_farms.size) %> <%= @suburb.name %> feeds
+      </h2>
+      <p class="suburb-farms__subtitle">
+        Every <%= @suburb.collection_day %>, scraps from <%= @suburb.name %> head here to become compost.
+      </p>
+      <div class="suburb-farms__grid">
+        <% feeder_farms.each do |farm| %>
+          <%= link_to farm_path(farm), class: "suburb-farms__card" do %>
+            <span class="suburb-farms__card-name"><%= farm.name %></span>
+            <span class="suburb-farms__card-meta"><%= farm.suburb&.name %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>
+
 <section class="suburb-cta-section">
   <div class="suburb-cta-section__overlay">
     <div class="other-options-section">
