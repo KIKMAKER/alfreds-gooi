@@ -217,6 +217,25 @@
       </div>
     </div>
 
+    <%# Waste stream — only relevant for protein subscribers, and only when
+        this particular collection didn't match the subscription's default %>
+    <% if @subscription.protein_waste_stream? %>
+      <div class="dd-form-card">
+        <div class="dd-form-card__header">
+          <i class="fa-solid fa-drumstick-bite"></i>
+          <h3>Waste stream</h3>
+        </div>
+        <div class="dd-form-card__body">
+          <%= f.input :waste_stream_override,
+                as: :select,
+                collection: Collection.waste_stream_overrides.keys.map { |s| [s.titleize, s] },
+                include_blank: "Use subscription default (Protein)",
+                label: false,
+                hint: "Only set this if this collection didn't match the subscription — e.g. no protein in the bucket this time." %>
+        </div>
+      </div>
+    <% end %>
+
     <%# Message for Kiki %>
     <div class="dd-form-card">
       <div class="dd-form-card__header">
