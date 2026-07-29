@@ -348,6 +348,7 @@ Rails.application.routes.draw do
   # Sales decks — public, no auth
   get 'estate-deck', to: 'estate_decks#show', as: :estate_deck
   get 'office-deck', to: 'office_decks#show', as: :office_deck
+  get 'constantia-circular-deck', to: 'constantia_circular_decks#show', as: :constantia_circular_deck
 
   # blocks (apartment blocks / estates — public landing pages)
   resources :blocks, only: [:show], param: :slug do

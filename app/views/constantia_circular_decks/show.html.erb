@@ -1,0 +1,413 @@
+<%# Constantia Circular pilot proposal deck — public, no auth. Inline SVGs with Stimulus slide navigation. %>
+<% content_for :meta_title, "Constantia Circular | A 12-Month Household & Precinct Organics Pilot | Gooi" %>
+<% content_for :meta_description, "Proposal for a 12-month household and precinct organics pilot in Constantia, prepared for the Constantia Residents' Association and the City of Cape Town." %>
+
+<div class="constantia-circular-deck" data-controller="constantia-circular-deck">
+
+  <%# ── Slides ──────────────────────────────────────────────────────────────── %>
+
+  <%# 1. Cover %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#013f3a"/>
+      <circle cx="1060" cy="260" r="320" fill="rgba(132,203,163,0.07)"/>
+      <circle cx="1180" cy="140" r="210" fill="rgba(132,203,163,0.06)"/>
+      <circle cx="960"  cy="460" r="190" fill="rgba(132,203,163,0.05)"/>
+      <circle cx="1140" cy="540" r="130" fill="rgba(251,183,24,0.04)"/>
+      <circle cx="820"  cy="200" r="100" fill="rgba(132,203,163,0.04)"/>
+      <text x="64" y="180" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">PROPOSAL · CONSTANTIA RESIDENTS' ASSOCIATION · CITY OF CAPE TOWN</text>
+      <text x="64" y="256" font-family="Georgia, 'Libre Baskerville', serif" font-size="80" font-weight="bold" fill="white">Constantia</text>
+      <text x="64" y="344" font-family="Georgia, 'Libre Baskerville', serif" font-size="80" font-weight="bold" fill="#84cba3">Circular.</text>
+      <text x="64" y="396" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.60)">A 12-month household &amp; precinct organics pilot —</text>
+      <text x="64" y="420" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.60)">the first formal Cape Town suburb to run one.</text>
+      <rect x="64" y="468" width="1140" height="112" rx="16" fill="rgba(251,183,24,0.10)" stroke="rgba(251,183,24,0.28)" stroke-width="1"/>
+      <text x="96" y="514" font-family="Georgia, 'Libre Baskerville', serif" font-size="30" font-weight="bold" fill="#FBB718">500 households</text>
+      <text x="96" y="540" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.70)">collection channel</text>
+      <line x1="424" y1="486" x2="424" y2="558" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="456" y="514" font-family="Georgia, 'Libre Baskerville', serif" font-size="30" font-weight="bold" fill="white">2 hubs</text>
+      <text x="456" y="540" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.70)">collection + drop-off, compared head to head</text>
+      <line x1="792" y1="486" x2="792" y2="558" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="824" y="514" font-family="Georgia, 'Libre Baskerville', serif" font-size="30" font-weight="bold" fill="#84cba3">R1.26m</text>
+      <text x="824" y="540" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.70)">12-month ask, metered per litre diverted</text>
+      <line x1="64" y1="656" x2="700" y2="656" stroke="rgba(255,255,255,0.10)" stroke-width="0.75"/>
+      <text x="64" y="680" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.28)">Gooi · Constantia Circular proposal · gooi.me · howzit@gooi.me</text>
+    </svg>
+  </div>
+
+  <%# 2. The situation %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">THE SITUATION</text>
+      <text x="36" y="104" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="#013f3a">Cape Town landfills roughly 850</text>
+      <text x="36" y="152" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="#013f3a">tonnes of organic waste, every day.</text>
+      <text x="36" y="182" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#8a8d97">2018 waste characterisation study — a new study is underway, but nothing suggests the number has fallen.</text>
+
+      <rect x="36" y="214" width="374" height="204" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="36" y="214" width="374" height="5" rx="2.5" fill="#013f3a"/>
+      <text x="64" y="262" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#013f3a">40%+</text>
+      <text x="64" y="288" font-family="-apple-system, Arial, sans-serif" font-size="14" font-weight="600" fill="#013f3a">of the average household bin</text>
+      <text x="64" y="330" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">is organic waste — the single largest</text>
+      <text x="64" y="350" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">fraction, ahead of recyclables</text>
+      <text x="64" y="370" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">or general waste.</text>
+
+      <rect x="454" y="214" width="374" height="204" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <rect x="454" y="214" width="374" height="5" rx="2.5" fill="#FBB718"/>
+      <text x="482" y="262" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#013f3a">30% <tspan font-size="16" fill="#8a8d97">vs 50% target</tspan></text>
+      <text x="482" y="288" font-family="-apple-system, Arial, sans-serif" font-size="14" font-weight="600" fill="#013f3a">Western Cape organics diversion, 2023</text>
+      <text x="482" y="330" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">The province's 50%-by-2022 diversion</text>
+      <text x="482" y="350" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">target was missed, sitting at ~30%</text>
+      <text x="482" y="370" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">the following year.</text>
+
+      <rect x="872" y="214" width="374" height="204" rx="16" fill="#f0f7f4" stroke="rgba(16,138,99,0.25)" stroke-width="1.5"/>
+      <rect x="872" y="214" width="374" height="5" rx="2.5" fill="#108A63"/>
+      <text x="900" y="262" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#108A63">100% by 2027</text>
+      <text x="900" y="288" font-family="-apple-system, Arial, sans-serif" font-size="14" font-weight="600" fill="#013f3a">now in landfill licence conditions</text>
+      <text x="900" y="330" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">A tighter target is written into landfill</text>
+      <text x="900" y="350" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">licence conditions and municipal organic</text>
+      <text x="900" y="370" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">waste diversion plans.</text>
+
+      <rect x="0" y="450" width="1280" height="270" fill="#013f3a"/>
+      <text x="640" y="500" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">WHAT'S RUNNING TODAY — AND WHAT ISN'T</text>
+      <text x="213" y="558" text-anchor="middle" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#FBB718">~1,000</text>
+      <text x="213" y="588" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">households across two lower-income</text>
+      <text x="213" y="608" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">areas, City pilot since June 2024</text>
+      <line x1="426" y1="524" x2="426" y2="628" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="640" y="558" text-anchor="middle" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#84cba3">~14,000</text>
+      <text x="640" y="588" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">informal-settlement households on</text>
+      <text x="640" y="608" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">an ongoing weekly City service</text>
+      <line x1="854" y1="524" x2="854" y2="628" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="1067" y="558" text-anchor="middle" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="white">Zero</text>
+      <text x="1067" y="588" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">equivalent services in a formal</text>
+      <text x="1067" y="608" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.68)">suburb, anywhere in the city</text>
+      <text x="640" y="666" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="white" font-weight="600">Every tonne of organics sent to landfill produces methane and eats into airspace the City is running out of.</text>
+    </svg>
+  </div>
+
+  <%# 3. The proposal + flow diagram %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">THE PROPOSAL</text>
+      <text x="36" y="102" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="#013f3a">Make Constantia the first formal Cape</text>
+      <text x="36" y="140" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="#013f3a">Town suburb with a working household</text>
+      <text x="36" y="178" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="#013f3a">organics system.</text>
+
+      <%# Flow diagram %>
+      <rect x="36" y="230" width="228" height="120" rx="14" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <text x="150" y="278" text-anchor="middle" font-size="30">🏠</text>
+      <text x="150" y="316" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="600" fill="#013f3a">Homes &amp; restaurants</text>
+      <text x="150" y="334" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#8a8d97">kitchen caddy</text>
+      <path d="M264 290 L318 290" stroke="#c7d0cc" stroke-width="2" marker-end="url(#arrow1)"/>
+
+      <path d="M334 262 L334 236 L 508 236" stroke="#108A63" stroke-width="2" fill="none" marker-end="url(#arrow2)"/>
+      <path d="M334 318 L334 344 L 508 344" stroke="#FBB718" stroke-width="2" fill="none" marker-end="url(#arrow3)"/>
+      <text x="330" y="222" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#108A63">weekly doorstep collection</text>
+      <text x="330" y="368" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#B98A0C">or drop-off</text>
+
+      <rect x="512" y="230" width="256" height="120" rx="14" fill="#f0f7f4" stroke="rgba(16,138,99,0.25)" stroke-width="1.5"/>
+      <text x="640" y="278" text-anchor="middle" font-size="30">♻️</text>
+      <text x="640" y="316" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="600" fill="#013f3a">Two local in-vessel</text>
+      <text x="640" y="334" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="600" fill="#013f3a">composting hubs</text>
+      <path d="M772 290 L826 290" stroke="#c7d0cc" stroke-width="2" marker-end="url(#arrow1)"/>
+
+      <rect x="830" y="230" width="200" height="120" rx="14" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <text x="930" y="278" text-anchor="middle" font-size="30">🌱</text>
+      <text x="930" y="316" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="600" fill="#013f3a">Compost</text>
+      <path d="M1034 290 L1088 290" stroke="#c7d0cc" stroke-width="2" marker-end="url(#arrow1)"/>
+
+      <rect x="1092" y="230" width="152" height="120" rx="14" fill="#013f3a"/>
+      <text x="1168" y="278" text-anchor="middle" font-size="30">🥬</text>
+      <text x="1168" y="312" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12.5" font-weight="600" fill="white">Local soil &amp;</text>
+      <text x="1168" y="330" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12.5" font-weight="600" fill="white">food gardens</text>
+
+      <defs>
+        <marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#c7d0cc"/></marker>
+        <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#108A63"/></marker>
+        <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#FBB718"/></marker>
+      </defs>
+
+      <rect x="36" y="416" width="1208" height="150" rx="16" fill="#013f3a"/>
+      <text x="68" y="466" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">THE PRINCIPLE</text>
+      <text x="68" y="506" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="white">Organics should be held at their highest use — soil, food,</text>
+      <text x="68" y="536" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#84cba3">local nutrient cycling — not trucked to landfill and burned off as methane.</text>
+    </svg>
+  </div>
+
+  <%# 4. Pilot design: two channels %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#F4F4F4"/>
+      <rect x="0" y="0" width="1280" height="100" fill="#013f3a"/>
+      <text x="64" y="42" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">PILOT DESIGN</text>
+      <text x="64" y="80" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="white">Two channels, two hubs.</text>
+
+      <rect x="64" y="128" width="566" height="264" rx="16" fill="white"/>
+      <rect x="64" y="128" width="566" height="6" rx="3" fill="#108A63"/>
+      <rect x="100" y="160" width="130" height="26" rx="13" fill="#f0f7f4"/>
+      <text x="165" y="177" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#108A63" font-weight="700" letter-spacing="0.4">THE ENGINE</text>
+      <text x="100" y="230" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#013f3a">Collection</text>
+      <text x="100" y="262" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Weekly doorstep collection from ~500</text>
+      <text x="100" y="284" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">pledged households, delivered to a hub</text>
+      <text x="100" y="306" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">based at a community growing site.</text>
+      <text x="100" y="336" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">Compost produced feeds local food</text>
+      <text x="100" y="358" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">growing directly.</text>
+
+      <rect x="650" y="128" width="566" height="264" rx="16" fill="white"/>
+      <rect x="650" y="128" width="566" height="6" rx="3" fill="#FBB718"/>
+      <rect x="686" y="160" width="90" height="26" rx="13" fill="rgba(251,183,24,0.14)"/>
+      <text x="731" y="177" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="11" fill="#B98A0C" font-weight="700" letter-spacing="0.4">THE TEST</text>
+      <text x="686" y="230" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#013f3a">Drop-off</text>
+      <text x="686" y="262" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">A second in-vessel unit at a high-traffic</text>
+      <text x="686" y="284" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">retail precinct (e.g. Constantia Village),</text>
+      <text x="686" y="306" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">open to all residents, with a live public</text>
+      <text x="686" y="328" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">dashboard: litres diverted, compost made,</text>
+      <text x="686" y="350" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="#525560">CO₂e avoided, households participating.</text>
+      <rect x="686" y="362" width="330" height="22" rx="11" fill="#f9fafb"/>
+      <text x="851" y="377" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="10.5" fill="#525560" font-weight="600">Precinct restaurants drop off free for the pilot</text>
+
+      <rect x="0" y="418" width="1280" height="302" fill="#013f3a"/>
+      <text x="64" y="466" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">WHY RUN BOTH</text>
+      <text x="64" y="504" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="white">The City has an open question: does drop-off work for</text>
+      <text x="64" y="534" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#84cba3">household organics, or does the service need to come to the door?</text>
+      <text x="64" y="568" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="rgba(255,255,255,0.62)">This pilot answers it with a controlled comparison — same suburb, same demographics, same year,</text>
+      <text x="64" y="590" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="rgba(255,255,255,0.62)">collection against drop-off, independently measured. Whatever the result, the City gets the evidence</text>
+      <text x="64" y="612" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="rgba(255,255,255,0.62)">it needs to design the citywide model.</text>
+      <rect x="64" y="642" width="560" height="44" rx="22" fill="rgba(132,203,163,0.14)" stroke="rgba(132,203,163,0.3)" stroke-width="0.75"/>
+      <text x="94" y="669" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#84cba3" font-weight="600">+ a pledge tracker registers home composters — a third, zero-cost channel</text>
+    </svg>
+  </div>
+
+  <%# 5. Rollout timeline %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">ROLLOUT</text>
+      <text x="36" y="102" font-family="Georgia, 'Libre Baskerville', serif" font-size="40" font-weight="bold" fill="#013f3a">Twelve months, five checkpoints.</text>
+
+      <line x1="76" y1="360" x2="1204" y2="360" stroke="#e0e6e2" stroke-width="3"/>
+
+      <circle cx="120" cy="360" r="10" fill="#013f3a"/>
+      <text x="120" y="330" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="#013f3a">MONTHS 0–1</text>
+      <text x="120" y="404" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Pledge campaign opens</text>
+      <text x="120" y="424" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">(gooi.me + printed sheets)</text>
+      <text x="120" y="444" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Host sites signed</text>
+      <text x="120" y="464" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Caddy distribution begins</text>
+
+      <circle cx="392" cy="360" r="10" fill="#108A63"/>
+      <text x="392" y="330" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="#108A63">MONTHS 1–3</text>
+      <text x="392" y="404" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Both hubs live</text>
+      <text x="392" y="424" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Collection route ramps</text>
+      <text x="392" y="444" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">250 → 500 households</text>
+      <text x="392" y="464" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Restaurant onboarding</text>
+
+      <circle cx="664" cy="360" r="12" fill="#FBB718"/>
+      <text x="664" y="326" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="#B98A0C">MONTH 6</text>
+      <text x="664" y="404" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Progress review with the City</text>
+      <text x="664" y="424" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Participation, volumes,</text>
+      <text x="664" y="444" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">contamination, channel comparison</text>
+      <text x="664" y="464" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Continue and adjust</text>
+
+      <circle cx="936" cy="360" r="10" fill="#108A63"/>
+      <text x="936" y="330" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="#108A63">MONTHS 7–12</text>
+      <text x="936" y="404" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Steady state</text>
+      <text x="936" y="424" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">A full year of data, including</text>
+      <text x="936" y="444" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">seasonal variation</text>
+
+      <circle cx="1204" cy="360" r="12" fill="#013f3a"/>
+      <text x="1160" y="326" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" fill="#013f3a">MONTH 12</text>
+      <text x="1160" y="404" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Final report and a</text>
+      <text x="1160" y="424" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">scale-or-stop decision</text>
+
+      <rect x="76" y="520" width="1128" height="150" rx="16" fill="#f0f7f4" stroke="rgba(16,138,99,0.2)" stroke-width="1"/>
+      <text x="108" y="562" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#013f3a">If it fails, it stops — and the City keeps the dataset regardless.</text>
+      <text x="108" y="596" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="#525560">If it works, the playbook rolls out suburb by suburb.</text>
+      <text x="108" y="638" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#8a8d97">A downside-bounded pilot: either outcome produces usable evidence for the citywide model.</text>
+    </svg>
+  </div>
+
+  <%# 6. The ask %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#013f3a"/>
+      <text x="64" y="80" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">THE ASK</text>
+      <text x="64" y="140" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="white">R1.25 million, including</text>
+      <text x="64" y="188" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="#FBB718">contingency, for 12 months.</text>
+
+      <rect x="64" y="228" width="1152" height="140" rx="16" fill="rgba(132,203,163,0.10)" stroke="rgba(132,203,163,0.28)" stroke-width="1"/>
+      <text x="96" y="270" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="#84cba3" font-weight="600">HOW IT'S BOUGHT</text>
+      <text x="96" y="304" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="white">Metered service — R5 per litre verifiably collected and processed,</text>
+      <text x="96" y="332" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="white">logged per address on the Gooi platform.</text>
+      <text x="96" y="356" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.6)">Benchmarked to Gooi's commercial floor pricing. The City pays for delivered diversion, not trucks or overheads —</text>
+
+      <rect x="64" y="392" width="560" height="172" rx="16" fill="white"/>
+      <text x="96" y="424" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="#108A63" font-weight="600">RISK SITS WITH PARTICIPATION</text>
+      <text x="96" y="458" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="#013f3a" font-weight="600">If participation underperforms, the</text>
+      <text x="96" y="480" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="#013f3a" font-weight="600">cost falls with it.</text>
+      <text x="96" y="508" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Every litre logged per address, per collection — solving</text>
+      <text x="96" y="526" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">the City's stated problem: home-composting handouts</text>
+      <text x="96" y="544" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">where diversion can't be proven.</text>
+
+      <rect x="656" y="392" width="560" height="172" rx="16" fill="white"/>
+      <text x="688" y="424" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="#108A63" font-weight="600">THE EVIDENCE BASE</text>
+      <text x="688" y="460" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#013f3a">16t <tspan font-size="13" font-weight="400" fill="#525560">collection, 6 mo, 1 site</tspan></text>
+      <text x="688" y="492" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#013f3a">4.26t <tspan font-size="13" font-weight="400" fill="#525560">drop-off, 5 mo, 8 sites</tspan></text>
+      <text x="688" y="522" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">Collection works harder per site — this pilot</text>
+      <text x="688" y="540" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560">tests whether that pattern holds, and by how much.</text>
+
+      <text x="64" y="608" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.7)">Verified impact reports delivered quarterly.</text>
+      <text x="1216" y="608" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.35)">Full budget breakdown follows →</text>
+    </svg>
+  </div>
+
+  <%# 7. Budget table %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">BUDGET — 12 MONTHS, 500 HOUSEHOLDS</text>
+      <text x="36" y="96" font-family="Georgia, 'Libre Baskerville', serif" font-size="32" font-weight="bold" fill="#013f3a">Where the R1.26m goes.</text>
+
+      <rect x="36" y="126" width="1208" height="1" fill="#e0e6e2"/>
+      <text x="36" y="150" font-family="-apple-system, Arial, sans-serif" font-size="11" letter-spacing="0.5" fill="#8a8d97" font-weight="600">LINE</text>
+      <text x="740" y="150" font-family="-apple-system, Arial, sans-serif" font-size="11" letter-spacing="0.5" fill="#8a8d97" font-weight="600">BASIS</text>
+      <text x="1244" y="150" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="11" letter-spacing="0.5" fill="#8a8d97" font-weight="600">12-MONTH COST</text>
+      <rect x="36" y="162" width="1208" height="1" fill="#e0e6e2"/>
+
+      <% [
+        ["Doorstep collection service", "R5/L metered · ~18L/household/month · ramp 250→500", "~R480,000"],
+        ["2× in-vessel composting units", "~R12,000/month per unit, service-inclusive", "R288,000"],
+        ["Hub setup", "Signage, live dashboards, site prep — 2 sites", "~R40,000"],
+        ["Kitchen caddies", "750 units, co-branded, R90/unit", "~R67,500"],
+        ["Education &amp; activation campaign", "Launch plus monthly presence, with education partner", "~R150,000"],
+        ["Platform, pledge tracker &amp; reporting", "Gooi — quarterly verified data", "R120,000"],
+      ].each_with_index do |(line, basis, cost), i| %>
+        <% y = 200 + i * 46 %>
+        <text x="36" y="<%= y %>" font-family="-apple-system, Arial, sans-serif" font-size="15" font-weight="600" fill="#013f3a"><%= line.html_safe %></text>
+        <text x="740" y="<%= y %>" font-family="-apple-system, Arial, sans-serif" font-size="13" fill="#525560"><%= basis %></text>
+        <text x="1244" y="<%= y %>" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="15" font-weight="600" fill="#013f3a"><%= cost %></text>
+        <rect x="36" y="<%= y + 14 %>" width="1208" height="1" fill="#f0f1f0"/>
+      <% end %>
+
+      <rect x="36" y="482" width="1208" height="1" fill="#013f3a"/>
+      <text x="36" y="518" font-family="-apple-system, Arial, sans-serif" font-size="15" fill="#525560">Subtotal</text>
+      <text x="1244" y="518" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="15" fill="#013f3a">~R1,145,500</text>
+      <text x="36" y="548" font-family="-apple-system, Arial, sans-serif" font-size="15" fill="#525560">Contingency (10%)</text>
+      <text x="1244" y="548" text-anchor="end" font-family="-apple-system, Arial, sans-serif" font-size="15" fill="#013f3a">~R115,000</text>
+
+      <rect x="36" y="576" width="1208" height="76" rx="14" fill="#013f3a"/>
+      <text x="64" y="622" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="white">Total, 12-month ask</text>
+      <text x="1216" y="622" text-anchor="end" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="#FBB718">~R1.26m</text>
+    </svg>
+  </div>
+
+  <%# 8. After the pilot %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="white"/>
+      <rect x="0" y="0" width="8" height="720" fill="#013f3a"/>
+      <text x="36" y="52" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="#108A63" font-weight="600">AFTER THE PILOT</text>
+      <text x="36" y="102" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="#013f3a">Year two: into the rates-funded</text>
+      <text x="36" y="140" font-family="Georgia, 'Libre Baskerville', serif" font-size="38" font-weight="bold" fill="#013f3a">waste system.</text>
+      <text x="36" y="170" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="#525560">Offset by reduced refuse tonnage, deferred landfill airspace capital, and avoided disposal costs.</text>
+      <text x="36" y="190" font-family="-apple-system, Arial, sans-serif" font-size="14.5" fill="#525560">Precinct businesses convert to commercial subscriptions.</text>
+
+      <rect x="36" y="222" width="284" height="180" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <text x="68" y="264" font-size="30">🌾</text>
+      <text x="68" y="300" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">GRAPA &amp;</text>
+      <text x="68" y="322" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">Soil for Life</text>
+      <text x="68" y="352" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Continue as growing-</text>
+      <text x="68" y="370" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">site partners</text>
+
+      <rect x="332" y="222" width="284" height="180" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <text x="364" y="264" font-size="30">🏭</text>
+      <text x="364" y="300" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">BiobiN</text>
+      <text x="364" y="352" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Continues processing</text>
+      <text x="364" y="370" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">at both hubs</text>
+
+      <rect x="628" y="222" width="284" height="180" rx="16" fill="#f9fafb" stroke="#e8eeec" stroke-width="1.5"/>
+      <text x="660" y="264" font-size="30">🚛</text>
+      <text x="660" y="300" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">Gooi</text>
+      <text x="660" y="352" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Continues collections</text>
+      <text x="660" y="370" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">and data</text>
+
+      <rect x="924" y="222" width="320" height="180" rx="16" fill="#f0f7f4" stroke="rgba(16,138,99,0.25)" stroke-width="1.5"/>
+      <text x="956" y="264" font-size="30">🏪</text>
+      <text x="956" y="300" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">Precinct</text>
+      <text x="956" y="322" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#013f3a">businesses</text>
+      <text x="956" y="352" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">Convert to commercial</text>
+      <text x="956" y="370" font-family="-apple-system, Arial, sans-serif" font-size="12.5" fill="#525560">subscriptions</text>
+
+      <rect x="36" y="432" width="1208" height="200" rx="16" fill="#013f3a"/>
+      <text x="68" y="480" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">THE PRODUCT OF THE PILOT</text>
+      <text x="68" y="524" font-family="Georgia, serif" font-size="27" font-weight="bold" fill="white">Verified participation, cost, and channel data —</text>
+      <text x="68" y="558" font-family="Georgia, serif" font-size="27" font-weight="bold" fill="#84cba3">the evidence that makes the transition bankable.</text>
+      <text x="68" y="596" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)">Not just a service that ran for a year — a dataset the City can act on.</text>
+    </svg>
+  </div>
+
+  <%# 9. Next steps / CTA %>
+  <div class="constantia-circular-deck__slide" data-constantia-circular-deck-target="slide" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+      <rect width="1280" height="720" fill="#013f3a"/>
+      <circle cx="1060" cy="200" r="280" fill="rgba(132,203,163,0.06)"/>
+      <text x="64" y="90" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2.5" fill="rgba(132,203,163,0.8)" font-weight="600">NEXT STEPS</text>
+      <text x="64" y="150" font-family="Georgia, 'Libre Baskerville', serif" font-size="46" font-weight="bold" fill="white">Five steps to launch.</text>
+
+      <% [
+        ["1", "Community pledges", "Open now at gooi.me"],
+        ["2", "Host site agreements", "With growing sites and the retail precinct"],
+        ["3", "City engagement", "Formal submission to the City of Cape Town"],
+        ["4", "Technology quotes", "In-vessel composting provider quotes finalised"],
+        ["5", "Launch", "Both hubs live, collection route begins"],
+      ].each_with_index do |(num, title, desc), i| %>
+        <% y = 210 + i * 68 %>
+        <circle cx="90" cy="<%= y - 8 %>" r="20" fill="rgba(132,203,163,0.15)" stroke="rgba(132,203,163,0.35)" stroke-width="1"/>
+        <text x="90" y="<%= y - 1 %>" text-anchor="middle" font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#84cba3"><%= num %></text>
+        <text x="130" y="<%= y - 12 %>" font-family="Georgia, serif" font-size="19" font-weight="bold" fill="white"><%= title %></text>
+        <text x="130" y="<%= y + 10 %>" font-family="-apple-system, Arial, sans-serif" font-size="13.5" fill="rgba(255,255,255,0.6)"><%= desc %></text>
+      <% end %>
+
+      <rect x="700" y="210" width="516" height="330" rx="16" fill="rgba(132,203,163,0.08)" stroke="rgba(132,203,163,0.20)" stroke-width="1"/>
+      <text x="732" y="256" font-family="-apple-system, Arial, sans-serif" font-size="10" letter-spacing="2" fill="rgba(132,203,163,0.8)" font-weight="600">GET IN TOUCH</text>
+      <text x="732" y="298" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="white">Ready to take this</text>
+      <text x="732" y="330" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#84cba3">to the City?</text>
+      <text x="732" y="362" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)">We'll walk the association and the</text>
+      <text x="732" y="382" font-family="-apple-system, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)">City through the full proposal.</text>
+      <rect x="732" y="418" width="308" height="52" rx="26" fill="#FBB718"/>
+      <text x="886" y="450" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="15" font-weight="700" fill="#013f3a">howzit@gooi.me</text>
+      <rect x="732" y="482" width="260" height="52" rx="26" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+      <text x="862" y="514" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="15" font-weight="600" fill="white">083 635 3126</text>
+
+      <line x1="64" y1="656" x2="1216" y2="656" stroke="rgba(255,255,255,0.10)" stroke-width="0.75"/>
+      <text x="64" y="680" font-family="-apple-system, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.28)">Gooi · Constantia Circular proposal · gooi.me</text>
+    </svg>
+  </div>
+
+  <%# ── Navigation ─────────────────────────────────────────────────────────── %>
+  <div class="constantia-circular-deck__nav">
+    <button class="constantia-circular-deck__nav-btn constantia-circular-deck__nav-btn--prev"
+            data-constantia-circular-deck-target="prev"
+            data-action="click->constantia-circular-deck#prev"
+            aria-label="Previous slide">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <span class="constantia-circular-deck__counter" data-constantia-circular-deck-target="counter">1 / 9</span>
+    <button class="constantia-circular-deck__nav-btn constantia-circular-deck__nav-btn--next"
+            data-constantia-circular-deck-target="next"
+            data-action="click->constantia-circular-deck#next"
+            aria-label="Next slide">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <%# ── CTA strip ───────────────────────────────────────────────────────────── %>
+  <div class="constantia-circular-deck__cta">
+    <p>Taking Constantia Circular to the City? Let's talk.</p>
+    <a href="mailto:howzit@gooi.me" class="constantia-circular-deck__cta-btn">howzit@gooi.me</a>
+  </div>
+
+</div>
