@@ -34,34 +34,42 @@
     }
   }
 
-  // Solid bars in the fill colour straddling both outer edges of the box —
-  // bridges the Chrome clip-edge seam regardless of which edge it lands on
-  // (transform: scaleY(-1) on &--top makes "which edge is outer" ambiguous
-  // to reason about, so cover both rather than guess).
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: white;
-  }
-
-  &::before {
-    top: -2px;
-  }
-
-  &::after {
-    bottom: -2px;
-  }
-
   &--top {
     top: -1px;
     transform: scaleY(-1);
+
+    // Solid bar in the fill colour straddling the section-boundary edge —
+    // bridges the Chrome clip-edge seam there. The path (v44h-352z) closes
+    // into flat fill well past the visible curve; scaleY(-1) mirrors that
+    // flat region up to this box's own top edge (the section boundary), so
+    // only that edge is safe to overpaint with a straight bar. Do NOT add
+    // one on ::after too — the other edge is the wavy curve itself, and a
+    // flat bar there cuts a visible straight line across it (confirmed).
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -2px;
+      height: 4px;
+      background: white;
+    }
   }
 
   &--bottom {
     bottom: -1px;
+
+    // Unflipped: the flat-fill region is already at the bottom edge, which
+    // is this variant's section boundary — see &--top for why only one
+    // edge gets a bar.
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 4px;
+      background: white;
+    }
   }
 }
