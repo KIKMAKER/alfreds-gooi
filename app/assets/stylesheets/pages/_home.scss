@@ -154,6 +154,17 @@
   margin: 0 5%;
   margin-top: 204px;
 
+  // Matches .farm-neighbourhoods' width (see pages/_farm_hero.scss) — outer
+  // 5% gutter above, capped/centered inner row here — instead of running
+  // edge-to-edge on wide screens. Image sizing is unaffected: .mission-image
+  // is already height-capped (max-height: 192px), so this only narrows the
+  // section's own container, not the images within it.
+  .content-wrapper {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   h1 {
     font-family: 'Libre Baskerville', serif;
     color: $dark-green;
