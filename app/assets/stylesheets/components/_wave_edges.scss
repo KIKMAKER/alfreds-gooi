@@ -1,3 +1,13 @@
+// Every wave SVG on the site (hero, suburb/about/farm heroes, wave-edge
+// bands) uses class="waves" on the <svg> itself. <svg> defaults to
+// display: inline, which leaves a few px of line-height gutter above the
+// element — the hairline gap visible above every wave curve. This is the
+// one place that needs fixing; every other .waves rule only sets
+// width/height, so it doesn't conflict with adding display here globally.
+.waves {
+  display: block;
+}
+
 // ─── Shared organic wave-edge top/bottom treatment ─────────────────────────
 // For dark-green textured bands that should read as a floating shape rather
 // than a hard rectangle (impact strip, what-you-can-gooi, B2B band). The
