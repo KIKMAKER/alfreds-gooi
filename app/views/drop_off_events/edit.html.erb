@@ -71,6 +71,13 @@
       <div class="card p-3 mt-3" style="border-radius:1em">
         <h5 class="mb-3">Drop-off notes & settings</h5>
         <%= simple_form_for [@drivers_day, @drop_off_event] do |f| %>
+          <%= f.input :drop_off_site_id,
+                as: :select,
+                collection: @drop_off_sites.map { |s| [s.name, s.id] },
+                label: "Farm / drop-off site",
+                hint: "Move this drop-off to a different farm. Weighed buckets move with it.",
+                wrapper_html: { class: 'mb-3' } %>
+
           <% if @drop_off_event.drop_off_site.accepts_protein? %>
             <%= f.input :waste_stream,
                   as: :radio_buttons,

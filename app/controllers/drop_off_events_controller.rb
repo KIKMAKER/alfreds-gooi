@@ -18,6 +18,7 @@ class DropOffEventsController < ApplicationController
   end
 
   def edit
+    @drop_off_sites = DropOffSite.order(:name)
   end
 
   def update
@@ -98,7 +99,7 @@ class DropOffEventsController < ApplicationController
   end
 
   def drop_off_event_params
-    permitted = params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes, :is_final_destination, :waste_stream)
+    permitted = params.require(:drop_off_event).permit(:driver_note, :position, :arrival_time, :departure_time, :duration_minutes, :is_final_destination, :waste_stream, :drop_off_site_id)
 
     # Enum assignment raises ArgumentError on an unknown value, so an unrecognised
     # waste_stream would 500 rather than fail validation.
