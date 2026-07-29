@@ -17,7 +17,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 3.75rem;
+  // 1px taller than the nominal 3.75rem and shifted 1px past the section's
+  // own edge (see &--top/&--bottom) — measured DOM boxes for this seam were
+  // pixel-perfect flush with zero gap, so the hairline some browsers show
+  // here is a sub-pixel anti-aliasing artifact on the curved SVG edge, not
+  // a layout bug. A 1px overlap into the neighbouring section buries that
+  // fringe in solid colour instead of leaving it sitting on a hard boundary.
+  height: calc(3.75rem + 1px);
   z-index: 0;
 
   .waves {
@@ -30,11 +36,11 @@
   }
 
   &--top {
-    top: 0;
+    top: -1px;
     transform: scaleY(-1);
   }
 
   &--bottom {
-    bottom: 0;
+    bottom: -1px;
   }
 }
