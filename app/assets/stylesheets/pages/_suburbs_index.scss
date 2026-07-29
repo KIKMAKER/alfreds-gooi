@@ -54,6 +54,18 @@
     width: 100%;
     height: 61px;
     z-index: 0;
+
+    // See pages/home/_hero.scss — Chrome-only hairline at the SVG's own clip
+    // edge, buried under a solid bar in the fill colour.
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 4px;
+      background: white;
+    }
   }
 
   .waves {

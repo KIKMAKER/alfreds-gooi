@@ -18,11 +18,10 @@
   left: 0;
   right: 0;
   // 1px taller than the nominal 3.75rem and shifted 1px past the section's
-  // own edge (see &--top/&--bottom) — measured DOM boxes for this seam were
-  // pixel-perfect flush with zero gap, so the hairline some browsers show
-  // here is a sub-pixel anti-aliasing artifact on the curved SVG edge, not
-  // a layout bug. A 1px overlap into the neighbouring section buries that
-  // fringe in solid colour instead of leaving it sitting on a hard boundary.
+  // own edge (see &--top/&--bottom). Confirmed (not on every browser, DOM
+  // rects pixel-flush) that the hairline is Chrome mis-rasterizing the
+  // scaled SVG's own clip edge, not a layout gap or the wave path's edge —
+  // see the ::before/::after bars below, which are the actual fix.
   height: calc(3.75rem + 1px);
   z-index: 0;
 
@@ -33,6 +32,28 @@
     use {
       fill: white;
     }
+  }
+
+  // Solid bars in the fill colour straddling both outer edges of the box —
+  // bridges the Chrome clip-edge seam regardless of which edge it lands on
+  // (transform: scaleY(-1) on &--top makes "which edge is outer" ambiguous
+  // to reason about, so cover both rather than guess).
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: white;
+  }
+
+  &::before {
+    top: -2px;
+  }
+
+  &::after {
+    bottom: -2px;
   }
 
   &--top {
