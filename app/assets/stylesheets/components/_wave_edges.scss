@@ -45,12 +45,17 @@
     // only that edge is safe to overpaint with a straight bar. Do NOT add
     // one on ::after too — the other edge is the wavy curve itself, and a
     // flat bar there cuts a visible straight line across it (confirmed).
+    //
+    // scaleY(-1) flips this pseudo-element too, so it has to be POSITIONED
+    // at the box's local bottom (pre-transform) for the flip to land it
+    // visually at the top — a bar declared with `top` here renders at the
+    // visual bottom instead and never touches the actual seam (confirmed).
     &::before {
       content: "";
       position: absolute;
       left: 0;
       right: 0;
-      top: -2px;
+      bottom: -2px;
       height: 4px;
       background: white;
     }
