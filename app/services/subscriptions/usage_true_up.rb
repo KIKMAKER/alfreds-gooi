@@ -118,14 +118,20 @@ class Subscriptions::UsageTrueUp
       original_invoice = @subscription.invoices.order(:created_at).first
       volume_item = original_invoice&.invoice_items&.find_by(product: @subscription.volume_processing_product)
 
-      total_volume_amount = if volume_item
-                              volume_item.amount.to_f * volume_item.quantity.to_f
-                            else
-                              @subscription.volume_processing_product.price.to_f * @subscription.buckets_per_collection
-                            end
-
-      total_contracted_visits = (@subscription.duration * 4.2).ceil * (@subscription.collections_per_week || 1)
-      total_volume_amount / (@subscription.buckets_per_collection * @subscription.bucket_size * total_contracted_visits)
+      if volume_item
+        # amount × quantity is the real total billed for volume across the whole
+        # contract (true regardless of whether amount means "per visit" — rate-card
+        # invoices — or "per bucket for the full term" — quote-driven invoices —
+        # since quantity is the matching unit count in each convention).
+        total_volume_amount = volume_item.amount.to_f * volume_item.quantity.to_f
+        total_contracted_visits = (@subscription.duration * 4.2).ceil * (@subscription.collections_per_week || 1)
+        total_volume_amount / (@subscription.buckets_per_collection * @subscription.bucket_size * total_contracted_visits)
+      else
+        # No line item to derive a contract-specific rate from — fall back to the
+        # catalog rate. This is a single visit's rate (price is R per bucket per
+        # visit), so no visit count belongs in this division.
+        @subscription.volume_processing_product.price.to_f / @subscription.bucket_size
+      end
     end
   end
 end

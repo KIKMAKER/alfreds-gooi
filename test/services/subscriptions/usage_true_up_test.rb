@@ -62,6 +62,17 @@ class Subscriptions::UsageTrueUpTest < ActiveSupport::TestCase
     assert_equal 2, invoice.invoice_items.count
   end
 
+  test "falls back to the catalog per-litre rate (not a whole-contract amortization) when no original volume line item exists" do
+    sub = build_commercial_subscription(monthly_invoicing: false) # no invoices at all — forces the fallback branch
+    4.times { |i| add_collection(sub, date: (i + 1).weeks.ago.to_date, buckets_45l: 4) }
+
+    review = Subscriptions::UsageTrueUp.new(sub).review
+
+    # price 76.5 / bucket_size 45 = R1.70/L — not divided by contract visit count
+    expected_rate = @volume_product.price / sub.bucket_size
+    assert_in_delta review.excess_litres * expected_rate, review.catch_up_amount, 0.01
+  end
+
   test "returns an error and creates no invoice when usage already matches the contract" do
     sub = build_commercial_subscription(monthly_invoicing: false)
     Invoice.create!(subscription: sub, issued_date: 3.months.ago, due_date: 3.months.ago, total_amount: 0, admin_approved: true)
