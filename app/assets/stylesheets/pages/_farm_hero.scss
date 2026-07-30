@@ -201,6 +201,16 @@
   margin-bottom: $space-6;
 }
 
+// .blog-text-section (shared with farms/index and the story page) only sets
+// a 10% outer margin, no width cap — fine for prose, but the Recent
+// Drop-offs list runs edge-to-edge on wide screens. Cap it to match
+// .farm-neighbourhoods/.farm-impact's 1140px, scoped to this page only.
+.farm-recent-dropoffs .dd-list {
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .farm-connect {
   padding: $space-14 5%;
   text-align: center;
