@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_29_161629) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_30_120227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -852,6 +852,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_29_161629) do
     t.bigint "block_id"
     t.integer "waste_stream", default: 0, null: false
     t.bigint "suburb_id"
+    t.date "last_usage_review_date"
     t.index ["block_id"], name: "index_subscriptions_on_block_id"
     t.index ["primary_subscription_id"], name: "index_subscriptions_on_primary_subscription_id"
     t.index ["quotation_id"], name: "index_subscriptions_on_quotation_id"

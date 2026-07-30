@@ -84,6 +84,7 @@ Rails.application.routes.draw do
         patch :update_monthly_billing
         post  :resend_email
         post  :change_plan
+        post  :usage_true_up
       end
     end
     resources :whatsapp_messages, only: [:index] do

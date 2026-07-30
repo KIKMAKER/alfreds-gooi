@@ -97,6 +97,17 @@ class Admin::SubscriptionsController < ApplicationController
     end
   end
 
+  def usage_true_up
+    @subscription = Subscription.find(params[:id])
+    result = Subscriptions::UsageTrueUp.new(@subscription).create_invoice!(new_buckets_per_collection: params[:new_buckets_per_collection])
+
+    if result.success
+      redirect_to admin_subscription_path(@subscription), notice: "Usage true-up invoice created and sent for approval."
+    else
+      redirect_to admin_subscription_path(@subscription), alert: result.error
+    end
+  end
+
   def show
     @subscription = Subscription.joins(:user).find(params[:id])
     @next_subscription = @subscription.user.subscriptions.last if @subscription.completed?
@@ -134,6 +145,10 @@ class Admin::SubscriptionsController < ApplicationController
       @change_plan_target_product = Product.find_by(title: "#{target_plan} #{@subscription.duration} month subscription")
       @change_plan_current_product = Product.find_by(id: @subscription.subscription_product_id)
       @change_plan_original_invoice = @subscription.invoices.order(:created_at).first
+    end
+
+    if @subscription.Commercial? && !@subscription.satellite? && !@subscription.completed? && !@subscription.legacy?
+      @usage_review = Subscriptions::UsageTrueUp.new(@subscription).review
     end
   end
 

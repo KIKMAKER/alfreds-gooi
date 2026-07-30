@@ -116,6 +116,51 @@
         </div>
       <% end %>
 
+      <!-- Usage True-Up Card -->
+      <% if @usage_review %>
+        <div class="info-card">
+          <div class="info-card-header">
+            <i class="fa-solid fa-scale-unbalanced"></i>
+            <h3>Usage True-Up</h3>
+          </div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-label">Review period</span>
+              <span class="info-value"><%= @usage_review.period_start&.strftime('%d %b %Y') %> – today</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Contracted litres</span>
+              <span class="info-value"><%= @usage_review.contracted_litres.round %>L</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Actual litres collected</span>
+              <span class="info-value"><%= @usage_review.actual_litres.round %>L</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Excess</span>
+              <span class="info-value"><%= @usage_review.excess_litres.round %>L</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Catch-up charge</span>
+              <span class="info-value">R<%= @usage_review.catch_up_amount %></span>
+            </div>
+            <% if @subscription.satellite_subscriptions.any? %>
+              <p class="text-muted small mt-2 mb-2">Includes volume from linked satellite subscriptions.</p>
+            <% end %>
+            <p class="text-muted small mt-2 mb-2">If the extra volume is coming from a specific satellite route, adjust that subscription's capacity separately — this only updates the primary's buckets per collection.</p>
+            <%= form_with url: usage_true_up_admin_subscription_path(@subscription), method: :post do |f| %>
+              <div class="info-row">
+                <label class="info-label" for="new_buckets_per_collection">New buckets per collection</label>
+                <%= number_field_tag :new_buckets_per_collection, @subscription.buckets_per_collection, min: 1, max: 20, class: "info-value" %>
+              </div>
+              <%= f.submit "Generate true-up invoice",
+                    class: "btn-yellow",
+                    data: { turbo_confirm: "Generate a usage true-up invoice for #{@subscription.display_name}? This will create a real invoice pending approval." } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Location Card -->
       <div class="info-card">
         <div class="info-card-header">
