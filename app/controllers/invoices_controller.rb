@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code pdf bags_whatsapp]
+  before_action :set_invoice, only: %i[show edit update destroy paid issued_bags send_email apply_discount_code remove_discount_code pdf bags_whatsapp]
 
   def index
     if current_user.admin?
@@ -257,7 +257,7 @@ class InvoicesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       idc.destroy!
-      code.decrement!(:used_count) if code.used_count > 0
+      code.decrement!(:used_count) if code.used_count.to_i > 0
       @invoice.invoice_discount_codes.reload
       @invoice.update_column(:used_discount_code, false) if @invoice.invoice_discount_codes.none?
       @invoice.calculate_total

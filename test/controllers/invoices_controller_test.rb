@@ -192,6 +192,28 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 20000, Payment.last.total_amount
   end
 
+  # ── Removing discount codes ──────────────────────────────────────────────────
+  # Regression: remove_discount_code was missing from the set_invoice
+  # before_action list, so @invoice was nil for the whole action — it 500'd on
+  # `@invoice.invoice_discount_codes.find`, and even the rescue's own
+  # `redirect_to edit_invoice_path(@invoice)` blew up on the nil @invoice too.
+
+  test "admin removes a discount code and total is recalculated" do
+    sign_in @admin
+    code = DiscountCode.create!(code: "SAVE10", discount_percent: 10)
+    inv  = discountable_invoice
+    idc  = inv.invoice_discount_codes.create!(discount_code: code, discount_amount: 20)
+    inv.calculate_total
+
+    delete remove_discount_code_invoice_path(inv, invoice_discount_code_id: idc.id),
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :redirect
+    assert_nil flash[:alert]
+    assert_not inv.invoice_discount_codes.exists?(idc.id)
+    assert_equal 200, inv.reload.total_amount
+  end
+
   # ── Discount codes ───────────────────────────────────────────────────────────
   # Regression: apply_discount_code used to call code.three_month_only?, a method
   # removed when the NEWSOIL26 promo was retired. The broad rescue turned the
