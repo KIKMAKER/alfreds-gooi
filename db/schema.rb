@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_21_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_29_161629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -218,6 +218,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_21_090000) do
     t.string "skip_reason"
     t.string "soil_bag_token"
     t.string "skip_token"
+    t.integer "waste_stream_override"
     t.index ["date"], name: "index_collections_on_date"
     t.index ["drivers_day_id", "position"], name: "index_collections_on_drivers_day_id_and_position"
     t.index ["drivers_day_id"], name: "index_collections_on_drivers_day_id"

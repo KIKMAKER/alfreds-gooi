@@ -85,7 +85,8 @@ class DropOffEvent < ApplicationRecord
   end
 
   # After completing drop-off, recalculate site totals and send email
-  after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? }
+  after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? || saved_change_to_drop_off_site_id? }
+  after_update :recalc_previous_site_totals, if: -> { saved_change_to_drop_off_site_id? }
   after_update :send_completion_email, if: -> { saved_change_to_is_done? && is_done? }
 
   # Timing callbacks
@@ -103,6 +104,11 @@ class DropOffEvent < ApplicationRecord
 
   def recalc_site_totals
     drop_off_site.recalc_totals!
+  end
+
+  def recalc_previous_site_totals
+    old_site_id, = saved_change_to_drop_off_site_id
+    DropOffSite.find_by(id: old_site_id)&.recalc_totals!
   end
 
   def send_completion_email

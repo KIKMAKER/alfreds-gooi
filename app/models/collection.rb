@@ -4,6 +4,11 @@ class Collection < ApplicationRecord
   has_one :user, through: :subscription
   has_many :orders, dependent: :nullify
 
+  # nil means "use the subscription's waste_stream" — only set this when a
+  # specific collection actually differed from the subscription's default
+  # (e.g. a protein subscriber had no protein in the bucket that week).
+  enum :waste_stream_override, { general: 0, protein: 1 }, suffix: true
+
   # Scopes
   scope :recent,    -> { order(date: :desc) }
   scope :active,    -> { where(skip: false) }
@@ -113,6 +118,16 @@ class Collection < ApplicationRecord
 
   def skip?
     skip
+  end
+
+  # The stream this collection actually went on — the override if the driver
+  # set one, otherwise whatever the subscription defaults to.
+  def effective_waste_stream
+    waste_stream_override || subscription&.waste_stream || "general"
+  end
+
+  def protein_stream?
+    effective_waste_stream == "protein"
   end
 
   def kiki_note_nil_zero?
