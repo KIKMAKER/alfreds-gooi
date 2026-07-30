@@ -1118,6 +1118,23 @@ input[type="checkbox"].toggle:checked+label::before {
   margin-bottom: 32px;
 }
 
+// Single-farm suburbs (see suburbs/show.html.erb): the 3-col grid leaves a
+// small card stranded in the first column instead of a deliberate one-card
+// layout. Center it and scale it up instead.
+.farms-grid--single {
+  grid-template-columns: 1fr;
+  justify-items: center;
+
+  .farm-card-mini {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .farm-image-container {
+    height: 320px;
+  }
+}
+
 .farm-card-mini {
   background: white;
   border-radius: 12px;
