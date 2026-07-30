@@ -168,6 +168,30 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_match /manual/i, flash[:notice]
   end
 
+  # ── Stale nil total_amount ───────────────────────────────────────────────────
+  # Regression: a stale invoice with nil total_amount (never recalculated) blew
+  # up on `@invoice.total_amount * 100` with "nil can't be coerced into an
+  # integer" — for every payment type, not just EFT.
+
+  test "paid action recovers from a stale nil total_amount by recalculating first" do
+    product = Product.create!(title: "Compost", description: "bin bags", price: 100,
+                              billing_type: "standard")
+    inv = Invoice.create!(subscription: @subscription, issued_date: Date.today,
+                          due_date: Date.today + 14, total_amount: 0)
+    inv.invoice_items.create!(product: product, quantity: 2, amount: 100) # real total: 200
+    inv.update_column(:total_amount, nil) # simulate a stale/never-recalculated row
+
+    sign_in @admin
+    assert_difference "Payment.count", 1 do
+      post paid_invoice_path(inv), params: { payment_type: "eft" }
+    end
+
+    assert_nil flash[:alert]
+    assert inv.reload.paid
+    assert_equal 200, inv.total_amount
+    assert_equal 20000, Payment.last.total_amount
+  end
+
   # ── Discount codes ───────────────────────────────────────────────────────────
   # Regression: apply_discount_code used to call code.three_month_only?, a method
   # removed when the NEWSOIL26 promo was retired. The broad rescue turned the

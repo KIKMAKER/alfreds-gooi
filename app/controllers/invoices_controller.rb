@@ -109,6 +109,7 @@ class InvoicesController < ApplicationController
     user = @invoice.subscription.user
 
     ActiveRecord::Base.transaction do
+      @invoice.calculate_total if @invoice.total_amount.nil?
       @invoice.update!(paid: true)
 
       Payment.create!(
