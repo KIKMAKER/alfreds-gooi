@@ -15,6 +15,8 @@ class SubscriptionTest < ActiveSupport::TestCase
       user: @user,
       plan: "Standard",
       duration: 1,
+      street_address: "1 Test St",
+      suburb: suburb_fixture("Rondebosch"),
       start_date: Date.new(2025, 2, 1),
       end_date: Date.new(2025, 2, 28),
       status: :completed
@@ -23,6 +25,8 @@ class SubscriptionTest < ActiveSupport::TestCase
       user: @user,
       plan: "Standard",
       duration: 1,
+      street_address: "1 Test St",
+      suburb: suburb_fixture("Rondebosch"),
       start_date: Date.new(2025, 2, 1),
       end_date: Date.new(2025, 2, 28),
       status: :active
@@ -66,7 +70,8 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "suggested start date doesn't blow up when last sub has no end_date and no duration" do
     once_off = Subscription.create!(
-      user: @user, plan: "once_off", start_date: Date.new(2025, 4, 1), status: :completed
+      user: @user, plan: "once_off", street_address: "1 Test St", suburb: suburb_fixture("Rondebosch"),
+      start_date: Date.new(2025, 4, 1), status: :completed
     )
     payment_date = Date.new(2025, 4, 21)
 
