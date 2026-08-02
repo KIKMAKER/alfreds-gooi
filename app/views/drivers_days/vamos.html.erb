@@ -7,8 +7,21 @@
     </div>
   </div>
 
+  <div class="dd-form-card mt-3">
+    <div class="dd-form-card__header">
+      <i class="fa-brands fa-whatsapp"></i>
+      <h3>Message tomorrow's customers</h3>
+    </div>
+    <div class="dd-form-card__body">
+      <p class="text-muted mb-3">Send a heads-up to the next day's route before you set off.</p>
+      <%= link_to driver_messages_path, class: "btn-yellow w-100" do %>
+        <i class="fa-brands fa-whatsapp"></i> Message a Day
+      <% end %>
+    </div>
+  </div>
+
   <% if @collections.empty? %>
-    <div class="dd-form-card">
+    <div class="dd-form-card mt-3">
       <div class="dd-form-card__body">
         <p>No collections waiting for you today.</p>
         <p>But I love that you checked...</p>
@@ -16,7 +29,7 @@
     </div>
 
   <% else %>
-    <div class="dd-form-card">
+    <div class="dd-form-card mt-3">
       <div class="dd-form-card__header">
         <i class="fa-solid fa-box-open"></i>
         <h3><%= pluralize(@count, 'parcel') %> waiting to be collected</h3>
@@ -70,19 +83,6 @@
         </div>
       </div>
     <% end %>
-
-    <div class="dd-form-card mt-3">
-      <div class="dd-form-card__header">
-        <i class="fa-brands fa-whatsapp"></i>
-        <h3>Message tomorrow's customers</h3>
-      </div>
-      <div class="dd-form-card__body">
-        <p class="text-muted mb-3">Send a heads-up to the next day's route before you set off.</p>
-        <%= link_to driver_messages_path, class: "btn-yellow w-100" do %>
-          <i class="fa-brands fa-whatsapp"></i> Message a Day
-        <% end %>
-      </div>
-    </div>
 
   <% end %>
 
