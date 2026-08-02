@@ -306,11 +306,15 @@ class Subscription < ApplicationRecord
         last_end = if last_sub.end_date.present?
           # If end_date exists, use it
           last_sub.end_date.to_date
-        else
+        elsif last_sub.duration.present?
           # Calculate expected end based on required collections
           required_collections = (4 * last_sub.duration).ceil
           # Expected end = start + total_required_collections.weeks
           (last_sub.start_date + required_collections.weeks).to_date
+        else
+          # No end_date and no duration (e.g. a once_off subscription) — nothing
+          # to project forward from, so treat start_date as the last known point.
+          last_sub.start_date.to_date
         end
 
         # FAILSAFE: if you actually collected in the gap, force continuity

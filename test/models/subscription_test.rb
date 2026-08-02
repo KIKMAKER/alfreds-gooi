@@ -64,6 +64,17 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_equal payment_date, new_sub.suggested_start_date(payment_date: payment_date)
   end
 
+  test "suggested start date doesn't blow up when last sub has no end_date and no duration" do
+    once_off = Subscription.create!(
+      user: @user, plan: "once_off", start_date: Date.new(2025, 4, 1), status: :completed
+    )
+    payment_date = Date.new(2025, 4, 21)
+
+    new_sub = Subscription.new(user: @user)
+    assert_equal payment_date, new_sub.suggested_start_date(payment_date: payment_date)
+    assert_nil once_off.duration
+  end
+
   test "should set start_date to previous sub's end_date if collections continued" do
     user = @user
     old_sub = @old_sub
