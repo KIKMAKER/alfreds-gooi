@@ -192,6 +192,47 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 20000, Payment.last.total_amount
   end
 
+  # ── Editing invoice items ────────────────────────────────────────────────────
+  # Regression: InvoicesController#edit used to build a blank invoice_item
+  # (no product) whenever the invoice had none, purely to give the form a row.
+  # That row rendered with no indication it wasn't a real item, and submitting
+  # it (even untouched, with quantity filled in but no product) blew up
+  # #update: @invoice.update(invoice_params)'s failure was never checked, so
+  # the code carried on, created the unrelated new item, and then
+  # @invoice.calculate_total crashed with an uncaught RecordInvalid because
+  # the still-dirty, still-invalid blank item got swept up by autosave.
+
+  test "edit does not build a placeholder invoice item for an invoice with none" do
+    inv = Invoice.create!(subscription: @subscription, issued_date: Date.today,
+                          due_date: Date.today + 14, total_amount: 0)
+    sign_in @admin
+
+    get edit_invoice_path(inv)
+
+    assert_response :success
+    assert_equal 0, inv.invoice_items.size
+  end
+
+  test "update surfaces a validation error instead of crashing on an invalid nested item" do
+    inv = Invoice.create!(subscription: @subscription, issued_date: Date.today,
+                          due_date: Date.today + 14, total_amount: 0)
+    product = Product.create!(title: "Compost", description: "bin bags", price: 720,
+                              billing_type: "standard")
+    sign_in @admin
+
+    patch invoice_path(inv), params: {
+      invoice: {
+        invoice_items_attributes: {
+          "0"     => { quantity: "1.0", product_id: "", amount: "", _destroy: "0" },
+          "new_0" => { quantity: "1", product_id: product.id.to_s, amount: "720.0" }
+        }
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_match /could not update invoice/i, flash[:alert]
+  end
+
   # ── Removing discount codes ──────────────────────────────────────────────────
   # Regression: remove_discount_code was missing from the set_invoice
   # before_action list, so @invoice was nil for the whole action — it 500'd on

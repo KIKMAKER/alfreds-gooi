@@ -42,13 +42,17 @@ class InvoicesController < ApplicationController
 
   def edit
     @products = Product.all
-    @invoice.invoice_items.build if @invoice.invoice_items.empty?
   end
 
   def update
     if params[:invoice][:invoice_items_attributes].present?
       # Handle updates and deletions via nested attributes
-      @invoice.update(invoice_params)
+      unless @invoice.update(invoice_params)
+        @products = Product.all
+        flash.now[:alert] = "Could not update invoice: #{@invoice.errors.full_messages.to_sentence}"
+        render :edit, status: :unprocessable_entity
+        return
+      end
 
       # Handle new items manually
       params[:invoice][:invoice_items_attributes].each do |key, item_params|
