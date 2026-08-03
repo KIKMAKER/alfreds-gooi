@@ -16,7 +16,7 @@ module Subscriptions
     end
 
     def call
-      last_sub = @user.subscriptions.order(Arel.sql("COALESCE(end_date, '1900-01-01') DESC"), created_at: :desc).first
+      last_sub = @user.subscriptions.order(created_at: :desc).first
       return failure!("No previous subscription to duplicate.") unless last_sub
 
       new_sub = build_subscription_from(last_sub)
