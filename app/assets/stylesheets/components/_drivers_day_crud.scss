@@ -514,6 +514,39 @@
   }
 }
 
+// Wood shavings toggle
+.bucket-wood-shavings-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bucket-wood-shavings-checkbox {
+  display: none; // visually hidden — label acts as the button
+}
+
+.bucket-wood-shavings-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.875rem;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+
+  &--active {
+    border-color: $orange;
+    background: $orange;
+    color: white;
+  }
+}
+
 // Bucket list
 .bucket-list {
   display: flex;
@@ -555,6 +588,13 @@
   &__farm {
     font-size: 0.75rem;
     color: #aaa;
+  }
+
+  &__tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $orange;
+    text-transform: uppercase;
   }
 
   &__kg {

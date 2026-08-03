@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_30_120227) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_03_130742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -174,6 +174,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_30_120227) do
     t.datetime "updated_at", null: false
     t.bigint "drop_off_event_id"
     t.integer "bucket_size", default: 25
+    t.boolean "wood_shavings", default: false
     t.index ["drivers_day_id"], name: "index_buckets_on_drivers_day_id"
     t.index ["drop_off_event_id"], name: "index_buckets_on_drop_off_event_id"
   end

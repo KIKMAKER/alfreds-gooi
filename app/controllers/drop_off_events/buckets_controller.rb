@@ -38,6 +38,6 @@ class DropOffEvents::BucketsController < ApplicationController
   end
 
   def bucket_params
-    params.require(:bucket).permit(:gross_kg, :half, :bucket_size)
+    params.require(:bucket).permit(:gross_kg, :half, :bucket_size, :wood_shavings)
   end
 end

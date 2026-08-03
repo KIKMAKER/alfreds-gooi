@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 const STORAGE_KEY = "gooi_bucket_size"
 
 export default class extends Controller {
-  static targets = ["grossInput", "netPreview", "btn25", "btn45", "sizeField", "halfField", "halfLabel"]
+  static targets = ["grossInput", "netPreview", "btn25", "btn45", "sizeField", "halfField", "halfLabel", "woodShavingsField", "woodShavingsLabel"]
   static values = { tare25: Number, tare45: Number }
 
   connect() {
@@ -27,6 +27,11 @@ export default class extends Controller {
     const checked = this.halfFieldTarget.checked
     this.halfLabelTarget.textContent = checked ? "Half-full ½" : "Full bucket"
     this.halfLabelTarget.classList.toggle("bucket-half-btn--active", checked)
+  }
+
+  toggleWoodShavings() {
+    const checked = this.woodShavingsFieldTarget.checked
+    this.woodShavingsLabelTarget.classList.toggle("bucket-wood-shavings-btn--active", checked)
   }
 
   _applySize(size) {

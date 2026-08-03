@@ -133,6 +133,20 @@
           </label>
         </div>
 
+        <div class="bucket-wood-shavings-wrap">
+          <%= f.check_box :wood_shavings,
+                class: "bucket-wood-shavings-checkbox",
+                data: {
+                  "bucket-form-target": "woodShavingsField",
+                  action: "change->bucket-form#toggleWoodShavings"
+                } %>
+          <label class="bucket-wood-shavings-btn"
+                 for="bucket_wood_shavings"
+                 data-bucket-form-target="woodShavingsLabel">
+            <i class="fa-solid fa-tree"></i> Wood shavings
+          </label>
+        </div>
+
         <div class="mt-3">
           <%= f.button :submit, "Save & add next", class: "submit-btn w-100" %>
         </div>
@@ -154,6 +168,9 @@
             <div class="bucket-list-row__num"><%= @buckets.length - i %></div>
             <div class="bucket-list-row__main">
               <span class="bucket-list-row__size"><%= b.bucket_size %>L<% if b.half? %> ½<% end %></span>
+              <% if b.wood_shavings? %>
+                <span class="bucket-list-row__tag">Wood shavings</span>
+              <% end %>
             </div>
             <div class="bucket-list-row__kg"><%= number_with_precision(b.weight_kg, precision: 2) %> kg</div>
             <div class="bucket-list-row__time"><%= b.created_at.strftime('%H:%M') %></div>
