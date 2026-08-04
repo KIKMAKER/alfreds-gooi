@@ -1,7 +1,7 @@
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
   <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">
     <% if @stage == :day_1 %>
-      Ready to start gooiing?
+      <%= @is_new ? "Ready to start gooiing?" : "Welcome back — your invoice is waiting" %>
     <% elsif @stage == :day_3 %>
       Your gooi invoice is waiting
     <% else %>
@@ -13,9 +13,13 @@
     Hi <%= @subscription.user.first_name %>,
   </p>
 
-  <% if @stage == :day_1 %>
+  <% if @stage == :day_1 && @is_new %>
     <p style="font-size: 1.1rem;">
       Welcome to gooi! Your invoice is ready whenever you are — pay now to lock in your first collection and get your starter kit on the way.
+    </p>
+  <% elsif @stage == :day_1 %>
+    <p style="font-size: 1.1rem;">
+      Good to have you back! Your renewal invoice is ready whenever you are — pay now to keep your collections running without a gap.
     </p>
   <% elsif @stage == :day_3 %>
     <p style="font-size: 1.1rem;">
@@ -47,7 +51,7 @@
       Unsure about something or have something to chat about? Reply to this email and we'll get back to you shortly.
     </p>
      <p style="font-size: 1.1rem;">
-     Looking forward to welcoming you to the gooi family!
+     <%= @is_new ? "Looking forward to welcoming you to the gooi family!" : "Looking forward to having you back!" %>
     </p>
 
   <p style="font-size: 1.1rem;">Kristen</p>

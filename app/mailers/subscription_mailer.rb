@@ -110,15 +110,24 @@ class SubscriptionMailer < ApplicationMailer
   end
 
   def payment_reminder(stage = :day_1)
-    @subscription = params[:subscription]
-    @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
-    @stage        = stage
+    @subscription  = params[:subscription]
+    @invoice       = @subscription.invoices.where(paid: false).order(:issued_date).last
+    @stage         = stage
+    @is_new        = @subscription.is_new_customer
 
-    subject = case stage
-              when :day_1 then "Ready to start gooiing?"
-              when :day_3 then "Just a heads up — your gooi invoice is waiting"
-              when :day_7 then "Last nudge — your gooi invoice is overdue"
-              end
+    subject = if @is_new
+      case stage
+      when :day_1 then "Ready to start gooiing?"
+      when :day_3 then "Just a heads up — your gooi invoice is waiting"
+      when :day_7 then "Last nudge — your gooi invoice is overdue"
+      end
+    else
+      case stage
+      when :day_1 then "Welcome back — your gooi invoice is waiting"
+      when :day_3 then "Just a heads up — your gooi invoice is waiting"
+      when :day_7 then "Last nudge — your gooi invoice is overdue"
+      end
+    end
 
     mail(to: @subscription.user.email, subject: subject)
   end
@@ -133,10 +142,11 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @invoice      = @subscription.invoices.where(paid: false).order(:issued_date).last
     @stage        = stage
+    @is_new       = @subscription.is_new_customer
 
     mail(
       to: 'howzit@gooi.me',
-      subject: "Nudge sent (#{stage}) → #{@subscription.display_name}",
+      subject: "Nudge sent (#{stage}, #{@is_new ? 'new' : 'returning'}) → #{@subscription.display_name}",
       track_opens: 'true',
       message_stream: 'outbound'
     )
