@@ -1,9 +1,9 @@
 <div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
   <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">
-    <% if @stage == :day_3 %>
-      Your gooi invoice is waiting
-    <% elsif @stage == :day_7 %>
+    <% if @stage == :day_1 %>
       Ready to start gooiing?
+    <% elsif @stage == :day_3 %>
+      Your gooi invoice is waiting
     <% else %>
       Your gooi subscription is waiting for you
     <% end %>
@@ -13,13 +13,13 @@
     Hi <%= @subscription.user.first_name %>,
   </p>
 
-  <% if @stage == :day_3 %>
+  <% if @stage == :day_1 %>
+    <p style="font-size: 1.1rem;">
+      Welcome to gooi! Your invoice is ready whenever you are — pay now to lock in your first collection and get your starter kit on the way.
+    </p>
+  <% elsif @stage == :day_3 %>
     <p style="font-size: 1.1rem;">
       Just a reminder that your gooi invoice is still waiting. Pay now to lock in your first collection and get your starter kit on the way.
-    </p>
-  <% elsif @stage == :day_7 %>
-    <p style="font-size: 1.1rem;">
-      Your gooi subscription is still pending payment. Once payment clears, we'll get your collections scheduled and your starter kit delivered.
     </p>
   <% else %>
     <p style="font-size: 1.1rem;">

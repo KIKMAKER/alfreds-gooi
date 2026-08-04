@@ -2,9 +2,9 @@ class NudgePendingSubscriptionsJob < ApplicationJob
   queue_as :default
 
   STAGES = [
-    { name: :day_3,  min: 3,  max: 6  },
-    { name: :day_7,  min: 7,  max: 13 },
-    { name: :day_14, min: 14, max: 17 }
+    { name: :day_1, min: 1, max: 2   },
+    { name: :day_3, min: 3, max: 6   },
+    { name: :day_7, min: 7, max: 999 }
   ].freeze
 
   def perform

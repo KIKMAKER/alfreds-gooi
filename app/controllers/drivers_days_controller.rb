@@ -93,6 +93,15 @@ class DriversDaysController < ApplicationController
       end
     end
 
+    # Pending-subscription nudges: there is no prod worker, so this piggybacks
+    # here (runs daily, not just Mondays) instead of relying on perform_later
+    # from the admin dashboard, which never actually processes.
+    begin
+      NudgePendingSubscriptionsJob.perform_now
+    rescue => e
+      Rails.logger.error("[start_drivers_day] NudgePendingSubscriptionsJob failed: #{e.class} — #{e.message}")
+    end
+
     alfred = User.find_by(first_name: "Alfred", role: 'driver')
     # ##
     @drivers_day = DriversDay.find_or_create_by(date: today, user: alfred)

@@ -2,8 +2,6 @@ class Admin::DashboardController < Admin::BaseController
   before_action :authenticate_user!
 
   def index
-    NudgePendingSubscriptionsJob.perform_later
-
     @active_subs           = Subscription.where(status: :active).count
     @pending_subs          = Subscription.where(status: :pending).count
     @overdue_pending_count = Subscription.pending
