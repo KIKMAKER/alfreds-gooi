@@ -242,10 +242,10 @@ class OperationalMetrics
 
       xl_cols = Collection.where(subscription_id: xl_ids, skip: false)
                           .where("date >= ?", three_months_ago)
-                          .where("buckets > 0 OR buckets_25l > 0 OR buckets_45l > 0")
+                          .where("buckets > 0 OR buckets_25l > 0 OR buckets_45l > 0 OR buckets_80l > 0")
       avg_litres = if xl_cols.any?
                      # Use actual sizes where recorded; fall back to buckets × 25 per row
-                     total = xl_cols.sum("CASE WHEN (buckets_25l + buckets_45l) > 0 THEN buckets_25l * 25 + buckets_45l * 45 ELSE buckets * 25 END")
+                     total = xl_cols.sum("CASE WHEN (buckets_25l + buckets_45l + buckets_80l) > 0 THEN buckets_25l * 25 + buckets_45l * 45 + buckets_80l * 80 ELSE buckets * 25 END")
                      (total.to_f / xl_cols.count).round(1)
                    else
                      25.0  # 1 × 25L bucket fallback
@@ -275,9 +275,9 @@ class OperationalMetrics
 
       com_cols = Collection.where(subscription_id: com_ids, skip: false)
                            .where("date >= ?", three_months_ago)
-                           .where("buckets_25l > 0 OR buckets_45l > 0 OR buckets > 0")
+                           .where("buckets_25l > 0 OR buckets_45l > 0 OR buckets_80l > 0 OR buckets > 0")
       avg_litres = if com_cols.any?
-                     total = com_cols.sum("CASE WHEN (buckets_25l + buckets_45l) > 0 THEN buckets_25l * 25 + buckets_45l * 45 ELSE buckets * 25 END")
+                     total = com_cols.sum("CASE WHEN (buckets_25l + buckets_45l + buckets_80l) > 0 THEN buckets_25l * 25 + buckets_45l * 45 + buckets_80l * 80 ELSE buckets * 25 END")
                      (total.to_f / com_cols.count).round(1)
                    else
                      45.0  # 1 × 45L bucket fallback

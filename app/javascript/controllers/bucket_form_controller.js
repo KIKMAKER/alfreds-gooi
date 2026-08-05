@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 const STORAGE_KEY = "gooi_bucket_size"
+const SIZES = ["25", "45", "80"]
 
 export default class extends Controller {
-  static targets = ["grossInput", "netPreview", "btn25", "btn45", "sizeField", "halfField", "halfLabel", "woodShavingsField", "woodShavingsLabel"]
-  static values = { tare25: Number, tare45: Number }
+  static targets = ["grossInput", "netPreview", "btn25", "btn45", "btn80", "sizeField", "halfField", "halfLabel", "woodShavingsField", "woodShavingsLabel"]
+  static values = { tare25: Number, tare45: Number, tare80: Number }
 
   connect() {
     const saved = localStorage.getItem(STORAGE_KEY) || "25"
@@ -36,9 +37,13 @@ export default class extends Controller {
 
   _applySize(size) {
     this.sizeFieldTarget.value = size
-    const is25 = size === "25"
-    this.btn25Target.classList.toggle("bucket-size-btn--active", is25)
-    this.btn45Target.classList.toggle("bucket-size-btn--active", !is25)
+    SIZES.forEach((s) => {
+      this[`btn${s}Target`].classList.toggle("bucket-size-btn--active", s === size)
+    })
+  }
+
+  _tareFor(size) {
+    return this[`tare${size}Value`]
   }
 
   _updatePreview() {
@@ -49,7 +54,7 @@ export default class extends Controller {
       return
     }
     const size = this.sizeFieldTarget.value
-    const tare = size === "45" ? this.tare45Value : this.tare25Value
+    const tare = this._tareFor(size)
     const net = Math.max(0, gross - tare).toFixed(2)
     this.netPreviewTarget.textContent = `${net} kg net`
     this.netPreviewTarget.classList.add("bucket-net-preview--ready")

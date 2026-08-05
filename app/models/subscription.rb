@@ -56,7 +56,7 @@ class Subscription < ApplicationRecord
   validates :street_address, presence: true
   validates :plan, presence: true
   validates :duration, presence: true, unless: :once_off?
-  validates :bucket_size, inclusion: { in: [25, 45] }, if: :Commercial?
+  validates :bucket_size, inclusion: { in: [25, 45, 80] }, if: :Commercial?
   validates :buckets_per_collection, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 20 }, if: :Commercial?
   geocoded_by :street_address
   after_validation :geocode, if: :will_save_change_to_street_address?
@@ -157,8 +157,8 @@ class Subscription < ApplicationRecord
   # record XL-style buckets on Commercial subs (or vice versa).
   BUCKET_VOLUME_SQL = <<~SQL.squish
     CASE
-      WHEN COALESCE(buckets_25l, 0) > 0 OR COALESCE(buckets_45l, 0) > 0
-        THEN COALESCE(buckets_25l, 0) * 25 + COALESCE(buckets_45l, 0) * 45
+      WHEN COALESCE(buckets_25l, 0) > 0 OR COALESCE(buckets_45l, 0) > 0 OR COALESCE(buckets_80l, 0) > 0
+        THEN COALESCE(buckets_25l, 0) * 25 + COALESCE(buckets_45l, 0) * 45 + COALESCE(buckets_80l, 0) * 80
       ELSE COALESCE(buckets, 0) * 25
     END
   SQL

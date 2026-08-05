@@ -17,6 +17,7 @@
       <% if @subscription.Commercial? %>
         <%= f.input :buckets_45l, label: "Number of 45L buckets collected", placeholder: "0" %>
         <%= f.input :buckets_25l, label: "Number of 25L buckets collected", placeholder: "0" %>
+        <%= f.input :buckets_80l, label: "Number of 80L bags collected", placeholder: "0" %>
       <% elsif @subscription.XL? %>
         <%= f.input :buckets, label: "Number of buckets collected", placeholder: "0" %>
       <% else %>

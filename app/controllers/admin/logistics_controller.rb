@@ -22,7 +22,8 @@ class Admin::LogisticsController < ApplicationController
         "COALESCE(bags, 0) * 5 + " \
         "COALESCE(buckets, 0) * 25 + " \
         "COALESCE(buckets_25l, 0) * 25 + " \
-        "COALESCE(buckets_45l, 0) * 45"
+        "COALESCE(buckets_45l, 0) * 45 + " \
+        "COALESCE(buckets_80l, 0) * 80"
       )
 
     @rows = days.map do |d|

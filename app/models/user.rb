@@ -160,6 +160,7 @@ class User < ApplicationRecord
   LITRES_PER_BAG = 5.0
   LITRES_PER_BUCKET_25L = 25.0
   LITRES_PER_BUCKET_45L = 45.0
+  LITRES_PER_BUCKET_80L = 80.0
   KG_PER_LITRE = 0.6
   COMPOST_MULTIPLIER = 0.35
   CO2E_MULTIPLIER = 1.96
@@ -183,11 +184,17 @@ class User < ApplicationRecord
     collections.where(skip: false).sum(:buckets_45l).to_f
   end
 
+  def lifetime_buckets_80l
+    # Commercial uses 'buckets_80l' column (80L bags)
+    collections.where(skip: false).sum(:buckets_80l).to_f
+  end
+
   def lifetime_litres
     (lifetime_bags * LITRES_PER_BAG) +
     (lifetime_buckets_xl * LITRES_PER_BUCKET_25L) +
     (lifetime_buckets_25l * LITRES_PER_BUCKET_25L) +
-    (lifetime_buckets_45l * LITRES_PER_BUCKET_45L)
+    (lifetime_buckets_45l * LITRES_PER_BUCKET_45L) +
+    (lifetime_buckets_80l * LITRES_PER_BUCKET_80L)
   end
 
   def lifetime_input_kg

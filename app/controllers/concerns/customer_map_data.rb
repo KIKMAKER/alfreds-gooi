@@ -16,7 +16,7 @@ module CustomerMapData
 
       if recent_collections.any?
         avg_bags    = (recent_collections.sum { |c| c.bags || 0 }.to_f     / recent_collections.count).round(2)
-        avg_buckets = (recent_collections.sum { |c| (c.buckets || 0) + (c.buckets_45l || 0) + (c.buckets_25l || 0) }.to_f / recent_collections.count).round(2)
+        avg_buckets = (recent_collections.sum { |c| (c.buckets || 0) + (c.buckets_45l || 0) + (c.buckets_25l || 0) + (c.buckets_80l || 0) }.to_f / recent_collections.count).round(2)
         avg_weekly_volume = (avg_bags + avg_buckets).round(2)
       else
         avg_bags = avg_buckets = avg_weekly_volume = 0

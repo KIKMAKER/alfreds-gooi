@@ -6,6 +6,7 @@ class Bucket < ApplicationRecord
   # and auto-subtract tare before save so weight_kg is NET.
   TARE_25L_KG = 0.90
   TARE_45L_KG = 1.50
+  TARE_80L_KG = 0.30 # flexible bag, not a rigid bucket
 
   # Virtual attribute to accept the scale reading
   attr_accessor :gross_kg
@@ -15,6 +16,7 @@ class Bucket < ApplicationRecord
   validates :weight_kg,
             presence: true,
             numericality: { greater_than_or_equal_to: 0, less_than: 100 }
+  validates :bucket_size, inclusion: { in: [25, 45, 80] }
   # validates :half, inclusion: { in: [true, false] }
 
   # after_initialize { self.half = false if half.nil? }
@@ -29,6 +31,8 @@ class Bucket < ApplicationRecord
     tare = case bucket_size
            when 45
              TARE_45L_KG
+           when 80
+             TARE_80L_KG
            else
              TARE_25L_KG  # Default for 25L or nil
            end

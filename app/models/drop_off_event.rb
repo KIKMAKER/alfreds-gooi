@@ -63,6 +63,10 @@ class DropOffEvent < ApplicationRecord
     buckets.loaded? ? buckets.count { |b| b.bucket_size == 45 } : buckets.where(bucket_size: 45).count
   end
 
+  def bucket_count_80l
+    buckets.loaded? ? buckets.count { |b| b.bucket_size == 80 } : buckets.where(bucket_size: 80).count
+  end
+
   # Timing methods for drop-off duration tracking
   def calculate_duration
     return unless arrival_time && departure_time

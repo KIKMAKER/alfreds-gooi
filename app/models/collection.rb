@@ -148,7 +148,7 @@ class Collection < ApplicationRecord
     else
       # XL and Commercial: use actual tracked bucket sizes where available,
       # fall back to total buckets × 25L if sizes haven't been recorded yet.
-      sized = (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45)
+      sized = (buckets_25l.to_i * 25) + (buckets_45l.to_i * 45) + (buckets_80l.to_i * 80)
       sized.positive? ? sized : (buckets.to_i * 25)
     end
   end

@@ -361,7 +361,7 @@ class CollectionsController < ApplicationController
 
   # sanitise the parameters that come through from the form (strong params)
   def collection_params
-    permitted = params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :buckets_45l, :buckets_25l, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :position, :waste_stream_override, :invoice_items_attributes)
+    permitted = params.require(:collection).permit(:alfred_message, :bags, :is_done, :skip, :date, :kiki_note, :new_customer, :buckets, :buckets_45l, :buckets_25l, :buckets_80l, :time, :needs_bags, :dropped_off_buckets, :soil_bag, :subscription_id, :position, :waste_stream_override, :invoice_items_attributes)
 
     # Enum assignment raises ArgumentError on an unknown value (e.g. the blank
     # "use subscription default" option), so treat anything unrecognised as "no override".

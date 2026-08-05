@@ -188,6 +188,10 @@
             <label class="bucket-scale-label">25L Buckets</label>
             <%= f.input_field :buckets_25l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
           </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">80L Bags</label>
+            <%= f.input_field :buckets_80l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
         <% elsif @subscription.user.drop_off? %>
           <div class="bucket-scale-wrap">
             <label class="bucket-scale-label">Buckets dropped off</label>
@@ -201,6 +205,10 @@
           <div class="bucket-scale-wrap">
             <label class="bucket-scale-label">25L buckets</label>
             <%= f.input_field :buckets_25l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
+          </div>
+          <div class="bucket-scale-wrap">
+            <label class="bucket-scale-label">80L bags</label>
+            <%= f.input_field :buckets_80l, as: :integer, min: 0, placeholder: "0", class: "bucket-scale-input" %>
           </div>
         <% elsif @subscription.XL? %>
           <div class="bucket-scale-wrap">
