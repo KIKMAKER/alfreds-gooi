@@ -25,11 +25,11 @@
           <%= f.input :gross_kg,
                 label: "Scale reading (kg, incl. bucket/tare)",
                 input_html: { step: 0.01, min: 0, autofocus: true },
-                hint: "Tare will be subtracted automatically (25L: #{Bucket::TARE_25L_KG}kg, 45L: #{Bucket::TARE_45L_KG}kg)" %>
+                hint: "Tare will be subtracted automatically (25L: #{Bucket::TARE_25L_KG}kg, 45L: #{Bucket::TARE_45L_KG}kg, 80L: #{Bucket::TARE_80L_KG}kg)" %>
 
           <%= f.input :bucket_size,
                 as: :radio_buttons,
-                collection: [[25, '25L'], [45, '45L']],
+                collection: [[25, '25L'], [45, '45L'], [80, '80L']],
                 label: "Bucket size",
                 item_wrapper_class: 'form-check form-check-inline radio-buttons',
                 wrapper_html: { class: 'mb-3' } %>
@@ -37,6 +37,10 @@
           <%= f.input :half,
                 as: :boolean,
                 label: "Half-full bucket" %>
+
+          <%= f.input :wood_shavings,
+                as: :boolean,
+                label: "Wood shavings" %>
 
           <div class="mt-2">
             <%= f.button :submit, "Save & add next", class: "submit-btn" %>
@@ -116,6 +120,7 @@
             <div class="text-muted">Buckets</div>
             <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_25l %> 25L</div>
             <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_45l %> 45L</div>
+            <div class="fs-4 fw-bold"><%= @drop_off_event.bucket_count_80l %> 80L</div>
           </div>
           <div class="col-6 col-md-3 mb-2">
             <div class="text-muted">Net kg</div>
@@ -147,6 +152,7 @@
           <th>Size</th>
           <th>Net kg</th>
           <th>Half?</th>
+          <th></th>
           <th>Added</th>
           <th class="text-end"></th>
         </tr>
@@ -158,6 +164,7 @@
             <td><%= b.bucket_size %>L</td>
             <td><%= number_with_precision(b.weight_kg, precision: 3) %></td>
             <td><%= b.half? ? "Yes" : "No" %></td>
+            <td><% if b.wood_shavings? %><i class="fa-solid fa-tree text-success" title="Wood shavings"></i><% end %></td>
             <td><%= l b.created_at, format: :short %></td>
             <td class="text-end">
               <%= link_to drivers_day_drop_off_event_bucket_path(@drivers_day, @drop_off_event, b),
@@ -169,7 +176,7 @@
           </tr>
         <% end %>
         <% if @drop_off_event.buckets.empty? %>
-          <tr><td colspan="6" class="text-center text-muted">No buckets weighed yet.</td></tr>
+          <tr><td colspan="7" class="text-center text-muted">No buckets weighed yet.</td></tr>
         <% end %>
       </tbody>
     </table>
