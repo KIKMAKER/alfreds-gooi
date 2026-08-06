@@ -27,14 +27,19 @@ class Bucket < ApplicationRecord
   def apply_tare
     return if gross_kg.blank?
 
-    # Use appropriate tare weight based on bucket size
-    tare = case bucket_size
-           when 45
-             TARE_45L_KG
-           when 80
-             TARE_80L_KG
+    # Wood shavings come in black bags, not rigid buckets — negligible tare
+    # regardless of the size button pressed.
+    tare = if wood_shavings?
+             0
            else
-             TARE_25L_KG  # Default for 25L or nil
+             case bucket_size
+             when 45
+               TARE_45L_KG
+             when 80
+               TARE_80L_KG
+             else
+               TARE_25L_KG  # Default for 25L or nil
+             end
            end
 
     net = gross_kg.to_f - tare
