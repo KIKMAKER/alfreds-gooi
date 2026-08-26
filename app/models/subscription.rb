@@ -221,13 +221,13 @@ class Subscription < ApplicationRecord
 
   def amount_invoiced
     return 0 unless monthly_invoicing?
-    invoices.sum(:total_amount)
+    invoices.sum(:total_amount).round(2)
   end
 
   def amount_remaining
     return 0 unless monthly_invoicing?
     return 0 unless contract_total
-    contract_total - amount_invoiced
+    (contract_total - amount_invoiced).round(2)
   end
 
   def invoicing_progress_percentage

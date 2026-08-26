@@ -296,7 +296,7 @@
                 <div class="invoice-date"><%= invoice.created_at.strftime('%d %b %Y') %></div>
               </div>
               <div class="invoice-amount">
-                R<%= number_with_delimiter(invoice.total_amount) %>
+                R<%= number_with_delimiter(invoice.total_amount.round(2)) %>
               </div>
               <i class="fa-solid fa-chevron-right"></i>
             <% end %>

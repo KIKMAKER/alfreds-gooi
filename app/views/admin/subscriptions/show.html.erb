@@ -512,7 +512,7 @@
                 <div class="invoice-date"><%= (invoice.issued_date || invoice.created_at).strftime('%d %b %Y') %></div>
               </div>
               <div class="invoice-amount">
-                R<%= number_with_delimiter(invoice.total_amount) %>
+                R<%= number_with_delimiter(invoice.total_amount.round(2)) %>
               </div>
               <% if invoice.paid? %>
                 <span class="invoice-status-badge invoice-status-badge--paid">

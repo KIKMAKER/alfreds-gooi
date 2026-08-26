@@ -1,7 +1,7 @@
 <div class="user-wrapper">
   <h1 class="mb-4">Issuing Rolls</h1>
   <h2>Invoice for: <%= @invoice.invoice_items.first.quantity %> rolls</h2>
-  <h2>Price: R<%= @invoice.total_amount %></h2>
+  <h2>Price: R<%= @invoice.total_amount.round(2) %></h2>
   <br>
   <h2>Send invoice and payment link to</h2>
   <br>
