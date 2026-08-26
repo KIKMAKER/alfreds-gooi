@@ -427,10 +427,10 @@ class SubscriptionsController < ApplicationController
   def holiday_dates
     @subscription = Subscription.find(params[:id])
     if @subscription.update(subscription_params)
-      if @subscription.holiday_start && @subscription.holiday_end
-        @subscription.collections
-                     .where(date: @subscription.holiday_start..@subscription.holiday_end)
-                     .update_all(skip: true, skip_reason: "holiday")
+      skip_collections_for_holiday(@subscription)
+      @subscription.linked_subscriptions.each do |linked|
+        linked.update!(holiday_start: @subscription.holiday_start, holiday_end: @subscription.holiday_end)
+        skip_collections_for_holiday(linked)
       end
       redirect_back fallback_location: manage_path, notice: "Holiday set!"
     else
@@ -442,10 +442,11 @@ class SubscriptionsController < ApplicationController
   def clear_holiday
     @subscription = Subscription.find(params[:id])
     if @subscription.update(holiday_start: nil, holiday_end: nil)
-      @subscription.collections
-             .where('date >= ?', Date.current)
-             .where(skip_reason: "holiday")
-             .update_all(skip: false, skip_reason: nil)
+      unskip_holiday_collections(@subscription)
+      @subscription.linked_subscriptions.each do |linked|
+        linked.update!(holiday_start: nil, holiday_end: nil)
+        unskip_holiday_collections(linked)
+      end
       redirect_back fallback_location: manage_path, notice: "Holiday Canceled!"
     else
       redirect_back fallback_location: manage_path, status: :unprocessable_entity
@@ -587,6 +588,21 @@ class SubscriptionsController < ApplicationController
   end
 
   private
+
+  def skip_collections_for_holiday(subscription)
+    return unless subscription.holiday_start && subscription.holiday_end
+
+    subscription.collections
+                .where(date: subscription.holiday_start..subscription.holiday_end)
+                .update_all(skip: true, skip_reason: "holiday")
+  end
+
+  def unskip_holiday_collections(subscription)
+    subscription.collections
+                .where('date >= ?', Date.current)
+                .where(skip_reason: "holiday")
+                .update_all(skip: false, skip_reason: nil)
+  end
 
   def finish_multi_location_signup
     # Get all pending subscriptions for this multi-location signup

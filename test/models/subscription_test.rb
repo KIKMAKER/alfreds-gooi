@@ -52,18 +52,13 @@ class SubscriptionTest < ActiveSupport::TestCase
     end
 
     new_sub = Subscription.new(user: @user)
-    assert_equal @old_sub.end_date + 1.day, new_sub.suggested_start_date(payment_date: payment_date)
+    assert_equal @old_sub.end_date.to_date + 1.day, new_sub.suggested_start_date(payment_date: payment_date)
   end
 
-  test "suggested start date is payment date if too few collections" do
+  test "suggested start date is payment date if no collections happened in the gap" do
     payment_date = Date.new(2025, 3, 21)
 
-    # Only one collection
-    Collection.create!(
-      subscription: @old_sub,
-      date: Date.new(2025, 3, 5)
-    )
-
+    # No collections between last_end and payment_date, so no continuity failsafe kicks in
     new_sub = Subscription.new(user: @user)
     assert_equal payment_date, new_sub.suggested_start_date(payment_date: payment_date)
   end
@@ -94,16 +89,21 @@ class SubscriptionTest < ActiveSupport::TestCase
 
     new_sub.start_date = new_sub.suggested_start_date(payment_date: payment_date)
 
-    assert_equal (old_sub.end_date + 1.day), new_sub.start_date.to_date
+    assert_equal (old_sub.end_date.to_date + 1.day), new_sub.start_date.to_date
 
   end
 
   test "marks subscriptions complete after enough collections" do
     sub = @one_sub
     sub.update!(start_date: 6.weeks.ago, duration: 1)
+    # The completion job only processes subscriptions whose collection_day matches
+    # today's actual weekday, so align it rather than relying on suburb_fixture's default.
+    sub.update_column(:collection_day, Date.today.strftime("%A"))
 
-    # Simulate 5 collections
-    5.times do
+    # 1-month subs require (4.2 * duration).ceil + 1 collections to complete (see
+    # CheckSubscriptionsForCompletionJob) — that's 6, not a round number of weeks.
+    required_collections = (4.2 * sub.duration).ceil + 1
+    required_collections.times do
       Collection.create!(subscription: sub, date: 1.week.ago, skip: false)
     end
 

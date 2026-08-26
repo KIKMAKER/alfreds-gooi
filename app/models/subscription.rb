@@ -31,6 +31,13 @@ class Subscription < ApplicationRecord
     primary_subscription_id.present?
   end
 
+  # Subscriptions sharing the same commercial account: a satellite's primary
+  # plus its other satellites, or a primary's satellites. Used to keep
+  # holiday/pause state consistent across all collection days for one customer.
+  def linked_subscriptions
+    satellite? ? ([primary_subscription] + primary_subscription.satellite_subscriptions - [self]) : satellite_subscriptions.to_a
+  end
+
   before_create do
     self.set_customer_id unless self.customer_id
     # self.set_suburb
