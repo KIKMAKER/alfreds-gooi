@@ -116,12 +116,12 @@
         </div>
       <% end %>
 
-      <!-- Usage True-Up Card -->
+      <!-- Usage Review Card -->
       <% if @usage_review %>
         <div class="info-card">
           <div class="info-card-header">
             <i class="fa-solid fa-scale-unbalanced"></i>
-            <h3>Usage True-Up</h3>
+            <h3>Usage Review</h3>
           </div>
           <div class="info-card-body">
             <div class="info-row">
@@ -147,15 +147,37 @@
             <% if @subscription.satellite_subscriptions.any? %>
               <p class="text-muted small mt-2 mb-2">Includes volume from linked satellite subscriptions.</p>
             <% end %>
+            <p class="text-muted small mt-2 mb-2">Historical litres collected vs. what the current plan contracts for. Use the Capacity Change card below to act on this — bill the catch-up and/or update the plan going forward.</p>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Capacity Change Card -->
+      <% if @usage_review %>
+        <div class="info-card">
+          <div class="info-card-header">
+            <i class="fa-solid fa-arrows-up-down"></i>
+            <h3>Capacity Change</h3>
+          </div>
+          <div class="info-card-body">
+            <p class="text-muted small mt-2 mb-2">
+              Change how many buckets per collection this customer is contracted for.
+              Any catch-up charge above is billed immediately.
+              <% if @subscription.monthly_invoicing? %>
+                The new rate then applies automatically to next month's invoice — no separate charge for the remaining term.
+              <% else %>
+                The remaining collections on this contract are billed in one lump sum at the new rate.
+              <% end %>
+            </p>
             <p class="text-muted small mt-2 mb-2">If the extra volume is coming from a specific satellite route, adjust that subscription's capacity separately — this only updates the primary's buckets per collection.</p>
             <%= form_with url: usage_true_up_admin_subscription_path(@subscription), method: :post do |f| %>
               <div class="info-row">
                 <label class="info-label" for="new_buckets_per_collection">New buckets per collection</label>
                 <%= number_field_tag :new_buckets_per_collection, @subscription.buckets_per_collection, min: 1, max: 20, class: "info-value" %>
               </div>
-              <%= f.submit "Generate true-up invoice",
+              <%= f.submit "Update capacity",
                     class: "btn-yellow",
-                    data: { turbo_confirm: "Generate a usage true-up invoice for #{@subscription.display_name}? This will create a real invoice pending approval." } %>
+                    data: { turbo_confirm: "Change #{@subscription.display_name}'s capacity? This updates the plan going forward and may create a real invoice pending approval." } %>
             <% end %>
           </div>
         </div>

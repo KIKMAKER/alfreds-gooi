@@ -1,5 +1,5 @@
 class Subscriptions::UsageTrueUp
-  Result = Struct.new(:success, :error, keyword_init: true)
+  Result = Struct.new(:success, :error, :invoiced, keyword_init: true)
   Review = Struct.new(:period_start, :actual_litres, :contracted_litres, :excess_litres, :catch_up_amount, keyword_init: true)
 
   def initialize(subscription)
@@ -37,59 +37,70 @@ class Subscriptions::UsageTrueUp
     ActiveRecord::Base.transaction do
       r = review
       rate = contracted_rate_per_litre
-
-      invoice = Invoice.create!(
-        subscription:   @subscription,
-        issued_date:    Time.current,
-        due_date:       Time.current + 2.weeks,
-        total_amount:   0,
-        admin_approved: false
-      )
-
-      added_line = false
-
-      if r.catch_up_amount > 0
-        invoice.invoice_items.create!(
-          product:  @subscription.volume_processing_product,
-          quantity: 1,
-          amount:   r.catch_up_amount
-        )
-        added_line = true
-      end
-
-      remaining = @subscription.remaining_collections.to_i
       bucket_delta = new_buckets_per_collection - @subscription.buckets_per_collection
+      remaining = @subscription.remaining_collections.to_i
 
+      # Only upfront-paid subs get a lump-sum charge for the rest of the term —
+      # monthly-invoicing subs pick up the new rate automatically via
+      # monthly_volume_amount below, on their next MonthlyInvoiceService run.
+      remaining_term_amount = 0
       if !@subscription.monthly_invoicing? && remaining.positive? && bucket_delta != 0
         remaining_term_amount = (remaining * bucket_delta * @subscription.bucket_size * rate).round(2)
+      end
+
+      # A capacity change (bucket_delta != 0) is real and must persist even
+      # when it has no invoice-able amount attached (e.g. a monthly sub with
+      # no historical excess yet) — it must not be gated behind billing.
+      unless r.catch_up_amount.positive? || remaining_term_amount != 0 || bucket_delta != 0
+        result = Result.new(success: false, error: "No charge needed — usage and plan are already in line.")
+        raise ActiveRecord::Rollback
+      end
+
+      invoiced = r.catch_up_amount.positive? || remaining_term_amount != 0
+
+      if invoiced
+        invoice = Invoice.create!(
+          subscription:   @subscription,
+          issued_date:    Time.current,
+          due_date:       Time.current + 2.weeks,
+          total_amount:   0,
+          admin_approved: false
+        )
+
+        if r.catch_up_amount.positive?
+          invoice.invoice_items.create!(
+            product:  @subscription.volume_processing_product,
+            quantity: 1,
+            amount:   r.catch_up_amount
+          )
+        end
+
         if remaining_term_amount != 0
           invoice.invoice_items.create!(
             product:  @subscription.volume_processing_product,
             quantity: 1,
             amount:   remaining_term_amount
           )
-          added_line = true
+        end
+
+        invoice.calculate_total
+        InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now
+      end
+
+      if bucket_delta != 0
+        @subscription.update!(buckets_per_collection: new_buckets_per_collection)
+
+        if @subscription.monthly_invoicing?
+          visits_per_month = (52.0 / 12.0 * (@subscription.collections_per_week || 1)).round
+          new_monthly_volume = (new_buckets_per_collection * @subscription.bucket_size * visits_per_month * rate).round(2)
+          new_contract_total = (@subscription.monthly_subscription_amount.to_f + new_monthly_volume + @subscription.starter_kit_installment.to_f) * @subscription.duration
+
+          @subscription.update!(monthly_volume_amount: new_monthly_volume, contract_total: new_contract_total.round(2))
         end
       end
 
-      unless added_line
-        result = Result.new(success: false, error: "No charge needed — usage and plan are already in line.")
-        raise ActiveRecord::Rollback
-      end
-
-      @subscription.update!(buckets_per_collection: new_buckets_per_collection, last_usage_review_date: Date.today)
-
-      if @subscription.monthly_invoicing?
-        visits_per_month = (52.0 / 12.0 * (@subscription.collections_per_week || 1)).round
-        new_monthly_volume = (new_buckets_per_collection * @subscription.bucket_size * visits_per_month * rate).round(2)
-        new_contract_total = (@subscription.monthly_subscription_amount.to_f + new_monthly_volume + @subscription.starter_kit_installment.to_f) * @subscription.duration
-
-        @subscription.update!(monthly_volume_amount: new_monthly_volume, contract_total: new_contract_total.round(2))
-      end
-
-      invoice.calculate_total
-      InvoiceMailer.with(invoice: invoice).invoice_pending_approval.deliver_now
-      result = Result.new(success: true, error: nil)
+      @subscription.update!(last_usage_review_date: Date.today)
+      result = Result.new(success: true, error: nil, invoiced: invoiced)
     end
 
     result

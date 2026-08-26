@@ -102,7 +102,8 @@ class Admin::SubscriptionsController < ApplicationController
     result = Subscriptions::UsageTrueUp.new(@subscription).create_invoice!(new_buckets_per_collection: params[:new_buckets_per_collection])
 
     if result.success
-      redirect_to admin_subscription_path(@subscription), notice: "Usage true-up invoice created and sent for approval."
+      notice = result.invoiced ? "Capacity updated — invoice created and sent for approval." : "Capacity updated — no charge needed."
+      redirect_to admin_subscription_path(@subscription), notice: notice
     else
       redirect_to admin_subscription_path(@subscription), alert: result.error
     end

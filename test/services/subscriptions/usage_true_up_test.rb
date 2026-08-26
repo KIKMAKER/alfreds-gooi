@@ -87,6 +87,28 @@ class Subscriptions::UsageTrueUpTest < ActiveSupport::TestCase
     assert_equal invoice_count_before, Invoice.count
   end
 
+  test "monthly-invoicing sub with no historical excess still persists a capacity increase, with no invoice" do
+    sub = build_commercial_subscription(
+      monthly_invoicing: true,
+      monthly_subscription_amount: 260.0,
+      monthly_volume_amount: 121.33,
+      starter_kit_installment: 35.0
+    )
+    # contracted 2 buckets/collection; actual usage stays within contract
+    4.times { |i| add_collection(sub, date: (i + 1).weeks.ago.to_date, buckets_45l: 2) }
+
+    invoice_count_before = Invoice.count
+    result = Subscriptions::UsageTrueUp.new(sub).create_invoice!(new_buckets_per_collection: 3)
+
+    assert result.success, result.error
+    assert_equal invoice_count_before, Invoice.count
+
+    sub.reload
+    assert_equal 3, sub.buckets_per_collection
+    assert_equal Date.today, sub.last_usage_review_date
+    assert_not_equal 121.33, sub.monthly_volume_amount
+  end
+
   test "combines a satellite subscription's usage into the primary's review" do
     primary = build_commercial_subscription(monthly_invoicing: true, monthly_subscription_amount: 260.0, monthly_volume_amount: 273.33, starter_kit_installment: 35.0)
     satellite = build_commercial_subscription(monthly_invoicing: true, primary_subscription: primary, buckets_per_collection: 2, bucket_size: 45)
