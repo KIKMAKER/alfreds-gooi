@@ -109,6 +109,43 @@ class Subscriptions::UsageTrueUpTest < ActiveSupport::TestCase
     assert_not_equal 121.33, sub.monthly_volume_amount
   end
 
+  test "prices an added bucket at today's catalog rate, not the customer's original contracted rate" do
+    sub = build_commercial_subscription(
+      monthly_invoicing: true,
+      monthly_subscription_amount: 260.0,
+      monthly_volume_amount: 273.33, # a discounted quote rate — R0.76/L, well under the R1.70/L catalog rate
+      starter_kit_installment: 35.0
+    )
+    4.times { |i| add_collection(sub, date: (i + 1).weeks.ago.to_date, buckets_45l: 2) } # no excess
+
+    result = Subscriptions::UsageTrueUp.new(sub).create_invoice!(new_buckets_per_collection: 3)
+    assert result.success, result.error
+
+    sub.reload
+    # +1 bucket * 45L * 4 visits/month * R1.70/L catalog rate = +R306, not the
+    # +R136.67 the old (original-rate) calculation would have added.
+    assert_in_delta 273.33 + 306.0, sub.monthly_volume_amount, 0.01
+  end
+
+  test "credits a removed bucket at the customer's current rate, not the catalog rate" do
+    sub = build_commercial_subscription(
+      monthly_invoicing: true,
+      monthly_subscription_amount: 260.0,
+      monthly_volume_amount: 400.0, # R0.74/L for 3 buckets — below catalog
+      buckets_per_collection: 3,
+      starter_kit_installment: 35.0
+    )
+    3.times { |i| add_collection(sub, date: (i + 1).weeks.ago.to_date, buckets_45l: 3) } # no excess
+
+    result = Subscriptions::UsageTrueUp.new(sub).create_invoice!(new_buckets_per_collection: 2)
+    assert result.success, result.error
+
+    sub.reload
+    # -1 bucket credited at the current effective rate (400 / (3*45*4) = R0.7407/L),
+    # not the R1.70/L catalog rate.
+    assert_in_delta 400.0 - (400.0 / (3 * 45 * 4) * 45 * 4), sub.monthly_volume_amount, 0.01
+  end
+
   test "combines a satellite subscription's usage into the primary's review" do
     primary = build_commercial_subscription(monthly_invoicing: true, monthly_subscription_amount: 260.0, monthly_volume_amount: 273.33, starter_kit_installment: 35.0)
     satellite = build_commercial_subscription(monthly_invoicing: true, primary_subscription: primary, buckets_per_collection: 2, bucket_size: 45)

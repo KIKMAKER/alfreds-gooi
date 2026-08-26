@@ -162,11 +162,12 @@
           <div class="info-card-body">
             <p class="text-muted small mt-2 mb-2">
               Change how many buckets per collection this customer is contracted for.
-              Any catch-up charge above is billed immediately.
+              Any catch-up charge above is billed immediately at their original contracted rate.
+              Added buckets are priced at today's catalog rate (not this customer's original, possibly discounted, rate) — reductions credit back at the rate they're currently paying.
               <% if @subscription.monthly_invoicing? %>
                 The new rate then applies automatically to next month's invoice — no separate charge for the remaining term.
               <% else %>
-                The remaining collections on this contract are billed in one lump sum at the new rate.
+                The remaining collections on this contract are billed in one lump sum.
               <% end %>
             </p>
             <p class="text-muted small mt-2 mb-2">If the extra volume is coming from a specific satellite route, adjust that subscription's capacity separately — this only updates the primary's buckets per collection.</p>

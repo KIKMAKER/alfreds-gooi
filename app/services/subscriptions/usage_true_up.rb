@@ -36,9 +36,14 @@ class Subscriptions::UsageTrueUp
     result = nil
     ActiveRecord::Base.transaction do
       r = review
-      rate = contracted_rate_per_litre
       bucket_delta = new_buckets_per_collection - @subscription.buckets_per_collection
       remaining = @subscription.remaining_collections.to_i
+
+      # Added capacity is priced at today's catalog rate, not this customer's
+      # original (often discounted, quote-driven) contracted rate — a signup
+      # discount shouldn't compound onto volume they never actually signed up
+      # for. A reduction still credits back at the rate they're paying now.
+      rate = bucket_delta.positive? ? catalog_rate_per_litre : contracted_rate_per_litre
 
       # Only upfront-paid subs get a lump-sum charge for the rest of the term —
       # monthly-invoicing subs pick up the new rate automatically via
@@ -91,8 +96,12 @@ class Subscriptions::UsageTrueUp
         @subscription.update!(buckets_per_collection: new_buckets_per_collection)
 
         if @subscription.monthly_invoicing?
+          # Add/remove only the delta's own value at its own rate, rather than
+          # recomputing the whole monthly_volume_amount at one rate — the
+          # existing buckets keep whatever rate they were already priced at.
           visits_per_month = (52.0 / 12.0 * (@subscription.collections_per_week || 1)).round
-          new_monthly_volume = (new_buckets_per_collection * @subscription.bucket_size * visits_per_month * rate).round(2)
+          delta_volume = (bucket_delta * @subscription.bucket_size * visits_per_month * rate).round(2)
+          new_monthly_volume = (@subscription.monthly_volume_amount.to_f + delta_volume).round(2)
           new_contract_total = (@subscription.monthly_subscription_amount.to_f + new_monthly_volume + @subscription.starter_kit_installment.to_f) * @subscription.duration
 
           @subscription.update!(monthly_volume_amount: new_monthly_volume, contract_total: new_contract_total.round(2))
@@ -144,5 +153,9 @@ class Subscriptions::UsageTrueUp
         @subscription.volume_processing_product.price.to_f / @subscription.bucket_size
       end
     end
+  end
+
+  def catalog_rate_per_litre
+    @subscription.volume_processing_product.price.to_f / @subscription.bucket_size
   end
 end
