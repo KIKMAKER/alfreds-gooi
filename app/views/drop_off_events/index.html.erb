@@ -6,6 +6,9 @@
       <p class="dd-header__sub"><%= @drivers_day.date.strftime("%A, %-d %B") %></p>
     </div>
     <div class="dd-header__actions">
+      <%= link_to new_drivers_day_drop_off_event_path(@drivers_day), class: "btn-secondary-outline btn-sm" do %>
+        <i class="fa-solid fa-plus"></i> Add Drop-Off
+      <% end %>
       <%= link_to today_subscriptions_path, class: "btn-secondary-outline btn-sm" do %>
         <i class="fa-solid fa-arrow-left"></i> Today's List
       <% end %>

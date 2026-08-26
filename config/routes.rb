@@ -299,7 +299,7 @@ Rails.application.routes.draw do
       end
     end
     resources :buckets, only: [:index, :create, :destroy]
-    resources :drop_off_events, only: [:index, :show, :edit, :update, :destroy] do
+    resources :drop_off_events, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
       member do
         post :complete
         post :record_arrival

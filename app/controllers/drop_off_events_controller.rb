@@ -6,6 +6,21 @@ class DropOffEventsController < ApplicationController
     @drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
   end
 
+  def new
+    existing_site_ids = @drivers_day.drop_off_events.pluck(:drop_off_site_id)
+    @drop_off_sites = DropOffSite.where.not(id: existing_site_ids).order(:name)
+  end
+
+  def create
+    drop_off_site = DropOffSite.find(params[:drop_off_site_id])
+
+    @drivers_day.drop_off_events.find_or_create_by!(drop_off_site: drop_off_site, date: @drivers_day.date) do |event|
+      event.waste_stream = drop_off_site.default_waste_stream
+    end
+
+    redirect_to drivers_day_drop_off_events_path(@drivers_day), notice: "#{drop_off_site.name} added to today's drop-offs."
+  end
+
   def show
     @buckets    = @drop_off_event.buckets.sort_by(&:created_at).reverse
     @new_bucket = Bucket.new

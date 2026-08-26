@@ -1,0 +1,40 @@
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Add a Drop-Off</h1>
+      <p class="dd-header__sub"><%= @drivers_day.date.strftime("%A, %-d %B") %></p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to drivers_day_drop_off_events_path(@drivers_day), class: "btn-secondary-outline btn-sm" do %>
+        <i class="fa-solid fa-arrow-left"></i> Drop-Offs
+      <% end %>
+    </div>
+  </div>
+
+  <% if @drop_off_sites.any? %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__header">
+        <i class="fa-solid fa-truck-ramp-box"></i>
+        <h3>Tap a site to add it to today's route</h3>
+      </div>
+      <div class="dd-form-card__body p-0">
+        <% @drop_off_sites.each do |site| %>
+          <%= link_to drivers_day_drop_off_events_path(@drivers_day, drop_off_site_id: site.id), class: "quick-msg-row", data: { turbo_method: :post } do %>
+            <div>
+              <div class="quick-msg-row__name"><%= site.name %></div>
+              <div class="quick-msg-row__meta"><%= site.suburb&.name %></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="dd-form-card">
+      <div class="dd-form-card__body">
+        <p class="text-muted mb-0">Every drop-off site is already on today's route.</p>
+      </div>
+    </div>
+  <% end %>
+
+</div>

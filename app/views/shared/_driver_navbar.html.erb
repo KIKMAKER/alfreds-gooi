@@ -27,7 +27,16 @@
           </li>
 
           <li class="nav-item active">
+            <%= link_to "Send Message", driver_messages_path, class: "nav-link" %>
+          </li>
+
+          <li class="nav-item active">
             <%= link_to "Drop-Offs", (dd ? drivers_day_drop_off_events_path(dd) : "#"),
+        class: "nav-link #{'disabled' unless dd}", aria: { disabled: (!dd).to_s } %>
+          </li>
+
+          <li class="nav-item active">
+            <%= link_to "Add Drop-Off", (dd ? new_drivers_day_drop_off_event_path(dd) : "#"),
         class: "nav-link #{'disabled' unless dd}", aria: { disabled: (!dd).to_s } %>
           </li>
 
