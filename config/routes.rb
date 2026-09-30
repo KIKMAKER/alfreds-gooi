@@ -345,6 +345,10 @@ Rails.application.routes.draw do
   get "get-the-app",      to: "pages#get_the_app",  as: :get_the_app
   get "journey/:token",   to: "journey#show",       as: :journey
 
+  # Rendered dynamically (no worker/writable disk needed) rather than
+  # written to a static file — see SitemapController.
+  get "sitemap.xml", to: "sitemap#show", defaults: { format: "xml" }, as: :sitemap
+
   # blog
   resources :posts, only: [:index, :show], path: "blog", param: :slug
 

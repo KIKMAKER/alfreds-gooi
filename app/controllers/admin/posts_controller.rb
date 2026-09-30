@@ -14,7 +14,6 @@ class Admin::PostsController < Admin::BaseController
     @post.published_at = Time.current if @post.published? && @post.published_at.blank?
 
     if @post.save
-      regenerate_sitemap
       redirect_to admin_posts_path, notice: "Post created."
     else
       render :new, status: :unprocessable_entity
@@ -28,7 +27,6 @@ class Admin::PostsController < Admin::BaseController
     @post.published_at ||= Time.current if post_params[:published] == "1" && @post.published_at.blank?
 
     if @post.update(post_params)
-      regenerate_sitemap
       redirect_to admin_posts_path, notice: "Post updated."
     else
       render :edit, status: :unprocessable_entity
@@ -37,20 +35,10 @@ class Admin::PostsController < Admin::BaseController
 
   def destroy
     @post.destroy
-    regenerate_sitemap
     redirect_to admin_posts_path, notice: "Post deleted."
   end
 
   private
-
-  # No worker dyno in production, so sitemap regeneration runs inline here
-  # rather than as a background job (see CreateFirstCollectionJob et al,
-  # which also run via perform_now for the same reason).
-  def regenerate_sitemap
-    load Rails.root.join("config", "sitemap.rb")
-  rescue StandardError => e
-    Rails.logger.error("Sitemap regeneration failed: #{e.message}")
-  end
 
   def set_post
     @post = Post.find_by!(slug: params[:id])
