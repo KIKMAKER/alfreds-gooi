@@ -1,4 +1,6 @@
 SitemapGenerator::Sitemap.default_host = "https://www.gooi.me"
+# robots.txt points at the uncompressed sitemap.xml, so don't gzip the output
+SitemapGenerator::Sitemap.compress = false
 SitemapGenerator::Sitemap.create do
   add "/",       changefreq: "weekly",  priority: 1.0
   add "/about",  changefreq: "monthly", priority: 0.8
