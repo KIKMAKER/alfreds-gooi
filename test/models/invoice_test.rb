@@ -52,4 +52,32 @@ class InvoiceTest < ActiveSupport::TestCase
     )
     assert_equal order, invoice.reload.order
   end
+
+  # --- compost_rolls_only scope ---
+
+  test "compost_rolls_only includes an invoice made up only of compost bin bags" do
+    bags = Product.create!(title: "Compost bin bags", description: "rolls", price: 90, billing_type: "standard")
+    invoice = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    invoice.invoice_items.create!(product: bags, quantity: 1, amount: 90)
+
+    assert_includes Invoice.compost_rolls_only, invoice
+  end
+
+  test "compost_rolls_only excludes a mixed invoice that also has bags" do
+    bags = Product.create!(title: "Compost bin bags", description: "rolls", price: 90, billing_type: "standard")
+    service = Product.create!(title: "Weekly Collection Service", description: "sub", price: 300, billing_type: "standard")
+    invoice = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    invoice.invoice_items.create!(product: bags, quantity: 1, amount: 90)
+    invoice.invoice_items.create!(product: service, quantity: 1, amount: 300)
+
+    assert_not_includes Invoice.compost_rolls_only, invoice
+  end
+
+  test "compost_rolls_only excludes an invoice with no compost bags" do
+    service = Product.create!(title: "Weekly Collection Service", description: "sub", price: 300, billing_type: "standard")
+    invoice = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    invoice.invoice_items.create!(product: service, quantity: 1, amount: 300)
+
+    assert_not_includes Invoice.compost_rolls_only, invoice
+  end
 end

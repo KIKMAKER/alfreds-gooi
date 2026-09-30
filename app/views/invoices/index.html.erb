@@ -11,6 +11,11 @@
           <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
             <%= link_to "#{@user.first_name} #{@user.last_name}", admin_user_path(@user), class: "text-white text-decoration-underline" %>
           </p>
+        <% elsif current_user.driver? %>
+          <h1>Compost Roll Invoices</h1>
+          <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
+            <%= @invoices.count %> total
+          </p>
         <% else %>
           <h1>Invoices</h1>
           <p style="color: rgba(255,255,255,0.75); margin: 0; font-size: 0.875rem;">
@@ -40,7 +45,7 @@
             All invoices
           <% end %>
         <% end %>
-      <% else %>
+      <% elsif current_user.customer? %>
         <%= link_to statement_path(current_user), class: "tiny-yellow-btn",
             style: "background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: white; white-space: nowrap;" do %>
           <i class="fa-solid fa-scroll"></i> Statement
@@ -62,6 +67,8 @@
                 <span style="font-size: 0.8rem; color: #888;">
                   <% if current_user.admin? %>
                     <%= invoice.user&.first_name || '?' %> &middot; #<%= invoice.number || invoice.id %>
+                  <% elsif current_user.driver? %>
+                    <%= invoice.subscription&.display_name %> &middot; <%= invoice.subscription&.short_address %>
                   <% else %>
                     <%= invoice.subscription&.short_address %>
                   <% end %>
@@ -86,6 +93,12 @@
                   style: "color: #bc4749; font-size: 0.8rem;",
                   form: { style: "display: inline;" } do %>
                 <i class="fa-solid fa-trash"></i>
+              <% end %>
+            <% elsif current_user.driver? %>
+              <%= link_to bags_whatsapp_invoice_path(invoice),
+                  class: "btn btn-sm p-0 border-0 bg-transparent ms-3",
+                  style: "color: #3c8a63; font-size: 1.1rem;" do %>
+                <i class="fa-brands fa-whatsapp"></i>
               <% end %>
             <% end %>
           </div>

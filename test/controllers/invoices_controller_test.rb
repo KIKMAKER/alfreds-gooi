@@ -296,4 +296,50 @@ class InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_nil flash[:alert]
     assert_match /applied successfully/i, flash[:notice]
   end
+
+  # ── Driver index — compost roll invoices only ─────────────────────────────────
+
+  def compost_bags_product
+    Product.find_or_create_by!(title: "Compost bin bags") do |p|
+      p.description  = "rolls"
+      p.price        = 90
+      p.billing_type = "standard"
+    end
+  end
+
+  test "driver index only lists invoices made up entirely of compost bin bags" do
+    bags = compost_bags_product
+    service = Product.create!(title: "Weekly Collection Service", description: "sub", price: 300, billing_type: "standard")
+
+    compost_only = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    compost_only.invoice_items.create!(product: bags, quantity: 1, amount: 90)
+
+    mixed = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    mixed.invoice_items.create!(product: bags, quantity: 1, amount: 90)
+    mixed.invoice_items.create!(product: service, quantity: 1, amount: 300)
+
+    subscription_only = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0)
+    subscription_only.invoice_items.create!(product: service, quantity: 1, amount: 300)
+
+    sign_in @driver
+    get invoices_path
+
+    assert_response :success
+    assert_select "a[href='#{invoice_path(compost_only)}']"
+    assert_select "a[href='#{invoice_path(mixed)}']", false
+    assert_select "a[href='#{invoice_path(subscription_only)}']", false
+  end
+
+  test "driver index shows a paid/unpaid indicator and a whatsapp resend link" do
+    bags = compost_bags_product
+    unpaid = Invoice.create!(subscription: @subscription, issued_date: Date.today, due_date: Date.today + 7, total_amount: 0, paid: false)
+    unpaid.invoice_items.create!(product: bags, quantity: 1, amount: 90)
+
+    sign_in @driver
+    get invoices_path
+
+    assert_response :success
+    assert_select "a[href='#{bags_whatsapp_invoice_path(unpaid)}']"
+    assert_select "i.fa-circle-xmark"
+  end
 end

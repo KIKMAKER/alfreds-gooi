@@ -16,6 +16,18 @@ class Invoice < ApplicationRecord
   scope :paid,   -> { where(paid: true) }
   scope :unpaid, -> { where(paid: false) }
 
+  # Invoices made up entirely of compost bin bags (drivers issue these from a
+  # collection's show page) — excludes mixed invoices like a subscription
+  # renewal that happens to include a bags line item.
+  scope :compost_rolls_only, -> {
+    product_id = Product.find_by(title: "Compost bin bags")&.id
+    return none unless product_id
+
+    joins(:invoice_items)
+      .group("invoices.id")
+      .having("bool_and(invoice_items.product_id = ?)", product_id)
+  }
+
   after_commit :set_number, on: :create
   # Accrual-basis revenue recognition: rows are (re)built whenever the amount
   # or issue date changes, independent of payment status. calculate_total

@@ -10,6 +10,10 @@ class InvoicesController < ApplicationController
         @user = User.find(params[:user_id])
         @invoices = @invoices.joins(subscription: :user).where(users: { id: @user.id })
       end
+    elsif current_user.driver?
+      @invoices = Invoice.compost_rolls_only
+                          .includes(subscription: :user, invoice_items: :product)
+                          .order(issued_date: :desc)
     elsif current_user.customer?
       @invoices = current_user.invoices.includes(subscription: :user).order(issued_date: :desc)
     end
