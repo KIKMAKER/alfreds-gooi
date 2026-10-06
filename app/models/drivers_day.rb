@@ -256,11 +256,11 @@ class DriversDay < ApplicationRecord
 
     # Send synchronously so it lands as soon as Alfred finalises Thursday
     WeeklyStatsMailer.report(
-      to: ENV.fetch("GOOI_STATS_EMAIL_TO", "kristen.c.kennedy@gmail.com"),
       anchor_date: date,
       mode: :route_week,
       drivers_day_id: id
     ).deliver_now
+    update_column(:weekly_stats_sent_at, Time.current)
 
     # If you prefer a background hop (still immediate), swap to:
     # SendWeeklyStatsJob.perform_later(anchor_date: date)

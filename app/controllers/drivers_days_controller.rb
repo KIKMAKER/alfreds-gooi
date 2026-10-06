@@ -251,14 +251,16 @@ class DriversDaysController < ApplicationController
       .with_active_collection_counts
       .includes(:day_statistic, :buckets, :drop_off_events)
 
-    @available_days = scope.pluck(:date)
-                           .map { |d| d.strftime("%A") }
-                           .tally
-                           .sort_by { |name, _| Date::DAYNAMES.index(name) }
+    # Filter chips only need the weekday counts, so group the bare table in SQL
+    # rather than plucking dates through the five-table join the listing uses.
+    @available_days = DriversDay.group("EXTRACT(dow FROM drivers_days.date)::int")
+                                .count
+                                .map { |dow, n| [Date::DAYNAMES[dow], n] }
+                                .sort_by { |name, _| Date::DAYNAMES.index(name) }
 
     if params[:day].present? && Date::DAYNAMES.include?(params[:day])
       day_num = Date::DAYNAMES.index(params[:day])
-      scope = scope.where("EXTRACT(dow FROM date) = ?", day_num)
+      scope = scope.where("EXTRACT(dow FROM drivers_days.date) = ?", day_num)
     end
 
     @active_day_filter = params[:day].presence
@@ -313,6 +315,25 @@ class DriversDaysController < ApplicationController
     @stats = WeeklyStats.call(anchor_date: @drivers_day.date, mode: :route_week)
 
     render layout: 'snapshot'
+  end
+
+  # Index of past weeks (anchored on the Thursday drivers_day of each route week)
+  # with a resend button for when stats need to be reissued after a correction.
+  def weeks
+    thursdays = DriversDay.where("EXTRACT(dow FROM drivers_days.date) = 4").order(date: :desc).limit(12)
+    @weeks = thursdays.map { |dd| [dd, WeeklyStats.call(anchor_date: dd.date, mode: :route_week)] }
+  end
+
+  def resend_weekly_stats
+    @drivers_day = DriversDay.find(params[:id])
+    WeeklyStatsMailer.report(
+      anchor_date: @drivers_day.date,
+      mode: :route_week,
+      drivers_day_id: @drivers_day.id
+    ).deliver_now
+    @drivers_day.update_column(:weekly_stats_sent_at, Time.current)
+
+    redirect_to weeks_drivers_days_path, notice: "Weekly stats resent for #{@drivers_day.date.strftime('%d %b %Y')}."
   end
 
   def yearly_snapshot

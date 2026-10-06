@@ -279,6 +279,7 @@ Rails.application.routes.draw do
     collection do
       get :route
       get :yearly_snapshot
+      get :weeks
     end
     member do
       get :vamos
@@ -292,6 +293,7 @@ Rails.application.routes.draw do
       get :weekly_snapshot
       patch :reorder
       patch :update_note
+      post :resend_weekly_stats
     end
     resources :collections, only: [:index] do
       collection do

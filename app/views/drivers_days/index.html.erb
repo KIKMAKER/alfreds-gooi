@@ -7,6 +7,9 @@
         <%= @drivers_days.length %> <%= @active_day_filter ? "#{@active_day_filter}s" : "days" %> recorded
       </p>
     </div>
+    <div class="dd-header__actions">
+      <%= link_to "Weekly Stats →", weeks_drivers_days_path, class: "tiny-yellow-btn" %>
+    </div>
   </div>
 
   <% if @available_days.any? %>

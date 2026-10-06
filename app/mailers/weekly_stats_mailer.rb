@@ -8,7 +8,7 @@ class WeeklyStatsMailer < ApplicationMailer
   def report(to: nil, start_date: nil, end_date: nil, anchor_date: nil, mode: :default, drivers_day_id: nil)
     @stats = WeeklyStats.call(start_date: start_date, end_date: end_date, anchor_date: anchor_date, mode: mode)
     @snapshot_url = weekly_snapshot_drivers_day_url(drivers_day_id) if drivers_day_id
-    recipients = (["howzit@gooi.me"] + User.admin.pluck(:email)).uniq
+    recipients = to.presence || (["howzit@gooi.me"] + User.admin.pluck(:email)).uniq
     mail(to: recipients, subject: "Gooi Weekly Stats: #{@stats.period_label}")
   end
 end

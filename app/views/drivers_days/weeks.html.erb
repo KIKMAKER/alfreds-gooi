@@ -1,0 +1,62 @@
+<div class="drivers-day-container">
+
+  <div class="dd-header">
+    <div>
+      <h1 class="dd-header__title">Weekly Stats</h1>
+      <p class="dd-header__sub">
+        <%= @weeks.length %> most recent weeks &middot; resend the report after correcting bucket data
+      </p>
+    </div>
+    <div class="dd-header__actions">
+      <%= link_to "← Driver's Days", drivers_days_path, class: "tiny-yellow-btn" %>
+    </div>
+  </div>
+
+  <div class="dd-list">
+    <% @weeks.each do |drivers_day, stats| %>
+      <div class="dd-list-item">
+        <div class="dd-list-item__icon">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+
+        <div class="dd-list-item__main">
+          <div class="dd-list-item__date"><%= stats.period_label %></div>
+          <div class="dd-list-item__time">
+            <% if drivers_day.weekly_stats_sent_at %>
+              <span class="dd-status-badge dd-status-badge--done">Sent <%= drivers_day.weekly_stats_sent_at.strftime('%d %b, %H:%M') %></span>
+            <% else %>
+              <span class="dd-status-badge dd-status-badge--pending">Not sent</span>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="dd-metrics">
+          <div class="dd-metric">
+            <div class="dd-metric__value"><%= stats.customers_served %></div>
+            <div class="dd-metric__label">Customers</div>
+          </div>
+          <div class="dd-metric">
+            <div class="dd-metric__value"><%= stats.buckets_diverted.to_i %></div>
+            <div class="dd-metric__label">Buckets</div>
+          </div>
+          <div class="dd-metric">
+            <div class="dd-metric__value"><%= number_with_precision(stats.kg_diverted, precision: 1) %> kg</div>
+            <div class="dd-metric__label"><%= stats.new_customers %> new</div>
+          </div>
+        </div>
+
+        <div class="dd-list-item__actions">
+          <%= link_to weekly_snapshot_drivers_day_path(drivers_day), class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-eye"></i>
+          <% end %>
+          <%= link_to resend_weekly_stats_drivers_day_path(drivers_day),
+                data: { turbo_method: :post, turbo_confirm: "Resend weekly stats for #{stats.period_label}?" },
+                class: "tiny-yellow-btn" do %>
+            <i class="fa-solid fa-paper-plane"></i>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+</div>
