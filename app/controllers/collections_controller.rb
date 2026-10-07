@@ -318,6 +318,13 @@ class CollectionsController < ApplicationController
   def validated_return_path(url)
     return today_subscriptions_path unless url.present?
     uri = URI.parse(url)
+    # A save redirects back to /edit, so the referer is the edit page itself.
+    # Using it would make "Done!" redirect to the same page forever.
+    if uri.path == request.path
+      stored = session[:collection_return_to]
+      return stored.present? && URI.parse(stored).path != request.path ? stored : today_subscriptions_path
+    end
+
     (uri.host.nil? || uri.host == request.host) ? url : today_subscriptions_path
   rescue URI::InvalidURIError
     today_subscriptions_path
