@@ -45,6 +45,26 @@
     line-height: 1.2;
   }
 
+  &__number--secondary {
+    font-size: $fs-2xl;
+  }
+
+  // Lifetime compost + CO₂e row, a quieter second tier under the main grid
+  &__lifetime {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $space-8;
+    max-width: 40rem;
+    margin: 0 auto $space-12;
+    padding-top: $space-8;
+    border-top: 1px solid rgba(white, 0.2);
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+      gap: $space-6;
+    }
+  }
+
   &__desc {
     font-size: $fs-base;
     color: rgba(white, 0.7);

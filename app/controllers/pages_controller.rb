@@ -23,6 +23,7 @@ class PagesController < ApplicationController
     @amt = (@discount_amount || 0.0).to_f
     @referral_code = params[:referral]
     @total_kg = DropOffSite.sum(:total_weight_kg).round
+    assign_lifetime_impact
     @kg_this_week = DropOffEvent.where(date: Date.current.beginning_of_week..Date.current.end_of_week).sum(:weight_kg).round
     @household_count = Subscription.active.count
     @interest_counts = Interest.where.not(suburb_id: nil).group(:suburb_id).count
@@ -45,6 +46,7 @@ class PagesController < ApplicationController
   def about
     @farms = DropOffSite.order(:name).limit(4)
     @total_kg = DropOffSite.sum(:total_weight_kg).round
+    assign_lifetime_impact
     @kg_this_week = DropOffEvent.where(date: Date.current.beginning_of_week..Date.current.end_of_week).sum(:weight_kg).round
     @household_count = Subscription.active.count
   end
@@ -60,6 +62,13 @@ class PagesController < ApplicationController
   end
 
   private
+
+  # Lifetime impact derived from the same @total_kg the strip already shows, so
+  # the page never carries two competing totals. Factors match /my_stats.
+  def assign_lifetime_impact
+    @compost_kg = (@total_kg * User::COMPOST_MULTIPLIER).round
+    @co2e_kg = (@total_kg * User::CO2E_MULTIPLIER).round
+  end
 
   def fetch_snapscan_payments(merchant_reference)
     # Example: Replace with actual SnapScan API fetch logic

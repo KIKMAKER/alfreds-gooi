@@ -4,10 +4,13 @@
       total_kg:         Integer, all-time kg diverted in scope
       kg_this_week:     Integer, kg diverted so far this week in scope
       household_count:  Integer, neighbours gooi-ing weekly in scope
+      compost_kg:       optional Integer, all-time kg of compost made
+      co2e_kg:          optional Integer, all-time kg CO₂e avoided
+                        (the lifetime row only renders when both are given)
       footnote:         optional String, shown small under the divider
     Presentation-only — all the arithmetic belongs in the caller (brand voice:
     ground every claim in a specific number, call people "neighbours"). %>
-<%# locals: (total_kg:, kg_this_week:, household_count:, footnote: nil) %>
+<%# locals: (total_kg:, kg_this_week:, household_count:, compost_kg: nil, co2e_kg: nil, footnote: nil) %>
 <% road_to_target_kg = 100_000
    road_to_percent = [(total_kg.to_f / road_to_target_kg * 100).round, 100].min %>
 <section class="impact-summary">
@@ -47,6 +50,27 @@
         <span class="impact-summary__desc"><%= "neighbour".pluralize(household_count) %> gooi-ing weekly</span>
       </div>
     </div>
+
+    <% if compost_kg && co2e_kg %>
+      <div class="impact-summary__lifetime">
+        <div class="impact-summary__item">
+          <span class="impact-summary__number impact-summary__number--secondary"
+                data-counter-target="number"
+                data-counter-value="<%= compost_kg %>"
+                data-counter-prefix="~"
+                data-counter-suffix=" kg">~<%= number_with_delimiter(compost_kg) %> kg</span>
+          <span class="impact-summary__desc">of compost made</span>
+        </div>
+        <div class="impact-summary__item">
+          <span class="impact-summary__number impact-summary__number--secondary"
+                data-counter-target="number"
+                data-counter-value="<%= co2e_kg %>"
+                data-counter-prefix="~"
+                data-counter-suffix=" kg">~<%= number_with_delimiter(co2e_kg) %> kg</span>
+          <span class="impact-summary__desc">CO₂e emissions avoided</span>
+        </div>
+      </div>
+    <% end %>
 
     <div class="impact-summary__road">
       <div class="impact-summary__road-label">
