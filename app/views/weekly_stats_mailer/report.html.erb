@@ -1,5 +1,5 @@
 <% compost_kg = (@stats.kg_diverted * 0.35).round(0).to_i %>
-<% co2e_kg    = (@stats.kg_diverted * 1.96).round(0).to_i %>
+<% co2e_kg    = (@stats.kg_diverted * IMPACT[:co2e_per_kg_diverted]).round(0).to_i %>
 <% days = (@stats.start_date..@stats.end_date).map(&:day) %>
 <% month = @stats.end_date.strftime('%B') %>
 <!DOCTYPE html>
@@ -32,7 +32,7 @@
       <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= compost_kg %> kg</td>
     </tr>
     <tr>
-      <td style="padding: 6px 12px 6px 0; color: #666;">CO₂e avoided (×1.96)</td>
+      <td style="padding: 6px 12px 6px 0; color: #666;">CO₂e avoided (×<%= IMPACT[:co2e_per_kg_diverted] %>)</td>
       <td style="padding: 6px 0; font-weight: bold; font-size: 16px;"><%= co2e_kg %> kg</td>
     </tr>
     <tr>

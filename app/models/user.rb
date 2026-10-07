@@ -163,7 +163,7 @@ class User < ApplicationRecord
   LITRES_PER_BUCKET_80L = 80.0
   KG_PER_LITRE = 0.6
   COMPOST_MULTIPLIER = 0.35
-  CO2E_MULTIPLIER = 1.96
+  CO2E_MULTIPLIER = IMPACT[:co2e_per_kg_diverted]
 
   def lifetime_bags
     collections.where(skip: false).sum(:bags).to_f

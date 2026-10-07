@@ -22,7 +22,7 @@ class Block < ApplicationRecord
 
   # CO₂ equivalent avoidance per kg food waste diverted from landfill
   # (methane avoidance basis — IPCC figures)
-  CO2E_PER_KG = 1.9
+  CO2E_PER_KG = IMPACT[:co2e_per_kg_diverted]
 
   # ── Address derived from subscriptions ──────────────────────────────────────
   # The block's physical address is the same as the subscriptions at that building.
