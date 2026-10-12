@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_05_170835) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_12_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -619,6 +619,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_05_170835) do
     t.boolean "quote_only", default: false, null: false
     t.string "billing_type", default: "standard", null: false
     t.bigint "invoice_product_id"
+    t.boolean "exclude_from_rates", default: false, null: false
     t.index ["invoice_product_id"], name: "index_products_on_invoice_product_id"
   end
 

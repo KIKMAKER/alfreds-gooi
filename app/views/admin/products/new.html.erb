@@ -8,6 +8,11 @@
     <%= f.input :stock, label: "Stock Quantity" %>
     <%= f.input :is_active, label: "Active in Shop?", as: :boolean %>
 
+    <%= f.input :exclude_from_rates,
+        as: :boolean,
+        label: "Exclude from weekly/monthly equivalent?",
+        hint: "One-off purchase (e.g. pedal bin). Still counted in the quote total, but left out of the weekly/monthly equivalent shown to the customer." %>
+
     <%= f.input :billing_type,
         as: :select,
         collection: [

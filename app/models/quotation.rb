@@ -61,24 +61,26 @@ class Quotation < ApplicationRecord
     duration_months * 4
   end
 
+  # Weekly/monthly equivalents leave out products flagged exclude_from_rates
+  # (e.g. pedal bins); they still count towards the quote total.
   def weekly_rate
     return 0 if weeks_in_contract.zero? || total_amount.blank?
-    (total_amount / weeks_in_contract).round(2)
+    (rated_total / weeks_in_contract).round(2)
   end
 
   def monthly_rate
     return 0 if duration_months.zero? || total_amount.blank?
-    (total_amount / duration_months).round(2)
+    (rated_total / duration_months).round(2)
   end
 
   def ongoing_weekly_rate
     return 0 if weeks_in_contract.zero?
-    ((total_amount - one_time_cost) / weeks_in_contract).round(2)
+    ((rated_total - one_time_cost) / weeks_in_contract).round(2)
   end
 
   def ongoing_monthly_rate
     return 0 if duration_months.zero?
-    ((total_amount - one_time_cost) / duration_months).round(2)
+    ((rated_total - one_time_cost) / duration_months).round(2)
   end
 
   def expired?
@@ -150,6 +152,17 @@ class Quotation < ApplicationRecord
   end
 
   private
+
+  def rated_total
+    total_amount - excluded_from_rates_cost
+  end
+
+  def excluded_from_rates_cost
+    quotation_items
+      .joins(:product)
+      .where(products: { exclude_from_rates: true })
+      .sum { |i| (i.amount || 0) * (i.quantity || 0) }
+  end
 
   def one_time_cost
     quotation_items

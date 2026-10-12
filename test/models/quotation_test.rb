@@ -50,4 +50,20 @@ class QuotationTest < ActiveSupport::TestCase
 
     assert_equal subscription, @quotation.created_subscription
   end
+
+  test "weekly and monthly equivalents exclude products flagged exclude_from_rates" do
+    bin = Product.create!(title: "Pedal bin", description: "Pedal bin", price: 500, exclude_from_rates: true)
+    @quotation.quotation_items.create!(product: bin, quantity: 1, amount: 500)
+    @quotation.calculate_total # 2 x 220 + 500 = 940, over the default 6 months
+
+    assert_equal 940, @quotation.total_amount
+    assert_equal (440 / 24.0).round(2), @quotation.weekly_rate
+    assert_equal (440 / 6.0).round(2), @quotation.monthly_rate
+  end
+
+  test "equivalents are unchanged when no product is flagged" do
+    @quotation.calculate_total
+
+    assert_equal (440 / 6.0).round(2), @quotation.monthly_rate
+  end
 end

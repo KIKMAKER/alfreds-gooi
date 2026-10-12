@@ -137,8 +137,11 @@ class InvoiceBuilder
   def add_commercial_subscription_from_quote(invoice, subscription)
     billable = @quotation.billable_items
 
-    starter_items   = billable.select { |i| i.product.title.match?(/starter/i) }
-    recurring_items = billable.reject { |i| i.product.title.match?(/starter/i) }
+    # Starters and flagged one-off products (e.g. pedal bins) are billed as the
+    # starter portion rather than being silently dropped from monthly invoices.
+    starter_items, recurring_items = billable.partition do |i|
+      i.product.exclude_from_rates? || i.product.title.match?(/starter/i)
+    end
 
     # Identify the collection-fee and volume invoice products for storing on subscription
     monthly_product = nil
