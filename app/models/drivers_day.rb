@@ -6,6 +6,13 @@ class DriversDay < ApplicationRecord
   has_one :day_statistic, dependent: :destroy
   belongs_to :current_drop_off_event, class_name: 'DropOffEvent', optional: true
 
+  # Collections and drop-offs interleaved in route order. Same ordering as
+  # RouteOrder.stops_for, so what the driver sees is what gets saved.
+  def route_items
+    items = collections.includes(:subscription, :user).to_a + drop_off_events.includes(:drop_off_site).to_a
+    items.sort_by { |i| [i.position || Float::INFINITY, i.is_a?(DropOffEvent) ? 1 : 0, i.id] }
+  end
+
   scope :with_end_time, -> { where.not(end_time: nil) }
   scope :this_year,    ->(year) { where("EXTRACT(year FROM date) = ?", year) }
 

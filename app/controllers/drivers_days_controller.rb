@@ -10,15 +10,8 @@ class DriversDaysController < ApplicationController
     @prev_day = DriversDay.where(date: ...@drivers_day.date).order(date: :desc).first
     @next_day = DriversDay.where(date: (@drivers_day.date + 1)..).order(date: :asc).first
 
-    # Load collections ordered by position (nulls last = newly added collections appear at end)
-    collections = @drivers_day.collections
-                                .includes(:subscription, :user)
-                                .order(Arel.sql("position ASC NULLS LAST"))
-
-    drop_off_events = @drivers_day.drop_off_events.includes(:drop_off_site).order(:position)
-
-    # Combine collections and drop-off events, sorted by position (nil sorts to end)
-    @route_items = (collections.to_a + drop_off_events.to_a).sort_by { |item| item.position || Float::INFINITY }
+    # Collections and drop-offs in route order (nil positions last, ties broken by id)
+    @route_items = @drivers_day.route_items
 
     @route_export = route_export_text(@route_items)
   end
@@ -179,6 +172,9 @@ class DriversDaysController < ApplicationController
     [
       -> { CreateCollectionsJob.perform_now(@drivers_day.date.to_s) },
       -> { CreateNextWeekDropOffEventsJob.perform_now },
+      # Last, once next week's collections and drop-offs both exist: copy today's
+      # final order (collections AND drop-offs) onto them.
+      -> { RouteOrder.carry_forward!(@drivers_day, RouteOrder.next_week_day(@drivers_day)) },
       -> { CheckSubscriptionsForCompletionJob.perform_now }
     ].each do |job|
       begin
@@ -415,30 +411,21 @@ class DriversDaysController < ApplicationController
     redirect_to drivers_days_path, note: "Drivers Day deleted"
   end
 
+  # Saves a dragged route order. The client waits for this response and shows an
+  # error if it isn't a 200, so every failure path must be loud (never head :ok
+  # on bad input). See RouteOrder for how the order reaches next week.
   def reorder
-    @drivers_day = DriversDay.find(params[:id])
-    items = params[:items] || []
+    drivers_day = DriversDay.find(params[:id])
+    items = params[:items]
+    return render(json: { error: "items must be a list" }, status: :unprocessable_entity) unless items.is_a?(Array)
 
-    items.each_with_index do |item_data, index|
-      case item_data[:type]
-      when "collection"
-        @drivers_day.collections
-                    .find_by(id: item_data[:id])
-                    &.update_column(:position, index + 1)
-      when "drop_off_event"
-        @drivers_day.drop_off_events
-                    .find_by(id: item_data[:id])
-                    &.update_column(:position, index + 1)
-      end
+    submitted = items.filter_map do |item|
+      next unless item.respond_to?(:[])
+      { type: item[:type].to_s, id: item[:id].to_i }
     end
 
-    # Keep subscription collection_order in sync — uses update (not update_column) so
-    # sync_collection_positions fires and propagates the new order to future collections
-    @drivers_day.collections.order(:position).each_with_index do |c, i|
-      c.subscription&.update(collection_order: i + 1)
-    end
-
-    head :no_content
+    saved = RouteOrder.save!(drivers_day, submitted)
+    render json: { saved: saved }
   end
 
   private

@@ -469,3 +469,19 @@
   font-size: 1.4rem;
   vertical-align: middle;
 }
+
+// Save feedback for the drag-to-reorder route list (sortable_controller.js)
+.route-save-status {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+
+  &--saving { background: #f4f4f4; color: #555; }
+  &--saved  { background: #e3f4e6; color: #1e6b32; }
+  &--error  { background: #fde8e8; color: #a11919; font-weight: 600; cursor: pointer; }
+}
