@@ -17,6 +17,11 @@ class Collection < ApplicationRecord
 
   before_save :stamp_collection_time
   before_save :sync_drivers_day_with_date, if: :needs_drivers_day_sync?
+  after_commit :notify_my_alfred_note, on: :update
+
+  # Personal alert: email Kristen whenever Alfred leaves a note on her own
+  # collection. Not a general customer-facing feature yet — see note_added.
+  MY_NOTE_ALERT_EMAIL = "kristen.c.kennedy@gmail.com"
 
   # Custom methods
   # One-shot helper to mark skip + send email notification.
@@ -205,5 +210,12 @@ class Collection < ApplicationRecord
   # assign the drivers_day explicitly, and an explicit drivers_day change wins.
   def needs_drivers_day_sync?
     persisted? && will_save_change_to_date? && !will_save_change_to_drivers_day_id?
+  end
+
+  def notify_my_alfred_note
+    return unless saved_change_to_alfred_message? && alfred_message.present?
+    return unless user&.email == MY_NOTE_ALERT_EMAIL
+
+    CollectionMailer.note_added(collection_id: id).deliver_now
   end
 end

@@ -1,0 +1,18 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem;">
+  <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Alfred left you a note 📝</h1>
+
+  <p style="font-size: 1.1rem; margin-top: 1rem;">
+    On your collection dated <strong><%= @collection.date.strftime('%A, %-d %B') %></strong>:
+  </p>
+
+  <div style="margin: 1.5rem 0; padding: 1.25rem 1.5rem; background-color: #fffbef; border-left: 4px solid #FBB718; border-radius: 4px;">
+    <p style="font-size: 1.1rem; margin: 0;"><%= @collection.alfred_message %></p>
+  </div>
+
+  <p style="margin: 2rem 0;">
+    <a href="<%= manage_url %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      View My Account
+    </a>
+  </p>
+</div>

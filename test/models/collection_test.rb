@@ -245,4 +245,37 @@ class CollectionTest < ActiveSupport::TestCase
     assert_raises(ArgumentError) { @collection.ensure_action_token!(:not_a_column) }
     assert_raises(ArgumentError) { Collection.find_by_action_token!(:not_a_column, "abc") }
   end
+
+  test "adding an alfred note emails the alert address when the collection is Kristen's own" do
+    @customer.update!(email: Collection::MY_NOTE_ALERT_EMAIL)
+
+    assert_difference -> { ActionMailer::Base.deliveries.size }, 1 do
+      @collection.update!(alfred_message: "Bin was overflowing, used a spare bag")
+    end
+    assert_equal [Collection::MY_NOTE_ALERT_EMAIL], ActionMailer::Base.deliveries.last.to
+  end
+
+  test "adding an alfred note does not email anyone for a regular customer's collection" do
+    assert_no_difference -> { ActionMailer::Base.deliveries.size } do
+      @collection.update!(alfred_message: "Bin was overflowing, used a spare bag")
+    end
+  end
+
+  test "editing an alfred note a second time still emails (not just on first note)" do
+    @customer.update!(email: Collection::MY_NOTE_ALERT_EMAIL)
+    @collection.update!(alfred_message: "First note")
+
+    assert_difference -> { ActionMailer::Base.deliveries.size }, 1 do
+      @collection.update!(alfred_message: "Updated note")
+    end
+  end
+
+  test "clearing an alfred note does not send an email" do
+    @customer.update!(email: Collection::MY_NOTE_ALERT_EMAIL)
+    @collection.update!(alfred_message: "First note")
+
+    assert_no_difference -> { ActionMailer::Base.deliveries.size } do
+      @collection.update!(alfred_message: "")
+    end
+  end
 end
