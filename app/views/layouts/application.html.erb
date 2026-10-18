@@ -160,7 +160,7 @@
     <%  end %>
     <%= render "shared/flashes" %>
     <%= yield %>
-    <% hide_footer = user_signed_in? && !current_user.driver? && !current_user.admin? && !current_user.drop_off? && !current_page?(root_path) %>
+    <% hide_footer = user_signed_in? && !current_user.driver? && !current_user.admin? && !current_page?(root_path) %>
     <% if !hide_footer %>
       <%= render "shared/footer" %>
     <% elsif controller_name == 'invoices' && action_name == 'show' %>
@@ -168,7 +168,9 @@
         <%= render "shared/footer" %>
       </div>
     <% end %>
-    <% if user_signed_in? && !current_user.driver? && !current_user.admin? && !current_user.drop_off? %>
+    <% if user_signed_in? && current_user.drop_off? %>
+      <%= render "shared/drop_off_bottom_nav" %>
+    <% elsif user_signed_in? && !current_user.driver? && !current_user.admin? %>
       <%= render "shared/customer_bottom_nav" %>
     <% end %>
   </body>

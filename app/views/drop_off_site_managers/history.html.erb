@@ -1,0 +1,61 @@
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <div>
+        <h1>All Drop-offs</h1>
+        <p class="dom-header__sub"><%= @total %> total</p>
+      </div>
+    </div>
+    <%= link_to drop_off_impact_path, class: "dom-header__back" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+  </div>
+
+  <% if @events.any? %>
+    <div class="info-card mb-3">
+      <div class="info-card-body">
+        <% @events.each do |event| %>
+          <div class="info-row">
+            <span class="info-label">
+              <%= event.date.strftime("%d %b %Y") %>
+              <% if @multiple_sites %>
+                <span class="dom-site-tag"><%= event.drop_off_site.name %></span>
+              <% end %>
+            </span>
+            <span class="info-value">
+              <%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg &middot; <%= pluralize(event.buckets.size, "bucket") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @total_pages > 1 %>
+      <div class="dom-pager">
+        <% if @page > 1 %>
+          <%= link_to drop_off_history_path(page: @page - 1, per: @per), class: "action-btn" do %>
+            <i class="fa-solid fa-arrow-left"></i> Previous
+          <% end %>
+        <% end %>
+        <span class="text-muted small">Page <%= @page %> of <%= @total_pages %></span>
+        <% if @page < @total_pages %>
+          <%= link_to drop_off_history_path(page: @page + 1, per: @per), class: "action-btn" do %>
+            Next <i class="fa-solid fa-arrow-right"></i>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="info-card text-center">
+      <div class="info-card-body dom-empty-state">
+        <i class="fa-regular fa-calendar dom-empty-state__icon"></i>
+        <p class="text-muted mb-0">No completed drop-offs yet.</p>
+      </div>
+    </div>
+  <% end %>
+
+</div>

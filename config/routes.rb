@@ -176,6 +176,8 @@ Rails.application.routes.draw do
 
   # drop-off site managers
   resources :drop_off_site_managers, only: [:index, :show, :edit, :update]
+  get "drop_off_impact",  to: "drop_off_site_managers#impact"
+  get "drop_off_history", to: "drop_off_site_managers#history"
 
   patch 'optimise_route', to: 'collections#optimise_route'
   post "perform_create_today_collections", to: "collections#perform_create_today_collections"

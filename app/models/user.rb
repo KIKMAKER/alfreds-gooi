@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :drivers_days
   has_many :payments, dependent: :destroy
   has_many :drop_off_sites, dependent: :nullify
+  has_many :drop_off_events, through: :drop_off_sites
   has_many :orders, dependent: :destroy
   has_many :testimonials, dependent: :destroy
   has_many :whatsapp_messages, dependent: :destroy

@@ -7,8 +7,42 @@ class DropOffSiteManagersController < ApplicationController
   end
 
   def show
-    @recent_events = @drop_off_site.drop_off_events.order(date: :desc).limit(10)
+    events = @drop_off_site.drop_off_events
+    @recent_events = events.includes(:buckets).order(date: :desc).limit(5)
+    @next_event = events.where(is_done: false).where("date >= ?", Date.current).order(:date).first
+    @total_kg = events.completed.sum(:weight_kg).to_f
+    @total_dropoffs = events.completed.count
     @show_index_link = current_user.drop_off_sites.count > 1
+
+    if @drop_off_site.charges_disposal_fee?
+      today = Date.current
+      @month_fees = @drop_off_site.fees_for(year: today.year, month: today.month)
+    end
+  end
+
+  # Lifetime impact across every site this manager runs, the drop-off twin of
+  # CustomersController#my_stats.
+  def impact
+    events = current_user.drop_off_events.completed
+    @total_kg = events.sum(:weight_kg).to_f
+    @total_dropoffs = events.count
+    @protein_kg = events.protein.sum(:weight_kg).to_f
+    @since = events.minimum(:date)
+    @compost_kg = (@total_kg * User::COMPOST_MULTIPLIER).round
+    @co2e_kg = (@total_kg * User::CO2E_MULTIPLIER).round
+    @avg_kg = @total_dropoffs.positive? ? @total_kg / @total_dropoffs : 0
+    @recent_events = events.includes(:drop_off_site).order(date: :desc).limit(5)
+  end
+
+  def history
+    @per  = params.fetch(:per, 20).to_i.clamp(1, 100)
+    @page = [params.fetch(:page, 1).to_i, 1].max
+
+    scope = current_user.drop_off_events.completed.includes(:drop_off_site, :buckets).order(date: :desc)
+    @total = scope.count
+    @events = scope.offset((@page - 1) * @per).limit(@per)
+    @total_pages = (@total.to_f / @per).ceil
+    @multiple_sites = current_user.drop_off_sites.count > 1
   end
 
   def edit

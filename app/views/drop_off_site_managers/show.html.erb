@@ -1,111 +1,165 @@
-<div class="admin-container">
-  <% if @show_index_link %>
-    <%= link_to "← All your sites", drop_off_site_managers_path, class: "fad-pill-link d-inline-block mb-3" %>
-  <% end %>
+<div class="subscription-show-container">
 
-  <div class="pt-3 pb-2">
-    <p class="dash-eyebrow">Drop-Off Site</p>
-    <h1>Welcome, <%= current_user.first_name || @drop_off_site.contact_name %>!</h1>
-    <p class="text-muted">Thank you for partnering with Alfred's Gooi to divert organic waste from landfill.</p>
+  <%# ─── HEADER ─── %>
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-recycle"></i>
+      </div>
+      <div>
+        <h1>Hey <%= current_user.first_name || @drop_off_site.contact_name %>!</h1>
+        <p class="dom-header__sub">
+          <%= @drop_off_site.name %> &middot; <%= @drop_off_site.collection_day %>s
+        </p>
+      </div>
+    </div>
+    <% if @show_index_link %>
+      <%= link_to drop_off_site_managers_path, class: "dom-header__back" do %>
+        <i class="fa-solid fa-arrow-left"></i> All sites
+      <% end %>
+    <% end %>
   </div>
 
   <% if @drop_off_site.photo.attached? %>
-    <div class="mb-4" style="border-radius: 1em; overflow: hidden; max-height: 280px;">
-      <%= image_tag @drop_off_site.photo, style: "width: 100%; height: 280px; object-fit: cover;" %>
+    <div class="dom-photo mb-3">
+      <%= image_tag @drop_off_site.photo, class: "dom-photo__img", alt: @drop_off_site.name %>
     </div>
   <% end %>
 
-  <%# KPI strip %>
-  <div class="row g-3 mb-4">
-    <div class="col-6">
-      <div class="dash-kpi-card">
-        <div class="dash-kpi-label">Total weight collected</div>
-        <div class="dash-kpi-value"><%= number_with_precision(@drop_off_site.total_weight_kg, precision: 1) %> kg</div>
+  <%# ─── NEXT DROP-OFF ─── %>
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-truck"></i>
+      <h3>Next drop-off</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @next_event %>
+        <div class="info-row">
+          <span class="info-label"><%= @next_event.today? ? "Today" : @next_event.date.strftime("%A, %-d %b") %></span>
+          <span class="info-value">
+            <%= @next_event.protein_waste_stream? ? "Protein" : "Food scraps" %>
+          </span>
+        </div>
+      <% else %>
+        <p class="dom-empty mb-0">
+          Alfred normally drops off on <%= @drop_off_site.collection_day %>s. We'll show the next stop here once it's on the route.
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ─── STATS ─── %>
+  <div class="stats-grid mb-3">
+    <div class="stat-card">
+      <div class="stat-icon dom-stat-icon--leaf">
+        <i class="fa-solid fa-weight-scale"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= number_with_delimiter(@total_kg.round) %>kg</div>
+        <div class="stat-label">received so far</div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="dash-kpi-card">
-        <div class="dash-kpi-label">Total drop-offs</div>
-        <div class="dash-kpi-value"><%= @drop_off_site.total_dropoffs_count %></div>
-        <% if @drop_off_site.total_dropoffs_count > 0 %>
-          <div class="dash-kpi-label mt-2">
-            Avg <%= number_with_precision(@drop_off_site.total_weight_kg / @drop_off_site.total_dropoffs_count, precision: 1) %> kg / visit
+
+    <div class="stat-card">
+      <div class="stat-icon dom-stat-icon--green">
+        <i class="fa-solid fa-truck-ramp-box"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= @total_dropoffs %></div>
+        <div class="stat-label">drop-offs</div>
+      </div>
+    </div>
+  </div>
+
+  <%# ─── DISPOSAL FEE (charging sites only) ─── %>
+  <% if @month_fees %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-receipt"></i>
+        <h3>Disposal fee &middot; <%= Date.current.strftime("%B") %></h3>
+      </div>
+      <div class="info-card-body">
+        <div class="info-row">
+          <span class="info-label">Rate</span>
+          <span class="info-value"><%= number_to_currency(@drop_off_site.fee_per_kg, unit: "R") %> / kg</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Received this month</span>
+          <span class="info-value"><%= number_with_precision(@month_fees[:kg], precision: 1) %> kg</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Fee so far</span>
+          <span class="info-value"><%= number_to_currency(@month_fees[:fee], unit: "R") %></span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ─── RECENT DROP-OFFS ─── %>
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <h3>Recent drop-offs</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @recent_events.any? %>
+        <% @recent_events.each do |event| %>
+          <div class="info-row">
+            <span class="info-label"><%= event.date.strftime("%-d %b %Y") %></span>
+            <span class="info-value dom-status <%= event.is_done ? 'dom-status--done' : 'dom-status--pending' %>">
+              <% if event.is_done %>
+                <%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg &middot; <%= pluralize(event.buckets.size, "bucket") %>
+              <% else %>
+                Pending
+              <% end %>
+            </span>
           </div>
+        <% end %>
+        <%= link_to drop_off_history_path, class: "action-btn mt-3" do %>
+          <i class="fa-solid fa-list"></i> View all drop-offs
+        <% end %>
+      <% else %>
+        <p class="dom-empty mb-0">No drop-offs recorded yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ─── SITE DETAILS ─── %>
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-id-card"></i>
+      <h3>Site details</h3>
+    </div>
+    <div class="info-card-body">
+      <div class="info-row">
+        <span class="info-label">Address</span>
+        <span class="info-value"><%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb&.name %></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Contact</span>
+        <span class="info-value"><%= @drop_off_site.contact_name %></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">WhatsApp</span>
+        <span class="info-value"><%= @drop_off_site.phone_number %></span>
+      </div>
+      <% if @drop_off_site.notes.present? %>
+        <div class="info-row">
+          <span class="info-label">Notes</span>
+          <span class="info-value"><%= @drop_off_site.notes %></span>
+        </div>
+      <% end %>
+      <div class="dom-actions mt-3">
+        <%= link_to edit_drop_off_site_manager_path(@drop_off_site), class: "action-btn" do %>
+          <i class="fa-solid fa-pen"></i> Edit details
+        <% end %>
+        <% whatsapp_message = "Hello, it is #{@drop_off_site.contact_name} from #{@drop_off_site.name}. Please contact me." %>
+        <%= link_to "https://wa.me/27785325513?text=#{ERB::Util.url_encode(whatsapp_message)}",
+                    target: :_blank, rel: "noopener", class: "action-btn" do %>
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp Alfred
         <% end %>
       </div>
     </div>
   </div>
 
-  <%# Site info %>
-  <div class="dash-category-card mb-4">
-    <div class="fad-card-header mb-3">
-      <span class="dash-category-heading"><%= @drop_off_site.name %></span>
-      <div class="fad-action-bar">
-        <%= link_to "Edit details", edit_drop_off_site_manager_path(@drop_off_site), class: "fad-pill-link" %>
-        <% whatsapp_message = "Hello, it is #{@drop_off_site.contact_name} from #{@drop_off_site.name}. Please contact me." %>
-        <%= link_to "WhatsApp Alfred's Gooi",
-              "https://wa.me/27785325513?text=#{ERB::Util.url_encode(whatsapp_message)}",
-              target: :_blank, class: "fad-pill-link" %>
-      </div>
-    </div>
-    <table class="fad-table">
-      <tr>
-        <td class="fad-table__meta">Collection day</td>
-        <td><%= @drop_off_site.collection_day %></td>
-      </tr>
-      <tr>
-        <td class="fad-table__meta">Address</td>
-        <td><%= @drop_off_site.street_address %>, <%= @drop_off_site.suburb&.name %></td>
-      </tr>
-      <tr>
-        <td class="fad-table__meta">Contact</td>
-        <td><%= @drop_off_site.contact_name %></td>
-      </tr>
-      <tr>
-        <td class="fad-table__meta">Phone</td>
-        <td><%= @drop_off_site.phone_number %></td>
-      </tr>
-      <% if @drop_off_site.notes.present? %>
-        <tr>
-          <td class="fad-table__meta">Notes</td>
-          <td><%= @drop_off_site.notes %></td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-
-  <%# Recent events %>
-  <div class="dash-category-card mb-5">
-    <div class="dash-category-heading mb-3">Recent drop-off events</div>
-    <% if @recent_events.any? %>
-      <table class="fad-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th class="fad-table__val">Weight</th>
-            <th class="fad-table__val">Buckets</th>
-            <th class="fad-table__val">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @recent_events.each do |event| %>
-            <tr>
-              <td><%= event.date.strftime("%-d %b") %></td>
-              <td class="fad-table__val"><%= number_with_precision(event.total_weight_from_buckets, precision: 1) %> kg</td>
-              <td class="fad-table__val"><%= event.buckets.count %></td>
-              <td class="fad-table__val">
-                <% if event.is_done %>
-                  <span style="color: #108A63; font-weight: 600;">Done</span>
-                <% else %>
-                  <span style="color: #b45309; font-weight: 600;">Pending</span>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p class="fad-empty">No drop-off events recorded yet.</p>
-    <% end %>
-  </div>
 </div>

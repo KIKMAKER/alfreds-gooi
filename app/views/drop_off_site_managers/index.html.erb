@@ -1,22 +1,41 @@
-<div class="admin-container">
-  <div class="pt-4 pb-3">
-    <p class="dash-eyebrow">Drop-Off Sites</p>
-    <h1>Your Sites</h1>
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-recycle"></i>
+      </div>
+      <div>
+        <h1>Hey <%= current_user.first_name %>!</h1>
+        <p class="dom-header__sub"><%= pluralize(@drop_off_sites.size, "drop-off site") %></p>
+      </div>
+    </div>
   </div>
 
-  <div class="fad-event-list">
-    <% @drop_off_sites.each do |site| %>
-      <div class="fad-event-row">
-        <div class="fad-event-row__main">
-          <%= link_to site.name, drop_off_site_manager_path(site), class: "fad-event-row__name" %>
-          <span class="fad-event-row__dates">
-            <%= site.collection_day %> &middot; <%= site.suburb&.name %> &middot; <%= number_with_precision(site.total_weight_kg, precision: 1) %> kg collected
-          </span>
-        </div>
-        <div class="fad-event-row__actions">
-          <%= link_to "View →", drop_off_site_manager_path(site), class: "fad-pill-link" %>
-        </div>
+  <% @drop_off_sites.each do |site| %>
+    <div class="info-card mb-3">
+      <div class="info-card-header">
+        <i class="fa-solid fa-location-dot"></i>
+        <h3><%= site.name %></h3>
       </div>
-    <% end %>
-  </div>
+      <div class="info-card-body">
+        <div class="info-row">
+          <span class="info-label">Collection day</span>
+          <span class="info-value"><%= site.collection_day %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Suburb</span>
+          <span class="info-value"><%= site.suburb&.name %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Received</span>
+          <span class="info-value"><%= number_with_precision(site.total_weight_kg, precision: 1) %> kg</span>
+        </div>
+        <%= link_to drop_off_site_manager_path(site), class: "action-btn mt-3" do %>
+          View site <i class="fa-solid fa-arrow-right"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
 </div>

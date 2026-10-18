@@ -1,0 +1,98 @@
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-leaf"></i>
+      </div>
+      <div>
+        <h1>Your Impact</h1>
+        <% if @since %>
+          <p class="dom-header__sub">Partnering with Gooi since <%= @since.strftime("%b %Y") %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @total_dropoffs.positive? %>
+    <div class="stats-grid mb-3">
+      <div class="stat-card">
+        <div class="stat-icon dom-stat-icon--leaf">
+          <i class="fa-solid fa-weight-scale"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@total_kg.round) %>kg</div>
+          <div class="stat-label">food scraps received</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon dom-stat-icon--sage">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@compost_kg) %>kg</div>
+          <div class="stat-label">compost made from your site</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon dom-stat-icon--gold">
+          <i class="fa-solid fa-cloud"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= number_with_delimiter(@co2e_kg) %>kg</div>
+          <div class="stat-label">CO₂e avoided</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon dom-stat-icon--green">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value"><%= @total_dropoffs %></div>
+          <div class="stat-label">drop-offs &middot; avg <%= number_with_precision(@avg_kg, precision: 1) %>kg</div>
+        </div>
+      </div>
+    </div>
+
+    <% if @protein_kg.positive? %>
+      <div class="info-card mb-3">
+        <div class="info-card-header">
+          <i class="fa-solid fa-drumstick-bite"></i>
+          <h3>Protein stream</h3>
+        </div>
+        <div class="info-card-body">
+          <div class="info-row">
+            <span class="info-label">Protein received</span>
+            <span class="info-value"><%= number_with_delimiter(@protein_kg.round) %> kg</span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="info-card">
+    <div class="info-card-header">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <h3>Recent drop-offs</h3>
+    </div>
+    <div class="info-card-body">
+      <% if @recent_events.any? %>
+        <% @recent_events.each do |event| %>
+          <div class="info-row">
+            <span class="info-label"><%= event.date.strftime("%d %b %Y") %></span>
+            <span class="info-value"><%= number_with_precision(event.weight_kg, precision: 1) %> kg</span>
+          </div>
+        <% end %>
+        <%= link_to drop_off_history_path, class: "action-btn mt-3" do %>
+          <i class="fa-solid fa-list"></i> View all drop-offs
+        <% end %>
+      <% else %>
+        <p class="dom-empty mb-0">No completed drop-offs yet. Your impact will build up here.</p>
+      <% end %>
+    </div>
+  </div>
+
+</div>
