@@ -33,6 +33,21 @@
                 target: :_blank, class: "link-title ms-1" %>
           <% end %>
         </p>
+        <p class="mb-1">
+          <strong>Max per delivery:</strong>
+          <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not recorded" %>
+        </p>
+        <p class="mb-1">
+          <strong>Confirmation letter:</strong>
+          <% if @drop_off_site.facility_confirmation_letter.attached? %>
+            <%= link_to "View", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
+          <% else %>
+            <span class="text-danger">Missing</span>
+          <% end %>
+        </p>
+        <% if @drop_off_site.fee_start_date %>
+          <p class="mb-1"><strong>Fees start:</strong> <%= @drop_off_site.fee_start_date.strftime("%-d %b %Y") %></p>
+        <% end %>
         <% if @drop_off_site.notes.present? %>
           <p class="mb-1"><strong>Notes:</strong> <%= @drop_off_site.notes %></p>
         <% end %>

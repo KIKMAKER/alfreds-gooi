@@ -4,6 +4,7 @@
 # drop-off event, so there is no separate data-entry step: completed drops are
 # the source of truth.
 #
+# Drops before a site's fee_start_date are excluded.
 # Only charging sites appear — free sites (Soil for Life) sit at fee_per_kg 0
 # and are excluded rather than listed with a zero owed.
 class DisposalFeesReport
@@ -19,7 +20,9 @@ class DisposalFeesReport
   def rows
     @rows ||= begin
       totals = DropOffEvent.completed
+                           .joins(:drop_off_site)
                            .where(drop_off_site: @sites)
+                           .where("drop_off_sites.fee_start_date IS NULL OR drop_off_events.date >= drop_off_sites.fee_start_date")
                            .where.not(date: nil)
                            .group(:drop_off_site_id, Arel.sql("DATE_TRUNC('month', drop_off_events.date)"))
                            .sum(:weight_kg)

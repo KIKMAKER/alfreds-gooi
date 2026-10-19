@@ -107,6 +107,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  # Devise defaults to the root path after a profile update; land people back on
+  # their own home instead.
+  def after_update_path_for(resource)
+    if resource.drop_off?
+      drop_off_home_path_for(resource)
+    elsif resource.customer?
+      manage_path
+    else
+      super
+    end
+  end
+
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [
       :first_name, :last_name, :email, :phone_number, :password, :password_confirmation,

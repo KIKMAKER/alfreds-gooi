@@ -43,6 +43,33 @@
           input_html: { step: 0.01, min: 0 },
           hint: "What this site charges Gooi per kilogram dropped. Leave at 0 for free sites (e.g. Soil for Life)." %>
 
+    <%= f.input :fee_start_date,
+          as: :date,
+          html5: true,
+          label: "Fees start on",
+          hint: "Drops before this date are free. Leave blank to charge from the first drop." %>
+
+    <h4 class="mt-4 mb-3">Facility confirmation</h4>
+
+    <%= f.input :max_kg_per_delivery,
+          label: "Max kg per delivery",
+          required: true,
+          input_html: { step: 0.01, min: 0 },
+          hint: "The most the facility has confirmed it can accept in one delivery." %>
+
+    <%= f.input :facility_confirmation_letter,
+          as: :file,
+          required: true,
+          label: "Signed facility confirmation letter",
+          hint: "PDF, JPG or PNG, up to 10 MB. Supports Gooi's City of Cape Town accreditation." %>
+    <% if @drop_off_site.facility_confirmation_letter.attached? %>
+      <p class="mb-3">
+        <strong>On file:</strong>
+        <%= link_to @drop_off_site.facility_confirmation_letter.filename.to_s,
+              rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
+      </p>
+    <% end %>
+
     <%= f.input :accepts_protein,
           as: :boolean,
           label: "Accepts protein / plate-waste",

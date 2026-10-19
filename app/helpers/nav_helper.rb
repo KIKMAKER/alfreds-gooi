@@ -12,13 +12,4 @@ module NavHelper
       current_user.drivers_days.find_by(date: Date.current) ||
       current_user.drivers_days.order(date: :desc).first
   end
-
-  # Home for a drop-off site manager: straight to the site when they have one,
-  # the site picker when they run several. Mirrors after_sign_in_path_for.
-  def drop_off_home_path_for(user)
-    sites = user.drop_off_sites
-    return drop_off_site_managers_path unless sites.count == 1
-
-    drop_off_site_manager_path(sites.first)
-  end
 end

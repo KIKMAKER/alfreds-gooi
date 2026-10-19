@@ -19,6 +19,9 @@
               <%= site.collection_day %> &middot; <%= site.suburb&.name %> &middot;
               <%= number_with_precision(site.total_weight_kg, precision: 1) %> kg &middot;
               <%= site.total_dropoffs_count %> drops
+              <% unless site.facility_paperwork_complete? %>
+                &middot; <span class="text-danger">Paperwork missing</span>
+              <% end %>
             </span>
           </div>
           <div class="fad-event-row__actions">

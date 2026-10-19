@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_12_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_19_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -400,6 +400,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_12_090000) do
     t.decimal "fee_per_kg", precision: 8, scale: 2, default: "0.0", null: false
     t.boolean "accepts_protein", default: false, null: false
     t.bigint "suburb_id"
+    t.date "fee_start_date"
+    t.decimal "max_kg_per_delivery", precision: 8, scale: 2
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["suburb_id"], name: "index_drop_off_sites_on_suburb_id"
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"

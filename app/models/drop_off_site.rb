@@ -3,6 +3,9 @@ class DropOffSite < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :suburb
   has_one_attached :photo
+  # Signed letter from the facility confirming it composts what Gooi delivers and
+  # how much it can take. Backs Gooi's City of Cape Town accreditation application.
+  has_one_attached :facility_confirmation_letter
 
   # Geocoding
   geocoded_by :street_address
@@ -34,6 +37,17 @@ class DropOffSite < ApplicationRecord
   validates :collection_day, presence: true
   validates :slug, presence: true, uniqueness: true
   validates :fee_per_kg, numericality: { greater_than_or_equal_to: 0 }
+  validates :max_kg_per_delivery, numericality: { greater_than: 0 }, allow_nil: true
+  validate  :acceptable_facility_letter
+
+  # Every site must have capacity and a signed letter on record. Enforced only when
+  # onboarding through the admin form (save(context: :onboarding)): a plain
+  # on: :create rule would break the many places that build a site without one,
+  # and an unconditional rule would block recalc_totals! on legacy sites that
+  # predate the requirement.
+  validates :max_kg_per_delivery, presence: true, on: :onboarding
+  validates :facility_confirmation_letter, presence: { message: "must be attached" }, on: :onboarding
+  LETTER_TYPES = %w[application/pdf image/jpeg image/png].freeze
 
   # Enum for collection day
   enum :collection_day, Date::DAYNAMES
@@ -42,14 +56,27 @@ class DropOffSite < ApplicationRecord
   scope :protein_capable, -> { where(accepts_protein: true) }
   # Sites that bill us for disposal. Free sites (Soil for Life) sit at 0.
   scope :charging,        -> { where("fee_per_kg > 0") }
+  # Sites still owing us the paperwork (legacy sites, or onboarding skipped).
+  scope :missing_facility_letter, -> { where.missing(:facility_confirmation_letter_attachment) }
 
   # Disposal fees owed to this site for a calendar month: completed drop-offs
   # only, weighed against the kilograms the driver recorded on the event.
+  # Drops before fee_start_date are free; a NULL start date means no cutoff.
   def fees_for(year:, month:)
     period = Date.new(year, month, 1)..Date.new(year, month, 1).end_of_month
-    kg = drop_off_events.where(is_done: true, date: period).sum(:weight_kg).to_f.round(2)
+    events = drop_off_events.where(is_done: true, date: period)
+    events = events.where(date: fee_start_date..) if fee_start_date
+    kg = events.sum(:weight_kg).to_f.round(2)
 
     { kg: kg, fee: (kg * fee_per_kg.to_f).round(2) }
+  end
+
+  def fees_started?(on: Date.current)
+    fee_start_date.nil? || fee_start_date <= on
+  end
+
+  def facility_paperwork_complete?
+    max_kg_per_delivery.present? && facility_confirmation_letter.attached?
   end
 
   def charges_disposal_fee?
@@ -108,6 +135,14 @@ class DropOffSite < ApplicationRecord
   end
 
   private
+
+  def acceptable_facility_letter
+    return unless facility_confirmation_letter.attached?
+
+    blob = facility_confirmation_letter.blob
+    errors.add(:facility_confirmation_letter, "must be a PDF, JPG or PNG") unless LETTER_TYPES.include?(blob.content_type)
+    errors.add(:facility_confirmation_letter, "must be under 10 MB") if blob.byte_size > 10.megabytes
+  end
 
   def generate_slug
     self.slug = name.parameterize

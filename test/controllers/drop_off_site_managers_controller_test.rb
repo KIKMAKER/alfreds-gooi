@@ -114,4 +114,42 @@ class DropOffSiteManagersControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav#customer-bottom-nav a[href=?]", drop_off_impact_path
     assert_select "nav#customer-bottom-nav a[href=?]", my_stats_path, count: 0
   end
+
+  test "updating account details lands a manager back on their site, not the root" do
+    put user_registration_path, params: { user: { first_name: "Thandi", current_password: "password" } }
+
+    assert_redirected_to drop_off_site_manager_path(@site)
+  end
+
+  test "updating account details lands a customer on manage" do
+    sign_out @manager
+    customer = User.create!(
+      first_name: "Nina", last_name: "Customer",
+      phone_number: "+2782777#{rand(1000..9999)}", password: "password",
+      email: "nina-#{SecureRandom.hex(3)}@gmail.com"
+    )
+    sign_in customer
+
+    put user_registration_path, params: { user: { first_name: "Nina", current_password: "password" } }
+
+    assert_redirected_to manage_path
+  end
+
+  test "home shows capacity and the letter status" do
+    @site.update!(max_kg_per_delivery: 125)
+    @site.facility_confirmation_letter.attach(io: StringIO.new("%PDF-1.4"), filename: "letter.pdf", content_type: "application/pdf")
+
+    get drop_off_site_manager_path(@site)
+
+    assert_match(/125 kg/, response.body)
+    assert_match(/On file/, response.body)
+  end
+
+  test "home says fees start later when the start date is in the future" do
+    @site.update!(fee_start_date: Date.current + 30)
+
+    get drop_off_site_manager_path(@site)
+
+    assert_match(/Fees start/, response.body)
+  end
 end

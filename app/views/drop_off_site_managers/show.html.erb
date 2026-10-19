@@ -79,6 +79,12 @@
         <h3>Disposal fee &middot; <%= Date.current.strftime("%B") %></h3>
       </div>
       <div class="info-card-body">
+        <% unless @drop_off_site.fees_started? %>
+          <div class="info-row">
+            <span class="info-label">Fees start</span>
+            <span class="info-value"><%= @drop_off_site.fee_start_date.strftime("%-d %b %Y") %></span>
+          </div>
+        <% end %>
         <div class="info-row">
           <span class="info-label">Rate</span>
           <span class="info-value"><%= number_to_currency(@drop_off_site.fee_per_kg, unit: "R") %> / kg</span>
@@ -121,6 +127,32 @@
       <% else %>
         <p class="dom-empty mb-0">No drop-offs recorded yet.</p>
       <% end %>
+    </div>
+  </div>
+
+  <%# ─── FACILITY CONFIRMATION ─── %>
+  <div class="info-card mb-3">
+    <div class="info-card-header">
+      <i class="fa-solid fa-file-circle-check"></i>
+      <h3>Facility confirmation</h3>
+    </div>
+    <div class="info-card-body">
+      <div class="info-row">
+        <span class="info-label">Max per delivery</span>
+        <span class="info-value">
+          <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not recorded" %>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Signed letter</span>
+        <span class="info-value">
+          <% if @drop_off_site.facility_confirmation_letter.attached? %>
+            <%= link_to "On file", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
+          <% else %>
+            <span class="dom-status--pending">Still needed</span>
+          <% end %>
+        </span>
+      </div>
     </div>
   </div>
 

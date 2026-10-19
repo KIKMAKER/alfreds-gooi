@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  helper_method :drop_off_home_path_for
+
   # Track current user for Ahoy analytics
   def ahoy_user
     current_user
@@ -47,12 +49,21 @@ class ApplicationController < ActionController::Base
     if resource.admin?
       admin_root_path
     elsif resource.drop_off? && resource.drop_off_sites.any?
-      resource.drop_off_sites.count == 1 ? drop_off_site_manager_path(resource.drop_off_sites.first) : drop_off_site_managers_path
+      drop_off_home_path_for(resource)
     elsif resource.customer?
       manage_path
     else
       stored_location_for(resource) || root_path
     end
+  end
+
+  # Home for a drop-off site manager: straight to the site when they have one,
+  # the site picker when they run several.
+  def drop_off_home_path_for(user)
+    sites = user.drop_off_sites
+    return drop_off_site_managers_path unless sites.count == 1
+
+    drop_off_site_manager_path(sites.first)
   end
 
   def after_sign_up_path_for(resource)

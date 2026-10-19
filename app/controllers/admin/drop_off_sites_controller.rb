@@ -15,7 +15,7 @@ class Admin::DropOffSitesController < Admin::BaseController
   def create
     @drop_off_site = DropOffSite.new(drop_off_site_params)
 
-    if @drop_off_site.save
+    if @drop_off_site.save(context: :onboarding)
       redirect_to admin_drop_off_site_path(@drop_off_site), notice: "Drop-off site created successfully!"
     else
       render :new, status: :unprocessable_entity
@@ -91,6 +91,9 @@ class Admin::DropOffSitesController < Admin::BaseController
       :instagram_handle,
       :facebook_url,
       :fee_per_kg,
+      :fee_start_date,
+      :max_kg_per_delivery,
+      :facility_confirmation_letter,
       :accepts_protein
     )
   end
