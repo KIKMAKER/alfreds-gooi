@@ -1,0 +1,18 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem; max-width: 600px;">
+  <h1 style="font-size: 1.5rem;">Facility letter to review</h1>
+  <p style="font-size: 1.05rem;">
+    <strong><%= @site.name %></strong> (<%= @site.street_address %>, <%= @site.suburb&.name %>) has uploaded a signed
+    facility confirmation letter. It is attached to this email.
+  </p>
+  <p style="font-size: 1.05rem;">
+    Contact: <%= @site.contact_name %><%= " · #{@site.phone_number}" if @site.phone_number.present? %><br>
+    Uploaded: <%= @site.facility_letter_submitted_at&.strftime("%-d %b %Y %H:%M") %>
+  </p>
+  <p style="margin: 2rem 0;">
+    <a href="<%= admin_drop_off_site_url(@site.slug || @site.id) %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Review &amp; approve
+    </a>
+  </p>
+  <p style="color: #666;">Nothing is paid, and the site is not listed, until you approve it.</p>
+</div>

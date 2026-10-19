@@ -138,6 +138,7 @@ class DropOffSiteManagersControllerTest < ActionDispatch::IntegrationTest
   test "home shows capacity and the letter status" do
     @site.update!(max_kg_per_delivery: 125)
     @site.facility_confirmation_letter.attach(io: StringIO.new("%PDF-1.4"), filename: "letter.pdf", content_type: "application/pdf")
+    @site.approve_letter!
 
     get drop_off_site_manager_path(@site)
 

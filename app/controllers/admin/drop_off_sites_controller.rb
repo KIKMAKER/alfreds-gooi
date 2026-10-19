@@ -1,5 +1,5 @@
 class Admin::DropOffSitesController < Admin::BaseController
-  before_action :set_drop_off_site, only: [:show, :edit, :update, :destroy]
+  before_action :set_drop_off_site, only: [:show, :edit, :update, :destroy, :approve_letter, :reject_letter]
 
   def index
     @drop_off_sites = DropOffSite.order(:collection_day, :name)
@@ -16,6 +16,7 @@ class Admin::DropOffSitesController < Admin::BaseController
     @drop_off_site = DropOffSite.new(drop_off_site_params)
 
     if @drop_off_site.save(context: :onboarding)
+      approve_if_admin_uploaded_letter
       redirect_to admin_drop_off_site_path(@drop_off_site), notice: "Drop-off site created successfully!"
     else
       render :new, status: :unprocessable_entity
@@ -27,6 +28,7 @@ class Admin::DropOffSitesController < Admin::BaseController
 
   def update
     if @drop_off_site.update(drop_off_site_params)
+      approve_if_admin_uploaded_letter
       redirect_to admin_drop_off_site_path(@drop_off_site), notice: "Drop-off site updated successfully!"
     else
       render :edit, status: :unprocessable_entity
@@ -69,7 +71,38 @@ class Admin::DropOffSitesController < Admin::BaseController
     redirect_to admin_drop_off_sites_path, notice: "Next week's drop-off events created!"
   end
 
+  def approve_letter
+    unless @drop_off_site.facility_confirmation_letter.attached?
+      return redirect_to(admin_drop_off_site_path(@drop_off_site), alert: "There is no letter to approve.")
+    end
+
+    @drop_off_site.approve_letter!
+    deliver_to_manager(:approved)
+    redirect_to admin_drop_off_site_path(@drop_off_site), notice: "#{@drop_off_site.name} is now a listed facility."
+  end
+
+  def reject_letter
+    @drop_off_site.reject_letter!(params[:reason])
+    deliver_to_manager(:rejected)
+    redirect_to admin_drop_off_site_path(@drop_off_site), notice: "Letter rejected. #{@drop_off_site.name} has been asked to upload a new one."
+  end
+
   private
+
+  # A letter uploaded by an admin has been seen by an admin, so it needs no review.
+  def approve_if_admin_uploaded_letter
+    return if params.dig(:drop_off_site, :facility_confirmation_letter).blank?
+
+    @drop_off_site.approve_letter!
+  end
+
+  def deliver_to_manager(kind)
+    return unless @drop_off_site.user
+
+    FacilityLetterMailer.public_send(kind, @drop_off_site).deliver_now
+  rescue StandardError => e
+    Rails.logger.error("Facility letter #{kind} email failed for site #{@drop_off_site.id}: #{e.message}")
+  end
 
   def set_drop_off_site
     @drop_off_site = DropOffSite.find_by(slug: params[:id]) || DropOffSite.find(params[:id])

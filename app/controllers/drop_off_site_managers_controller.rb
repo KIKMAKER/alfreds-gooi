@@ -1,6 +1,6 @@
 class DropOffSiteManagersController < ApplicationController
   before_action :authorize_manager!
-  before_action :set_drop_off_site, only: [:show, :edit, :update]
+  before_action :set_drop_off_site, only: [:show, :edit, :update, :submit_letter, :letter_template]
 
   def index
     @drop_off_sites = current_user.drop_off_sites.order(:collection_day, :name)
@@ -56,7 +56,38 @@ class DropOffSiteManagersController < ApplicationController
     end
   end
 
+  # The manager's signed facility confirmation letter goes to Gooi for review. The
+  # site is not "listed" (and nothing is paid) until an admin approves it.
+  def submit_letter
+    return redirect_to(drop_off_site_manager_path(@drop_off_site), notice: "You're already a listed facility.") if @drop_off_site.letter_approved?
+
+    upload = params[:facility_letter]
+    if upload.blank?
+      redirect_to drop_off_site_manager_path(@drop_off_site), alert: "Please choose your signed letter to upload."
+    elsif @drop_off_site.submit_facility_letter(upload)
+      notify_admin_of_letter
+      redirect_to drop_off_site_manager_path(@drop_off_site), notice: "Thank you! We'll review your letter and confirm shortly."
+    else
+      redirect_to drop_off_site_manager_path(@drop_off_site), alert: @drop_off_site.errors.full_messages.to_sentence
+    end
+  end
+
+  def letter_template
+    send_file Rails.root.join("lib/documents/gooi-facility-confirmation-letter.docx"),
+              filename: "Gooi facility confirmation letter.docx",
+              type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              disposition: "attachment"
+  end
+
   private
+
+  # The upload is already saved; a mail failure must not turn it into a 500. The
+  # admin dashboard's "awaiting review" count is the backstop.
+  def notify_admin_of_letter
+    FacilityLetterMailer.submitted(@drop_off_site).deliver_now
+  rescue StandardError => e
+    Rails.logger.error("Facility letter notification failed for site #{@drop_off_site.id}: #{e.message}")
+  end
 
   def set_drop_off_site
     @drop_off_site = current_user.drop_off_sites.find_by!(slug: params[:id])

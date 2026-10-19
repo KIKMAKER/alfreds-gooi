@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_19_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_19_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -322,6 +322,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_19_090000) do
     t.index ["code"], name: "index_discount_codes_on_code", unique: true
   end
 
+  create_table "disposal_payments", force: :cascade do |t|
+    t.bigint "drop_off_site_id", null: false
+    t.date "period", null: false
+    t.decimal "kg", precision: 10, scale: 2, null: false
+    t.decimal "fee_per_kg", precision: 8, scale: 2, null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "requested_at"
+    t.datetime "paid_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drop_off_site_id", "period"], name: "index_disposal_payments_on_drop_off_site_id_and_period", unique: true
+    t.index ["drop_off_site_id"], name: "index_disposal_payments_on_drop_off_site_id"
+  end
+
   create_table "driver_message_templates", force: :cascade do |t|
     t.string "segment", null: false
     t.text "body"
@@ -402,6 +417,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_19_090000) do
     t.bigint "suburb_id"
     t.date "fee_start_date"
     t.decimal "max_kg_per_delivery", precision: 8, scale: 2
+    t.integer "facility_letter_status", default: 0, null: false
+    t.datetime "facility_letter_submitted_at"
+    t.datetime "facility_approved_at"
+    t.text "facility_rejection_reason"
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["suburb_id"], name: "index_drop_off_sites_on_suburb_id"
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"
@@ -956,6 +975,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_19_090000) do
   add_foreign_key "commercial_inquiries", "users"
   add_foreign_key "contacts", "subscriptions"
   add_foreign_key "day_statistics", "drivers_days"
+  add_foreign_key "disposal_payments", "drop_off_sites"
   add_foreign_key "drivers_days", "drop_off_events", column: "current_drop_off_event_id"
   add_foreign_key "drivers_days", "users"
   add_foreign_key "drop_off_events", "drivers_days"

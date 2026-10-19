@@ -86,3 +86,36 @@
     margin-bottom: 1rem;
   }
 }
+
+.dom-copy {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.75rem 0 0;
+
+  &--strong {
+    color: #023F3A;
+    font-weight: 700;
+  }
+}
+
+.dom-note {
+  background: #fff3cd;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
+.dom-steps {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.dom-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}

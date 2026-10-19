@@ -1,0 +1,19 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem; max-width: 600px;">
+  <h1 style="font-size: 1.5rem;">We need your letter again</h1>
+  <p style="font-size: 1.05rem;">Hi <%= @user.first_name || @site.contact_name %>,</p>
+  <p style="font-size: 1.05rem;">
+    Thanks for sending the facility letter for <strong><%= @site.name %></strong>. We couldn't accept it yet.
+  </p>
+  <% if @site.facility_rejection_reason.present? %>
+    <p style="font-size: 1.05rem; background: #fff3cd; border-radius: 8px; padding: 1rem;">
+      <%= @site.facility_rejection_reason %>
+    </p>
+  <% end %>
+  <p style="margin: 2rem 0;">
+    <a href="<%= drop_off_site_manager_url(@site) %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Upload a new letter
+    </a>
+  </p>
+  <p style="font-size: 1.05rem;">Alfred's Gooi</p>
+</div>

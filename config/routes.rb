@@ -48,6 +48,8 @@ Rails.application.routes.draw do
     resources :drop_off_sites do
       member do
         post :create_event
+        post :approve_letter
+        post :reject_letter
       end
       collection do
         post :create_next_week_events
@@ -60,6 +62,9 @@ Rails.application.routes.draw do
       end
     end
     resources :disposal_fees, only: [:index]
+    resources :disposal_payments, only: [:create] do
+      post :mark_paid, on: :member
+    end
     resources :users, only: [:index, :new, :create, :edit, :update, :show] do
       get  :pending,          on: :collection
       post :nudge_all_pending, on: :collection
@@ -175,7 +180,12 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
 
   # drop-off site managers
-  resources :drop_off_site_managers, only: [:index, :show, :edit, :update]
+  resources :drop_off_site_managers, only: [:index, :show, :edit, :update] do
+    member do
+      post :submit_letter
+      get  :letter_template
+    end
+  end
   get "drop_off_impact",  to: "drop_off_site_managers#impact"
   get "drop_off_history", to: "drop_off_site_managers#history"
 

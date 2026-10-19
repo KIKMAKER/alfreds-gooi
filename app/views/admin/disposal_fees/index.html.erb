@@ -17,6 +17,7 @@
           <th class="text-end">Kg dropped</th>
           <th class="text-end">Fee / kg</th>
           <th class="text-end">Fee owed</th>
+          <th>Payment</th>
         </tr>
       </thead>
       <tbody>
@@ -27,6 +28,29 @@
             <td class="text-end"><%= number_with_precision(row.kg_dropped, precision: 2) %></td>
             <td class="text-end">R<%= number_with_precision(row.fee_per_kg, precision: 2) %></td>
             <td class="text-end"><strong>R<%= number_with_precision(row.fee_owed, precision: 2) %></strong></td>
+            <td>
+              <% payment = @payments[[row.site.id, row.month]] %>
+              <% if payment&.paid? %>
+                <span class="text-success">Paid <%= payment.paid_at.strftime("%-d %b") %></span>
+              <% elsif row.month >= Date.current.beginning_of_month %>
+                <span class="text-muted">Month in progress</span>
+              <% else %>
+                <% unless row.site.payable? %>
+                  <span class="text-danger d-block small">Not a listed facility &mdash; can't pay</span>
+                <% end %>
+                <%= link_to(payment ? "Resend request" : "Send payment request",
+                      admin_disposal_payments_path(site: row.site.slug, month: row.month.strftime("%Y-%m")),
+                      data: { turbo_method: :post }, class: "small") %>
+                <% if payment && row.site.payable? %>
+                  &middot;
+                  <%= link_to "Mark paid", mark_paid_admin_disposal_payment_path(payment),
+                        data: { turbo_method: :post, turbo_confirm: "Mark #{row.site_name} #{row.month.strftime('%B')} as paid?" }, class: "small" %>
+                <% end %>
+                <% if payment %>
+                  <span class="text-muted d-block small">Requested <%= payment.requested_at.strftime("%-d %b") %></span>
+                <% end %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -34,6 +58,7 @@
         <tr>
           <td colspan="4" class="text-end"><strong>Total owed</strong></td>
           <td class="text-end"><strong>R<%= number_with_precision(@report.total_owed, precision: 2) %></strong></td>
+          <td></td>
         </tr>
       </tfoot>
     </table>

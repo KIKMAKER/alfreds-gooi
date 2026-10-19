@@ -1,5 +1,6 @@
 class DropOffSite < ApplicationRecord
   has_many :drop_off_events, dependent: :nullify
+  has_many :disposal_payments, dependent: :destroy
   belongs_to :user, optional: true
   belongs_to :suburb
   has_one_attached :photo
@@ -47,6 +48,10 @@ class DropOffSite < ApplicationRecord
   # predate the requirement.
   validates :max_kg_per_delivery, presence: true, on: :onboarding
   validates :facility_confirmation_letter, presence: { message: "must be attached" }, on: :onboarding
+  # not_submitted -> submitted (manager uploads) -> approved | rejected (Gooi reviews).
+  # Only approved sites count as listed facilities, and only they can be paid.
+  enum :facility_letter_status, %i[not_submitted submitted approved rejected], prefix: :letter
+
   LETTER_TYPES = %w[application/pdf image/jpeg image/png].freeze
 
   # Enum for collection day
@@ -76,7 +81,38 @@ class DropOffSite < ApplicationRecord
   end
 
   def facility_paperwork_complete?
-    max_kg_per_delivery.present? && facility_confirmation_letter.attached?
+    max_kg_per_delivery.present? && letter_approved?
+  end
+
+  # What is still outstanding, for admin lists. nil when the site is fully listed.
+  def paperwork_issue
+    return "Letter awaiting review" if letter_submitted?
+    return "Letter rejected" if letter_rejected?
+    return "Paperwork missing" if letter_not_submitted?
+
+    "Max kg per delivery missing" if max_kg_per_delivery.blank?
+  end
+
+  # Gooi pays disposal fees only to sites listed as facilities.
+  def payable?
+    letter_approved?
+  end
+
+  # A manager's upload goes to Gooi for review. Status and file save together so a
+  # bad file (wrong type, too big) leaves the site exactly as it was.
+  def submit_facility_letter(upload)
+    assign_attributes(facility_letter_status: :submitted, facility_letter_submitted_at: Time.current,
+                      facility_rejection_reason: nil)
+    facility_confirmation_letter.attach(upload)
+    save
+  end
+
+  def approve_letter!
+    update!(facility_letter_status: :approved, facility_approved_at: Time.current, facility_rejection_reason: nil)
+  end
+
+  def reject_letter!(reason)
+    update!(facility_letter_status: :rejected, facility_rejection_reason: reason.presence)
   end
 
   def charges_disposal_fee?

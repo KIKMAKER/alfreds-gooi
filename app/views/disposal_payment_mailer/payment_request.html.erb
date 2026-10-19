@@ -1,0 +1,70 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem; max-width: 600px;">
+  <h1 style="font-size: 1.6rem; margin-bottom: 0.5rem;">Gooi owes you <%= @amount %></h1>
+
+  <p style="font-size: 1.05rem;">Hi <%= @user.first_name || @site.contact_name %>,</p>
+
+  <p style="font-size: 1.05rem;">
+    Thank you for taking our food scraps at <%= @site.name %>. Here is what we owe you for
+    <strong><%= @payment.month_label %></strong>:
+  </p>
+
+  <table style="border-collapse: collapse; width: 100%; margin: 1.25rem 0;">
+    <tr>
+      <td style="padding: 6px 0; color: #666;">Received</td>
+      <td style="padding: 6px 0; text-align: right;"><%= number_with_precision(@payment.kg, precision: 1) %> kg</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 0; color: #666;">Rate</td>
+      <td style="padding: 6px 0; text-align: right;"><%= number_to_currency(@payment.fee_per_kg, unit: "R") %> / kg</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 0; border-top: 2px solid #1f4632;"><strong>Amount to be paid</strong></td>
+      <td style="padding: 10px 0; border-top: 2px solid #1f4632; text-align: right; font-size: 1.2rem;"><strong><%= @amount %></strong></td>
+    </tr>
+  </table>
+
+  <h2 style="font-size: 1.15rem; margin-top: 2rem;">Before we can pay you</h2>
+
+  <%# ── 1. Listed facility ── %>
+  <% if @site.letter_approved? %>
+    <p style="font-size: 1.05rem;">&#10003; <strong>Listed facility:</strong> done, thank you.</p>
+  <% elsif @site.letter_submitted? %>
+    <p style="font-size: 1.05rem;">
+      &#9203; <strong>Listed facility:</strong> we have your signed letter and are reviewing it. We'll confirm shortly.
+    </p>
+  <% else %>
+    <div style="background: #fff3cd; border: 2px solid #FBB718; border-radius: 12px; padding: 1.25rem; margin: 1rem 0;">
+      <p style="font-size: 1.15rem; font-weight: bold; margin: 0 0 0.5rem;">
+        We can't pay you unless you're listed as a facility.
+      </p>
+      <p style="margin: 0 0 0.75rem;">
+        To keep our City of Cape Town accreditation, we must hold a signed letter from every facility we pay,
+        confirming that the food scraps we deliver are composted. It takes about five minutes:
+      </p>
+      <ol style="margin: 0 0 1rem 1.25rem; padding: 0;">
+        <li>Download the letter template and fill in your details.</li>
+        <li>Sign it, and scan or photograph it.</li>
+        <li>Upload it on your Gooi page.</li>
+      </ol>
+      <% if @site.letter_rejected? && @site.facility_rejection_reason.present? %>
+        <p style="margin: 0 0 1rem;"><strong>About your last upload:</strong> <%= @site.facility_rejection_reason %></p>
+      <% end %>
+      <a href="<%= drop_off_site_manager_url(@site) %>"
+         style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold; display: inline-block;">
+        Upload signed letter
+      </a>
+    </div>
+  <% end %>
+
+  <%# ── 2. Banking details ── %>
+  <p style="font-size: 1.05rem; margin-top: 1.5rem;">
+    <strong>Banking details:</strong> please reply to this email with your account holder name, bank,
+    account number, branch code and account type (or attach a stamped bank letter).
+  </p>
+
+  <p style="font-size: 1.05rem; margin-top: 1.5rem;">
+    Once we have both, we'll pay <%= @amount %> to you.
+  </p>
+
+  <p style="font-size: 1.05rem;">Thank you for keeping food out of landfill,<br>Alfred's Gooi</p>
+</div>

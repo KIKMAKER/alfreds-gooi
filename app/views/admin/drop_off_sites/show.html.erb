@@ -38,11 +38,12 @@
           <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not recorded" %>
         </p>
         <p class="mb-1">
-          <strong>Confirmation letter:</strong>
+          <strong>Facility status:</strong>
+          <span class="<%= @drop_off_site.letter_approved? ? 'text-success' : 'text-danger' %>">
+            <%= @drop_off_site.letter_approved? ? "Listed facility" : @drop_off_site.facility_letter_status.humanize %>
+          </span>
           <% if @drop_off_site.facility_confirmation_letter.attached? %>
-            <%= link_to "View", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
-          <% else %>
-            <span class="text-danger">Missing</span>
+            &middot; <%= link_to "View letter", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
           <% end %>
         </p>
         <% if @drop_off_site.fee_start_date %>
@@ -54,6 +55,28 @@
       </div>
     </div>
   </div>
+
+  <%# ── Facility letter review ── %>
+  <% if @drop_off_site.facility_confirmation_letter.attached? && !@drop_off_site.letter_approved? %>
+    <div class="outline text-start mb-4">
+      <h5 class="mb-2">Review facility letter</h5>
+      <% if @drop_off_site.facility_letter_submitted_at %>
+        <p class="text-muted small">Uploaded <%= @drop_off_site.facility_letter_submitted_at.strftime("%-d %b %Y %H:%M") %></p>
+      <% end %>
+      <p>
+        <%= link_to "Open the letter", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
+        and check the organisation, facility address, date and signature.
+      </p>
+      <div class="d-flex flex-wrap gap-3 align-items-end">
+        <%= link_to "Approve — list as facility", approve_letter_admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id),
+              data: { turbo_method: :post }, class: "btn-today-green" %>
+        <%= form_with url: reject_letter_admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id), method: :post, class: "d-flex gap-2 flex-grow-1" do |f| %>
+          <%= f.text_field :reason, placeholder: "Reason for rejecting (sent to the manager)", class: "form-control" %>
+          <%= f.submit "Reject", class: "btn btn-sm btn-outline-danger" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <%# ── Stats ── %>
   <div class="row g-3 mb-4">

@@ -1,0 +1,15 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem; max-width: 600px;">
+  <h1 style="font-size: 1.5rem;">You're a listed Gooi facility</h1>
+  <p style="font-size: 1.05rem;">Hi <%= @user.first_name || @site.contact_name %>,</p>
+  <p style="font-size: 1.05rem;">
+    We've received and approved your signed letter, so <strong><%= @site.name %></strong> is now a listed facility
+    on Gooi's City of Cape Town accreditation. Thank you for composting our food scraps.
+  </p>
+  <%# Cost is only ever mentioned to sites that charge. %>
+  <% if @site.charges_disposal_fee? %>
+    <p style="font-size: 1.05rem;">
+      That means we're clear to pay you. Once we have your banking details we'll pay what we owe you each month.
+    </p>
+  <% end %>
+  <p style="font-size: 1.05rem;">Alfred's Gooi</p>
+</div>

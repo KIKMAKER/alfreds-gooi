@@ -62,6 +62,8 @@ class DropOffSiteFeesTest < ActiveSupport::TestCase
     @site.max_kg_per_delivery = 125
     @site.facility_confirmation_letter.attach(io: StringIO.new("%PDF-1.4"), filename: "l.pdf", content_type: "application/pdf")
     assert @site.valid?(:onboarding)
+    refute @site.facility_paperwork_complete?, "an attached letter is not enough until Gooi approves it"
+    @site.approve_letter!
     assert @site.facility_paperwork_complete?
   end
 

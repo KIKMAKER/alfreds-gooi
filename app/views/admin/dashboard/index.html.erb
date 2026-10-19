@@ -89,6 +89,10 @@
           <li><a href="/admin/drop_off_sites">Drop-off Sites <span class="dash-arrow">→</span></a></li>
           <li><%= link_to admin_suburbs_path do %>Suburbs <span class="dash-arrow">→</span><% end %></li>
           <li><a href="/admin/disposal_fees">Disposal fees owed <span class="dash-arrow">→</span></a></li>
+          <% awaiting = DropOffSite.letter_submitted.count %>
+          <% if awaiting.positive? %>
+            <li><a href="/admin/drop_off_sites"><%= pluralize(awaiting, "facility letter") %> to review <span class="dash-arrow">→</span></a></li>
+          <% end %>
           <li><%= link_to route_drivers_days_path(date: Date.today) do %>Today's route <span class="dash-arrow">→</span><% end %></li>
         </ul>
       </div>
