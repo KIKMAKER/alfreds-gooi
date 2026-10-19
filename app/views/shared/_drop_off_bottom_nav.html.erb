@@ -1,6 +1,7 @@
 <%# Same id and data-nav-path hook as the customer nav, so the existing
-    updateBottomNavActive() in application.js highlights the current tab. %>
-<nav class="customer-bottom-nav d-md-none" id="customer-bottom-nav" aria-label="Main navigation" data-turbo-permanent>
+    updateBottomNavActive() in application.js highlights the current tab. Unlike the
+    customer nav this is not turbo-permanent: the compliance dot must re-render. %>
+<nav class="customer-bottom-nav d-md-none" id="customer-bottom-nav" aria-label="Main navigation">
   <%= link_to drop_off_home_path_for(current_user), class: "bottom-nav-item", data: { nav_path: drop_off_home_path_for(current_user) } do %>
     <i class="fa-solid fa-house"></i>
     <span>Home</span>
@@ -11,9 +12,10 @@
     <span>Impact</span>
   <% end %>
 
-  <%= link_to drop_off_history_path, class: "bottom-nav-item", data: { nav_path: drop_off_history_path } do %>
-    <i class="fa-solid fa-clock-rotate-left"></i>
-    <span>Drop-offs</span>
+  <% compliance_path = drop_off_compliance_path_for(current_user) %>
+  <%= link_to compliance_path, class: "bottom-nav-item #{'dom-nav-flagged' if drop_off_action_needed?(current_user)}", data: { nav_path: compliance_path } do %>
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>Compliance</span>
   <% end %>
 
   <%= link_to account_path, class: "bottom-nav-item", data: { nav_path: account_path } do %>

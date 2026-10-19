@@ -51,15 +51,30 @@
 
     <h4 class="mt-4 mb-3">Facility confirmation</h4>
 
+    <p class="text-muted small">
+      Normally filled in by the site manager on their Compliance page, which then pre-fills their letter.
+      You can enter or correct them here.
+    </p>
+
+    <%= f.input :legal_name, label: "Registered name of organisation", required: false %>
+    <%= f.input :signatory_name, label: "Signatory name", required: false %>
+    <%= f.input :signatory_title, label: "Signatory job title", required: false %>
+
     <%= f.input :max_kg_per_delivery,
           label: "Max kg per delivery",
-          required: true,
+          required: false,
           input_html: { step: 0.01, min: 0 },
-          hint: "The most the facility has confirmed it can accept in one delivery." %>
+          hint: "The most the facility can accept in one delivery." %>
+
+    <%= f.input :max_deliveries_per_week,
+          label: "Max deliveries per week",
+          required: false,
+          input_html: { step: 1, min: 1, max: 14 },
+          hint: "A ceiling, not a schedule. You get an email if a week goes over it." %>
 
     <%= f.input :facility_confirmation_letter,
           as: :file,
-          required: true,
+          required: false,
           label: "Signed facility confirmation letter",
           hint: "PDF, JPG or PNG, up to 10 MB. Uploading it here marks the site as a verified, listed facility." %>
     <% if @drop_off_site.facility_confirmation_letter.attached? %>

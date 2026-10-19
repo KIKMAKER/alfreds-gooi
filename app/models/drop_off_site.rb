@@ -39,15 +39,21 @@ class DropOffSite < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validates :fee_per_kg, numericality: { greater_than_or_equal_to: 0 }
   validates :max_kg_per_delivery, numericality: { greater_than: 0 }, allow_nil: true
+  validates :max_deliveries_per_week, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 14 }, allow_nil: true
   validate  :acceptable_facility_letter
 
-  # Every site must have capacity and a signed letter on record. Enforced only when
-  # onboarding through the admin form (save(context: :onboarding)): a plain
-  # on: :create rule would break the many places that build a site without one,
-  # and an unconditional rule would block recalc_totals! on legacy sites that
-  # predate the requirement.
-  validates :max_kg_per_delivery, presence: true, on: :onboarding
-  validates :facility_confirmation_letter, presence: { message: "must be attached" }, on: :onboarding
+  # What the manager must fill in before a pre-filled facility letter can be
+  # generated. Deliberately not validated for presence: sites are created without
+  # them (the manager supplies them), and recalc_totals! saves legacy sites that
+  # predate the requirement. "Is it filled in?" is a question of status, shown on
+  # the manager's Compliance page, not of record validity.
+  COMPLIANCE_FIELDS = {
+    legal_name:              "Registered name of your organisation",
+    signatory_name:          "Name of the person signing",
+    signatory_title:         "Job title of the person signing",
+    max_kg_per_delivery:     "Most kg you can accept per delivery",
+    max_deliveries_per_week: "Most deliveries you can accept per week"
+  }.freeze
   # not_submitted -> submitted (manager uploads) -> approved | rejected (Gooi reviews).
   # Only approved sites count as listed facilities, and only they can be paid.
   enum :facility_letter_status, %i[not_submitted submitted approved rejected], prefix: :letter
@@ -80,17 +86,54 @@ class DropOffSite < ApplicationRecord
     fee_start_date.nil? || fee_start_date <= on
   end
 
+  def missing_compliance_fields
+    COMPLIANCE_FIELDS.reject { |field, _| self[field].present? }.values
+  end
+
+  def compliance_details_complete?
+    missing_compliance_fields.empty?
+  end
+
+  # Once the letter is approved the figures are what was signed, so the manager
+  # can no longer change them (they ask Gooi). Prevents silent drift.
+  def compliance_details_locked?
+    letter_approved? && compliance_details_complete?
+  end
+
+  # Anything the manager still has to do: fill in details, or sign and upload the
+  # letter. A letter awaiting Gooi's review is on us, not them. Drives the
+  # "action needed" banner and nav dot.
+  def action_needed?
+    !compliance_details_complete? || letter_not_submitted? || letter_rejected?
+  end
+
   def facility_paperwork_complete?
-    max_kg_per_delivery.present? && letter_approved?
+    compliance_details_complete? && letter_approved?
   end
 
   # What is still outstanding, for admin lists. nil when the site is fully listed.
   def paperwork_issue
     return "Letter awaiting review" if letter_submitted?
     return "Letter rejected" if letter_rejected?
-    return "Paperwork missing" if letter_not_submitted?
+    return "Details not filled in" if letter_not_submitted? && !compliance_details_complete?
+    return "Letter not uploaded" if letter_not_submitted?
 
-    "Max kg per delivery missing" if max_kg_per_delivery.blank?
+    "Details missing" unless compliance_details_complete?
+  end
+
+  # Does this delivery push the site past what its facility letter promised?
+  # Returns human-readable reasons (empty when fine or when no limits are set).
+  def capacity_overages_for(event)
+    reasons = []
+    if max_kg_per_delivery && event.weight_kg.to_f > max_kg_per_delivery.to_f
+      reasons << "#{event.weight_kg.to_f.round(1)} kg delivered, over the #{max_kg_per_delivery.to_f.round(1)} kg per delivery limit"
+    end
+    if max_deliveries_per_week
+      week = event.date.beginning_of_week..event.date.end_of_week
+      count = drop_off_events.where(is_done: true, date: week).count
+      reasons << "#{count} deliveries this week, over the #{max_deliveries_per_week} per week limit" if count > max_deliveries_per_week
+    end
+    reasons
   end
 
   # Gooi pays disposal fees only to sites listed as facilities.

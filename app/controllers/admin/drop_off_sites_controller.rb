@@ -15,7 +15,7 @@ class Admin::DropOffSitesController < Admin::BaseController
   def create
     @drop_off_site = DropOffSite.new(drop_off_site_params)
 
-    if @drop_off_site.save(context: :onboarding)
+    if @drop_off_site.save
       approve_if_admin_uploaded_letter
       redirect_to admin_drop_off_site_path(@drop_off_site), notice: "Drop-off site created successfully!"
     else
@@ -126,6 +126,10 @@ class Admin::DropOffSitesController < Admin::BaseController
       :fee_per_kg,
       :fee_start_date,
       :max_kg_per_delivery,
+      :max_deliveries_per_week,
+      :legal_name,
+      :signatory_name,
+      :signatory_title,
       :facility_confirmation_letter,
       :accepts_protein
     )

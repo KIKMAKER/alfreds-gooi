@@ -1,0 +1,22 @@
+<div style="font-family: Arial, sans-serif; color: #1f4632; padding: 2rem; max-width: 600px;">
+  <h1 style="font-size: 1.5rem;">Delivery over capacity</h1>
+  <p style="font-size: 1.05rem;">
+    The drop-off at <strong><%= @site.name %></strong> on <%= @event.date.strftime("%A, %-d %B") %> went past the
+    limits in its facility letter:
+  </p>
+  <ul style="font-size: 1.05rem;">
+    <% @reasons.each do |reason| %>
+      <li><%= reason %></li>
+    <% end %>
+  </ul>
+  <p style="font-size: 1.05rem;">
+    Worth a word with <%= @site.contact_name.presence || "the site" %><%= " (#{@site.phone_number})" if @site.phone_number.present? %>,
+    or raising their limits and getting a fresh letter signed.
+  </p>
+  <p style="margin: 2rem 0;">
+    <a href="<%= admin_drop_off_site_url(@site.slug || @site.id) %>"
+       style="background-color: #FBB718; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: bold;">
+      Open site
+    </a>
+  </p>
+</div>

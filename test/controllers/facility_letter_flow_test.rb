@@ -27,51 +27,83 @@ class FacilityLetterFlowTest < ActionDispatch::IntegrationTest
   end
 
   # Active Storage sniffs the real type from the bytes, so a "bad" file needs bad bytes.
+  def complete_details(site = @site)
+    site.update!(legal_name: "Letter Farm NPC", signatory_name: "Thandi Manager", signatory_title: "Farm Manager",
+                 max_kg_per_delivery: 125, max_deliveries_per_week: 2)
+  end
+
   def pdf_upload(name = "signed.pdf", type = "application/pdf", bytes = "%PDF-1.4")
     Rack::Test::UploadedFile.new(StringIO.new(bytes), type, original_filename: name)
   end
 
   # ── Manager side ──
 
-  test "free site: manager page asks for the letter and never mentions payment or fees" do
+  test "free site: home and compliance pages never mention payment or fees" do
     sign_in @manager
-    get drop_off_site_manager_path(@site)
 
-    assert_response :success
-    assert_match "Download the letter template", response.body
-    text = css_select("main, .subscription-show-container").map(&:text).join(" ")
-    assert_no_match(/can't pay|disposal fee|per kg|\/ kg|\bfees?\b|payment/i, text)
+    [drop_off_site_manager_path(@site), compliance_drop_off_site_manager_path(@site)].each do |path|
+      get path
+      assert_response :success
+      text = css_select(".subscription-show-container").map(&:text).join(" ")
+      assert_no_match(/can't pay|disposal fee|per kg|\/ kg|\bfees?\b|payment/i, text, "#{path} mentioned cost to a free site")
+    end
   end
 
-  test "charging site: manager page warns it can't be paid until listed" do
+  test "charging site: home and compliance warn it can't be paid until listed" do
     @site.update!(fee_per_kg: 2)
     sign_in @manager
-    get drop_off_site_manager_path(@site)
 
-    assert_match "We can't pay you unless you're listed as a facility", response.body
+    [drop_off_site_manager_path(@site), compliance_drop_off_site_manager_path(@site)].each do |path|
+      get path
+      assert_match "We can't pay you unless you're listed as a facility", response.body
+    end
   end
 
-  test "manager can download the letter template" do
+  test "manager downloads a letter already filled in with their details" do
+    complete_details
     sign_in @manager
     get letter_template_drop_off_site_manager_path(@site)
 
     assert_response :success
     assert_match "wordprocessingml", response.media_type
+    xml = Zip::File.open_buffer(StringIO.new(response.body)).read("word/document.xml")
+    assert_match "Letter Farm NPC", xml
+    assert_match "twice a week", xml
+    assert_no_match(/\{\{/, xml)
+  end
+
+  test "the letter download is refused until the details are filled in" do
+    sign_in @manager
+    get letter_template_drop_off_site_manager_path(@site)
+
+    assert_redirected_to compliance_drop_off_site_manager_path(@site)
+  end
+
+  test "uploading a letter is refused until the details are filled in" do
+    sign_in @manager
+
+    assert_no_emails do
+      post submit_letter_drop_off_site_manager_path(@site), params: { facility_letter: pdf_upload }
+    end
+
+    assert @site.reload.letter_not_submitted?
   end
 
   test "uploading a letter marks it submitted and emails Gooi" do
+    complete_details
     sign_in @manager
 
     assert_emails 1 do
       post submit_letter_drop_off_site_manager_path(@site), params: { facility_letter: pdf_upload }
     end
 
-    assert_redirected_to drop_off_site_manager_path(@site)
+    assert_redirected_to compliance_drop_off_site_manager_path(@site)
     assert @site.reload.letter_submitted?
     assert @site.facility_confirmation_letter.attached?
   end
 
   test "a wrong file type is refused and nothing is emailed" do
+    complete_details
     sign_in @manager
 
     assert_no_emails do
@@ -84,6 +116,7 @@ class FacilityLetterFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "submitting with no file is refused" do
+    complete_details
     sign_in @manager
     post submit_letter_drop_off_site_manager_path(@site)
 

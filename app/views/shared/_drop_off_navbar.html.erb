@@ -18,6 +18,10 @@
           <li><%= link_to drop_off_impact_path, class: "customer-nav-dropdown-item" do %>
             <i class="fa-solid fa-leaf"></i> Impact
           <% end %></li>
+          <li><%= link_to drop_off_compliance_path_for(current_user), class: "customer-nav-dropdown-item" do %>
+            <i class="fa-solid fa-shield-halved"></i> Compliance
+            <% if drop_off_action_needed?(current_user) %><span class="dom-nav-flag">Action needed</span><% end %>
+          <% end %></li>
           <li><%= link_to drop_off_history_path, class: "customer-nav-dropdown-item" do %>
             <i class="fa-solid fa-clock-rotate-left"></i> Drop-offs
           <% end %></li>

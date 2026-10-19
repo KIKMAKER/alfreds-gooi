@@ -92,6 +92,7 @@ class DropOffEvent < ApplicationRecord
   after_update :recalc_site_totals, if: -> { saved_change_to_is_done? || saved_change_to_weight_kg? || saved_change_to_drop_off_site_id? }
   after_update :recalc_previous_site_totals, if: -> { saved_change_to_drop_off_site_id? }
   after_update :send_completion_email, if: -> { saved_change_to_is_done? && is_done? }
+  after_update :warn_if_over_capacity, if: -> { saved_change_to_is_done? && is_done? }
 
   # Timing callbacks
   before_save :calculate_duration, if: -> { departure_time_changed? }
@@ -113,6 +114,17 @@ class DropOffEvent < ApplicationRecord
   def recalc_previous_site_totals
     old_site_id, = saved_change_to_drop_off_site_id
     DropOffSite.find_by(id: old_site_id)&.recalc_totals!
+  end
+
+  # Tells Gooi (not the site, not the driver) when a delivery went past the limits
+  # in the site's facility letter. Never blocks the drop-off being completed.
+  def warn_if_over_capacity
+    reasons = drop_off_site.capacity_overages_for(self)
+    return if reasons.empty?
+
+    CapacityMailer.exceeded(self, reasons).deliver_now
+  rescue StandardError => e
+    Rails.logger.error("Capacity warning failed for drop-off event #{id}: #{e.message}")
   end
 
   def send_completion_email

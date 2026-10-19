@@ -182,8 +182,10 @@ Rails.application.routes.draw do
   # drop-off site managers
   resources :drop_off_site_managers, only: [:index, :show, :edit, :update] do
     member do
-      post :submit_letter
-      get  :letter_template
+      get   :compliance
+      patch :update_compliance
+      post  :submit_letter
+      get   :letter_template
     end
   end
   get "drop_off_impact",  to: "drop_off_site_managers#impact"

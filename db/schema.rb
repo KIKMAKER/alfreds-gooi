@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_19_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_20_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -421,6 +421,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_19_120000) do
     t.datetime "facility_letter_submitted_at"
     t.datetime "facility_approved_at"
     t.text "facility_rejection_reason"
+    t.string "legal_name"
+    t.string "signatory_name"
+    t.string "signatory_title"
+    t.integer "max_deliveries_per_week"
     t.index ["slug"], name: "index_drop_off_sites_on_slug", unique: true
     t.index ["suburb_id"], name: "index_drop_off_sites_on_suburb_id"
     t.index ["user_id"], name: "index_drop_off_sites_on_user_id"

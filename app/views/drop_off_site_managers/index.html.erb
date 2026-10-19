@@ -31,6 +31,11 @@
           <span class="info-label">Received</span>
           <span class="info-value"><%= number_with_precision(site.total_weight_kg, precision: 1) %> kg</span>
         </div>
+        <% if site.action_needed? %>
+          <%= link_to compliance_drop_off_site_manager_path(site), class: "dom-alert dom-alert--compact mt-3" do %>
+            <i class="fa-solid fa-triangle-exclamation"></i> Action needed: complete compliance
+          <% end %>
+        <% end %>
         <%= link_to drop_off_site_manager_path(site), class: "action-btn mt-3" do %>
           View site <i class="fa-solid fa-arrow-right"></i>
         <% end %>

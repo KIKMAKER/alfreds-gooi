@@ -20,6 +20,26 @@
     <% end %>
   </div>
 
+  <%# ─── ACTION NEEDED ─── %>
+  <% if @drop_off_site.action_needed? %>
+    <div class="dom-alert mb-3">
+      <div class="dom-alert__icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="dom-alert__body">
+        <strong>Action needed</strong>
+        <% if !@drop_off_site.compliance_details_complete? %>
+          <p>We need a few details from you to prepare your facility letter: <%= @drop_off_site.missing_compliance_fields.to_sentence(last_word_connector: ", and ").downcase %>.</p>
+        <% else %>
+          <p>Your facility letter is ready. Download it, sign it and upload it.</p>
+        <% end %>
+        <%# Cost is only ever mentioned for sites that charge. %>
+        <% if @drop_off_site.charges_disposal_fee? && !@drop_off_site.letter_approved? %>
+          <p><strong>We can't pay you unless you're listed as a facility.</strong></p>
+        <% end %>
+        <%= link_to "Complete compliance", compliance_drop_off_site_manager_path(@drop_off_site), class: "action-btn" %>
+      </div>
+    </div>
+  <% end %>
+
   <% if @drop_off_site.photo.attached? %>
     <div class="dom-photo mb-3">
       <%= image_tag @drop_off_site.photo, class: "dom-photo__img", alt: @drop_off_site.name %>
@@ -130,63 +150,27 @@
     </div>
   </div>
 
-  <%# ─── FACILITY CONFIRMATION ─── %>
+  <%# ─── COMPLIANCE SUMMARY ─── %>
   <div class="info-card mb-3">
     <div class="info-card-header">
-      <i class="fa-solid fa-file-circle-check"></i>
-      <h3>Facility confirmation</h3>
+      <i class="fa-solid fa-shield-halved"></i>
+      <h3>Compliance</h3>
     </div>
     <div class="info-card-body">
       <div class="info-row">
-        <span class="info-label">Max per delivery</span>
-        <span class="info-value">
-          <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not recorded" %>
+        <span class="info-label">Details</span>
+        <span class="info-value <%= @drop_off_site.compliance_details_complete? ? 'dom-status--done' : 'dom-status--pending' %>">
+          <%= @drop_off_site.compliance_details_complete? ? "Complete" : "#{@drop_off_site.missing_compliance_fields.size} to fill in" %>
         </span>
       </div>
-
-      <% if @drop_off_site.letter_approved? %>
-        <div class="info-row">
-          <span class="info-label">Status</span>
-          <span class="info-value dom-status--done">Listed facility</span>
-        </div>
-        <% if @drop_off_site.facility_confirmation_letter.attached? %>
-          <div class="info-row">
-            <span class="info-label">Signed letter</span>
-            <span class="info-value">
-              <%= link_to "On file", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
-            </span>
-          </div>
-        <% end %>
-      <% elsif @drop_off_site.letter_submitted? %>
-        <div class="info-row">
-          <span class="info-label">Status</span>
-          <span class="info-value dom-status--pending">Under review</span>
-        </div>
-        <p class="dom-copy mb-0">We have your signed letter and will confirm shortly.</p>
-      <% else %>
-        <% if @drop_off_site.letter_rejected? && @drop_off_site.facility_rejection_reason.present? %>
-          <p class="dom-note"><%= @drop_off_site.facility_rejection_reason %></p>
-        <% end %>
-        <p class="dom-copy">
-          To list <%= @drop_off_site.name %> as a registered composting facility, we need a signed confirmation letter on file.
-          It supports Gooi's City of Cape Town accreditation.
-        </p>
-        <%# Cost is only ever mentioned for sites that charge. %>
-        <% if @drop_off_site.charges_disposal_fee? %>
-          <p class="dom-copy dom-copy--strong">We can't pay you unless you're listed as a facility.</p>
-        <% end %>
-        <ol class="dom-steps">
-          <li>
-            <%= link_to "Download the letter template", letter_template_drop_off_site_manager_path(@drop_off_site) %>
-            and fill in your details.
-          </li>
-          <li>Sign it, then scan or photograph it.</li>
-          <li>Upload it here (PDF, JPG or PNG).</li>
-        </ol>
-        <%= form_with url: submit_letter_drop_off_site_manager_path(@drop_off_site), method: :post, multipart: true, class: "dom-upload" do |f| %>
-          <%= file_field_tag :facility_letter, accept: ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png", required: true, class: "form-control" %>
-          <%= f.submit "Upload signed letter", class: "action-btn" %>
-        <% end %>
+      <div class="info-row">
+        <span class="info-label">Signed letter</span>
+        <span class="info-value <%= @drop_off_site.letter_approved? ? 'dom-status--done' : 'dom-status--pending' %>">
+          <%= { "approved" => "Listed facility", "submitted" => "Under review", "rejected" => "Needs redoing" }.fetch(@drop_off_site.facility_letter_status, "Still needed") %>
+        </span>
+      </div>
+      <%= link_to compliance_drop_off_site_manager_path(@drop_off_site), class: "action-btn mt-3" do %>
+        <%= @drop_off_site.action_needed? ? "Complete compliance" : "View compliance" %> <i class="fa-solid fa-arrow-right"></i>
       <% end %>
     </div>
   </div>

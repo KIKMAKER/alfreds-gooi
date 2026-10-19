@@ -1,0 +1,177 @@
+<div class="subscription-show-container">
+
+  <div class="subscription-header mb-3">
+    <div class="subscription-header-content">
+      <div class="subscription-avatar">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <div>
+        <h1>Compliance</h1>
+        <p class="dom-header__sub"><%= @drop_off_site.name %></p>
+      </div>
+    </div>
+    <%= link_to drop_off_site_manager_path(@drop_off_site), class: "dom-header__back" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+  </div>
+
+  <%# ─── OVERALL STATUS ─── %>
+  <% if @drop_off_site.letter_approved? && @drop_off_site.compliance_details_complete? %>
+    <div class="dom-alert dom-alert--success mb-3">
+      <div class="dom-alert__icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="dom-alert__body">
+        <strong>You're a listed facility</strong>
+        <p>Everything is in order. Thank you for composting with Gooi.</p>
+      </div>
+    </div>
+  <% elsif @drop_off_site.action_needed? %>
+    <div class="dom-alert mb-3">
+      <div class="dom-alert__icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="dom-alert__body">
+        <strong>Action needed</strong>
+        <p>Three quick steps to list <%= @drop_off_site.name %> as a registered composting facility. It supports Gooi's City of Cape Town accreditation.</p>
+        <%# Cost is only ever mentioned for sites that charge. %>
+        <% if @drop_off_site.charges_disposal_fee? %>
+          <p><strong>We can't pay you unless you're listed as a facility.</strong></p>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="dom-alert dom-alert--wait mb-3">
+      <div class="dom-alert__icon"><i class="fa-solid fa-hourglass-half"></i></div>
+      <div class="dom-alert__body">
+        <strong>With Gooi for review</strong>
+        <p>We have your signed letter and will confirm shortly. Nothing more for you to do.</p>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ─── STEP 1: DETAILS ─── %>
+  <% details_done = @drop_off_site.compliance_details_complete? %>
+  <div class="info-card dom-step mb-3">
+    <div class="info-card-header">
+      <span class="dom-step__num">1</span>
+      <h3>Your details</h3>
+      <span class="dom-pill <%= details_done ? 'dom-pill--done' : 'dom-pill--todo' %>"><%= details_done ? "Done" : "To do" %></span>
+    </div>
+    <div class="info-card-body">
+      <% if @drop_off_site.compliance_details_locked? %>
+        <% DropOffSite::COMPLIANCE_FIELDS.each do |field, label| %>
+          <div class="info-row">
+            <span class="info-label"><%= label %></span>
+            <span class="info-value"><%= @drop_off_site[field] %></span>
+          </div>
+        <% end %>
+        <p class="dom-copy mb-0">These are locked because they're on your approved letter.
+          <%= link_to "WhatsApp Gooi", "https://wa.me/27785325513?text=#{ERB::Util.url_encode("Hello, it is #{@drop_off_site.contact_name} from #{@drop_off_site.name}. I need to change our facility letter details.")}", target: :_blank, rel: "noopener" %>
+          if something needs to change.</p>
+      <% else %>
+        <p class="dom-copy mt-0">We put these straight into your letter, so all you have to do is sign it.</p>
+
+        <%= form_with model: @drop_off_site, url: update_compliance_drop_off_site_manager_path(@drop_off_site), method: :patch do |f| %>
+          <% if @drop_off_site.errors.any? %>
+            <div class="alert alert-danger">
+              <ul class="mb-0"><% @drop_off_site.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+            </div>
+          <% end %>
+
+          <% {
+               legal_name:      { label: DropOffSite::COMPLIANCE_FIELDS[:legal_name], placeholder: "e.g. Neighbourhood Farm NPC" },
+               signatory_name:  { label: DropOffSite::COMPLIANCE_FIELDS[:signatory_name], placeholder: @drop_off_site.contact_name.presence || "Full name" },
+               signatory_title: { label: DropOffSite::COMPLIANCE_FIELDS[:signatory_title], placeholder: "e.g. Farm Manager" }
+             }.each do |field, opts| %>
+            <div class="mb-3">
+              <%= f.label field, opts[:label], class: "form-label fw-semibold" %>
+              <%= f.text_field field, class: "form-control #{'dom-field--todo' if @drop_off_site[field].blank?}", placeholder: opts[:placeholder], required: true %>
+              <% if @drop_off_site[field].blank? %><div class="dom-field__hint">Still needed</div><% end %>
+            </div>
+          <% end %>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <%= f.label :max_kg_per_delivery, "Most kg per delivery", class: "form-label fw-semibold" %>
+              <div class="input-group">
+                <%= f.number_field :max_kg_per_delivery, step: 1, min: 1, required: true, placeholder: "e.g. 125",
+                      class: "form-control #{'dom-field--todo' if @drop_off_site.max_kg_per_delivery.blank?}" %>
+                <span class="input-group-text">kg</span>
+              </div>
+              <% if @drop_off_site.max_kg_per_delivery.blank? %><div class="dom-field__hint">Still needed</div><% end %>
+            </div>
+            <div class="col-6">
+              <%= f.label :max_deliveries_per_week, "Most deliveries per week", class: "form-label fw-semibold" %>
+              <%= f.number_field :max_deliveries_per_week, step: 1, min: 1, max: 14, required: true, placeholder: "e.g. 2",
+                    class: "form-control #{'dom-field--todo' if @drop_off_site.max_deliveries_per_week.blank?}" %>
+              <% if @drop_off_site.max_deliveries_per_week.blank? %><div class="dom-field__hint">Still needed</div><% end %>
+            </div>
+          </div>
+          <p class="dom-copy mt-0">These are the most you're able to accept, not a promise to take that much. Gooi will let you know if a delivery ever goes over.</p>
+
+          <%= f.submit "Save details", class: "action-btn" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ─── STEP 2: DOWNLOAD & SIGN ─── %>
+  <% signed_or_sent = !@drop_off_site.letter_not_submitted? && !@drop_off_site.letter_rejected? %>
+  <div class="info-card dom-step mb-3">
+    <div class="info-card-header">
+      <span class="dom-step__num">2</span>
+      <h3>Download &amp; sign your letter</h3>
+      <span class="dom-pill <%= signed_or_sent ? 'dom-pill--done' : (details_done ? 'dom-pill--todo' : 'dom-pill--wait') %>">
+        <%= signed_or_sent ? "Done" : (details_done ? "To do" : "After step 1") %>
+      </span>
+    </div>
+    <div class="info-card-body">
+      <% if details_done %>
+        <p class="dom-copy mt-0">Your letter is filled in with your details. Print it, sign and date it, then scan or photograph it.</p>
+        <%= link_to letter_template_drop_off_site_manager_path(@drop_off_site), class: "action-btn" do %>
+          <i class="fa-solid fa-file-word"></i> Download your letter
+        <% end %>
+      <% else %>
+        <p class="dom-copy mt-0 mb-0">Once your details are saved, your letter will be ready to download here.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ─── STEP 3: UPLOAD ─── %>
+  <div class="info-card dom-step mb-3">
+    <div class="info-card-header">
+      <span class="dom-step__num">3</span>
+      <h3>Upload your signed letter</h3>
+      <% if @drop_off_site.letter_approved? %>
+        <span class="dom-pill dom-pill--done">Done</span>
+      <% elsif @drop_off_site.letter_submitted? %>
+        <span class="dom-pill dom-pill--wait">Under review</span>
+      <% else %>
+        <span class="dom-pill <%= details_done ? 'dom-pill--todo' : 'dom-pill--wait' %>"><%= details_done ? "To do" : "After step 2" %></span>
+      <% end %>
+    </div>
+    <div class="info-card-body">
+      <% if @drop_off_site.letter_approved? %>
+        <p class="dom-copy mt-0 mb-0">
+          Approved.
+          <% if @drop_off_site.facility_confirmation_letter.attached? %>
+            <%= link_to "View your signed letter", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>.
+          <% end %>
+        </p>
+      <% elsif @drop_off_site.letter_submitted? %>
+        <p class="dom-copy mt-0 mb-0">We have it and will confirm shortly.</p>
+      <% else %>
+        <% if @drop_off_site.letter_rejected? && @drop_off_site.facility_rejection_reason.present? %>
+          <p class="dom-note mt-0"><strong>We couldn't accept your last upload:</strong> <%= @drop_off_site.facility_rejection_reason %></p>
+        <% end %>
+        <% if details_done %>
+          <%= form_with url: submit_letter_drop_off_site_manager_path(@drop_off_site), method: :post, multipart: true, class: "dom-upload" do |f| %>
+            <%= file_field_tag :facility_letter, accept: ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png", required: true, class: "form-control" %>
+            <div class="dom-field__hint dom-field__hint--muted">PDF, JPG or PNG, up to 10 MB</div>
+            <%= f.submit "Upload signed letter", class: "action-btn" %>
+          <% end %>
+        <% else %>
+          <p class="dom-copy mt-0 mb-0">Available once steps 1 and 2 are done.</p>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+</div>

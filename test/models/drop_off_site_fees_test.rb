@@ -52,19 +52,48 @@ class DropOffSiteFeesTest < ActiveSupport::TestCase
     assert_equal 30.0, row.fee_owed
   end
 
-  test "onboarding requires capacity and a letter, but legacy saves do not" do
-    assert @site.save, "plain saves must keep working for legacy sites"
+  test "a site can be saved without compliance details, which are the manager's to supply" do
+    assert @site.save
+    refute @site.compliance_details_complete?
+    assert_equal DropOffSite::COMPLIANCE_FIELDS.values, @site.missing_compliance_fields
+    assert @site.action_needed?
 
-    refute @site.valid?(:onboarding)
-    assert_includes @site.errors.attribute_names, :max_kg_per_delivery
-    assert_includes @site.errors.attribute_names, :facility_confirmation_letter
+    @site.update!(legal_name: "Fee Farm NPC", signatory_name: "Thandi", signatory_title: "Manager",
+                  max_kg_per_delivery: 125, max_deliveries_per_week: 2)
+    assert @site.compliance_details_complete?
+    assert @site.action_needed?, "still has to sign and upload the letter"
+    refute @site.facility_paperwork_complete?
 
-    @site.max_kg_per_delivery = 125
-    @site.facility_confirmation_letter.attach(io: StringIO.new("%PDF-1.4"), filename: "l.pdf", content_type: "application/pdf")
-    assert @site.valid?(:onboarding)
-    refute @site.facility_paperwork_complete?, "an attached letter is not enough until Gooi approves it"
+    @site.submit_facility_letter(io: StringIO.new("%PDF-1.4"), filename: "l.pdf", content_type: "application/pdf")
+    refute @site.action_needed?, "waiting on Gooi's review is not the manager's job"
+    refute @site.facility_paperwork_complete?, "an uploaded letter is not enough until Gooi approves it"
+
+    @site.reject_letter!("no signature")
+    assert @site.action_needed?
+
     @site.approve_letter!
     assert @site.facility_paperwork_complete?
+    assert @site.compliance_details_locked?
+  end
+
+  test "weekly deliveries must be a sensible whole number" do
+    @site.max_deliveries_per_week = 0
+    refute @site.valid?
+    @site.max_deliveries_per_week = 2.5
+    refute @site.valid?
+    @site.max_deliveries_per_week = 2
+    assert @site.valid?
+  end
+
+  test "capacity_overages_for flags weight and weekly count, and is silent without limits" do
+    event = @site.drop_off_events.create!(drivers_day: @day, date: Date.new(2026, 11, 3), weight_kg: 200, is_done: true, waste_stream: "general")
+    assert_empty @site.capacity_overages_for(event)
+
+    @site.update!(max_kg_per_delivery: 125, max_deliveries_per_week: 1)
+    assert_equal 1, @site.capacity_overages_for(event).size, "200 kg is over 125 kg; 1 delivery is not over 1"
+
+    second = @site.drop_off_events.create!(drivers_day: @day, date: Date.new(2026, 11, 5), weight_kg: 10, is_done: true, waste_stream: "general")
+    assert_match(/2 deliveries this week/, @site.capacity_overages_for(second).join)
   end
 
   test "letter must be a pdf or image" do

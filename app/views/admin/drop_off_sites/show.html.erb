@@ -35,7 +35,10 @@
         </p>
         <p class="mb-1">
           <strong>Max per delivery:</strong>
-          <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not recorded" %>
+          <%= @drop_off_site.max_kg_per_delivery ? "#{number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0)} kg" : "Not filled in" %>
+          &middot;
+          <strong>Max per week:</strong>
+          <%= @drop_off_site.max_deliveries_per_week ? "#{@drop_off_site.max_deliveries_per_week} deliveries" : "Not filled in" %>
         </p>
         <p class="mb-1">
           <strong>Facility status:</strong>
@@ -65,8 +68,14 @@
       <% end %>
       <p>
         <%= link_to "Open the letter", rails_blob_path(@drop_off_site.facility_confirmation_letter, disposition: "attachment") %>
-        and check the organisation, facility address, date and signature.
+        and check it matches these details, and is signed:
       </p>
+      <ul class="small">
+        <li>Organisation: <strong><%= @drop_off_site.legal_name.presence || "—" %></strong></li>
+        <li>Signed by: <strong><%= @drop_off_site.signatory_name.presence || "—" %></strong>, <%= @drop_off_site.signatory_title.presence || "—" %></li>
+        <li>Up to <strong><%= @drop_off_site.max_deliveries_per_week || "—" %></strong> deliveries a week,
+            up to <strong><%= @drop_off_site.max_kg_per_delivery ? number_with_precision(@drop_off_site.max_kg_per_delivery, precision: 0) : "—" %></strong> kg each</li>
+      </ul>
       <div class="d-flex flex-wrap gap-3 align-items-end">
         <%= link_to "Approve — list as facility", approve_letter_admin_drop_off_site_path(@drop_off_site.slug || @drop_off_site.id),
               data: { turbo_method: :post }, class: "btn-today-green" %>

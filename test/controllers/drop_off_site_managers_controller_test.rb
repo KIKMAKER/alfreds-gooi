@@ -135,15 +135,17 @@ class DropOffSiteManagersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to manage_path
   end
 
-  test "home shows capacity and the letter status" do
-    @site.update!(max_kg_per_delivery: 125)
+  test "compliance page shows the approved letter and locked figures" do
+    @site.update!(legal_name: "Farm NPC", signatory_name: "Thandi", signatory_title: "Manager",
+                  max_kg_per_delivery: 125, max_deliveries_per_week: 2)
     @site.facility_confirmation_letter.attach(io: StringIO.new("%PDF-1.4"), filename: "letter.pdf", content_type: "application/pdf")
     @site.approve_letter!
 
-    get drop_off_site_manager_path(@site)
+    get compliance_drop_off_site_manager_path(@site)
 
-    assert_match(/125 kg/, response.body)
-    assert_match(/On file/, response.body)
+    assert_match(/You&#39;re a listed facility|You're a listed facility/, response.body)
+    assert_match(/Farm NPC/, response.body)
+    assert_match(/View your signed letter/, response.body)
   end
 
   test "home says fees start later when the start date is in the future" do

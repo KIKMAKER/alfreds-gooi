@@ -119,3 +119,130 @@
   gap: 0.75rem;
   margin-top: 1rem;
 }
+
+// ── Compliance ──
+.dom-alert {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  background: #fff3cd;
+  border: 2px solid #FBB718;
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  color: #3d2e00;
+
+  &__icon {
+    font-size: 1.4rem;
+    color: #b45309;
+    line-height: 1.2;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+
+    p { margin: 0.35rem 0 0.6rem; font-size: 0.9rem; }
+    .action-btn { margin-top: 0.25rem; }
+  }
+
+  &--success {
+    background: #e6f4ed;
+    border-color: #108A63;
+    color: #023F3A;
+    .dom-alert__icon { color: #108A63; }
+  }
+
+  &--wait {
+    background: #eef3f8;
+    border-color: #9db4cc;
+    color: #1f3a52;
+    .dom-alert__icon { color: #4a7096; }
+  }
+
+  &--compact {
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #3d2e00;
+  }
+}
+
+.dom-step {
+  .info-card-header { gap: 0.75rem; }
+  .info-card-header h3 { flex: 1; }
+
+  &__num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #023F3A;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+}
+
+.dom-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  white-space: nowrap;
+
+  &--todo { background: #FBB718; color: #3d2e00; }
+  &--done { background: #108A63; color: white; }
+  &--wait { background: #e5e7eb; color: #555; }
+}
+
+.dom-field {
+  &--todo {
+    border-color: #FBB718;
+    background: #fffbeb;
+    box-shadow: 0 0 0 2px rgba(251, 183, 24, 0.25);
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #b45309;
+    margin-top: 0.25rem;
+
+    &--muted { color: #888; font-weight: 400; margin-top: 0; }
+  }
+}
+
+.dom-nav-flag {
+  margin-left: auto;
+  background: #FBB718;
+  color: #3d2e00;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.dom-nav-flagged {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: calc(50% + 6px);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e11d48;
+    border: 2px solid white;
+  }
+}

@@ -1,6 +1,6 @@
 class DropOffSiteManagersController < ApplicationController
   before_action :authorize_manager!
-  before_action :set_drop_off_site, only: [:show, :edit, :update, :submit_letter, :letter_template]
+  before_action :set_drop_off_site, only: [:show, :edit, :update, :compliance, :update_compliance, :submit_letter, :letter_template]
 
   def index
     @drop_off_sites = current_user.drop_off_sites.order(:collection_day, :name)
@@ -56,27 +56,49 @@ class DropOffSiteManagersController < ApplicationController
     end
   end
 
-  # The manager's signed facility confirmation letter goes to Gooi for review. The
-  # site is not "listed" (and nothing is paid) until an admin approves it.
-  def submit_letter
-    return redirect_to(drop_off_site_manager_path(@drop_off_site), notice: "You're already a listed facility.") if @drop_off_site.letter_approved?
+  def compliance
+  end
 
-    upload = params[:facility_letter]
-    if upload.blank?
-      redirect_to drop_off_site_manager_path(@drop_off_site), alert: "Please choose your signed letter to upload."
-    elsif @drop_off_site.submit_facility_letter(upload)
-      notify_admin_of_letter
-      redirect_to drop_off_site_manager_path(@drop_off_site), notice: "Thank you! We'll review your letter and confirm shortly."
+  def update_compliance
+    if @drop_off_site.compliance_details_locked?
+      redirect_to compliance_drop_off_site_manager_path(@drop_off_site),
+                  alert: "Your letter has been approved, so these details are locked. WhatsApp Gooi if something needs to change."
+    elsif @drop_off_site.update(compliance_params)
+      redirect_to compliance_drop_off_site_manager_path(@drop_off_site), notice: "Details saved."
     else
-      redirect_to drop_off_site_manager_path(@drop_off_site), alert: @drop_off_site.errors.full_messages.to_sentence
+      render :compliance, status: :unprocessable_entity
     end
   end
 
+  # The manager's signed facility confirmation letter goes to Gooi for review. The
+  # site is not "listed" (and nothing is paid) until an admin approves it.
+  def submit_letter
+    back = compliance_drop_off_site_manager_path(@drop_off_site)
+    return redirect_to(back, notice: "You're already a listed facility.") if @drop_off_site.letter_approved?
+
+    upload = params[:facility_letter]
+    if upload.blank?
+      redirect_to back, alert: "Please choose your signed letter to upload."
+    elsif !@drop_off_site.compliance_details_complete?
+      redirect_to back, alert: "Fill in your details first, so the letter you sign matches them."
+    elsif @drop_off_site.submit_facility_letter(upload)
+      notify_admin_of_letter
+      redirect_to back, notice: "Thank you! We'll review your letter and confirm shortly."
+    else
+      redirect_to back, alert: @drop_off_site.errors.full_messages.to_sentence
+    end
+  end
+
+  # The letter, already filled in with this site's details. Only needs signing.
   def letter_template
-    send_file Rails.root.join("lib/documents/gooi-facility-confirmation-letter.docx"),
-              filename: "Gooi facility confirmation letter.docx",
+    document = FacilityLetterDocument.new(@drop_off_site)
+    send_data document.to_docx,
+              filename: document.filename,
               type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
               disposition: "attachment"
+  rescue FacilityLetterDocument::IncompleteDetails
+    redirect_to compliance_drop_off_site_manager_path(@drop_off_site),
+                alert: "Fill in your details first and we'll pre-fill your letter."
   end
 
   private
@@ -104,6 +126,11 @@ class DropOffSiteManagersController < ApplicationController
     if current_user.drop_off? && current_user.drop_off_sites.empty?
       redirect_to root_path, alert: "You are not associated with any drop-off sites."
     end
+  end
+
+  def compliance_params
+    params.require(:drop_off_site).permit(:legal_name, :signatory_name, :signatory_title,
+                                          :max_kg_per_delivery, :max_deliveries_per_week)
   end
 
   def drop_off_site_params
