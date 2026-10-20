@@ -18,6 +18,9 @@ def load_seed(file)
   load Rails.root.join("db/seeds/#{file}.rb")
 end
 
+# Raw-SQL sequences that schema.rb doesn't carry — needed by every branch below.
+load_seed 'number_sequences'
+
 # Stub geocoder so creating subscriptions doesn't make Mapbox API calls
 def stub_geocoder!
   require 'geocoder/lookups/test'
