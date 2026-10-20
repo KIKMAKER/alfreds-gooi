@@ -62,6 +62,7 @@ elsif proceed == "products"
 # ── Drop-off sites ────────────────────────────────────────────────────────────
 
 elsif proceed == "dropoffs"
+  load_seed 'suburbs'
   load_seed 'drop_off_sites'
 
 # ── Users + subscriptions ─────────────────────────────────────────────────────
@@ -81,6 +82,7 @@ elsif proceed == "users"
   User.destroy_all
   puts "Cleared."
 
+  load_seed 'suburbs'
   load_seed 'users'
 
 # ── Collections (date-relative reset) ────────────────────────────────────────
@@ -133,6 +135,7 @@ elsif proceed == "y"
   puts "DB cleared.\n"
 
   load_seed 'products'
+  load_seed 'suburbs'
   load_seed 'users'
   load_seed 'drop_off_sites'
   load_seed 'collections'

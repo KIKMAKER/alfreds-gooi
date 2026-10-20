@@ -21,7 +21,7 @@ def seed_drop_off_sites_with_users(sites)
 
     site = DropOffSite.find_or_create_by!(name: site_data[:name]) do |s|
       s.street_address = site_data[:street_address]
-      s.suburb         = site_data[:suburb]
+      s.suburb         = Suburb.find_by!(name: site_data[:suburb])
       s.contact_name   = site_data[:contact_name]
       s.phone_number   = site_data[:phone_number]
       s.notes          = site_data[:notes]

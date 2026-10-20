@@ -143,7 +143,7 @@ CSV.foreach(CSV_PATH, headers: :first_row) do |row|
     sub = Subscription.new(
       user:           user,
       street_address: street,
-      suburb:         suburb,
+      suburb:         Suburb.find_by(name: suburb),
       plan:           sub_plan,
       duration:       sub_duration,
       status:         status,
