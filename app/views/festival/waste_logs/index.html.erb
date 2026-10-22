@@ -55,7 +55,12 @@
             <tr>
               <td><%= log.logged_at.strftime("%H:%M") %></td>
               <td><%= log.organic? ? log.organic_label : log.category_label %></td>
-              <td><%= number_with_precision(log.weight_kg, precision: 2) %> kg</td>
+              <td>
+                <%= number_with_precision(log.weight_kg, precision: 2) %> kg
+                <% if log.gross_kg.present? && log.container_size.present? %>
+                  <span class="festival-table__meta">(<%= number_with_precision(log.gross_kg, precision: 2) %> gross, <%= log.container_size %>L)</span>
+                <% end %>
+              </td>
               <td class="festival-table__meta"><%= log.festival_participant&.name %></td>
               <td>
                 <%= button_to "✕", festival_waste_log_path(log), method: :delete,

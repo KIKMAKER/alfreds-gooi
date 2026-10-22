@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_20_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_22_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -498,6 +498,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_20_090000) do
     t.datetime "updated_at", null: false
     t.integer "source"
     t.integer "destination"
+    t.decimal "gross_kg", precision: 8, scale: 3
+    t.integer "container_size"
     t.index ["festival_event_id"], name: "index_festival_waste_logs_on_festival_event_id"
     t.index ["festival_participant_id"], name: "index_festival_waste_logs_on_festival_participant_id"
   end

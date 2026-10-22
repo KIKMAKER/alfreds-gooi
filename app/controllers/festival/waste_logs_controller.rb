@@ -55,7 +55,8 @@ class Festival::WasteLogsController < Festival::BaseController
         day_number:    params[:day_number],
         logged_at:     params[:logged_at],
         category:      FestivalWasteLog::ORGANIC_CATEGORY,
-        weight_kg:     params[:organic_weight],
+        gross_kg:      params[:organic_weight],
+        container_size: params[:organic_container].presence,
         source:        params[:organic_source].presence,
         destination:   params[:organic_destination].presence,
         notes:         params[:notes]

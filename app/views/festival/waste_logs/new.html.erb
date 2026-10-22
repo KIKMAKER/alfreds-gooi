@@ -28,7 +28,7 @@
 
     <div class="festival-form__group festival-form__group--inline">
       <label class="festival-form__label" for="organic_weight">
-        Weight <span class="festival-form__unit">kg</span>
+        Scale reading <span class="festival-form__unit">kg</span>
       </label>
       <input type="number" name="organic_weight" id="organic_weight"
              class="festival-form__input festival-form__input--weight"
@@ -36,6 +36,17 @@
     </div>
 
     <div class="festival-form__flags">
+      <div class="festival-form__flag-group">
+        <div class="festival-form__flag-label">Container (tare is subtracted)</div>
+        <div class="festival-form__flag-options">
+          <% [["45", "45L box (1.5 kg)"], ["25", "25L bucket (0.9 kg)"], ["80", "80L bag (0.3 kg)"], ["", "None"]].each do |value, label| %>
+            <label class="festival-form__flag-option">
+              <input type="radio" name="organic_container" value="<%= value %>" <%= "checked" if value == "45" %>>
+              <span><%= label %></span>
+            </label>
+          <% end %>
+        </div>
+      </div>
       <div class="festival-form__flag-group">
         <div class="festival-form__flag-label">Source</div>
         <div class="festival-form__flag-options">
