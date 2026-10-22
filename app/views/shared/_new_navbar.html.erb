@@ -13,12 +13,14 @@
         <%= link_to 'What you can gooi', "#what-you-can-gooi", class: "link-title" %>
         <%= link_to 'Pricing', "#pricing", class: "link-title" %>
         <%= link_to 'Business', "#business", class: "link-title" %>
+        <%= render "shared/pangea_nav_link", css_class: "link-title" %>
         <%= link_to 'Sign up', "#pricing", class: "new-nav-cta-btn" %>
       <% else %>
         <%= link_to 'About', about_path, class: "link-title" %>
         <%= link_to 'FAQ', faq_path, class: "link-title" %>
         <%= link_to 'Get the app', get_the_app_path, class: "link-title" %>
         <%= link_to 'Farms', farms_path, class: "link-title" %>
+        <%= render "shared/pangea_nav_link", css_class: "link-title" %>
       <% end %>
 
       <% if user_signed_in? %>
@@ -43,13 +45,14 @@
       <%= link_to 'What you can gooi', "#what-you-can-gooi", class: "new-nav-drawer-link" %>
       <%= link_to 'Pricing', "#pricing", class: "new-nav-drawer-link" %>
       <%= link_to 'Business', "#business", class: "new-nav-drawer-link" %>
+      <%= render "shared/pangea_nav_link", css_class: "new-nav-drawer-link" %>
       <%= link_to 'Sign up', "#pricing", class: "new-nav-drawer-link" %>
     <% else %>
       <%= link_to 'About', about_path, class: "new-nav-drawer-link" %>
       <%= link_to 'FAQ', faq_path, class: "new-nav-drawer-link" %>
       <%= link_to 'Get the app', get_the_app_path, class: "new-nav-drawer-link" %>
       <%= link_to 'Farms', farms_path, class: "new-nav-drawer-link" %>
-      <%= link_to 'RFF', new_festival_session_path, class: "new-nav-drawer-link" %>
+      <%= render "shared/pangea_nav_link", css_class: "new-nav-drawer-link" %>
     <% end %>
     <div class="new-nav-drawer-divider"></div>
     <% if user_signed_in? %>

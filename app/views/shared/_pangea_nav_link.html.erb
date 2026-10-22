@@ -1,0 +1,4 @@
+<%# TEMPORARY: Pangea festival weekend (22-25 Oct 2026). Hides itself after the 26th; delete this partial and its two renders in _new_navbar afterwards. %>
+<% if Date.current <= Date.new(2026, 10, 26) %>
+  <%= link_to "Pangea crew", new_festival_waste_log_path, class: css_class %>
+<% end %>
