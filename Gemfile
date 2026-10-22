@@ -74,6 +74,7 @@ gem "prawn"
 gem "prawn-table"
 gem "ahoy_matey"
 gem "blazer"
+gem "rubyzip", "~> 2.3" # FacilityLetterDocument edits a .docx; previously only present via a test-group gem
 
 
 
