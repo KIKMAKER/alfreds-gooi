@@ -49,4 +49,14 @@ class FestivalWasteLogsEditTest < ActionDispatch::IntegrationTest
     get edit_festival_waste_log_path(@log)
     assert_response :success
   end
+
+  test "logged-in crew see a log out link and can log out" do
+    get festival_waste_logs_path
+    assert_select "a[href=?]", festival_session_path("current"), text: "Log out"
+
+    delete festival_session_path("current")
+    assert_redirected_to new_festival_session_path
+    get festival_waste_logs_path
+    assert_redirected_to new_festival_session_path
+  end
 end

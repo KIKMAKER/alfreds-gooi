@@ -27,6 +27,7 @@ class Festival::SessionsController < ActionController::Base
 
   def destroy
     session.delete(:festival_participant_id)
+    session.delete(:festival_event_id)
     cookies.delete(:festival_participant_id)
     redirect_to new_festival_session_path, notice: "Logged out."
   end

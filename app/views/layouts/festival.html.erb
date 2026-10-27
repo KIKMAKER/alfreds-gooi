@@ -38,7 +38,9 @@
         <% if user_signed_in? && current_user.admin? %>
           <%= link_to "← Admin", admin_festival_events_path,
                 class: "festival-header__logout" %>
-        <% elsif session[:festival_participant_id].present? %>
+        <% end %>
+        <%# Cookie counts too: iOS can drop the session while the permanent cookie keeps the participant logged in. %>
+        <% if session[:festival_participant_id].present? || cookies[:festival_participant_id].present? %>
           <%= link_to "Log out",
                 festival_session_path("current"),
                 data: { turbo_method: :delete },
