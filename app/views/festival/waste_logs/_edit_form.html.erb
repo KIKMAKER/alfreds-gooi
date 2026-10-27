@@ -1,4 +1,4 @@
-<%# locals: log, festival, url, cancel_path %>
+<%# locals: log, festival, url, cancel_path, festivals (optional, admin only: lets the entry be moved) %>
 <div class="festival-log-form">
   <div class="festival-log-form__header">
     <h1 class="festival-log-form__heading">Edit <%= log.category_label.downcase %> entry</h1>
@@ -10,6 +10,17 @@
   <% end %>
 
   <%= form_with url: url, method: :patch, class: "festival-form" do %>
+    <% if local_assigns[:festivals] %>
+      <div class="festival-form__group">
+        <label class="festival-form__label" for="festival_event_id_new">Festival</label>
+        <select name="festival_event_id_new" id="festival_event_id_new" class="festival-form__select">
+          <% festivals.each do |f| %>
+            <option value="<%= f.id %>" <%= "selected" if f.id == festival.id %>><%= f.name %></option>
+          <% end %>
+        </select>
+      </div>
+    <% end %>
+
     <div class="festival-form__row">
       <div class="festival-form__group">
         <label class="festival-form__label" for="day_number">Day</label>
