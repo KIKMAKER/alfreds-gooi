@@ -55,4 +55,18 @@ class FestivalImpactsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".festival-impact__draft"
   end
+
+  test "the page never renders a bare footer tag (it would pick up the site footer styling)" do
+    get festival_impact_path(@event.slug)
+    assert_select "footer", count: 0
+  end
+
+  test "admins are told when no facts are ticked" do
+    @event.update!(visible_facts: [])
+    admin = User.create!(first_name: "Kiki", last_name: "Kennedy", phone_number: "+2783635#{rand(1000..9999)}",
+                         password: "password", email: "admin-#{SecureRandom.hex(3)}@gmail.com", role: :admin)
+    sign_in admin
+    get festival_impact_path(@event.slug)
+    assert_select ".festival-impact__empty--admin", text: /No facts are ticked/
+  end
 end

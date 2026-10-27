@@ -1,5 +1,7 @@
 // ─── Public festival impact one-pager ───────────────────────────────────────
-// Mobile-first single column. Hero uses the same textured green as the
+// Mobile-first single column. Don't use a <footer> tag here: pages/_footer.scss
+// styles every bare `footer` as the full-width green site footer.
+// Hero uses the same textured green as the
 // homepage hero / impact strip, not a flat fill.
 
 .festival-impact-body {
@@ -32,7 +34,7 @@
   }
 
   &__logo {
-    height: 2.5rem;
+    height: 4rem;
     margin-bottom: $space-6;
   }
 
@@ -129,6 +131,12 @@
   &__empty {
     text-align: center;
     color: $font-grey;
+
+    &--admin {
+      background: rgba($dark-yellow, 0.2);
+      border-radius: 1rem;
+      padding: $space-4;
+    }
   }
 
   &__footer {

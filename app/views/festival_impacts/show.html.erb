@@ -6,7 +6,7 @@
 
 <main class="festival-impact" data-controller="counter">
   <header class="festival-impact__hero">
-    <%= image_tag "gooi_logo_CR.svg", class: "festival-impact__logo", alt: "Gooi" %>
+    <%= image_tag "gooi_logo_icon_white.svg", class: "festival-impact__logo", alt: "Gooi" %>
     <p class="festival-impact__eyebrow">Waste to worth at</p>
     <h1 class="festival-impact__title"><%= @festival.name %></h1>
     <p class="festival-impact__dates">
@@ -42,11 +42,21 @@
     <% end %>
 
     <% if @facts.empty? %>
-      <p class="festival-impact__empty">The numbers are still being weighed up. Check back soon!</p>
+      <% if current_user&.admin? %>
+        <p class="festival-impact__empty festival-impact__empty--admin">
+          <% if @festival.visible_facts.empty? %>
+            No facts are ticked yet. <%= link_to "Choose some", edit_admin_festival_event_path(@festival) %>.
+          <% else %>
+            None of the ticked facts have any data yet (every one of them works out to zero).
+          <% end %>
+        </p>
+      <% else %>
+        <p class="festival-impact__empty">The numbers are still being weighed up. Check back soon!</p>
+      <% end %>
     <% end %>
   </section>
 
-  <footer class="festival-impact__footer">
+  <div class="festival-impact__footer">
     <p class="festival-impact__thanks">Thank you for gooi-ing with us.</p>
     <%= link_to "Find out more at gooi.me", root_url, class: "festival-impact__link" %>
     <% if @facts.any? { |f| %w[co2e car_km phone_charges trees].include?(f.key) } %>
@@ -55,5 +65,5 @@
         for every kg of organics kept out of landfill.
       </p>
     <% end %>
-  </footer>
+  </div>
 </main>
