@@ -164,6 +164,19 @@
       </div>
     </div>
 
+    <%# Pitch decks %>
+    <div class="col-12 col-md-4">
+      <div class="dash-category-card">
+        <div class="dash-category-heading"><span>📊</span> Pitch Decks</div>
+        <p class="dash-category-desc">Public sales decks to share with prospects.</p>
+        <ul class="dash-category-links">
+          <li><%= link_to office_deck_path, target: "_blank" do %>Office deck <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to estate_deck_path, target: "_blank" do %>Estate deck <span class="dash-arrow">→</span><% end %></li>
+          <li><%= link_to constantia_circular_deck_path, target: "_blank" do %>Constantia circular deck <span class="dash-arrow">→</span><% end %></li>
+        </ul>
+      </div>
+    </div>
+
     <%# Config %>
     <div class="col-12 col-md-4">
       <div class="dash-category-card dash-category-card--accent">
