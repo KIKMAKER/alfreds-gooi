@@ -1,0 +1,59 @@
+<% content_for :meta_title, "#{@festival.name}: what we kept out of landfill | Gooi" %>
+
+<% if @draft %>
+  <div class="festival-impact__draft">Draft: only admins can see this. Tick "Published" on the festival to share it.</div>
+<% end %>
+
+<main class="festival-impact" data-controller="counter">
+  <header class="festival-impact__hero">
+    <%= image_tag "gooi_logo_CR.svg", class: "festival-impact__logo", alt: "Gooi" %>
+    <p class="festival-impact__eyebrow">Waste to worth at</p>
+    <h1 class="festival-impact__title"><%= @festival.name %></h1>
+    <p class="festival-impact__dates">
+      <%= @festival.start_date.strftime("%-d") %>–<%= @festival.end_date.strftime("%-d %B %Y") %>
+    </p>
+  </header>
+
+  <section class="festival-impact__facts">
+    <% @facts.each do |fact| %>
+      <article class="festival-impact__card festival-impact__card--<%= fact.key.dasherize %>">
+        <span class="festival-impact__icon" aria-hidden="true"><%= fact.icon %></span>
+        <% if fact.counts_up? %>
+          <span class="festival-impact__number"
+                data-counter-target="number"
+                data-counter-value="<%= fact.value.round %>"
+                data-counter-suffix="<%= " #{fact.unit}" if fact.unit %>"><%= number_with_delimiter(fact.value.round) %><%= " #{fact.unit}" if fact.unit %></span>
+        <% else %>
+          <span class="festival-impact__number"><%= number_with_precision(fact.value, precision: 1, strip_insignificant_zeros: true, delimiter: ",") %><%= " #{fact.unit}" if fact.unit %></span>
+        <% end %>
+        <span class="festival-impact__label"><%= fact.label %></span>
+
+        <% if fact.items.present? %>
+          <ul class="festival-impact__list">
+            <% fact.items.each do |name, kg| %>
+              <li class="festival-impact__list-item">
+                <span><%= name %></span>
+                <strong><%= number_with_precision(kg, precision: 1, strip_insignificant_zeros: true, delimiter: ",") %> kg</strong>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </article>
+    <% end %>
+
+    <% if @facts.empty? %>
+      <p class="festival-impact__empty">The numbers are still being weighed up. Check back soon!</p>
+    <% end %>
+  </section>
+
+  <footer class="festival-impact__footer">
+    <p class="festival-impact__thanks">Thank you for gooi-ing with us.</p>
+    <%= link_to "Find out more at gooi.me", root_url, class: "festival-impact__link" %>
+    <% if @facts.any? { |f| %w[co2e car_km phone_charges trees].include?(f.key) } %>
+      <p class="festival-impact__footnote">
+        Emissions figures are estimates, based on about <%= IMPACT[:co2e_per_kg_diverted] %> kg CO₂e avoided
+        for every kg of organics kept out of landfill.
+      </p>
+    <% end %>
+  </footer>
+</main>

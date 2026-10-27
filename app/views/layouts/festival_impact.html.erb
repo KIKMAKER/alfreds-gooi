@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:meta_title) ? yield(:meta_title) : "Festival impact | Gooi" %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gooi">
+    <meta property="og:title" content="<%= content_for?(:meta_title) ? yield(:meta_title) : "Festival impact | Gooi" %>">
+    <meta property="og:image" content="<%= image_url("og-default.png") %>">
+    <%= favicon_link_tag %>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="festival-impact-body">
+    <%= yield %>
+  </body>
+</html>

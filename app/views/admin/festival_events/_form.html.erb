@@ -23,5 +23,30 @@
     </div>
   </div>
 
+  <h2 class="h5 mt-4">Public impact page</h2>
+  <p class="text-muted small">A shareable one-pager for phones. Tick the facts you want on it; leave the rest off.</p>
+
+  <div class="mb-3">
+    <%= f.label :slug, "Page address", class: "form-label" %>
+    <div class="input-group">
+      <span class="input-group-text">/festivals/</span>
+      <%= f.text_field :slug, class: "form-control", placeholder: "pangea-2026" %>
+    </div>
+  </div>
+
+  <div class="form-check mb-3">
+    <%= f.check_box :published, class: "form-check-input" %>
+    <%= f.label :published, "Published (anyone with the link can view)", class: "form-check-label" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.collection_check_boxes :visible_facts, FestivalImpact::FACTS.to_a, :first, :last do |b| %>
+      <div class="form-check">
+        <%= b.check_box class: "form-check-input" %>
+        <%= b.label class: "form-check-label" %>
+      </div>
+    <% end %>
+  </div>
+
   <%= f.submit class: "fad-action-btn" %>
 <% end %>

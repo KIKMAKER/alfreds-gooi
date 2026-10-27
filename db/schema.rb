@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_22_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_27_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -475,6 +475,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_22_090000) do
     t.date "end_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", null: false
+    t.boolean "published", default: false, null: false
+    t.string "visible_facts", default: [], null: false, array: true
+    t.index ["slug"], name: "index_festival_events_on_slug", unique: true
   end
 
   create_table "festival_participants", force: :cascade do |t|

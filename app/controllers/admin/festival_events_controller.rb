@@ -107,6 +107,6 @@ class Admin::FestivalEventsController < Admin::BaseController
   end
 
   def festival_event_params
-    params.require(:festival_event).permit(:name, :start_date, :end_date)
+    params.require(:festival_event).permit(:name, :start_date, :end_date, :slug, :published, visible_facts: [])
   end
 end

@@ -12,5 +12,10 @@ IMPACT = {
   l_per_100km:          7.0,     # average route consumption
 
   # Trees: kg CO₂ absorbed per tree per year (rule of thumb)
-  tree_co2e_per_year:   21.8
+  tree_co2e_per_year:   21.8,
+
+  # "Cute equivalents" for the festival impact page. Rough, UNSOURCED rules of
+  # thumb — cite or adjust before leaning on them anywhere formal.
+  car_co2e_per_km:      0.17,    # kg CO₂ per km, average petrol passenger car
+  phone_charge_co2e:    0.00822  # kg CO₂ per full smartphone charge
 }.freeze

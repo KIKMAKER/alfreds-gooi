@@ -383,6 +383,9 @@ Rails.application.routes.draw do
     get "survey/thanks", to: "block_surveys#thanks", as: :survey_thanks
   end
 
+  # public per-festival impact one-pager (published festivals only)
+  get "festivals/:slug", to: "festival_impacts#show", as: :festival_impact
+
   # suburb launch landing pages (public, waitlist?/active?/target? suburbs only)
   resources :suburbs, only: [:index, :show], param: :slug
 

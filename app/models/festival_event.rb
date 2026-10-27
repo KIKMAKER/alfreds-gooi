@@ -3,6 +3,9 @@ class FestivalEvent < ApplicationRecord
   has_many :festival_waste_logs, dependent: :destroy
 
   validates :name, :start_date, :end_date, presence: true
+  validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9]+(-[a-z0-9]+)*\z/ }
+  before_validation :set_default_slug, on: :create
+  before_validation :normalise_slug_and_facts
   validate :end_date_after_start_date
 
   def self.tracking_blurb
@@ -25,7 +28,20 @@ class FestivalEvent < ApplicationRecord
     "Day #{number} – #{date.strftime('%a %-d %b')}"
   end
 
+  def impact
+    FestivalImpact.new(self)
+  end
+
   private
+
+  def set_default_slug
+    self.slug = name.to_s.parameterize if slug.blank?
+  end
+
+  def normalise_slug_and_facts
+    self.slug = slug.to_s.parameterize if slug.present?
+    self.visible_facts = FestivalImpact::FACTS.keys & Array(visible_facts).map(&:to_s)
+  end
 
   def end_date_after_start_date
     return unless start_date && end_date
