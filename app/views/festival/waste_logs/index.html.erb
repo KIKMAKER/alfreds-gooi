@@ -40,6 +40,7 @@
   <% @logs.group_by(&:day_number).each do |day, entries| %>
     <div class="festival-day">
       <h3 class="festival-day__heading"><%= current_festival.day_label(day) %></h3>
+      <div class="festival-table-wrap">
       <table class="festival-table">
         <thead>
           <tr>
@@ -54,7 +55,12 @@
           <% entries.each do |log| %>
             <tr>
               <td><%= log.logged_at.strftime("%H:%M") %></td>
-              <td><%= log.organic? ? log.organic_label : log.category_label %></td>
+              <td>
+                <%= log.organic? ? log.organic_label : log.category_label %>
+                <% if log.notes.present? %>
+                  <div class="festival-table__meta"><%= log.notes %></div>
+                <% end %>
+              </td>
               <td>
                 <%= number_with_precision(log.weight_kg, precision: 2) %> kg
                 <% if log.gross_kg.present? && log.container_size.present? %>
@@ -62,7 +68,8 @@
                 <% end %>
               </td>
               <td class="festival-table__meta"><%= log.festival_participant&.name %></td>
-              <td>
+              <td class="festival-table__actions">
+                <%= link_to "Edit", edit_festival_waste_log_path(log), class: "festival-table__edit" %>
                 <%= button_to "✕", festival_waste_log_path(log), method: :delete,
                     class: "festival-table__delete",
                     data: { turbo_confirm: "Remove this entry?" } %>
@@ -71,6 +78,7 @@
           <% end %>
         </tbody>
       </table>
+      </div>
     </div>
   <% end %>
 

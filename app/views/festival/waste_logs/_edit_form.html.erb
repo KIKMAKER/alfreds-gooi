@@ -1,0 +1,95 @@
+<%# locals: log, festival, url, cancel_path %>
+<div class="festival-log-form">
+  <div class="festival-log-form__header">
+    <h1 class="festival-log-form__heading">Edit <%= log.category_label.downcase %> entry</h1>
+    <p class="festival-log-form__sub"><%= festival.name %></p>
+  </div>
+
+  <% if log.errors.any? %>
+    <div class="alert alert-warning"><%= log.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <%= form_with url: url, method: :patch, class: "festival-form" do %>
+    <div class="festival-form__row">
+      <div class="festival-form__group">
+        <label class="festival-form__label" for="day_number">Day</label>
+        <select name="day_number" id="day_number" class="festival-form__select">
+          <% (1..festival.day_count).each do |n| %>
+            <option value="<%= n %>" <%= "selected" if n == log.day_number %>><%= festival.day_label(n) %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="festival-form__group">
+        <label class="festival-form__label" for="logged_at">Time</label>
+        <input type="datetime-local" name="logged_at" id="logged_at" class="festival-form__input"
+               value="<%= log.logged_at&.strftime('%Y-%m-%dT%H:%M') %>" required>
+      </div>
+    </div>
+
+    <% if log.organic? %>
+      <div class="festival-form__group festival-form__group--inline">
+        <label class="festival-form__label" for="gross_kg">
+          Scale reading <span class="festival-form__unit">kg</span>
+        </label>
+        <input type="number" name="gross_kg" id="gross_kg"
+               class="festival-form__input festival-form__input--weight"
+               step="0.001" min="0" inputmode="decimal" required
+               value="<%= log.gross_kg || log.weight_kg %>">
+      </div>
+
+      <div class="festival-form__flags">
+        <div class="festival-form__flag-group">
+          <div class="festival-form__flag-label">Container (tare is subtracted)</div>
+          <div class="festival-form__flag-options">
+            <% [["45", "45L box (1.5 kg)"], ["25", "25L bucket (0.9 kg)"], ["80", "80L bag (0.3 kg)"], ["", "None"]].each do |value, label| %>
+              <label class="festival-form__flag-option">
+                <input type="radio" name="container_size" value="<%= value %>" <%= "checked" if log.container_size.to_s == value %>>
+                <span><%= label %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+        <div class="festival-form__flag-group">
+          <div class="festival-form__flag-label">Source</div>
+          <div class="festival-form__flag-options">
+            <% FestivalWasteLog.sources.each_key do |src| %>
+              <label class="festival-form__flag-option">
+                <input type="radio" name="source" value="<%= src %>" <%= "checked" if log.source == src %>>
+                <span><%= src.humanize %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+        <div class="festival-form__flag-group">
+          <div class="festival-form__flag-label">Goes to</div>
+          <div class="festival-form__flag-options">
+            <% FestivalWasteLog.destinations.each_key do |dest| %>
+              <label class="festival-form__flag-option">
+                <input type="radio" name="destination" value="<%= dest %>" <%= "checked" if log.destination == dest %>>
+                <span><%= dest.humanize %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="festival-form__group festival-form__group--inline">
+        <label class="festival-form__label" for="weight_kg">
+          <%= log.category_label %> <span class="festival-form__unit">kg</span>
+        </label>
+        <input type="number" name="weight_kg" id="weight_kg"
+               class="festival-form__input festival-form__input--weight"
+               step="0.001" min="0" inputmode="decimal" required value="<%= log.weight_kg %>">
+      </div>
+    <% end %>
+
+    <div class="festival-form__group">
+      <label class="festival-form__label" for="notes">Notes (optional)</label>
+      <textarea name="notes" id="notes" class="festival-form__input festival-form__input--textarea" rows="2"><%= log.notes %></textarea>
+    </div>
+
+    <button type="submit" class="festival-btn festival-btn--primary">Save changes</button>
+    <%= link_to "Cancel", cancel_path, class: "festival-btn festival-btn--secondary" %>
+  <% end %>
+</div>

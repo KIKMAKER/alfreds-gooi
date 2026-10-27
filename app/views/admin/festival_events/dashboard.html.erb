@@ -114,6 +114,7 @@
             <th class="fad-table__val">Weight</th>
             <th>By</th>
             <th>Notes</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -125,6 +126,12 @@
               <td class="fad-table__val"><%= number_with_precision(log.weight_kg, precision: 3) %> kg</td>
               <td class="fad-table__meta"><%= log.festival_participant&.name %></td>
               <td class="fad-table__meta"><%= log.notes %></td>
+              <td class="text-end text-nowrap">
+                <%= link_to "Edit", edit_admin_festival_event_festival_waste_log_path(@festival_event, log), class: "fad-pill-link" %>
+                <%= button_to "Delete", admin_festival_event_festival_waste_log_path(@festival_event, log),
+                    method: :delete, form: { class: "d-inline" }, class: "fad-danger-link",
+                    data: { turbo_confirm: "Delete this entry?" } %>
+              </td>
             </tr>
           <% end %>
         </tbody>

@@ -38,6 +38,22 @@ class FestivalWasteLog < ApplicationRecord
   scope :inorganic, -> { where(category: CHANEL_CATEGORIES) }
   scope :for_day, ->(n) { where(day_number: n) }
 
+  # Whitelisted attributes for the edit form. Organic entries are edited via
+  # gross_kg (apply_tare recomputes the net); other streams via weight_kg.
+  # Enum values are checked first because a bad string raises on assignment.
+  def edit_attributes_from(params)
+    attrs = params.permit(:day_number, :logged_at, :notes).to_h
+    if organic?
+      attrs[:gross_kg]       = params[:gross_kg]
+      attrs[:container_size] = params[:container_size].presence
+      attrs[:source]         = params[:source].presence_in(self.class.sources.keys)
+      attrs[:destination]    = params[:destination].presence_in(self.class.destinations.keys)
+    else
+      attrs[:weight_kg] = params[:weight_kg]
+    end
+    attrs
+  end
+
   def organic?
     category == ORGANIC_CATEGORY
   end

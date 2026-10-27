@@ -37,6 +37,19 @@ class Festival::WasteLogsController < Festival::BaseController
     end
   end
 
+  def edit
+    @log = current_festival.festival_waste_logs.find(params[:id])
+  end
+
+  def update
+    @log = current_festival.festival_waste_logs.find(params[:id])
+    if @log.update(@log.edit_attributes_from(params))
+      redirect_to festival_waste_logs_path, notice: "Entry updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     log = current_festival.festival_waste_logs.find(params[:id])
     log.destroy

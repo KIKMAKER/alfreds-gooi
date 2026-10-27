@@ -1,0 +1,9 @@
+<div class="admin-container">
+  <div class="pt-4 pb-3">
+    <p class="dash-eyebrow">Festival Tracker</p>
+    <%= link_to "← Dashboard", dashboard_admin_festival_event_path(@festival_event), class: "fad-pill-link" %>
+  </div>
+  <%= render "festival/waste_logs/edit_form", log: @log, festival: @festival_event,
+             url: admin_festival_event_festival_waste_log_path(@festival_event, @log),
+             cancel_path: dashboard_admin_festival_event_path(@festival_event) %>
+</div>

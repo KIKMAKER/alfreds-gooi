@@ -419,6 +419,10 @@
 }
 
 // Log table
+.festival-table-wrap {
+  overflow-x: auto;
+}
+
 .festival-table {
   width: 100%;
   border-collapse: collapse;
@@ -453,10 +457,26 @@
     font-size: 0.8rem;
   }
 
+  &__actions {
+    white-space: nowrap;
+    text-align: right;
+
+    form {
+      display: inline;
+    }
+  }
+
+  &__edit {
+    color: $dark-green;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 8px;
+  }
+
   &__delete {
     background: none;
     border: none;
-    color: #ccc;
+    color: #999;
     cursor: pointer;
     padding: 4px 8px;
     font-size: 0.85rem;

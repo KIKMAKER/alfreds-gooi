@@ -143,12 +143,13 @@ Rails.application.routes.draw do
         post :enter_as_logger
       end
       resources :festival_participants, only: [:new, :create, :destroy]
+      resources :festival_waste_logs, only: [:edit, :update, :destroy]
     end
   end
 
   namespace :festival do
     resources :sessions, only: [:new, :create, :destroy]
-    resources :waste_logs, only: [:index, :new, :create, :destroy]
+    resources :waste_logs, only: [:index, :new, :create, :edit, :update, :destroy]
   end
 
   post 'snapscan/webhook', to: 'payments#snapscan_webhook'
