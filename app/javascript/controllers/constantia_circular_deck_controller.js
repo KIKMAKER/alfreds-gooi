@@ -7,6 +7,15 @@ export default class extends Controller {
     this.index = 0
     this.total = this.slideTargets.length
     this.show()
+    this.onKeydown = (e) => {
+      if (e.key === "ArrowRight" && this.index < this.total - 1) this.next()
+      if (e.key === "ArrowLeft" && this.index > 0) this.prev()
+    }
+    document.addEventListener("keydown", this.onKeydown)
+  }
+
+  disconnect() {
+    document.removeEventListener("keydown", this.onKeydown)
   }
 
   prev() {
@@ -24,7 +33,7 @@ export default class extends Controller {
       slide.hidden = i !== this.index
     })
     if (this.hasCounterTarget) {
-      this.counterTarget.textContent = `${this.index + 1} / ${this.total}`
+      this.counterTarget.textContent = `Slide ${this.index + 1} of ${this.total}`
     }
     if (this.hasPrevTarget) this.prevTarget.disabled = this.index === 0
     if (this.hasNextTarget) this.nextTarget.disabled = this.index === this.total - 1

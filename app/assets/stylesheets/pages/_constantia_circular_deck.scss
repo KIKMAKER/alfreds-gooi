@@ -26,28 +26,45 @@
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
-    padding: 1.25rem 1rem;
-    background: #111;
+    padding: 0.75rem 1rem;
+    background: rgba(#111, 0.95);
+    border-top: 1px solid rgba(white, 0.12);
+    // Stay in view: wide screens make the slide taller than the viewport
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
   }
 
   &__nav-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    border: 1.5px solid rgba(white, 0.2);
+    border: 1.5px solid rgba(white, 0.5);
     background: transparent;
-    color: rgba(white, 0.7);
-    font-size: 1rem;
+    color: white;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s, background 0.15s;
 
     &:hover:not(:disabled) {
-      border-color: rgba(white, 0.6);
-      color: white;
-      background: rgba(white, 0.08);
+      border-color: white;
+      background: rgba(white, 0.12);
+    }
+
+    // The forward action is the primary one: amber, like the CTA button
+    &--next:not(:disabled) {
+      background: #FBB718;
+      border-color: #FBB718;
+      color: #013f3a;
+
+      &:hover:not(:disabled) {
+        background: #FBB718;
+        border-color: #FBB718;
+        filter: brightness(1.08);
+      }
     }
 
     &:disabled {
@@ -57,10 +74,10 @@
   }
 
   &__counter {
-    color: rgba(white, 0.5);
-    font-size: 0.85rem;
+    color: rgba(white, 0.85);
+    font-size: 0.95rem;
     font-variant-numeric: tabular-nums;
-    min-width: 3rem;
+    min-width: 6rem;
     text-align: center;
   }
 
